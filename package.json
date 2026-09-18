@@ -1,0 +1,31 @@
+{
+  "name": "pda-bliss-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PDA BLISS COMPANY LIMITED — corporate platform with a private client workspace experience.",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c green,cyan \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:frontend": "npm --workspace frontend run dev",
+    "dev:backend": "npm --workspace backend run dev",
+    "build": "npm --workspace backend run build && npm --workspace frontend run build",
+    "start": "concurrently -n backend,frontend -c green,cyan \"npm --workspace backend run start\" \"npm --workspace frontend run preview\"",
+    "typecheck": "npm --workspace backend run typecheck && npm --workspace frontend run typecheck",
+    "lint": "npm --workspace frontend run lint",
+    "clean": "rimraf frontend/dist backend/dist"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "rimraf": "^6.0.1"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true
+  }
+}

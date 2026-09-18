@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+.vite/
+coverage/
+backend/data/*.jsonl
+frontend/public/images/memories/*
+!frontend/public/images/memories/.gitkeep
+frontend/public/audio/*
+!frontend/public/audio/sfx/
+frontend/public/audio/sfx/*
+!frontend/public/audio/sfx/.gitkeep
+!frontend/public/audio/README.md
