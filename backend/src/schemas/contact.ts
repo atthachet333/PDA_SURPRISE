@@ -1,10 +1,19 @@
 import { z } from 'zod';
 
+/**
+ * Mirrors the service catalogue in `frontend/src/data/services.ts`. The seven
+ * primary services come first. Existing values are never removed, so leads
+ * already stored stay valid.
+ */
 export const projectTypes = [
-  'custom-software',
-  'web-application',
   'business-system',
+  'payroll',
+  'website',
+  'web-application',
   'mobile-application',
+  'hr-line-bot',
+  'document-management',
+  'custom-software',
   'automation',
   'integration',
   'data-analytics',

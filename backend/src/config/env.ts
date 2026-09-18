@@ -21,9 +21,14 @@ const envSchema = z.object({
   LEAD_STORE_PATH: z.string().default('./data/leads.jsonl'),
   CONTACT_RATE_MAX: z.coerce.number().int().positive().default(5),
   CONTACT_RATE_WINDOW: z.string().default('10 minutes'),
-  COMPANY_EMAIL: z.string().email().default('hello@pdabliss.com'),
-  COMPANY_PHONE: z.string().default('+66 00 000 0000'),
-  COMPANY_LOCATION: z.string().default('Bangkok, Thailand')
+  /**
+   * Contact details served at /api/config/public. The CANONICAL source is
+   * `frontend/src/data/company.ts` — these defaults must mirror it, never
+   * diverge from it.
+   */
+  COMPANY_EMAIL: z.string().email().default('pdablissoffice@gmail.com'),
+  COMPANY_PHONE: z.string().default('0638693614'),
+  COMPANY_LOCATION: z.string().default('กรุงเทพมหานคร ประเทศไทย')
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -62,6 +62,42 @@ export const insights: Insight[] = [
       'วางเร็วไปก็เสียเงินกับสิ่งที่ยังไม่จำเป็น วางช้าไปก็ต้องรื้อ บทความนี้เสนอเกณฑ์ที่ใช้ตัดสินใจได้จริง',
     minutes: 7,
     published: false
+  },
+  {
+    slug: 'reduce-spreadsheet-dependency',
+    category: 'Operations',
+    title: 'ทำไมธุรกิจควรลดการพึ่ง Spreadsheet',
+    excerpt:
+      'Spreadsheet ทำงานได้ดีจนถึงจุดหนึ่ง ปัญหาเริ่มตอนที่มีหลายฉบับ หลายคนแก้ และไม่มีใครรู้ว่าไฟล์ไหนคือฉบับจริง',
+    minutes: 7,
+    published: false
+  },
+  {
+    slug: 'how-automation-cuts-repetitive-work',
+    category: 'Automation',
+    title: 'Automation ช่วยลดงานซ้ำอย่างไร',
+    excerpt:
+      'ไม่ใช่ทุกงานควรถูกทำให้อัตโนมัติ บทความนี้อธิบายวิธีเลือกงานที่คุ้มค่าที่สุดที่จะเริ่มก่อน',
+    minutes: 6,
+    published: false
+  },
+  {
+    slug: 'what-good-payroll-needs',
+    category: 'Payroll',
+    title: 'ระบบ Payroll ที่ดีควรมีอะไร',
+    excerpt:
+      'นอกจากคำนวณถูกต้อง ระบบเงินเดือนที่ดีต้องตรวจย้อนหลังได้ แก้กฎได้เอง และตอบข้อโต้แย้งของพนักงานได้ทันที',
+    minutes: 8,
+    published: false
+  },
+  {
+    slug: 'who-needs-an-internal-system',
+    category: 'Internal Tools',
+    title: 'Internal System เหมาะกับธุรกิจแบบไหน',
+    excerpt:
+      'สัญญาณที่บอกว่าธุรกิจของคุณควรมีระบบภายในของตัวเอง และสัญญาณที่บอกว่ายังไม่ถึงเวลา',
+    minutes: 6,
+    published: false
   }
 ];
 

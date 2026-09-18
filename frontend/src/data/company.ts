@@ -24,20 +24,44 @@ export const company = {
   footerBlurb:
     'พัฒนาซอฟต์แวร์และระบบธุรกิจที่ออกแบบจากการทำงานจริง เพื่อให้เทคโนโลยีช่วยธุรกิจได้จริง',
 
-  founded: 2020,
+  /**
+   * ─── OWNER INPUT REQUIRED ──────────────────────────────────────────────────
+   * No registration year has been supplied, so none is published. The hero
+   * badge falls back to `heroBadge` while `foundedVerified` is false. Set the
+   * real year and flip the flag to show "SINCE <year>".
+   * ──────────────────────────────────────────────────────────────────────────
+   */
+  foundedVerified: false,
+  founded: null as number | null,
+  heroBadge: 'CUSTOM SOFTWARE',
+
 
   // --- contact -------------------------------------------------------------
   phone: '0638693614',
   /** Pretty form for display only. */
   phoneDisplay: '063 869 3614',
   email: 'pdablissoffice@gmail.com',
-  lineOA: '@pdabliss',
+  lineOA: '@593oiwec',
   /** Replace with the real LINE OA link when it is issued. */
-  lineUrl: 'https://line.me/R/ti/p/@pdabliss',
+  lineUrl: 'https://line.me/R/ti/p/@593oiwec',
 
-  /** OWNER INPUT REQUIRED: set a full registered address to show it publicly. */
-  address: '',
-  addressNote: 'ประเทศไทย',
+  /** Registered address — the only place it is defined. */
+  address: {
+    lines: [
+      '14/14 ซอยกรุงเทพ-นนท์ 21',
+      'ถนนกรุงเทพ-นนท์',
+      'แขวงบางซื่อ เขตบางซื่อ',
+      'กรุงเทพมหานคร 10800'
+    ],
+    district: 'บางซื่อ',
+    province: 'กรุงเทพมหานคร',
+    postalCode: '10800',
+    country: 'ประเทศไทย'
+  },
+  /** One-line form for tight spaces (footer, meta tags, structured data). */
+  addressOneLine:
+    '14/14 ซอยกรุงเทพ-นนท์ 21 ถนนกรุงเทพ-นนท์ แขวงบางซื่อ เขตบางซื่อ กรุงเทพมหานคร 10800',
+  addressNote: 'กรุงเทพมหานคร ประเทศไทย',
 
   businessHours: {
     days: 'จันทร์ – ศุกร์',
@@ -48,7 +72,7 @@ export const company = {
   /** Only rendered when `href` is a real URL. */
   socials: [
     { label: 'Facebook', href: '', icon: 'facebook' },
-    { label: 'LINE', href: 'https://line.me/R/ti/p/@pdabliss', icon: 'line' },
+    { label: 'LINE', href: 'https://line.me/R/ti/p/@593oiwec', icon: 'line' },
     { label: 'YouTube', href: '', icon: 'youtube' },
     { label: 'LinkedIn', href: '', icon: 'linkedin' }
   ] as SocialLink[]
@@ -80,20 +104,43 @@ export const cta = {
 // --- hero trust strip ------------------------------------------------------
 
 /**
- * ─── OWNER INPUT REQUIRED ────────────────────────────────────────────────────
- * Numeric metrics are NOT published while `metricsVerified` is false. The hero
- * strip shows the qualitative capability markers below instead, so the site
- * never presents invented numbers as fact. Fill in figures you can
- * substantiate, then flip the flag.
+ * ─── VERIFIED NUMBERS ────────────────────────────────────────────────────────
+ * `metrics` holds ONLY figures the owner has confirmed. Everything that cannot
+ * be substantiated — client counts, satisfaction percentages, years of
+ * experience, revenue impact — is deliberately absent rather than estimated.
+ *
+ * The homepage strip still renders `capabilityMarkers` while
+ * `metricsVerified` is false, because two figures do not fill the four-column
+ * layout the current design expects. The redesign pass owns that layout; the
+ * numbers below are already true and ready for it.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 export const metricsVerified = false;
 
 export const metrics = [
-  { value: 0, suffix: '+', label: 'โปรเจกต์ที่ส่งมอบ', detail: 'ครอบคลุม ERP ระบบปฏิบัติการ และระบบสำหรับลูกค้า' },
-  { value: 0, suffix: '%', label: 'ความพึงพอใจของลูกค้า', detail: 'วัดจากการรีวิวหลังส่งมอบและการต่อสัญญา' },
-  { value: 0, suffix: '+', label: 'โมดูลที่นำกลับมาใช้ได้', detail: 'ทำให้ระบบใหม่เริ่มต้นได้เร็วขึ้น' },
-  { value: 0, suffix: '+', label: 'ปีที่ดูแลระบบจริง', detail: 'ทั้งพัฒนาและดูแลระบบใน Production' }
+  {
+    value: 6,
+    suffix: '',
+    label: 'ระบบซอฟต์แวร์',
+    detail: 'ระบบธุรกิจที่พัฒนาและส่งมอบแล้ว'
+  },
+  {
+    value: 4,
+    suffix: '',
+    label: 'เว็บไซต์',
+    detail: 'เว็บไซต์องค์กรและธุรกิจที่เปิดใช้งานแล้ว'
+  }
+] as const;
+
+/**
+ * Figures that must NOT be published until the owner supplies real data.
+ * Listed here so nobody re-invents them in a component later.
+ */
+export const unverifiedMetricKeys = [
+  'จำนวนลูกค้า',
+  'เปอร์เซ็นต์ความพึงพอใจ',
+  'จำนวนปีที่ดำเนินกิจการ',
+  'ผลกระทบต่อรายได้ของลูกค้า'
 ] as const;
 
 /** Shown in place of metrics until real figures exist. */
@@ -199,13 +246,15 @@ export const footer = {
   menuHeading: 'เมนูหลัก',
   servicesHeading: 'บริการของเรา',
   contactHeading: 'ติดต่อ',
+  /** Mirrors the seven primary services in data/services.ts. */
   servicesLinks: [
-    { label: 'พัฒนาซอฟต์แวร์', to: '/services#custom-software' },
-    { label: 'ระบบธุรกิจ / ERP', to: '/services#business-systems' },
+    { label: 'ระบบ ERP / บริหารธุรกิจ', to: '/services#business-systems' },
+    { label: 'ระบบ Payroll / เงินเดือน', to: '/services#payroll' },
+    { label: 'เว็บไซต์องค์กรและธุรกิจ', to: '/services#websites' },
     { label: 'เว็บแอปพลิเคชัน', to: '/services#web-applications' },
-    { label: 'Automation', to: '/services#automation' },
-    { label: 'ระบบภายในองค์กร', to: '/solutions' },
-    { label: 'ที่ปรึกษาด้านไอที', to: '/services#consulting' }
+    { label: 'แอปพลิเคชันมือถือ', to: '/services#mobile-applications' },
+    { label: 'ระบบ HR ผ่าน LINE', to: '/services#hr-line-bot' },
+    { label: 'ระบบจัดเก็บเอกสารและไฟล์', to: '/services#document-management' }
   ],
   legalLinks: [
     { label: 'นโยบายความเป็นส่วนตัว', to: '/privacy' },
@@ -238,5 +287,63 @@ export const capabilities = [
   {
     title: 'ผ่านการตรวจความปลอดภัย',
     body: 'ตรวจสอบข้อมูลนำเข้า จำกัดสิทธิ์เท่าที่จำเป็น เข้ารหัสการรับส่ง และตรวจสอบ Dependency ทุกรอบที่ปล่อย'
+  }
+] as const;
+
+// --- target customers ------------------------------------------------------
+
+/**
+ * Positioning. The market is intentionally broad, but the copy never says
+ * "everyone" — it says what kind of need we are the right fit for. Edit the
+ * groups freely; nothing else in the codebase hardcodes them.
+ */
+export const targetMarket = {
+  eyebrow: 'WHO WE WORK WITH',
+  headline: ['เหมาะสำหรับธุรกิจทุกขนาด', 'ที่ต้องการพัฒนาระบบเฉพาะตาม Workflow จริงขององค์กร'],
+  lead: 'เราไม่ได้เลือกลูกค้าจากขนาดหรืออุตสาหกรรม แต่เลือกจากโจทย์ ถ้าธุรกิจของคุณมีขั้นตอนการทำงานที่เป็นของตัวเอง และโปรแกรมสำเร็จรูปเริ่มบังคับให้คุณทำงานย้อนศร นั่นคือจุดที่เราช่วยได้',
+  groups: [
+    { label: 'SME', note: 'ธุรกิจที่โตเร็วกว่าระบบที่มีอยู่' },
+    { label: 'สำนักงานบัญชี', note: 'งานเอกสารและงานปิดงบที่ต้องแม่นยำและตรวจย้อนได้' },
+    { label: 'โรงงาน', note: 'การผลิต คลังสินค้า ต้นทุน และการตรวจสอบย้อนกลับ' },
+    { label: 'ธุรกิจบริการ', note: 'คิว ตารางงาน และทีมงานที่กระจายหลายจุด' },
+    { label: 'ธุรกิจค้าปลีก', note: 'สต็อกหลายช่องทางที่ต้องตรงกันตลอดเวลา' },
+    { label: 'บริษัทที่มีระบบภายใน', note: 'ระบบเดิมที่ต้องต่อยอดหรือเชื่อมเข้าด้วยกัน' },
+    { label: 'ธุรกิจที่ใช้ Spreadsheet จำนวนมาก', note: 'ไฟล์ที่กระจายกันจนไม่มีใครรู้ว่าไฟล์ไหนคือฉบับจริง' },
+    { label: 'องค์กรที่ต้องการ Automation', note: 'งานซ้ำตามรอบที่กินเวลาทั้งแผนกทุกเดือน' }
+  ]
+} as const;
+
+// --- strengths -------------------------------------------------------------
+
+/**
+ * Written from the owner's own list, phrased as commitments we can stand
+ * behind. Absolute claims ("ไม่มีข้อผิดพลาด", "ดีที่สุด", "เร็วที่สุด") are
+ * avoided on purpose — they are not verifiable and they read as advertising.
+ */
+export const strengths = [
+  {
+    icon: 'automation',
+    title: 'พัฒนาอย่างรวดเร็ว',
+    body: 'ทีมเล็กและตัดสินใจได้เอง ทำให้ไม่ต้องรอผ่านหลายชั้นก่อนเริ่มงาน คุณเห็นระบบที่กดใช้ได้จริงตั้งแต่รอบแรก ๆ'
+  },
+  {
+    icon: 'compass',
+    title: 'ราคาเหมาะสมกับขอบเขตงาน',
+    body: 'เสนอราคาตามขอบเขตที่ตกลงกันชัดเจน ไม่มีค่าใช้จ่ายที่โผล่มากลางทาง และบอกตรง ๆ ถ้าฟีเจอร์ไหนยังไม่คุ้มที่จะทำตอนนี้'
+  },
+  {
+    icon: 'support',
+    title: 'ส่งมอบตามแผน',
+    body: 'แบ่งงานเป็นรอบสั้น ๆ พร้อมกำหนดส่งที่ตกลงไว้ล่วงหน้า ถ้ามีอะไรกระทบกำหนดการ คุณจะรู้ก่อน ไม่ใช่รู้ตอนถึงวันส่ง'
+  },
+  {
+    icon: 'analytics',
+    title: 'ใส่ใจคุณภาพและลดข้อผิดพลาด',
+    body: 'ตรวจสอบกฎทางธุรกิจ ตัวเลขเงิน และสิทธิ์การเข้าถึงด้วยการทดสอบอัตโนมัติ เพื่อให้ข้อผิดพลาดถูกเจอก่อนถึงมือผู้ใช้'
+  },
+  {
+    icon: 'code',
+    title: 'ดูแลโดยทีมงานที่มีประสบการณ์',
+    body: 'คนที่คุยขอบเขตงานกับคุณคือคนเดียวกับที่เขียนโค้ดและดูแลระบบต่อ ไม่มีการส่งต่อให้ทีมที่ไม่เคยเห็นงานนี้'
   }
 ] as const;

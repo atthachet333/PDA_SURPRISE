@@ -5,7 +5,9 @@ optional — the experience runs correctly, and silently, with this folder empty
 
 ## 1. The main track
 
-Place a file you are licensed to use at:
+The owner's chosen track is **"A Thousand Years"**. That recording is
+copyrighted, so **no audio file is committed here** and none will be added
+automatically. The owner supplies a lawfully obtained private copy at:
 
 ```
 frontend/public/audio/main-track.mp3

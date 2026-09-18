@@ -13,6 +13,7 @@ export default function Contact() {
           <Info title="อีเมล"><a href={`mailto:${company.email}`}>{company.email}</a></Info>
           <Info title="โทรศัพท์"><a href={`tel:${company.phone}`}>{company.phoneDisplay}</a></Info>
           <Info title="LINE OA"><a href={company.lineUrl} target="_blank" rel="noreferrer">{company.lineOA}</a></Info>
+          <Info title="ที่ตั้งสำนักงาน">{company.address.lines.map((line) => <span key={line} className="block">{line}</span>)}</Info>
           <Info title="เวลาทำการ"><p>{company.businessHours.days}<br />{company.businessHours.time}</p><p className="mt-2 text-xs text-steel-400">{company.businessHours.note}</p></Info>
           <div className="rounded-panel bg-ink p-7 text-white"><p className="text-sm font-semibold">หลังจากส่งข้อมูล</p><ol className="mt-4 space-y-3 text-xs leading-6 text-steel-300"><li>01 · ทีมงานอ่านโจทย์และตอบกลับ</li><li>02 · นัดคุยเพื่อเข้าใจ Workflow</li><li>03 · สรุปแนวทาง ขอบเขต และขั้นตอนถัดไป</li></ol></div>
         </aside>

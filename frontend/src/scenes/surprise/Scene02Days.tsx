@@ -18,27 +18,41 @@ import { pad } from '@/lib/format';
  * a full stop before the reveal lands.
  */
 
+/**
+ * The target is the REAL number of days together, derived from
+ * `relationshipStartDate`. Nothing here assumes 365, so the beat stays correct
+ * as the count grows.
+ */
 const TARGET = anniversary.dayCounter.target;
 
-/** Wall-clock seconds at which the counter should read a given day. */
-const PACE: { day: number; at: number }[] = [
-  { day: 1, at: 0 },
-  { day: 6, at: 1.05 },   // slow off the line — every early day counted
-  { day: 30, at: 1.95 },
-  { day: 78, at: 2.7 },
-  { day: 124, at: 3.25 },
-  { day: 201, at: 3.95 }, // fastest stretch
-  { day: 288, at: 4.6 },
-  { day: 340, at: 5.25 },
-  { day: 355, at: 5.9 },  // braking
-  { day: 360, at: 6.35 }
+/**
+ * Wall-clock seconds at which the counter should read a given FRACTION of the
+ * target. Expressed as fractions rather than absolute days so the shape of the
+ * beat — slow off the line, fast middle, braking — holds at any count.
+ */
+const PACE: { frac: number; at: number }[] = [
+  { frac: 0, at: 0 },
+  { frac: 0.016, at: 1.05 }, // slow off the line — every early day counted
+  { frac: 0.082, at: 1.95 },
+  { frac: 0.214, at: 2.7 },
+  { frac: 0.34, at: 3.25 },
+  { frac: 0.551, at: 3.95 }, // fastest stretch
+  { frac: 0.789, at: 4.6 },
+  { frac: 0.932, at: 5.25 },
+  { frac: 0.973, at: 5.9 },  // braking
+  { frac: 0.986, at: 6.35 }
 ];
 
-/** The last five days tick individually, with air between them. */
-const RATCHET = [361, 362, 363, 364];
+/** Day number for a fraction of the way through, never below day 1. */
+const dayAtFraction = (frac: number): number => Math.max(1, Math.round(frac * TARGET));
+
+/** The last four days tick individually, with air between them. */
+const RATCHET = [TARGET - 4, TARGET - 3, TARGET - 2, TARGET - 1].filter((day) => day >= 1);
 const RATCHET_STEP = 0.34;
 const RATCHET_START = 6.35;
-const HOLD = 1.15; // full stop on 364 before the reveal
+/** Full stop on the day before the reveal. */
+const HOLD_DAY = Math.max(1, TARGET - 1);
+const HOLD = 1.15;
 
 const COUNT_END = RATCHET_START + RATCHET.length * RATCHET_STEP;
 const REVEAL_AT = COUNT_END + HOLD;
@@ -48,7 +62,7 @@ function dayAtTime(seconds: number): number {
 
   if (seconds >= RATCHET_START) {
     const index = Math.floor((seconds - RATCHET_START) / RATCHET_STEP);
-    return RATCHET[Math.min(index, RATCHET.length - 1)] ?? 364;
+    return RATCHET[Math.min(index, RATCHET.length - 1)] ?? HOLD_DAY;
   }
 
   for (let i = 0; i < PACE.length - 1; i += 1) {
@@ -58,10 +72,10 @@ function dayAtTime(seconds: number): number {
     if (seconds <= to.at) {
       const span = to.at - from.at || 1;
       const t = (seconds - from.at) / span;
-      return Math.round(from.day + (to.day - from.day) * t);
+      return dayAtFraction(from.frac + (to.frac - from.frac) * t);
     }
   }
-  return 360;
+  return dayAtFraction(0.986);
 }
 
 export function Scene02Days() {
@@ -110,7 +124,7 @@ export function Scene02Days() {
       }
 
       if (seconds < REVEAL_AT) {
-        setDay(364);
+        setDay(HOLD_DAY);
         setPhase('holding');
         frame = requestAnimationFrame(tick);
         return;

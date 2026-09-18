@@ -50,7 +50,7 @@ function Hero() {
               className="inline-flex items-center gap-2.5 rounded-pill border border-steel-200 bg-white/80 py-1.5 pl-1.5 pr-4 backdrop-blur"
             >
               <span className="rounded-pill bg-brand-50 px-2.5 py-1 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-brand-700">
-                SINCE {company.founded}
+                {company.foundedVerified ? `SINCE ${company.founded}` : company.heroBadge}
               </span>
               <span className="text-xs text-steel-500">Software &amp; Business Systems · Thailand</span>
             </motion.div>

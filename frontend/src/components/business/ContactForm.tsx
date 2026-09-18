@@ -5,11 +5,16 @@ import { cn } from '@/lib/cn';
 import { Button } from '@/components/shared/Button';
 import { useAudio } from '@/app/audioContext';
 
+/** Mirrors the catalogue in data/services.ts; the seven primary services lead. */
 const PROJECT_TYPES = [
-  { value: 'custom-software', label: 'ซอฟต์แวร์ตามความต้องการ' },
+  { value: 'business-system', label: 'ระบบ ERP / บริหารธุรกิจ' },
+  { value: 'payroll', label: 'ระบบ Payroll / เงินเดือน' },
+  { value: 'website', label: 'เว็บไซต์องค์กรและธุรกิจ' },
   { value: 'web-application', label: 'เว็บแอปพลิเคชัน' },
-  { value: 'business-system', label: 'ระบบธุรกิจ / ERP' },
-  { value: 'mobile-application', label: 'Mobile Application' },
+  { value: 'mobile-application', label: 'แอปพลิเคชันมือถือ' },
+  { value: 'hr-line-bot', label: 'ระบบ HR ผ่าน LINE' },
+  { value: 'document-management', label: 'ระบบจัดเก็บเอกสารและไฟล์' },
+  { value: 'custom-software', label: 'ซอฟต์แวร์ตามความต้องการ' },
   { value: 'automation', label: 'Automation / Workflow' },
   { value: 'integration', label: 'เชื่อมต่อ API / ระบบ' },
   { value: 'data-analytics', label: 'Dashboard / Analytics' },
@@ -40,7 +45,7 @@ const EMPTY: ContactPayload = {
   company: '',
   email: '',
   phone: '',
-  projectType: 'custom-software',
+  projectType: 'business-system',
   budget: 'not-sure',
   timeline: '1-3-months',
   message: '',
