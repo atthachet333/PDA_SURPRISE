@@ -3,82 +3,24 @@ import { cn } from '@/lib/cn';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
-export function Container({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cn('container-page', className)}>{children}</div>;
-}
+/**
+ * Shared layout primitives.
+ *
+ * Deliberately small. The redesign gives every section its own composition and
+ * its own ground (`.sect--*` in global.css), so a generic `Section` wrapper and a
+ * one-size `SectionHeading` would only pull things back towards a uniform
+ * template — both were removed rather than left as a second way to build a
+ * section. What remains is the page gutter and one reveal.
+ */
 
-interface SectionProps {
-  id?: string;
+export function Container({
+  className,
+  children
+}: {
   className?: string;
   children: React.ReactNode;
-  tone?: 'default' | 'muted' | 'dark';
-}
-
-export function Section({ id, className, children, tone = 'default' }: SectionProps) {
-  return (
-    <section
-      id={id}
-      className={cn(
-        'relative py-section',
-        tone === 'muted' && 'bg-steel-50',
-        tone === 'dark' && 'bg-ink text-white',
-        className
-      )}
-    >
-      {children}
-    </section>
-  );
-}
-
-interface SectionHeadingProps {
-  eyebrow?: string;
-  title: React.ReactNode;
-  lead?: React.ReactNode;
-  align?: 'left' | 'center';
-  tone?: 'light' | 'dark';
-  className?: string;
-}
-
-export function SectionHeading({
-  eyebrow,
-  title,
-  lead,
-  align = 'left',
-  tone = 'light',
-  className
-}: SectionHeadingProps) {
-  return (
-    <div
-      className={cn(
-        'max-w-2xl',
-        align === 'center' && 'mx-auto text-center',
-        className
-      )}
-    >
-      {eyebrow ? (
-        <Reveal>
-          <p className={cn('eyebrow', tone === 'dark' && 'text-brand-300')}>{eyebrow}</p>
-        </Reveal>
-      ) : null}
-      <Reveal delay={0.06}>
-        <h2
-          className={cn(
-            'mt-4 text-headline font-semibold',
-            tone === 'dark' ? 'text-white' : 'text-ink'
-          )}
-        >
-          {title}
-        </h2>
-      </Reveal>
-      {lead ? (
-        <Reveal delay={0.12}>
-          <p className={cn('mt-5 text-lead', tone === 'dark' ? 'text-steel-300' : 'text-steel-600')}>
-            {lead}
-          </p>
-        </Reveal>
-      ) : null}
-    </div>
-  );
+}) {
+  return <div className={cn('container-page', className)}>{children}</div>;
 }
 
 interface RevealProps {
@@ -89,7 +31,7 @@ interface RevealProps {
   as?: 'div' | 'span' | 'li';
 }
 
-/** Scroll-triggered entrance used across the corporate site. Fires once. */
+/** Scroll-triggered entrance. Fires once, and does nothing at all under reduced motion. */
 export function Reveal({ children, delay = 0, y = 26, className, as = 'div' }: RevealProps) {
   const [ref, inView] = useInViewOnce<HTMLDivElement>();
   const reduced = useReducedMotion();
@@ -106,8 +48,4 @@ export function Reveal({ children, delay = 0, y = 26, className, as = 'div' }: R
       {children}
     </Component>
   );
-}
-
-export function Divider({ className }: { className?: string }) {
-  return <div className={cn('rule', className)} aria-hidden="true" />;
 }

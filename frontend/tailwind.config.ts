@@ -76,18 +76,32 @@ const config: Config = {
         sans: ['IBM Plex Sans Thai', 'Inter', 'system-ui', 'sans-serif'],
         thai: ['IBM Plex Sans Thai', 'Inter', 'sans-serif'],
         display: ['Cormorant Garamond', 'Georgia', 'serif'],
-        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
+        mono: ['IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
       },
       fontSize: {
         '2xs': ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.08em' }],
         display: ['clamp(2.75rem, 6vw, 5.5rem)', { lineHeight: '0.98', letterSpacing: '-0.035em' }],
         headline: ['clamp(2rem, 4vw, 3.5rem)', { lineHeight: '1.05', letterSpacing: '-0.025em' }],
         title: ['clamp(1.5rem, 2.4vw, 2.25rem)', { lineHeight: '1.15', letterSpacing: '-0.015em' }],
-        lead: ['clamp(1.0625rem, 1.3vw, 1.25rem)', { lineHeight: '1.65' }]
+        lead: ['clamp(1.0625rem, 1.3vw, 1.25rem)', { lineHeight: '1.65' }],
+        /**
+         * Gen-Z corporate scale. Thai needs more line-height than Latin at
+         * these sizes or the ascenders/vowel marks collide, so `mega` and
+         * `giant` sit at 0.95-1.0 rather than the 0.85 a Latin-only face
+         * would take.
+         */
+        giant: ['clamp(3.25rem, 11vw, 11rem)', { lineHeight: '1.0', letterSpacing: '-0.04em' }],
+        mega: ['clamp(2.5rem, 7.5vw, 7rem)', { lineHeight: '1.02', letterSpacing: '-0.035em' }],
+        statement: ['clamp(1.75rem, 3.6vw, 3.25rem)', { lineHeight: '1.22', letterSpacing: '-0.02em' }],
+        /** Marquee + section numerals. */
+        marquee: ['clamp(3rem, 9vw, 8.5rem)', { lineHeight: '1', letterSpacing: '-0.03em' }],
+        numeral: ['clamp(2.5rem, 6vw, 5.5rem)', { lineHeight: '0.9', letterSpacing: '-0.04em' }]
       },
       spacing: {
         section: 'clamp(5rem, 10vw, 9rem)',
-        gutter: 'clamp(1.25rem, 4vw, 3rem)'
+        gutter: 'clamp(1.25rem, 4vw, 3rem)',
+        /** Floating-contact dock: 52px, a comfortable thumb target. */
+        13: '3.25rem'
       },
       borderRadius: {
         xs: '0.375rem',
@@ -162,6 +176,31 @@ const config: Config = {
         'dash-flow': {
           to: { strokeDashoffset: '-1000' }
         },
+        /** Corporate: horizontal marquee travel. */
+        'marquee-x': {
+          from: { transform: 'translate3d(0,0,0)' },
+          to: { transform: 'translate3d(-50%,0,0)' }
+        },
+        /** Corporate: data travelling along a connection path. */
+        'data-run': {
+          from: { strokeDashoffset: '120' },
+          to: { strokeDashoffset: '0' }
+        },
+        /** Corporate: status light. */
+        'status-blink': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.25' }
+        },
+        /** Corporate: slow vertical drift for hero planes. */
+        'plane-float': {
+          '0%, 100%': { transform: 'translate3d(0,0,0)' },
+          '50%': { transform: 'translate3d(0,-10px,0)' }
+        },
+        /** Corporate: green beam travelling across a dark surface. */
+        'beam-x': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        },
         'sweep-ring': {
           '0%': { transform: 'rotate(0deg)', opacity: '0' },
           '12%': { opacity: '1' },
@@ -180,7 +219,13 @@ const config: Config = {
         'aurora-drift': 'aurora-drift 34s ease-in-out infinite',
         'beam-sweep': 'beam-sweep 6s ease-in-out infinite',
         'dash-flow': 'dash-flow 18s linear infinite',
-        'sweep-ring': 'sweep-ring 11s cubic-bezier(0.45,0,0.55,1) infinite'
+        'sweep-ring': 'sweep-ring 11s cubic-bezier(0.45,0,0.55,1) infinite',
+        'marquee-x': 'marquee-x 38s linear infinite',
+        'marquee-x-slow': 'marquee-x 64s linear infinite',
+        'data-run': 'data-run 2.4s linear infinite',
+        'status-blink': 'status-blink 2.8s ease-in-out infinite',
+        'plane-float': 'plane-float 7s ease-in-out infinite',
+        'beam-x': 'beam-x 7s ease-in-out infinite'
       }
     }
   },

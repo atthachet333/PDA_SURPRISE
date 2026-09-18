@@ -1,34 +1,235 @@
 import { motion } from 'framer-motion';
 import { PageHeader } from '@/components/business/PageHeader';
-import { CTASection } from '@/components/business/CTASection';
-import { Container, Reveal, Section, SectionHeading } from '@/components/shared/Layout';
+import { StrengthStatements } from '@/components/business/StrengthStatements';
+import { VerifiedMetrics } from '@/components/business/VerifiedMetrics';
+import { ProcessPath } from '@/components/business/ProcessPath';
+import { BigCTA } from '@/components/business/BigCTA';
+import { Container } from '@/components/shared/Layout';
 import { aboutIntro, aftercare, philosophy, standards, statement, whoWeAre } from '@/data/about';
-import { company, process } from '@/data/company';
+import { company, targetMarket } from '@/data/company';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { cn } from '@/lib/cn';
 
+/**
+ * /about — editorial, not a company bio block.
+ *
+ * One enormous statement carries the page; everything else is set as an essay
+ * with a lot of air around it. The numbered philosophy items and the standards
+ * are hairline rows rather than cards, so the only things that feel like objects
+ * on this page are the statement and the one visual.
+ */
 export default function About() {
+  const reduced = useReducedMotion();
+
   return (
     <>
-      <PageHeader eyebrow={aboutIntro.eyebrow} title={<>{aboutIntro.title[0]}<br /><span className="text-gradient-brand">{aboutIntro.title[1]}</span></>} lead={aboutIntro.body[0]} />
-      <Section className="py-20 sm:py-24"><Container>
-        <div className="grid gap-14 lg:grid-cols-[1.15fr_.85fr] lg:gap-20">
-          <div><p className="eyebrow">{whoWeAre.heading}</p><p className="mt-5 text-lead text-steel-600">{whoWeAre.body}</p>{aboutIntro.body.slice(1).map((p) => <Reveal key={p}><p className="mt-6 max-w-prose leading-7 text-steel-500">{p}</p></Reveal>)}</div>
-          <blockquote className="surface-card p-8 sm:p-10"><p className="text-title font-semibold text-ink">“{statement.quote[0]}<br /><span className="text-brand-600">{statement.quote[1]}</span>”</p><p className="mt-6 text-sm leading-7 text-steel-500">{statement.support}</p><p className="mt-8 text-xs font-medium text-steel-400">{company.legalNameTh} · {company.addressNote}</p></blockquote>
-        </div>
-      </Container></Section>
-      <Section tone="muted" className="py-20 sm:py-24"><Container>
-        <SectionHeading eyebrow="แนวคิดของเรา" title="หลักที่ใช้ตัดสินใจในทุกโปรเจกต์" />
-        <div className="mt-12 grid gap-4 md:grid-cols-2">{philosophy.map((item, index) => <motion.article key={item.heading} initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:index*.06}} className="surface-card p-7"><span className="font-mono text-xs text-brand-500">0{index+1}</span><h3 className="mt-5 text-lg font-semibold text-ink">{item.heading}</h3><p className="mt-3 text-sm leading-7 text-steel-500">{item.body}</p></motion.article>)}</div>
-      </Container></Section>
-      <Section className="py-20 sm:py-24"><Container>
-        <SectionHeading eyebrow="WORKING PROCESS" title="จากโจทย์หน้างานสู่ระบบที่ทีมใช้ได้จริง" lead="ทุกขั้นตอนมีสิ่งส่งมอบให้ตรวจสอบ ไม่ปล่อยให้โปรเจกต์หายเข้าไปในกล่องดำ" />
-        <ol className="relative mt-14 space-y-3 before:absolute before:bottom-8 before:left-6 before:top-8 before:w-px before:bg-brand-200 sm:before:left-8">{process.map((item,index) => <motion.li key={item.step} initial={{opacity:0,x:-16}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{delay:index*.06}} className="relative grid gap-4 rounded-panel border border-steel-200 bg-white p-6 pl-16 shadow-soft sm:grid-cols-[11rem_1fr] sm:p-8 sm:pl-20"><span className="absolute left-[1.15rem] top-7 flex h-10 w-10 items-center justify-center rounded-full bg-ink font-mono text-xs text-brand-300 sm:left-[.75rem] sm:top-7">{item.step}</span><h3 className="font-semibold text-ink">{item.title}</h3><p className="text-sm leading-7 text-steel-500">{item.body}</p></motion.li>)}</ol>
-      </Container></Section>
-      <Section tone="dark" className="py-20 sm:py-24"><Container>
-        <SectionHeading eyebrow={standards.heading} title="สร้างให้ดูแลต่อได้ตั้งแต่วันแรก" tone="dark" />
-        <div className="mt-12 grid gap-px overflow-hidden rounded-panel border border-white/10 bg-white/10 md:grid-cols-2">{standards.items.map((item)=><article key={item.heading} className="bg-ink p-7"><h3 className="font-semibold text-white">{item.heading}</h3><p className="mt-3 text-sm leading-7 text-steel-300">{item.body}</p></article>)}</div>
-        <div className="mt-12"><h3 className="text-title font-semibold text-white">{aftercare.heading}</h3><p className="mt-4 max-w-3xl text-sm leading-7 text-steel-300">{aftercare.body}</p><dl className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{aftercare.items.map((item)=><div key={item.label} className="rounded-card border border-white/10 p-4"><dt className="text-2xs uppercase tracking-wider text-brand-300">{item.label}</dt><dd className="mt-2 text-xs leading-6 text-steel-300">{item.value}</dd></div>)}</dl></div>
-      </Container></Section>
-      <CTASection />
+      <PageHeader
+        eyebrow="01 / ABOUT"
+        title={<>เกี่ยวกับเรา</>}
+        lead={aboutIntro.body[0]}
+      />
+
+      {/* ------------------------------------------------- the big statement -- */}
+      <section className="sect sect--bright relative overflow-hidden py-section">
+        <Container className="relative">
+          <p className="section-code">02 / STATEMENT</p>
+
+          <h2 className="thai-display mt-8 max-w-5xl text-mega font-bold text-ink">
+            {aboutIntro.title.map((line, index) => (
+              <span key={line} className="block overflow-hidden py-[0.04em]">
+                <motion.span
+                  className={cn('block', index === 1 && 'text-brand-600')}
+                  initial={reduced ? false : { y: '106%' }}
+                  whileInView={{ y: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{ duration: 1, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  {line}
+                </motion.span>
+              </span>
+            ))}
+          </h2>
+
+          <div className="mt-16 grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20">
+            <div>
+              <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-steel-400">
+                {whoWeAre.heading}
+              </p>
+              <p className="mt-6 text-lead text-steel-700">{whoWeAre.body}</p>
+              {aboutIntro.body.slice(1).map((paragraph) => (
+                <motion.p
+                  key={paragraph}
+                  initial={reduced ? false : { opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7 }}
+                  className="mt-7 max-w-prose leading-8 text-steel-600"
+                >
+                  {paragraph}
+                </motion.p>
+              ))}
+
+              <p className="mt-10 max-w-prose leading-8 text-steel-600">
+                เราไม่ได้เริ่มจากฟีเจอร์ เราเริ่มจาก Workflow ปัญหา ข้อมูล
+                และคนที่ต้องใช้งานระบบจริง
+              </p>
+            </div>
+
+            {/* The one strong visual on this page */}
+            <div>
+              <blockquote className="relative overflow-hidden rounded-panel border border-brand-400/20 bg-[linear-gradient(155deg,#063B2A_0%,#0B5137_52%,#04261B_100%)] p-8 text-white sm:p-10">
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-50"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(rgba(53,201,111,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(53,201,111,0.1) 1px, transparent 1px)',
+                    backgroundSize: '48px 48px'
+                  }}
+                />
+                <span
+                  aria-hidden="true"
+                  className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(53,201,111,0.3),transparent_66%)] blur-2xl"
+                />
+                <div className="relative">
+                  <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-brand-300">
+                    our position
+                  </p>
+                  <p className="thai-display mt-6 text-statement font-bold leading-tight">
+                    “{statement.quote[0]}
+                    <br />
+                    <span className="text-brand-400">{statement.quote[1]}</span>”
+                  </p>
+                  <p className="mt-7 text-sm leading-7 text-brand-100/70">{statement.support}</p>
+                  <p className="mt-9 border-t border-white/10 pt-6 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-300/60">
+                    {company.legalNameTh}
+                  </p>
+                </div>
+              </blockquote>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ------------------------------------------------------- philosophy -- */}
+      <section className="sect sect--field relative overflow-hidden py-section">
+        <div className="sect-layer field-lines opacity-70" aria-hidden="true" />
+        <Container className="relative">
+          <p className="section-code">03 / PHILOSOPHY</p>
+          <h2 className="thai-display mt-4 max-w-2xl text-statement font-bold text-ink">
+            หลักที่ใช้ตัดสินใจในทุกโปรเจกต์
+          </h2>
+
+          <ul className="mt-14 border-t border-steel-300/60">
+            {philosophy.map((item, index) => (
+              <motion.li
+                key={item.heading}
+                initial={reduced ? false : { opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.06 }}
+                className="grid gap-4 border-b border-steel-300/60 py-9 lg:grid-cols-[4rem_minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-10"
+              >
+                <span className="font-mono text-[0.6875rem] tabular-nums text-brand-500">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="thai-display text-lg font-bold text-ink sm:text-xl">
+                  {item.heading}
+                </h3>
+                <p className="max-w-prose leading-7 text-steel-600">{item.body}</p>
+              </motion.li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
+      {/* ----------------------------------------------------- who we serve -- */}
+      <section className="sect sect--bright relative overflow-hidden py-section">
+        <Container className="relative">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+            <div>
+              <p className="section-code">04 / WHO WE WORK WITH</p>
+              <h2 className="thai-display mt-4 text-statement font-bold text-ink">
+                {targetMarket.headline[0]}
+                <br />
+                <span className="text-brand-600">{targetMarket.headline[1]}</span>
+              </h2>
+            </div>
+            <div>
+              <p className="text-lead text-steel-600">{targetMarket.lead}</p>
+              <ul className="mt-10 grid gap-px overflow-hidden border border-steel-200 bg-steel-200 sm:grid-cols-2">
+                {targetMarket.groups.map((group) => (
+                  <li key={group.label} className="bg-white p-5">
+                    <p className="thai-display text-sm font-bold text-ink">{group.label}</p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-steel-500">{group.note}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <StrengthStatements code="05 / WHY US" />
+      <VerifiedMetrics code="06 / NUMBERS" />
+      <ProcessPath code="07 / PROCESS" />
+
+      {/* -------------------------------------------- standards + aftercare -- */}
+      <section className="sect sect--deep relative overflow-hidden py-section text-white">
+        <div
+          className="sect-layer opacity-40"
+          aria-hidden="true"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(53,201,111,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(53,201,111,0.07) 1px, transparent 1px)',
+            backgroundSize: '72px 72px'
+          }}
+        />
+        <Container className="relative">
+          <p className="section-code text-brand-400">08 / STANDARDS</p>
+          <h2 className="thai-display mt-4 max-w-2xl text-statement font-bold">
+            สร้างให้ดูแลต่อได้ตั้งแต่วันแรก
+          </h2>
+
+          <ul className="mt-14 border-t border-white/10">
+            {standards.items.map((item, index) => (
+              <motion.li
+                key={item.heading}
+                initial={reduced ? false : { opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.55, delay: index * 0.06 }}
+                className="grid gap-4 border-b border-white/10 py-8 lg:grid-cols-[4rem_minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-10"
+              >
+                <span className="font-mono text-[0.6875rem] tabular-nums text-brand-400">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="thai-display text-base font-bold text-white sm:text-lg">
+                  {item.heading}
+                </h3>
+                <p className="max-w-prose text-sm leading-7 text-brand-100/65">{item.body}</p>
+              </motion.li>
+            ))}
+          </ul>
+
+          <div className="mt-16">
+            <h3 className="thai-display text-statement font-bold text-white">{aftercare.heading}</h3>
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-brand-100/65">{aftercare.body}</p>
+            <dl className="mt-10 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
+              {aftercare.items.map((item) => (
+                <div key={item.label} className="bg-[#04261B] p-5">
+                  <dt className="font-mono text-[0.5rem] uppercase tracking-[0.16em] text-brand-400">
+                    {item.label}
+                  </dt>
+                  <dd className="mt-3 text-xs leading-6 text-brand-100/70">{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </Container>
+      </section>
+
+      <BigCTA code="09 / START" />
     </>
   );
 }

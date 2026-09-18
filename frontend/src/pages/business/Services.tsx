@@ -1,46 +1,54 @@
 import { PageHeader } from '@/components/business/PageHeader';
-import { ServiceList } from '@/components/business/ServiceList';
-import { CTASection } from '@/components/business/CTASection';
-import { Container, Section, SectionHeading } from '@/components/shared/Layout';
-import { process } from '@/data/company';
+import { ServiceExplorer } from '@/components/business/ServiceExplorer';
+import { TechDiagram } from '@/components/business/TechDiagram';
+import { ProcessPath } from '@/components/business/ProcessPath';
+import { BigCTA } from '@/components/business/BigCTA';
+import { services, primaryServices } from '@/data/services';
+
+/**
+ * /services — the seven primary services as the main explorer, then the
+ * supporting capabilities as a second explorer so the two are not confused.
+ */
+const SUPPORTING = services.filter((service) => !service.primary);
 
 export default function Services() {
   return (
     <>
       <PageHeader
-        eyebrow="SERVICES"
-        title="ความเชี่ยวชาญครบในทีมเดียว"
-        lead="เลือกหัวข้อเพื่อดูรายละเอียด สิ่งส่งมอบ และเทคโนโลยีที่ใช้ในแต่ละบริการ"
+        eyebrow="01 / SERVICES"
+        title={<>บริการของเรา</>}
+        lead="เจ็ดบริการหลักที่ธุรกิจไทยใช้งานจริง พร้อมความสามารถอื่นที่มักไปกับงานเดียวกัน"
       />
 
-      <Section className="pt-16 sm:pt-20">
-        <Container>
-          <ServiceList />
-        </Container>
-      </Section>
+      <ServiceExplorer
+        items={primaryServices}
+        code="02 / PRIMARY"
+        title={
+          <>
+            เจ็ดบริการหลัก
+            <br />
+            <span className="text-brand-600">ที่เราส่งมอบเป็นงานเดี่ยวได้</span>
+          </>
+        }
+        lead="เลือกหัวข้อเพื่อดูสิ่งที่ส่งมอบและเทคโนโลยีที่ใช้"
+      />
 
-      <Section tone="muted" className="py-20 sm:py-24">
-        <Container>
-          <SectionHeading
-            eyebrow="กระบวนการทำงาน"
-            title="ตั้งแต่คุยครั้งแรกจนถึงใช้งานจริง"
-            align="center"
-          />
-          <ol className="mx-auto mt-14 max-w-3xl space-y-px overflow-hidden rounded-panel border border-steel-200 bg-steel-200">
-            {process.map((step) => (
-              <li key={step.step} className="flex gap-6 bg-white p-7 sm:gap-10">
-                <span className="font-mono text-xs text-brand-500">{step.step}</span>
-                <div>
-                  <h3 className="text-base font-semibold text-ink">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-steel-500">{step.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </Section>
+      <ServiceExplorer
+        items={SUPPORTING}
+        code="03 / CAPABILITIES"
+        title={
+          <>
+            ความสามารถเพิ่มเติม
+            <br />
+            <span className="text-brand-600">ที่มักไปพร้อมกับงานหลัก</span>
+          </>
+        }
+        lead="งานกลุ่มนี้ส่วนใหญ่เป็นส่วนหนึ่งของโปรเจกต์ใหญ่ ไม่ได้ขายแยกเป็นงานเดี่ยว"
+      />
 
-      <CTASection />
+      <ProcessPath code="04 / PROCESS" />
+      <TechDiagram code="05 / STACK" />
+      <BigCTA code="06 / START" />
     </>
   );
 }

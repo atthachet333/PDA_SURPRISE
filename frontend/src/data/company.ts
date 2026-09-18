@@ -109,13 +109,17 @@ export const cta = {
  * be substantiated — client counts, satisfaction percentages, years of
  * experience, revenue impact — is deliberately absent rather than estimated.
  *
- * The homepage strip still renders `capabilityMarkers` while
- * `metricsVerified` is false, because two figures do not fill the four-column
- * layout the current design expects. The redesign pass owns that layout; the
- * numbers below are already true and ready for it.
+ * `metricsVerified` gated these figures during the content lock only because
+ * the old homepage strip was a four-column grid that two numbers could not
+ * fill. The redesign replaced it with `VerifiedMetrics`, a section designed
+ * around exactly two figures, so the layout reason is gone and the flag is now
+ * true. The VALUES are unchanged and still owner-supplied.
+ *
+ * Setting this back to false is still safe: VerifiedMetrics then renders the
+ * qualitative `capabilityMarkers` alone and publishes no figure at all.
  * ─────────────────────────────────────────────────────────────────────────────
  */
-export const metricsVerified = false;
+export const metricsVerified = true;
 
 export const metrics = [
   {
@@ -225,17 +229,22 @@ export const process = [
   },
   {
     step: '04',
-    title: 'พัฒนาและทดสอบ',
+    title: 'พัฒนา',
     body: 'ส่งงานที่ใช้ได้จริงทุก 2 สัปดาห์บนระบบทดสอบ ให้ทีมคุณลองใช้และให้ความเห็นก่อนรอบถัดไป'
   },
   {
     step: '05',
-    title: 'ส่งมอบและอบรม',
-    body: 'ติดตั้งระบบจริง ย้ายข้อมูล อบรมผู้ใช้งาน และส่งมอบซอร์สโค้ดพร้อมเอกสารทั้งหมดให้คุณ'
+    title: 'ทดสอบ',
+    body: 'ทดสอบกฎทางธุรกิจ ตัวเลขเงิน และสิทธิ์การเข้าถึงด้วยชุดทดสอบอัตโนมัติ พร้อมให้ผู้ใช้จริงลองใช้ก่อนเปิดระบบ'
   },
   {
     step: '06',
-    title: 'ดูแลและพัฒนาต่อ',
+    title: 'ส่งมอบ',
+    body: 'ติดตั้งระบบจริง ย้ายข้อมูล อบรมผู้ใช้งาน และส่งมอบซอร์สโค้ดพร้อมเอกสารทั้งหมดให้คุณ'
+  },
+  {
+    step: '07',
+    title: 'ดูแลต่อ',
     body: 'มีผู้รับผิดชอบที่ระบุชื่อได้ ระยะเวลาตอบกลับที่ตกลงกันไว้ และงบพัฒนาต่อเนื่องตามการเติบโตของธุรกิจ'
   }
 ] as const;

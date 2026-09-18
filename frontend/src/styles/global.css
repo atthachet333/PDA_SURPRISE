@@ -92,6 +92,34 @@
     text-wrap: balance;
   }
 
+  /*
+   * Thai typography.
+   *
+   * Thai has no inter-word spaces, so a browser will happily break a word in
+   * half at the end of a line. `word-break: keep-all` plus `line-break: normal`
+   * keeps Thai clusters intact; oversized headlines then wrap at phrase
+   * boundaries we control with explicit spans instead.
+   *
+   * Letter-spacing is reset to 0 on Thai text: the negative tracking that makes
+   * large Latin display type look tight collapses Thai vowel marks into the
+   * consonants they sit above.
+   */
+  :lang(th),
+  .font-thai {
+    word-break: keep-all;
+    line-break: normal;
+    overflow-wrap: break-word;
+  }
+
+  .thai-display {
+    letter-spacing: -0.01em;
+    word-break: keep-all;
+    line-break: normal;
+    /* Thai ascenders and tone marks need vertical room the Latin scale omits. */
+    line-height: 1.12;
+    padding-block: 0.06em;
+  }
+
   p {
     text-wrap: pretty;
   }
@@ -179,7 +207,7 @@
 
   .corporate-shell {
     isolation: isolate;
-    background: #fff;
+    background: #f7f9f7;
   }
 
   .corporate-background {
@@ -188,25 +216,233 @@
     z-index: -2;
     overflow: hidden;
     pointer-events: none;
-    background: linear-gradient(180deg, #fff 0%, #fbfdfb 44%, #fff 100%);
+    /* Neutral base only — each section paints its own ground on top. */
+    background: #f7f9f7;
   }
 
-  .corporate-grid {
-    position: absolute;
-    inset: 0;
-    opacity: .42;
-    background-image: linear-gradient(rgba(6,59,42,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(6,59,42,.035) 1px,transparent 1px);
-    background-size: 88px 88px;
-    mask-image: linear-gradient(to bottom,black,transparent 80%);
-  }
-
-  .corporate-orb { position:absolute; border-radius:999px; filter:blur(90px); opacity:.32; }
-  .corporate-orb--one { width:42rem; height:42rem; right:-15rem; top:-12rem; background:#b2e9c8; }
-  .corporate-orb--two { width:32rem; height:32rem; left:-18rem; top:42%; background:#dbf5e5; }
+  .corporate-orb { position:absolute; border-radius:999px; filter:blur(110px); opacity:.22; }
+  .corporate-orb--one { width:46rem; height:46rem; right:-18rem; top:-16rem; background:#b2e9c8; }
   .corporate-noise { position:absolute; inset:0; opacity:.018; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E"); }
 
   .surface-card { @apply rounded-panel border border-steel-200/90 bg-white/90 shadow-soft backdrop-blur-sm; }
   .contact-quick-link { @apply rounded-card border border-steel-200 px-4 py-3 text-sm text-steel-600 transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700; }
+
+
+  /* ===================================================================== */
+  /* PDA BLISS — section identity system                                   */
+  /* ===================================================================== */
+  /*
+   * Each major section owns its ground so the page reads as a sequence of
+   * places rather than one gradient with content on top. `.sect` sets the
+   * base; the modifier paints the identity. All of them are CSS only.
+   */
+
+  .sect {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Layer helper: every decorative layer inside a section sits behind content. */
+  .sect-layer {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* --- hero: deep green aurora + network ------------------------------- */
+  .sect--hero {
+    background:
+      radial-gradient(120% 90% at 78% 8%, rgba(29, 170, 97, 0.16) 0%, transparent 58%),
+      radial-gradient(90% 70% at 12% 96%, rgba(11, 81, 55, 0.1) 0%, transparent 62%),
+      linear-gradient(180deg, #f7f9f7 0%, #ffffff 46%, #f4f8f5 100%);
+  }
+
+  /* --- system universe: technical mesh on near-black green ------------- */
+  .sect--mesh {
+    background:
+      radial-gradient(75% 60% at 50% 42%, rgba(29, 170, 97, 0.2) 0%, transparent 64%),
+      linear-gradient(180deg, #04261b 0%, #063b2a 52%, #04261b 100%);
+  }
+
+  .mesh-lines {
+    background-image:
+      linear-gradient(rgba(53, 201, 111, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(53, 201, 111, 0.09) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(70% 60% at 50% 45%, black, transparent 78%);
+    -webkit-mask-image: radial-gradient(70% 60% at 50% 45%, black, transparent 78%);
+  }
+
+  /* --- services: clean white grid -------------------------------------- */
+  .sect--grid {
+    background: #ffffff;
+  }
+
+  .grid-lines {
+    background-image:
+      linear-gradient(rgba(6, 59, 42, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6, 59, 42, 0.05) 1px, transparent 1px);
+    background-size: 96px 96px;
+    mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+  }
+
+  /* --- solutions: off-white moving line field -------------------------- */
+  .sect--field {
+    background: linear-gradient(180deg, #f7f9f7 0%, #eff3f0 50%, #f7f9f7 100%);
+  }
+
+  .field-lines {
+    background-image: repeating-linear-gradient(
+      100deg,
+      rgba(6, 59, 42, 0.055) 0px,
+      rgba(6, 59, 42, 0.055) 1px,
+      transparent 1px,
+      transparent 26px
+    );
+    mask-image: radial-gradient(80% 70% at 50% 50%, black, transparent 82%);
+    -webkit-mask-image: radial-gradient(80% 70% at 50% 50%, black, transparent 82%);
+  }
+
+  /* --- work: near-black green with a glow ------------------------------ */
+  .sect--deep {
+    background:
+      radial-gradient(90% 70% at 20% 0%, rgba(29, 170, 97, 0.16) 0%, transparent 60%),
+      linear-gradient(180deg, #0a0f0c 0%, #04261b 58%, #0a0f0c 100%);
+  }
+
+  /* --- process: architectural line system ------------------------------ */
+  .sect--blueprint {
+    background: linear-gradient(180deg, #ffffff 0%, #f7f9f7 100%);
+  }
+
+  .blueprint-lines {
+    background-image:
+      linear-gradient(rgba(6, 59, 42, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6, 59, 42, 0.07) 1px, transparent 1px);
+    background-size: 100% 48px, 25% 100%;
+  }
+
+  /* --- about / insights: bright minimal -------------------------------- */
+  .sect--bright {
+    background: #ffffff;
+  }
+
+  /* --- CTA: immersive green -------------------------------------------- */
+  .sect--immersive {
+    background:
+      radial-gradient(70% 90% at 50% 110%, rgba(53, 201, 111, 0.34) 0%, transparent 62%),
+      linear-gradient(160deg, #063b2a 0%, #0b5137 44%, #04261b 100%);
+  }
+
+  /* --- footer: dark data horizon --------------------------------------- */
+  .sect--horizon {
+    background:
+      radial-gradient(100% 70% at 50% 100%, rgba(29, 170, 97, 0.2) 0%, transparent 60%),
+      linear-gradient(180deg, #04261b 0%, #030f0a 100%);
+  }
+
+  .horizon-grid {
+    background-image:
+      linear-gradient(rgba(53, 201, 111, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(53, 201, 111, 0.08) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(to top, black, transparent 72%);
+    -webkit-mask-image: linear-gradient(to top, black, transparent 72%);
+  }
+
+  /* ===================================================================== */
+  /* Kinetic type                                                           */
+  /* ===================================================================== */
+
+  /* Outlined display type — the counterpart to solid in the marquee. */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px currentColor;
+  }
+
+  @media (min-width: 1024px) {
+    .text-outline {
+      -webkit-text-stroke-width: 2px;
+    }
+  }
+
+  /*
+   * Marquee. Two identical halves translate by -50% so the loop is seamless.
+   * `will-change` is deliberate: these are large text layers and promoting them
+   * keeps the loop off the main thread.
+   */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .marquee-mask {
+    mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  }
+
+  /* ===================================================================== */
+  /* Section transitions                                                    */
+  /* ===================================================================== */
+
+  /* A single green hairline that carries the eye across a section boundary. */
+  .seam {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(29, 170, 97, 0.45) 22%,
+      rgba(29, 170, 97, 0.7) 50%,
+      rgba(29, 170, 97, 0.45) 78%,
+      transparent
+    );
+  }
+
+  .seam--dark {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(53, 201, 111, 0.28) 30%,
+      rgba(53, 201, 111, 0.5) 50%,
+      rgba(53, 201, 111, 0.28) 70%,
+      transparent
+    );
+  }
+
+  /* ===================================================================== */
+  /* Surfaces                                                               */
+  /* ===================================================================== */
+
+  /* Panel used on dark grounds. Not glass — a flat technical plane. */
+  .plane-dark {
+    background: linear-gradient(160deg, rgba(11, 81, 55, 0.55) 0%, rgba(4, 38, 27, 0.8) 100%);
+    border: 1px solid rgba(53, 201, 111, 0.18);
+  }
+
+  /* Panel used on light grounds. Flat, hairline, no blur. */
+  .plane-light {
+    background: #ffffff;
+    border: 1px solid theme('colors.steel.200');
+  }
+
+  /* Monospace technical label. */
+  .tech-label {
+    @apply font-mono text-[0.625rem] uppercase tracking-[0.2em] text-steel-400;
+  }
+
+  .tech-label--dark {
+    @apply font-mono text-[0.625rem] uppercase tracking-[0.2em] text-brand-300/70;
+  }
+
+  /* Oversized section code, e.g. 01 / 02 / 03. */
+  .section-code {
+    @apply font-mono text-[0.6875rem] tracking-[0.24em] text-brand-500;
+  }
 
   .floating-contact-position {
     right: max(1.25rem, env(safe-area-inset-right));

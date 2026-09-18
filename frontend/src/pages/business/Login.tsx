@@ -42,15 +42,22 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hairline-grid opacity-60 [mask-image:radial-gradient(70%_60%_at_50%_10%,black,transparent)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 h-[30rem] w-[40rem] -translate-x-1/2 rounded-full bg-brand-100/45 blur-3xl"
-      />
+    <div className="sect sect--hero relative min-h-screen overflow-hidden">
+      {/* Same ground as the redesigned corporate hero, so the portal reads as
+          part of the same product rather than a bolted-on login. */}
+      <div className="sect-layer" aria-hidden="true">
+        <span
+          className="absolute inset-0 opacity-[0.55]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(6,59,42,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.045) 1px, transparent 1px)',
+            backgroundSize: '84px 84px',
+            maskImage: 'radial-gradient(70% 60% at 50% 12%, black, transparent)',
+            WebkitMaskImage: 'radial-gradient(70% 60% at 50% 12%, black, transparent)'
+          }}
+        />
+        <span className="absolute -top-40 left-1/2 h-[32rem] w-[42rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(53,201,111,0.18),transparent_66%)] blur-2xl" />
+      </div>
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-[30rem] flex-col justify-center px-6 py-16">
         <motion.div
@@ -62,10 +69,12 @@ export default function Login() {
             <Logo />
           </Link>
 
-          <div className="mt-10 rounded-panel border border-steel-200 bg-white/85 p-7 shadow-lift backdrop-blur-xl sm:p-9">
-          <p className="eyebrow">CLIENT PORTAL</p>
-          <h1 className="mt-4 text-title font-semibold text-ink">พื้นที่สำหรับลูกค้า PDA BLISS</h1>
-          <p className="mt-2.5 text-sm text-steel-500">
+          <div className="mt-10 rounded-panel border border-steel-200 bg-white/90 p-7 shadow-lift backdrop-blur-xl sm:p-9">
+          <p className="section-code">CLIENT PORTAL</p>
+          <h1 className="thai-display mt-5 text-statement font-bold text-ink">
+            พื้นที่สำหรับลูกค้า
+          </h1>
+          <p className="mt-3 text-sm text-steel-500">
             เข้าสู่ระบบเพื่อติดตามสถานะ เอกสาร และ Environment ของโปรเจกต์
           </p>
 

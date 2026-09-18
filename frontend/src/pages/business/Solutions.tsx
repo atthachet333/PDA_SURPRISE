@@ -1,24 +1,21 @@
 import { PageHeader } from '@/components/business/PageHeader';
+import { SolutionShowcase } from '@/components/business/SolutionShowcase';
 import { SolutionGrid } from '@/components/business/SolutionGrid';
-import { CTASection } from '@/components/business/CTASection';
-import { Container, Section } from '@/components/shared/Layout';
+import { BigCTA } from '@/components/business/BigCTA';
+import { solutionsIntro } from '@/data/solutions';
 
 export default function Solutions() {
   return (
     <>
       <PageHeader
-        eyebrow="SOLUTIONS"
-        title="โซลูชันที่ปรับตามกระบวนการของธุรกิจคุณ"
-        lead="เริ่มจากโครงสร้างที่ผ่านการคิดมาแล้ว แล้วออกแบบ Workflow สิทธิ์ และรายงานให้ตรงกับการทำงานจริง"
+        eyebrow="01 / SOLUTIONS"
+        title={<>โซลูชันของเรา</>}
+        lead={solutionsIntro.lead}
       />
 
-      <Section className="pt-16 sm:pt-20">
-        <Container>
-          <SolutionGrid />
-        </Container>
-      </Section>
-
-      <CTASection />
+      <SolutionShowcase code="02 / SHOWCASE" />
+      <SolutionGrid code="03 / INDEX" />
+      <BigCTA code="04 / START" />
     </>
   );
 }
