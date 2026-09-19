@@ -68,6 +68,7 @@ export function ServiceExplorer({
 
   return (
     <section id="services" className="sect sect--grid relative overflow-hidden py-section">
+      <span aria-hidden="true" className="sect-edge-top" />
       <SectionBackdrop variant="light-grid" pointer />
 
       <Container wide className="relative">

@@ -77,6 +77,7 @@ export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } 
 
   return (
     <section id="solutions" className="sect sect--field relative overflow-hidden py-section">
+      <span aria-hidden="true" className="sect-edge-top" />
       <SectionBackdrop variant="aurora" pointer />
 
       <Container wide className="relative">

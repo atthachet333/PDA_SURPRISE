@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { cn } from '@/lib/cn';
 
 /**
@@ -24,6 +24,19 @@ import { cn } from '@/lib/cn';
 import { isPhoneMock, type MockKind } from '@/lib/systemMocks';
 
 export type { MockKind };
+
+/**
+ * Whether a mock's controls are real.
+ *
+ * Decorative mocks — the ones drifting behind the Numbers figures, for
+ * instance — must NOT contain buttons: they live inside `aria-hidden` layers,
+ * so focusable descendants would put 16 invisible controls into the keyboard
+ * tab order that a screen reader cannot announce. A context avoids threading a
+ * flag through every screen component.
+ */
+const InteractiveContext = createContext(true);
+
+const useMockInteractive = () => useContext(InteractiveContext);
 
 /* ------------------------------------------------------------------ frames -- */
 
@@ -101,7 +114,9 @@ function Sidebar({
   active: number;
   onSelect?: (index: number) => void;
 }) {
-  const interactive = Boolean(onSelect);
+  // The hook must run unconditionally — `&&` would short-circuit it.
+  const contextInteractive = useMockInteractive();
+  const interactive = Boolean(onSelect) && contextInteractive;
   return (
     <div className="hidden w-[4.5rem] shrink-0 flex-col gap-1 border-r border-steel-100 bg-steel-50/60 p-2 sm:flex lg:w-24">
       <span className="mb-1 flex items-center gap-1.5 px-1">
@@ -137,6 +152,40 @@ function Sidebar({
 }
 
 /**
+ * A control that is a real `button` when the mock is interactive and a plain
+ * `span` when it is decorative — so a background mock never contributes
+ * focusable elements to the page.
+ */
+function Control({
+  onSelect,
+  className,
+  children
+}: {
+  onSelect?: () => void;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const interactive = useMockInteractive();
+  if (!interactive) {
+    /*
+      Strip hover utilities as well as the button element. A decorative mock
+      that still lit up on hover would be a fake affordance, and these sit
+      inside aria-hidden layers where nothing is clickable.
+    */
+    const inert = (className ?? '')
+      .split(' ')
+      .filter((token) => !token.startsWith('hover:') && !token.startsWith('group-hover:'))
+      .join(' ');
+    return <span className={inert}>{children}</span>;
+  }
+  return (
+    <button type="button" onClick={onSelect} onPointerEnter={onSelect} className={className}>
+      {children}
+    </button>
+  );
+}
+
+/**
  * A row that is a real `button` when it does something and a plain `span` when
  * it does not — so a mock never shows a hover state it cannot honour.
  */
@@ -151,7 +200,13 @@ function Row({
   className?: string;
   children: React.ReactNode;
 }) {
-  if (!interactive) return <span className={className}>{children}</span>;
+  if (!interactive) {
+    const inert = (className ?? '')
+      .split(' ')
+      .filter((token) => !token.startsWith('hover:') && !token.startsWith('group-hover:'))
+      .join(' ');
+    return <span className={inert}>{children}</span>;
+  }
   return (
     <button type="button" onClick={onSelect} onPointerEnter={onSelect} className={cn('w-full text-left', className)}>
       {children}
@@ -300,11 +355,9 @@ export function PayrollScreen() {
           {/* A real toggle between the run list and the summary. */}
           <span className="flex shrink-0 gap-1">
             {(['rows', 'summary'] as const).map((mode) => (
-              <button
+              <Control
                 key={mode}
-                type="button"
-                onClick={() => setView(mode)}
-                onPointerEnter={() => setView(mode)}
+                onSelect={() => setView(mode)}
                 className={cn(
                   'rounded-[4px] border px-2 py-1 font-mono text-[0.5rem] transition-colors duration-fast',
                   view === mode
@@ -313,7 +366,7 @@ export function PayrollScreen() {
                 )}
               >
                 {mode === 'rows' ? 'รายคน' : 'สรุป'}
-              </button>
+              </Control>
             ))}
           </span>
         </div>
@@ -402,11 +455,9 @@ export function DocumentsScreen() {
       <div className="hidden w-24 shrink-0 flex-col gap-1 border-r border-steel-100 bg-steel-50/60 p-2 sm:flex">
         <span className="mb-1 h-1.5 w-12 rounded-pill bg-steel-300" />
         {['สัญญา', 'ใบกำกับ', 'HR', 'บัญชี', 'อื่น ๆ'].map((name, index) => (
-          <button
+          <Control
             key={name}
-            type="button"
-            onClick={() => setFolder(index)}
-            onPointerEnter={() => setFolder(index)}
+            onSelect={() => setFolder(index)}
             className={cn(
               'flex w-full items-center gap-1.5 rounded-[5px] px-1 py-1 text-left transition-colors duration-fast',
               index === folder ? 'bg-brand-50' : 'hover:bg-steel-100'
@@ -419,7 +470,7 @@ export function DocumentsScreen() {
               )}
             />
             <span className="truncate text-[0.5rem] text-steel-500">{name}</span>
-          </button>
+          </Control>
         ))}
       </div>
 
@@ -436,11 +487,9 @@ export function DocumentsScreen() {
 
         <div className="mt-2.5 grid min-h-0 flex-1 grid-cols-3 gap-1.5 sm:grid-cols-4">
           {[0, 1, 2, 3, 4, 5, 6, 7].map((file) => (
-            <button
+            <Control
               key={file}
-              type="button"
-              onClick={() => setSelected(file)}
-              onPointerEnter={() => setSelected(file)}
+              onSelect={() => setSelected(file)}
               className={cn(
                 'flex min-h-0 flex-col justify-between rounded-[5px] border p-1.5 text-left transition-colors duration-fast',
                 file === selected
@@ -460,7 +509,7 @@ export function DocumentsScreen() {
                   DOC-240{file + 1}
                 </span>
               </span>
-            </button>
+            </Control>
           ))}
         </div>
 
@@ -749,11 +798,9 @@ export function AnalyticsScreen() {
           <p className="truncate text-[0.6875rem] font-semibold text-ink">Dashboard ผู้บริหาร</p>
           <span className="flex shrink-0 gap-1">
             {ANALYTICS_PERIODS.map((item, index) => (
-              <button
+              <Control
                 key={item.label}
-                type="button"
-                onClick={() => setPeriod(index)}
-                onPointerEnter={() => setPeriod(index)}
+                onSelect={() => setPeriod(index)}
                 className={cn(
                   'rounded-[4px] border px-1.5 py-0.5 font-mono text-[0.4375rem] transition-colors duration-fast',
                   index === period
@@ -762,7 +809,7 @@ export function AnalyticsScreen() {
                 )}
               >
                 {item.label}
-              </button>
+              </Control>
             ))}
           </span>
         </div>
@@ -823,36 +870,37 @@ export function SystemMock({
   label,
   className,
   frame = 'auto',
-  flush = false
+  flush = false,
+  interactive = true
 }: {
   kind: MockKind;
   label?: string;
   className?: string;
   frame?: 'auto' | 'browser' | 'phone' | 'none';
   flush?: boolean;
+  /**
+   * False for decorative instances (backgrounds, watermarks). Renders every
+   * control as a span so the mock adds nothing to the tab order.
+   */
+  interactive?: boolean;
 }) {
   const Screen = SCREENS[kind];
   const resolved = frame === 'auto' ? (isPhoneMock(kind) ? 'phone' : 'browser') : frame;
 
-  if (resolved === 'none') {
-    return (
+  const body =
+    resolved === 'none' ? (
       <div className={cn('h-full bg-white', className)}>
         <Screen />
       </div>
-    );
-  }
-
-  if (resolved === 'phone') {
-    return (
+    ) : resolved === 'phone' ? (
       <PhoneFrame className={className}>
         <Screen />
       </PhoneFrame>
+    ) : (
+      <BrowserFrame label={label} className={className} flush={flush}>
+        <Screen />
+      </BrowserFrame>
     );
-  }
 
-  return (
-    <BrowserFrame label={label} className={className} flush={flush}>
-      <Screen />
-    </BrowserFrame>
-  );
+  return <InteractiveContext.Provider value={interactive}>{body}</InteractiveContext.Provider>;
 }

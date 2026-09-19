@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Container } from '@/components/shared/Layout';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useEntranceReveal } from '@/hooks/useEntranceReveal';
+import { RevealLines } from '@/components/shared/RevealLines';
 import { cn } from '@/lib/cn';
 
 interface PageHeaderProps {
@@ -25,7 +25,6 @@ interface PageHeaderProps {
  */
 export function PageHeader({ eyebrow, title, lead, children, tone = 'light' }: PageHeaderProps) {
   const reduced = useReducedMotion();
-  const reveal = useEntranceReveal();
   const dark = tone === 'dark';
 
   return (
@@ -67,23 +66,15 @@ export function PageHeader({ eyebrow, title, lead, children, tone = 'light' }: P
           {eyebrow}
         </motion.p>
 
-        <h1
+        <RevealLines
+          as="h1"
           className={cn(
             'thai-display mt-6 max-w-5xl text-mega font-bold',
             dark ? 'text-white' : 'text-ink'
           )}
-        >
-          <span className="block overflow-hidden py-[0.04em]">
-            <motion.span
-              className="block"
-              initial={reveal ? { y: '106%' } : false}
-              animate={{ y: 0 }}
-              transition={{ duration: 1, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {title}
-            </motion.span>
-          </span>
-        </h1>
+          lines={[title]}
+          duration={1000}
+        />
 
         {lead ? (
           <motion.p

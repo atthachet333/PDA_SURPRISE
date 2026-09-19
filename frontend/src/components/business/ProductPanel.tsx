@@ -20,13 +20,20 @@ export function ProductPanel({
   frame = 'auto',
   flush = false,
   /** Set when the panel is large enough that a viewer might take it for a capture. */
-  showMockNotice = false
+  showMockNotice = false,
+  interactive = true
 }: {
   slot: VisualSlot;
   className?: string;
   frame?: 'auto' | 'browser' | 'phone' | 'none';
   flush?: boolean;
   showMockNotice?: boolean;
+  /**
+   * False for decorative panels (section backgrounds). Renders the mock's
+   * controls as spans so an `aria-hidden` layer contributes no focusable
+   * elements to the tab order.
+   */
+  interactive?: boolean;
 }) {
   const resolved = frame === 'auto' ? (isPhoneMock(slot.mock) ? 'phone' : 'browser') : frame;
 
@@ -54,7 +61,14 @@ export function ProductPanel({
   // --- mock ----------------------------------------------------------------
   return (
     <div className={cn('relative h-full', className)}>
-      <SystemMock kind={slot.mock} label={slot.label} frame={frame} flush={flush} className="h-full" />
+      <SystemMock
+        kind={slot.mock}
+        label={slot.label}
+        frame={frame}
+        flush={flush}
+        interactive={interactive}
+        className="h-full"
+      />
       {showMockNotice ? (
         <span className="pointer-events-none absolute bottom-2 right-2 rounded-pill bg-ink/70 px-2 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.12em] text-white/80 backdrop-blur-sm">
           ภาพตัวอย่างระบบ

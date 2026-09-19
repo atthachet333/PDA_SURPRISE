@@ -29,12 +29,15 @@ const ORDERED = LAYER_ORDER.map((name) =>
 
 export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
   const [ref, inView] = useInViewOnce<HTMLDivElement>({ threshold: 0.25 });
-  const [activeNote, setActiveNote] = useState<string | null>(null);
+  /* The whole active tool, so the read-out can name its layer as well as the
+     reason we chose it. */
+  const [active, setActive] = useState<{ name: string; note: string; layer: string } | null>(null);
   const reduced = useReducedMotion();
 
   return (
-    <section className="sect sect--grid relative overflow-hidden py-section">
-      <SectionBackdrop variant="light-grid" intensity={0.8} />
+    <section className="sect sect--technical relative overflow-hidden py-section">
+      <span aria-hidden="true" className="sect-edge-top" />
+      <SectionBackdrop variant="light-grid" intensity={0.9} />
 
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
@@ -50,19 +53,29 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
               เพื่อให้ระบบยังพัฒนาต่อได้หลังส่งมอบ
             </p>
 
-            {/* The reason for the hovered tool */}
-            <div className="mt-8 min-h-[4.5rem] border-t border-steel-200 pt-5">
-              <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-steel-400">
-                why this
-              </p>
+            {/* Read-out for the focused tool: which layer, and why we use it */}
+            <div className="mt-8 min-h-[7rem] rounded-panel border border-steel-200/80 bg-white/70 p-5 backdrop-blur-sm">
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-steel-400">
+                  why this
+                </p>
+                {active ? (
+                  <span className="rounded-pill border border-brand-200 bg-brand-50 px-2.5 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.12em] text-brand-700">
+                    {active.layer}
+                  </span>
+                ) : null}
+              </div>
+              {active ? (
+                <p className="mt-3 font-mono text-[0.8125rem] font-medium text-ink">{active.name}</p>
+              ) : null}
               <motion.p
-                key={activeNote ?? 'idle'}
+                key={active?.name ?? 'idle'}
                 initial={reduced ? false : { opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
                 className="mt-2 text-sm leading-relaxed text-steel-600"
               >
-                {activeNote ?? 'เลือกดูเครื่องมือแต่ละตัวเพื่อดูเหตุผลที่เราเลือกใช้'}
+                {active?.note ?? 'เลือกดูเครื่องมือแต่ละตัวเพื่อดูเหตุผลที่เราเลือกใช้ และชั้นที่มันทำงานอยู่'}
               </motion.p>
             </div>
           </div>
@@ -108,7 +121,14 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
                   </span>
 
                   {/* Not interactive: the chips inside are the buttons. */}
-                  <div className="plane-light rounded-card p-5">
+                  <div
+                    className={cn(
+                      'rounded-card border bg-white p-5 transition-colors duration-base',
+                      active?.layer === group.group
+                        ? 'border-brand-300 bg-brand-50/40'
+                        : 'border-steel-200'
+                    )}
+                  >
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <h3 className="text-sm font-semibold text-ink">{group.group}</h3>
                       <span className="thai-display text-xs text-steel-400">{group.groupTh}</span>
@@ -119,16 +139,24 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
                         <li key={item.name}>
                           <button
                             type="button"
-                            onPointerEnter={() => setActiveNote(item.note)}
-                            onFocus={() => setActiveNote(item.note)}
-                            onBlur={() => setActiveNote(null)}
+                            onPointerEnter={() =>
+                              setActive({ name: item.name, note: item.note, layer: group.group })
+                            }
+                            onFocus={() =>
+                              setActive({ name: item.name, note: item.note, layer: group.group })
+                            }
+                            onBlur={() => setActive(null)}
                             onClick={() =>
-                              setActiveNote((current) => (current === item.note ? null : item.note))
+                              setActive((current) =>
+                                current?.name === item.name
+                                  ? null
+                                  : { name: item.name, note: item.note, layer: group.group }
+                              )
                             }
                             className={cn(
                               'rounded-pill border px-3.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.08em] transition-all duration-base',
-                              activeNote === item.note
-                                ? 'border-brand-400 bg-brand-500 text-white'
+                              active?.name === item.name
+                                ? 'border-brand-400 bg-brand-500 text-white shadow-brand-glow'
                                 : 'border-steel-200 text-steel-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700'
                             )}
                           >

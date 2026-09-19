@@ -52,6 +52,7 @@ export function WorkShowcase({
 }: WorkShowcaseProps) {
   return (
     <section id="work" className="sect sect--deep relative overflow-hidden py-section text-white">
+      <span aria-hidden="true" className="sect-edge-top sect-edge-top--dark" />
       <SectionBackdrop variant="mesh-dark" pointer intensity={0.85} />
 
       <Container wide className="relative">

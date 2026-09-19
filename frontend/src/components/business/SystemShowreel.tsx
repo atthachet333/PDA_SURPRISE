@@ -71,6 +71,7 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
       ref={sectionRef}
       className="sect sect--field relative overflow-hidden py-section"
     >
+      <span aria-hidden="true" className="sect-edge-top" />
       <SectionBackdrop variant="data-field" pointer />
 
       <Container wide className="relative">

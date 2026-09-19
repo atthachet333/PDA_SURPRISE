@@ -83,6 +83,7 @@ export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
 
   return (
     <section ref={sectionRef} className="sect sect--blueprint relative overflow-hidden py-section">
+      <span aria-hidden="true" className="sect-edge-top" />
       <SectionBackdrop variant="system-lines" />
 
       <Container className="relative">

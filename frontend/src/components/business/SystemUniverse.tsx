@@ -238,6 +238,7 @@ export function SystemUniverse({ code = '03 / SYSTEM' }: { code?: string } = {})
 
   return (
     <section className="sect sect--mesh relative overflow-hidden py-section text-white">
+      <span aria-hidden="true" className="sect-edge-top sect-edge-top--dark" />
       <SectionBackdrop variant="mesh-dark" pointer />
 
       <Container wide className="relative">

@@ -214,8 +214,10 @@ export function Header() {
                 {navigation.map((item, index) => (
                   <li key={item.to} className="overflow-hidden border-b border-steel-200/70">
                     <motion.div
-                      initial={reveal ? { y: '110%' } : false}
-                      animate={{ y: 0 }}
+                      /* Menu items use opacity, not a mask: a stalled
+                          transform reveal would leave the nav blank. */
+                      initial={reveal ? { opacity: 0, y: 12 } : false}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{
                         duration: 0.7,
                         delay: 0.14 + index * 0.055,

@@ -17,7 +17,7 @@ import { BigCTA } from '@/components/business/BigCTA';
 import { company, cta } from '@/data/company';
 import { portfolio } from '@/data/portfolio';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useEntranceReveal } from '@/hooks/useEntranceReveal';
+import { RevealLines } from '@/components/shared/RevealLines';
 import { SectionBackdrop } from '@/components/business/SectionBackdrop';
 
 /**
@@ -77,8 +77,6 @@ const CAPABILITIES = [
 
 function Hero() {
   const reduced = useReducedMotion();
-  /* The masked headline must never be left parked outside its clip box. */
-  const reveal = useEntranceReveal();
 
   return (
     <section
@@ -105,37 +103,31 @@ function Hero() {
               </span>
             </motion.div>
 
-            <h1 className="thai-display mt-6 text-giant font-bold text-ink">
-              {HEADLINE.map((line, index) => (
-                <span key={line} className="block overflow-hidden py-[0.02em]">
-                  <motion.span
-                    className="block"
-                    initial={reveal ? { y: '104%' } : false}
-                    animate={{ y: 0 }}
-                    transition={{
-                      duration: 0.95,
-                      delay: 0.06 + index * 0.09,
-                      ease: [0.16, 1, 0.3, 1]
-                    }}
-                  >
-                    {index === HEADLINE.length - 1 ? (
-                      <span className="relative inline-block">
-                        <span className="relative z-10 text-brand-600">{line}</span>
-                        <motion.span
-                          aria-hidden="true"
-                          className="absolute inset-x-0 bottom-[0.1em] block h-[0.12em] origin-left bg-brand-400/35"
-                          initial={reduced ? false : { scaleX: 0 }}
-                          animate={{ scaleX: 1 }}
-                          transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                        />
-                      </span>
-                    ) : (
-                      line
-                    )}
-                  </motion.span>
-                </span>
-              ))}
-            </h1>
+            {/* `RevealLines` rests VISIBLE — the reveal can never clip the
+                headline out of its own box. See RevealLines for the bug this
+                pattern replaced. */}
+            <RevealLines
+              as="h1"
+              className="thai-display mt-6 text-giant font-bold text-ink"
+              lines={HEADLINE.map((line, index) =>
+                index === HEADLINE.length - 1 ? (
+                  <span key={line} className="relative inline-block">
+                    <span className="relative z-10 text-brand-600">{line}</span>
+                    <motion.span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 bottom-[0.1em] block h-[0.12em] origin-left bg-brand-400/35"
+                      initial={reduced ? false : { scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    />
+                  </span>
+                ) : (
+                  line
+                )
+              )}
+              stagger={90}
+              duration={950}
+            />
 
             <motion.p
               initial={reduced ? false : { opacity: 0, y: 12 }}

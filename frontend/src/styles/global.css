@@ -355,9 +355,30 @@
     background-size: 100% 48px, 25% 100%;
   }
 
-  /* --- about / insights: bright minimal -------------------------------- */
+  /* --- about: bright minimal ------------------------------------------- */
   .sect--bright {
     background: #ffffff;
+  }
+
+  /* --- why us: cream with a green cast ---------------------------------- */
+  .sect--cream {
+    background:
+      radial-gradient(70% 60% at 18% 20%, rgba(53, 201, 111, 0.09) 0%, transparent 62%),
+      linear-gradient(170deg, #f6f4ec 0%, #f3f6f1 52%, #eef3ec 100%);
+  }
+
+  /* --- insights: warm paper with a technical tint ----------------------- */
+  .sect--paper {
+    background:
+      radial-gradient(60% 50% at 82% 18%, rgba(29, 170, 97, 0.07) 0%, transparent 62%),
+      linear-gradient(180deg, #f7f5ef 0%, #f4f4f0 100%);
+  }
+
+  /* --- tech stack: cool technical light --------------------------------- */
+  .sect--technical {
+    background:
+      radial-gradient(75% 60% at 70% 40%, rgba(29, 170, 97, 0.08) 0%, transparent 64%),
+      linear-gradient(160deg, #f4f8f6 0%, #eef4f3 55%, #f5f8f6 100%);
   }
 
   /* --- CTA: immersive green -------------------------------------------- */
@@ -386,6 +407,57 @@
   /* ===================================================================== */
   /* Kinetic type                                                           */
   /* ===================================================================== */
+
+  /* ===================================================================== */
+  /* Line reveal — masked type that CANNOT fail hidden                      */
+  /* ===================================================================== */
+  /*
+   * The natural state of `.reveal-line > span` is VISIBLE. The hidden
+   * position only ever exists inside a running animation.
+   *
+   * This is the fix for a real bug: the previous reveal set the hidden state as
+   * the element's default (framer `initial={{ y: '108%' }}`) and relied on an
+   * animation to bring it back. Inside `overflow: hidden` that means any
+   * failure to animate — a backgrounded tab pausing rAF, a throttled browser, a
+   * whileInView observer that never fires — leaves the heading permanently
+   * clipped out of its own box. The START heading was rendering blank for
+   * exactly this reason.
+   *
+   * Now the animation is additive: it plays FROM hidden TO the natural
+   * position. If it never runs, the text is simply there.
+   */
+  .reveal-line {
+    display: block;
+    overflow: hidden;
+    /* Thai tone marks and ascenders need room inside the mask. */
+    padding-block: 0.06em;
+  }
+
+  .reveal-line > span {
+    display: block;
+    will-change: transform;
+  }
+
+  .reveal-line.is-armed > span {
+    animation: reveal-line-up var(--reveal-duration, 900ms) cubic-bezier(0.16, 1, 0.3, 1)
+      var(--reveal-delay, 0ms) both;
+  }
+
+  @keyframes reveal-line-up {
+    from {
+      transform: translateY(108%);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* No reveal at all — the natural, readable state. */
+    .reveal-line.is-armed > span {
+      animation: none;
+    }
+  }
 
   /* Outlined display type — the counterpart to solid in the marquee. */
   .text-outline {
@@ -418,6 +490,37 @@
   /* ===================================================================== */
   /* Section transitions                                                    */
   /* ===================================================================== */
+
+  /*
+   * Section edge. A hairline plus a short gradient bleed, so a light section
+   * sitting next to another light section still has a visible boundary — the
+   * main reason consecutive pale sections used to merge into one another.
+   */
+  .sect-edge-top {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(6, 59, 42, 0.12) 20%,
+      rgba(29, 170, 97, 0.38) 50%,
+      rgba(6, 59, 42, 0.12) 80%,
+      transparent
+    );
+  }
+
+  .sect-edge-top--dark {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(53, 201, 111, 0.18) 20%,
+      rgba(53, 201, 111, 0.5) 50%,
+      rgba(53, 201, 111, 0.18) 80%,
+      transparent
+    );
+  }
 
   /* A single green hairline that carries the eye across a section boundary. */
   .seam {
