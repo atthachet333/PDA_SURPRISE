@@ -120,7 +120,7 @@ function Figure({
   return (
     <div className="relative">
       <div className="flex items-start">
-        <span className="thai-display text-giant font-bold leading-none tabular-nums text-ink">
+        <span className="thai-display text-mega font-bold leading-none tabular-nums text-ink">
           {count}
           {suffix ? <span className="text-brand-500">{suffix}</span> : null}
         </span>

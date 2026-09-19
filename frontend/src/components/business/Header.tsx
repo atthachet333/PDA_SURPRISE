@@ -5,6 +5,7 @@ import { company, cta, navigation } from '@/data/company';
 import { cn } from '@/lib/cn';
 import { ButtonLink } from '@/components/shared/Button';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useEntranceReveal } from '@/hooks/useEntranceReveal';
 import { Logo } from './Logo';
 
 /**
@@ -26,6 +27,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const reduced = useReducedMotion();
+  const reveal = useEntranceReveal();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -75,16 +77,13 @@ export function Header() {
         <div
           className={cn(
             'flex items-center justify-between transition-all duration-slow ease-smooth',
-            scrolled ? 'h-16' : 'h-20 sm:h-24'
+            scrolled ? 'h-[4.375rem]' : 'h-20 sm:h-[5.25rem]'
           )}
         >
           <Link to="/" className="relative z-10 shrink-0" aria-label="PDA BLISS — หน้าแรก">
-            <Logo
-              className={cn(
-                'origin-left transition-transform duration-slow ease-smooth',
-                scrolled && 'scale-[0.9]'
-              )}
-            />
+            {/* Compact mark on mobile; full wordmark from sm up. */}
+            <Logo compact className="sm:hidden" />
+            <Logo className="hidden origin-left transition-transform duration-slow ease-smooth sm:inline-flex" />
           </Link>
 
           {/* ------------------------------------------------- desktop nav -- */}
@@ -189,8 +188,8 @@ export function Header() {
       */}
       {menuOpen ? (
         <motion.div
-          initial={reduced ? false : { clipPath: 'inset(0 0 100% 0)' }}
-          animate={reduced ? undefined : { clipPath: 'inset(0 0 0% 0)' }}
+          initial={reveal ? { clipPath: 'inset(0 0 100% 0)' } : false}
+          animate={reveal ? { clipPath: 'inset(0 0 0% 0)' } : undefined}
           transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
           className="fixed inset-0 top-0 -z-10 flex h-[100dvh] flex-col bg-white lg:hidden"
         >
@@ -215,7 +214,7 @@ export function Header() {
                 {navigation.map((item, index) => (
                   <li key={item.to} className="overflow-hidden border-b border-steel-200/70">
                     <motion.div
-                      initial={reduced ? false : { y: '110%' }}
+                      initial={reveal ? { y: '110%' } : false}
                       animate={{ y: 0 }}
                       transition={{
                         duration: 0.7,

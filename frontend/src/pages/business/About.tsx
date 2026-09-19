@@ -8,6 +8,7 @@ import { Container } from '@/components/shared/Layout';
 import { aboutIntro, aftercare, philosophy, standards, statement, whoWeAre } from '@/data/about';
 import { company, targetMarket } from '@/data/company';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useEntranceReveal } from '@/hooks/useEntranceReveal';
 import { cn } from '@/lib/cn';
 
 /**
@@ -20,6 +21,7 @@ import { cn } from '@/lib/cn';
  */
 export default function About() {
   const reduced = useReducedMotion();
+  const reveal = useEntranceReveal();
 
   return (
     <>
@@ -34,12 +36,12 @@ export default function About() {
         <Container className="relative">
           <p className="section-code">02 / STATEMENT</p>
 
-          <h2 className="thai-display mt-8 max-w-5xl text-mega font-bold text-ink">
+          <h2 className="thai-display mt-6 max-w-4xl text-mega font-bold text-ink">
             {aboutIntro.title.map((line, index) => (
               <span key={line} className="block overflow-hidden py-[0.04em]">
                 <motion.span
                   className={cn('block', index === 1 && 'text-brand-600')}
-                  initial={reduced ? false : { y: '106%' }}
+                  initial={reveal ? { y: '106%' } : false}
                   whileInView={{ y: 0 }}
                   viewport={{ once: true, amount: 0.4 }}
                   transition={{ duration: 1, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}

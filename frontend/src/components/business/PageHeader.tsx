@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Container } from '@/components/shared/Layout';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useEntranceReveal } from '@/hooks/useEntranceReveal';
 import { cn } from '@/lib/cn';
 
 interface PageHeaderProps {
@@ -24,6 +25,7 @@ interface PageHeaderProps {
  */
 export function PageHeader({ eyebrow, title, lead, children, tone = 'light' }: PageHeaderProps) {
   const reduced = useReducedMotion();
+  const reveal = useEntranceReveal();
   const dark = tone === 'dark';
 
   return (
@@ -74,7 +76,7 @@ export function PageHeader({ eyebrow, title, lead, children, tone = 'light' }: P
           <span className="block overflow-hidden py-[0.04em]">
             <motion.span
               className="block"
-              initial={reduced ? false : { y: '106%' }}
+              initial={reveal ? { y: '106%' } : false}
               animate={{ y: 0 }}
               transition={{ duration: 1, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
             >

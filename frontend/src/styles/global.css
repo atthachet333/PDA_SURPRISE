@@ -138,6 +138,24 @@
     padding-inline: theme('spacing.gutter');
   }
 
+  /*
+   * On large displays a hard 1280px cap left the hero rig at ~590px with wide
+   * empty margins, so the software read as small on exactly the screens with
+   * the most room for it. Step the container up instead of stretching to full
+   * width, which would break the measure of body copy.
+   */
+  @media (min-width: 1536px) {
+    .container-page {
+      max-width: 1440px;
+    }
+  }
+
+  @media (min-width: 1800px) {
+    .container-page {
+      max-width: 1560px;
+    }
+  }
+
   .eyebrow {
     @apply text-2xs font-semibold uppercase tracking-[0.18em] text-brand-600;
   }
@@ -262,8 +280,8 @@
   /* --- system universe: technical mesh on near-black green ------------- */
   .sect--mesh {
     background:
-      radial-gradient(75% 60% at 50% 42%, rgba(29, 170, 97, 0.2) 0%, transparent 64%),
-      linear-gradient(180deg, #04261b 0%, #063b2a 52%, #04261b 100%);
+      radial-gradient(70% 58% at 62% 45%, rgba(53, 201, 111, 0.26) 0%, transparent 62%),
+      linear-gradient(165deg, #06412e 0%, #063b2a 46%, #052f22 100%);
   }
 
   .mesh-lines {
@@ -309,8 +327,8 @@
   /* --- work: near-black green with a glow ------------------------------ */
   .sect--deep {
     background:
-      radial-gradient(90% 70% at 20% 0%, rgba(29, 170, 97, 0.16) 0%, transparent 60%),
-      linear-gradient(180deg, #0a0f0c 0%, #04261b 58%, #0a0f0c 100%);
+      radial-gradient(85% 65% at 22% 4%, rgba(53, 201, 111, 0.18) 0%, transparent 58%),
+      linear-gradient(170deg, #07281d 0%, #04261b 55%, #06231a 100%);
   }
 
   /* --- process: architectural line system ------------------------------ */

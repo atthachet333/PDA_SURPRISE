@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { Container } from '@/components/shared/Layout';
 import { Icon } from '@/components/shared/Icon';
 import { ArrowIcon } from '@/components/shared/Button';
-import { PREVIEWS, type PreviewKind } from './UIPreview';
+import { ProductPanel } from './ProductPanel';
 import { primaryServices, services, type Service } from '@/data/services';
+import { visualForService } from '@/data/visuals';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
@@ -24,16 +25,6 @@ import { cn } from '@/lib/cn';
  * body opens underneath the active one. That is a different composition rather
  * than a squashed version of the desktop layout.
  */
-
-/** Maps a service's `preview` onto the shared UIPreview family. */
-const PREVIEW_FOR: Record<string, PreviewKind> = {
-  dashboard: 'chart',
-  table: 'table',
-  flow: 'flow',
-  mobile: 'cards',
-  chart: 'chart',
-  nodes: 'flow'
-};
 
 interface ServiceExplorerProps {
   /** Which services to show. Defaults to the seven primary ones. */
@@ -72,23 +63,27 @@ export function ServiceExplorer({
 
   if (!active) return null;
 
-  const Preview = PREVIEWS[PREVIEW_FOR[active.preview] ?? 'chart'];
+  const visual = visualForService(active.id);
 
   return (
     <section id="services" className="sect sect--grid relative overflow-hidden py-section">
       <div className="sect-layer grid-lines" aria-hidden="true" />
 
       <Container className="relative">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>
-            <h2 className="thai-display mt-4 text-mega font-bold text-ink">{title}</h2>
+            <h2 className="thai-display mt-3 text-statement font-bold text-ink">{title}</h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-steel-500">{lead}</p>
         </div>
 
-        {/* ------------------------------------------------------ desktop -- */}
-        <div className="mt-14 hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)_minmax(0,0.85fr)] lg:gap-10">
+        {/*
+          Desktop columns: nav ~25% / copy ~30% / visual ~45%. The visual carries
+          the section — the earlier split gave copy the widest track and left a
+          large empty region under an oversized headline.
+        */}
+        <div className="mt-10 hidden lg:grid lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.68fr)_minmax(0,1fr)] lg:gap-8 xl:gap-10">
           {/* index */}
           <ul className="border-t border-steel-200">
             {items.map((service, index) => {
@@ -165,22 +160,26 @@ export function ServiceExplorer({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-card border border-brand-200 bg-brand-50 text-brand-600">
-                  <Icon name={active.icon} className="h-5 w-5" />
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-card border border-brand-200 bg-brand-50 text-brand-600">
+                    <Icon name={active.icon} className="h-4 w-4" />
+                  </span>
+                  <p className="font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-steel-400">
+                    {active.nameEn}
+                  </p>
+                </div>
 
-                <h3 className="thai-display mt-6 text-statement font-bold text-ink">
+                <h3 className="thai-display mt-4 text-xl font-bold text-ink xl:text-2xl">
                   {active.title}
                 </h3>
-                <p className="mt-2 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-steel-400">
-                  {active.nameEn}
+
+                <p className="mt-3 text-[0.9375rem] leading-relaxed text-steel-600">
+                  {active.summary}
                 </p>
 
-                <p className="mt-5 text-lead text-steel-600">{active.summary}</p>
-                <p className="mt-4 text-sm leading-relaxed text-steel-500">{active.detail}</p>
-
-                <ul className="mt-7 grid gap-2 sm:grid-cols-2">
-                  {active.deliverables.map((item, index) => (
+                {/* Three capabilities only; the full list lives on /services. */}
+                <ul className="mt-5 space-y-2">
+                  {active.deliverables.slice(0, 3).map((item, index) => (
                     <motion.li
                       key={item}
                       initial={reduced ? false : { opacity: 0, x: -8 }}
@@ -194,11 +193,11 @@ export function ServiceExplorer({
                   ))}
                 </ul>
 
-                <div className="mt-7 flex flex-wrap items-center gap-2">
+                <div className="mt-5 flex flex-wrap items-center gap-1.5">
                   {active.tech.map((item) => (
                     <span
                       key={item}
-                      className="rounded-pill border border-steel-200 px-3 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.12em] text-steel-500"
+                      className="rounded-pill border border-steel-200 px-2.5 py-1 font-mono text-[0.5rem] uppercase tracking-[0.1em] text-steel-500"
                     >
                       {item}
                     </span>
@@ -207,7 +206,7 @@ export function ServiceExplorer({
 
                 <Link
                   to="/contact"
-                  className="group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-600"
+                  className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-600"
                 >
                   ปรึกษาเรื่องบริการนี้
                   <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
@@ -216,26 +215,21 @@ export function ServiceExplorer({
             </div>
           </div>
 
-          {/* right — product visual */}
+          {/* right — the product itself */}
           <div className="relative">
             <div className="sticky top-28">
               <motion.div
-                  key={active.id}
-                  initial={reduced ? false : { opacity: 0, scale: 0.97, y: 12 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="plane-light overflow-hidden rounded-panel shadow-lift"
-                >
-                  <div className="flex items-center justify-between border-b border-steel-100 bg-steel-50/70 px-4 py-2.5">
-                    <span className="font-mono text-[0.5rem] uppercase tracking-[0.18em] text-steel-400">
-                      {active.nameEn}
-                    </span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-                  </div>
-                  <div className="h-52 p-5">
-                    <Preview className="h-full" />
-                  </div>
-                </motion.div>
+                key={active.id}
+                initial={reduced ? false : { opacity: 0, scale: 0.98, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className={cn(
+                  'overflow-hidden rounded-card shadow-lift-lg ring-1 ring-black/5',
+                  visual.mock === 'hrLine' ? 'mx-auto aspect-[10/15] max-w-[16rem]' : 'aspect-[16/11]'
+                )}
+              >
+                <ProductPanel slot={visual} className="h-full" showMockNotice />
+              </motion.div>
 
               <div className="mt-4 flex items-center justify-between font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-steel-400">
                 <span>
@@ -251,7 +245,7 @@ export function ServiceExplorer({
         <div className="mt-10 border-t border-steel-200 lg:hidden">
           {items.map((service, index) => {
             const isOpen = index === activeIndex;
-            const MobilePreview = PREVIEWS[PREVIEW_FOR[service.preview] ?? 'chart'];
+            const mobileVisual = visualForService(service.id);
             return (
               <div key={service.id} className="border-b border-steel-200">
                 <button
@@ -300,10 +294,15 @@ export function ServiceExplorer({
                           {service.summary}
                         </p>
 
-                        <div className="plane-light mt-5 overflow-hidden rounded-card">
-                          <div className="h-36 p-4">
-                            <MobilePreview className="h-full" />
-                          </div>
+                        <div
+                          className={cn(
+                            'mt-5 overflow-hidden rounded-card shadow-soft ring-1 ring-black/5',
+                            mobileVisual.mock === 'hrLine'
+                              ? 'mx-auto aspect-[10/15] max-w-[13rem]'
+                              : 'aspect-[16/11]'
+                          )}
+                        >
+                          <ProductPanel slot={mobileVisual} className="h-full" />
                         </div>
 
                         <ul className="mt-5 space-y-2">

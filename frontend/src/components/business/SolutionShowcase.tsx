@@ -1,8 +1,9 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Container } from '@/components/shared/Layout';
-import { PREVIEWS, type PreviewKind } from './UIPreview';
+import { ProductPanel } from './ProductPanel';
 import { solutions, type Solution } from '@/data/solutions';
+import { visualForSolution } from '@/data/visuals';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
@@ -32,15 +33,6 @@ const FEATURED_IDS = [
 const FEATURED: Solution[] = FEATURED_IDS.map(
   (id) => solutions.find((solution) => solution.id === id)
 ).filter((solution): solution is Solution => Boolean(solution));
-
-const PREVIEW_FOR: Record<Solution['preview'], PreviewKind> = {
-  table: 'table',
-  kanban: 'kanban',
-  chart: 'chart',
-  calendar: 'calendar',
-  flow: 'flow',
-  cards: 'cards'
-};
 
 export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } = {}) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -80,7 +72,7 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
   const active = FEATURED[activeIndex] ?? FEATURED[0];
   if (!active) return null;
 
-  const Preview = PREVIEWS[PREVIEW_FOR[active.preview]];
+  const visual = visualForSolution(active.id);
 
   return (
     <section
@@ -91,12 +83,12 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
       <div className="sect-layer field-lines" aria-hidden="true" />
 
       <Container className="relative">
-        <div className="max-w-3xl">
+        <div className="max-w-2xl">
           <p className="section-code">{code}</p>
-          <h2 className="thai-display mt-4 text-mega font-bold text-ink">
+          <h2 className="thai-display mt-3 text-statement font-bold text-ink">
             ไม่ใช่แค่เขียนโปรแกรม
             <br />
-            <span className="text-brand-600">แต่เราออกแบบระบบให้ธุรกิจทำงานง่ายขึ้น</span>
+            <span className="text-brand-600">แต่ออกแบบระบบให้ธุรกิจทำงานง่ายขึ้น</span>
           </h2>
         </div>
 
@@ -108,7 +100,8 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
           />
         </div>
 
-        <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+        {/* Visual takes the larger track: product first, copy in support. */}
+        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
           {/* ------------------------------------------------- the stories -- */}
           <div>
             {FEATURED.map((solution, index) => {
@@ -119,7 +112,7 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
                   ref={(node) => {
                     rowRefs.current[index] = node;
                   }}
-                  className="border-b border-steel-300/50 py-10 last:border-b-0 lg:py-16"
+                  className="border-b border-steel-300/50 py-8 last:border-b-0 lg:py-12"
                 >
                   <div className="flex items-baseline gap-4">
                     <span
@@ -137,7 +130,7 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
 
                   <h3
                     className={cn(
-                      'thai-display mt-4 text-statement font-bold transition-colors duration-slow',
+                      'thai-display mt-3 text-xl font-bold transition-colors duration-slow sm:text-2xl',
                       isActive ? 'text-ink' : 'text-steel-400'
                     )}
                   >
@@ -146,7 +139,7 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
 
                   <p
                     className={cn(
-                      'mt-4 max-w-lg text-lead transition-colors duration-slow',
+                      'mt-3 max-w-md text-[0.9375rem] leading-relaxed transition-colors duration-slow',
                       isActive ? 'text-steel-600' : 'text-steel-400'
                     )}
                   >
@@ -154,9 +147,9 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
                   </p>
 
                   {/* Mobile visual, inline with its own story */}
-                  <div className="plane-light mt-6 overflow-hidden rounded-card lg:hidden">
-                    <div className="h-36 p-4">
-                      <InlinePreview solution={solution} />
+                  <div className="mt-5 overflow-hidden rounded-card shadow-soft ring-1 ring-black/5 lg:hidden">
+                    <div className="aspect-[16/11]">
+                      <ProductPanel slot={visualForSolution(solution.id)} className="h-full" />
                     </div>
                   </div>
 
@@ -176,25 +169,7 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
                     ))}
                   </ul>
 
-                  <ul className="mt-5 space-y-1.5">
-                    {solution.highlights.map((highlight) => (
-                      <li
-                        key={highlight}
-                        className={cn(
-                          'flex items-start gap-2.5 text-sm transition-colors duration-slow',
-                          isActive ? 'text-steel-600' : 'text-steel-400'
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            'mt-2 h-1 w-1 shrink-0 rounded-full transition-colors duration-slow',
-                            isActive ? 'bg-brand-500' : 'bg-steel-300'
-                          )}
-                        />
-                        {highlight}
-                      </li>
-                    ))}
-                  </ul>
+
                 </div>
               );
             })}
@@ -222,17 +197,15 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
                   <span className="h-2 w-2 rounded-full bg-brand-400" />
                 </div>
 
-                <div className="relative h-[19rem] p-7">
-                  <motion.div
-                    key={active.id}
-                    initial={reduced ? false : { opacity: 0, y: 14, filter: 'blur(6px)' }}
-                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="h-full"
-                  >
-                    <Preview className="h-full" />
-                  </motion.div>
-                </div>
+                <motion.div
+                  key={active.id}
+                  initial={reduced ? false : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  className="aspect-[16/11]"
+                >
+                  <ProductPanel slot={visual} className="h-full" frame="none" showMockNotice />
+                </motion.div>
 
                 <div className="flex items-center justify-between border-t border-steel-100 px-5 py-3">
                   <span className="font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-steel-400">
@@ -258,9 +231,4 @@ export function SolutionShowcase({ code = '04 / SOLUTIONS' }: { code?: string } 
       </Container>
     </section>
   );
-}
-
-function InlinePreview({ solution }: { solution: Solution }) {
-  const Preview = PREVIEWS[PREVIEW_FOR[solution.preview]];
-  return <Preview className="h-full" />;
 }

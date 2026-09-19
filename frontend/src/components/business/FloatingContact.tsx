@@ -140,8 +140,27 @@ export function FloatingContact() {
           'h-13 w-13 rounded-full sm:h-14 sm:w-auto sm:rounded-pill sm:px-5'
         )}
       >
+        {/* Mobile is icon-only, so it needs a real icon — a bare status dot is
+            not a recognisable affordance at 52px. From sm up the label returns
+            and the dot goes back to signalling "we are open". */}
+        <svg
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+          className="h-5 w-5 shrink-0 text-brand-400 sm:hidden"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M17 12.5a2 2 0 0 1-2 2H7l-4 3v-12a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z" />
+          <path d="M7 7.5h6M7 10.5h4" />
+        </svg>
         <span
-          className={cn('h-2 w-2 shrink-0 rounded-full bg-brand-400 shadow-brand-glow', !reduced && 'animate-status-blink')}
+          className={cn(
+            'hidden h-2 w-2 shrink-0 rounded-full bg-brand-400 shadow-brand-glow sm:block',
+            !reduced && 'animate-status-blink'
+          )}
         />
         <span className="thai-display hidden text-sm font-semibold sm:inline">ติดต่อเรา</span>
       </button>

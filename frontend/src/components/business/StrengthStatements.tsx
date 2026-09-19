@@ -29,14 +29,14 @@ export function StrengthStatements({ code = '07 / WHY US' }: { code?: string } =
       <Container className="relative">
         <div className="max-w-3xl">
           <p className="section-code">{code}</p>
-          <h2 className="thai-display mt-4 text-mega font-bold text-ink">
+          <h2 className="thai-display mt-3 text-statement font-bold text-ink">
             ทำไมต้อง
             <br />
             <span className="text-brand-600">PDA BLISS</span>
           </h2>
         </div>
 
-        <div className="mt-16 space-y-16 sm:mt-20 sm:space-y-24">
+        <div className="mt-10 space-y-12 sm:mt-12 sm:space-y-14">
           {strengths.map((strength, index) => {
             const flipped = index % 2 === 1;
             const keyword = KEYWORDS[index] ?? strength.title;
@@ -58,7 +58,7 @@ export function StrengthStatements({ code = '07 / WHY US' }: { code?: string } =
                       </span>
                     ) : null}
                     <motion.h3
-                      className="thai-display text-giant font-bold text-ink"
+                      className="thai-display text-mega font-bold text-ink"
                       initial={reduced ? false : { opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, amount: 0.5 }}
@@ -100,7 +100,7 @@ export function StrengthStatements({ code = '07 / WHY US' }: { code?: string } =
                       {strength.title}
                     </h4>
                   </div>
-                  <p className="mt-4 text-lead text-steel-600">{strength.body}</p>
+                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-steel-600">{strength.body}</p>
                 </motion.div>
               </div>
             );

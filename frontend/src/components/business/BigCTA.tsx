@@ -3,6 +3,7 @@ import { Container } from '@/components/shared/Layout';
 import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { company, cta } from '@/data/company';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useEntranceReveal } from '@/hooks/useEntranceReveal';
 import { usePageVisible } from '@/hooks/usePageVisible';
 import { cn } from '@/lib/cn';
 
@@ -18,6 +19,7 @@ import { cn } from '@/lib/cn';
  */
 export function BigCTA({ code = '10 / START' }: { code?: string } = {}) {
   const reduced = useReducedMotion();
+  const reveal = useEntranceReveal();
   const visible = usePageVisible();
   const animate = !reduced && visible;
 
@@ -94,7 +96,7 @@ export function BigCTA({ code = '10 / START' }: { code?: string } = {}) {
               <span key={line} className="block overflow-hidden py-[0.06em]">
                 <motion.span
                   className={cn('block', index === 1 && 'text-brand-300')}
-                  initial={reduced ? false : { y: '108%' }}
+                  initial={reveal ? { y: '108%' } : false}
                   whileInView={{ y: 0 }}
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 1, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}

@@ -35,7 +35,7 @@ export function InsightStrip({ items, variant = 'strip', code = '10 / INSIGHTS' 
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>
-            <h2 className="thai-display mt-4 text-mega font-bold text-ink">
+            <h2 className="thai-display mt-3 text-statement font-bold text-ink">
               บทความและมุมมอง
               <br />
               <span className="text-brand-600">จากงานที่ทำจริง</span>
@@ -82,7 +82,7 @@ function InsightCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: (index % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative flex min-h-[19rem] flex-col justify-between bg-white p-7 transition-colors duration-slow hover:bg-steel-50 sm:p-8"
+      className="group relative flex min-h-[15.5rem] flex-col justify-between bg-white p-6 transition-colors duration-slow hover:bg-steel-50 sm:p-8"
     >
       {/* Top rule that draws in on hover */}
       <span
@@ -100,7 +100,7 @@ function InsightCard({
           </span>
         </div>
 
-        <h3 className="thai-display mt-7 text-xl font-bold leading-snug text-ink sm:text-2xl">
+        <h3 className="thai-display mt-5 text-lg font-bold leading-snug text-ink sm:text-xl">
           {insight.title}
         </h3>
 

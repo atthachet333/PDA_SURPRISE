@@ -3,9 +3,10 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowIcon } from '@/components/shared/Button';
 import { Container } from '@/components/shared/Layout';
 import { BigCTA } from '@/components/business/BigCTA';
-import { ProjectVisual } from '@/components/business/ProjectVisual';
+import { ProductPanel } from '@/components/business/ProductPanel';
 import { MiniChart, MiniFlow, MiniKanban, MiniTable } from '@/components/business/UIPreview';
 import { getPortfolioItem, portfolio, type PortfolioItem } from '@/data/portfolio';
+import { visualForPortfolio } from '@/data/visuals';
 import {
   caseStudies,
   caseStudiesVerified,
@@ -30,7 +31,7 @@ import { cn } from '@/lib/cn';
  *
  * Numbered sections, oversized numerals, full-bleed visual moments, sticky
  * metadata. Screenshots appear only when a reviewed, public-safe one exists;
- * otherwise the branded ProjectVisual stands in (see docs/SCREENSHOT_PRIVACY.md).
+ * otherwise the system mock stands in (see docs/SCREENSHOT_PRIVACY.md).
  */
 
 const SCREEN_PREVIEW = {
@@ -57,6 +58,7 @@ function RealSystem({ item }: { item: PortfolioItem }) {
   const index = portfolio.findIndex((entry) => entry.id === item.id);
   const next = portfolio[(index + 1) % portfolio.length];
   const reviewed = item.publicSafe ? item.screenshots.filter((shot) => shot.reviewed) : [];
+  const visual = visualForPortfolio(item.id);
 
   return (
     <>
@@ -96,9 +98,18 @@ function RealSystem({ item }: { item: PortfolioItem }) {
         </Container>
       </section>
 
-      {/* Full-bleed visual moment */}
-      <div className="relative aspect-[21/9] w-full overflow-hidden sm:aspect-[21/8]">
-        <ProjectVisual item={item} />
+      {/*
+        Full-bleed product moment. This is the page's main piece of evidence, so
+        it shows the interface itself rather than a branded abstract plate.
+      */}
+      <div className="relative bg-[#052f22] py-8 sm:py-12">
+        <Container>
+          <div className="mx-auto max-w-5xl overflow-hidden rounded-panel shadow-lift-lg ring-1 ring-brand-400/20">
+            <div className="aspect-[16/9]">
+              <ProductPanel slot={visual} className="h-full" frame="none" showMockNotice />
+            </div>
+          </div>
+        </Container>
       </div>
 
       <section className="sect sect--bright relative py-section">
@@ -215,8 +226,8 @@ function RealSystem({ item }: { item: PortfolioItem }) {
                   </div>
                 ) : (
                   <div className="mt-8">
-                    <div className="aspect-[16/9] overflow-hidden rounded-panel border border-steel-200">
-                      <ProjectVisual item={item} density="compact" />
+                    <div className="aspect-[16/9] overflow-hidden rounded-panel border border-steel-200 shadow-soft">
+                      <ProductPanel slot={visual} className="h-full" frame="none" showMockNotice />
                     </div>
                     <p className="mt-5 max-w-xl text-sm leading-relaxed text-steel-500">
                       ภาพหน้าจอจริงของระบบนี้ยังไม่เผยแพร่ เพราะมีข้อมูลของลูกค้าและพนักงานอยู่ในหน้าจอ

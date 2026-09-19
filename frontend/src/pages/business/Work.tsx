@@ -1,5 +1,6 @@
 import { PageHeader } from '@/components/business/PageHeader';
 import { WorkShowcase } from '@/components/business/WorkShowcase';
+import { SystemShowreel } from '@/components/business/SystemShowreel';
 import { ApproachExamples } from '@/components/business/ApproachExamples';
 import { BigCTA } from '@/components/business/BigCTA';
 import { portfolio } from '@/data/portfolio';
@@ -19,9 +20,10 @@ export default function Work() {
         lead={`ระบบที่พัฒนาและส่งมอบแล้ว ${portfolio.length} ระบบ ภาพหน้าจอบางส่วนยังไม่เผยแพร่เพราะมีข้อมูลของลูกค้าและพนักงานอยู่`}
       />
 
-      <WorkShowcase code="02 / SYSTEMS" />
+      <WorkShowcase code="02 / PROJECTS" />
+      <SystemShowreel code="03 / INTERFACES" />
       <ApproachExamples />
-      <BigCTA code="04 / START" />
+      <BigCTA code="05 / START" />
     </>
   );
 }

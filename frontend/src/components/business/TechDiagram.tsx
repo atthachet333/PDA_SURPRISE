@@ -39,12 +39,12 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
           <div>
             <p className="section-code">{code}</p>
-            <h2 className="thai-display mt-4 text-mega font-bold text-ink">
+            <h2 className="thai-display mt-3 text-statement font-bold text-ink">
               เลือกเทคโนโลยี
               <br />
               <span className="text-brand-600">เพื่อปีที่สอง</span>
             </h2>
-            <p className="mt-6 max-w-sm text-lead text-steel-600">
+            <p className="mt-4 max-w-sm text-[0.9375rem] leading-relaxed text-steel-600">
               เครื่องมือที่มีชุมชนแข็งแรง รองรับระยะยาว และหาทีมดูแลต่อได้
               เพื่อให้ระบบยังพัฒนาต่อได้หลังส่งมอบ
             </p>

@@ -1,0 +1,721 @@
+import { cn } from '@/lib/cn';
+
+/**
+ * SYSTEM MOCKS — the product evidence layer.
+ *
+ * A set of realistic interface mockups for the systems PDA BLISS builds, drawn
+ * with real DOM so they stay crisp at any DPI and cost almost nothing to render.
+ *
+ * WHY THESE EXIST
+ *   No portfolio screenshot has cleared the privacy review yet (payroll and
+ *   document systems cannot be shown without masking employee and client data —
+ *   see docs/SCREENSHOT_PRIVACY.md). A site for a software company still has to
+ *   show software, so these stand in until reviewed captures arrive.
+ *
+ * HONESTY RULES — these are NOT client screenshots and must never read as one.
+ *   - Every figure is obviously generic sample data (EMP-001, DOC-2401).
+ *   - No client name, no real monetary total, no measured outcome.
+ *   - Anywhere a mock is shown at size, the caller labels it as a mockup.
+ *   - `data/visuals.ts` maps each slot to a mock today and to a real screenshot
+ *     the moment one exists, with no component changes needed.
+ */
+
+import { isPhoneMock, type MockKind } from '@/lib/systemMocks';
+
+export type { MockKind };
+
+/* ------------------------------------------------------------------ frames -- */
+
+/** Desktop app chrome. `flush` drops the outer radius for full-bleed use. */
+export function BrowserFrame({
+  children,
+  label,
+  className,
+  flush = false
+}: {
+  children: React.ReactNode;
+  label?: string;
+  className?: string;
+  flush?: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        'flex h-full flex-col overflow-hidden border border-steel-200 bg-white',
+        flush ? 'rounded-none' : 'rounded-card',
+        className
+      )}
+    >
+      <div className="flex shrink-0 items-center gap-2 border-b border-steel-100 bg-steel-50/80 px-3 py-2">
+        <span className="flex gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-steel-300" />
+          <span className="h-2 w-2 rounded-full bg-steel-300" />
+          <span className="h-2 w-2 rounded-full bg-steel-300" />
+        </span>
+        {label ? (
+          <span className="ml-1 truncate rounded-[4px] bg-white px-2 py-0.5 font-mono text-[0.5625rem] text-steel-400 ring-1 ring-steel-200">
+            {label}
+          </span>
+        ) : null}
+        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-brand-400" />
+      </div>
+      <div className="min-h-0 flex-1">{children}</div>
+    </div>
+  );
+}
+
+/** Phone chrome. */
+export function PhoneFrame({
+  children,
+  className
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        'flex h-full flex-col overflow-hidden rounded-[1.25rem] border-[3px] border-ink bg-white shadow-lift',
+        className
+      )}
+    >
+      <div className="relative flex shrink-0 items-center justify-center bg-ink pb-1.5 pt-2">
+        <span className="h-1 w-8 rounded-pill bg-white/25" />
+      </div>
+      <div className="min-h-0 flex-1">{children}</div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------- shared atoms -- */
+
+function Sidebar({ active }: { active: number }) {
+  return (
+    <div className="hidden w-[4.5rem] shrink-0 flex-col gap-1 border-r border-steel-100 bg-steel-50/60 p-2 sm:flex lg:w-24">
+      <span className="mb-1 flex items-center gap-1.5 px-1">
+        <span className="h-3.5 w-3.5 rounded-[4px] bg-brand-500" />
+        <span className="hidden h-1.5 w-8 rounded-pill bg-steel-300 lg:block" />
+      </span>
+      {[0, 1, 2, 3, 4, 5].map((row) => (
+        <span
+          key={row}
+          className={cn(
+            'flex items-center gap-1.5 rounded-[5px] px-1 py-1.5',
+            row === active ? 'bg-brand-50' : ''
+          )}
+        >
+          <span
+            className={cn(
+              'h-2.5 w-2.5 shrink-0 rounded-[3px]',
+              row === active ? 'bg-brand-500' : 'bg-steel-300'
+            )}
+          />
+          <span
+            className={cn(
+              'hidden h-1 rounded-pill lg:block',
+              row === active ? 'w-9 bg-brand-400' : 'w-7 bg-steel-200'
+            )}
+          />
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function Kpi({ label, value, delta }: { label: string; value: string; delta?: string }) {
+  return (
+    <div className="min-w-0 rounded-[6px] border border-steel-100 bg-white px-2.5 py-2">
+      <p className="truncate font-mono text-[0.5rem] uppercase tracking-[0.12em] text-steel-400">
+        {label}
+      </p>
+      <p className="mt-1 flex items-baseline gap-1.5">
+        <span className="text-sm font-semibold tabular-nums text-ink">{value}</span>
+        {delta ? (
+          <span className="font-mono text-[0.5rem] text-brand-600">{delta}</span>
+        ) : null}
+      </p>
+    </div>
+  );
+}
+
+function Bars({ data, highlight }: { data: number[]; highlight?: number }) {
+  return (
+    <div className="flex h-full items-end gap-[3px]">
+      {data.map((height, index) => (
+        <span
+          key={index}
+          className={cn(
+            'flex-1 rounded-t-[2px]',
+            index === (highlight ?? data.length - 1) ? 'bg-brand-500' : 'bg-steel-200'
+          )}
+          style={{ height: `${height}%` }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function Pill({ tone, children }: { tone: 'ok' | 'warn' | 'idle'; children: React.ReactNode }) {
+  return (
+    <span
+      className={cn(
+        'shrink-0 rounded-pill px-1.5 py-px font-mono text-[0.4375rem] uppercase tracking-[0.08em]',
+        tone === 'ok' && 'bg-brand-50 text-brand-700',
+        tone === 'warn' && 'bg-amber-50 text-amber-700',
+        tone === 'idle' && 'bg-steel-100 text-steel-500'
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+/* -------------------------------------------------------------- the screens -- */
+
+/** ERP: production and stock overview. */
+export function ErpScreen() {
+  return (
+    <div className="flex h-full">
+      <Sidebar active={1} />
+      <div className="flex min-w-0 flex-1 flex-col p-3">
+        <div className="flex items-center justify-between gap-2">
+          <p className="truncate text-[0.6875rem] font-semibold text-ink">ภาพรวมการผลิต</p>
+          <span className="hidden shrink-0 rounded-[4px] bg-brand-500 px-2 py-1 font-mono text-[0.5rem] text-white sm:block">
+            + ใบสั่งผลิต
+          </span>
+        </div>
+
+        <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+          <Kpi label="ใบสั่งผลิต" value="1,284" delta="+12%" />
+          <Kpi label="รอผลิต" value="7" />
+          <Kpi label="คลัง" value="99.4%" />
+          <Kpi label="ของเสีย" value="0.6%" />
+        </div>
+
+        <div className="mt-2.5 min-h-0 flex-1 rounded-[6px] border border-steel-100 p-2.5">
+          <div className="flex items-baseline justify-between">
+            <span className="font-mono text-[0.5rem] uppercase tracking-[0.12em] text-steel-400">
+              กำลังการผลิต / สัปดาห์
+            </span>
+            <span className="font-mono text-[0.5rem] text-steel-300">SAMPLE</span>
+          </div>
+          <div className="mt-2 h-[calc(100%-1.25rem)] min-h-[2rem]">
+            <Bars data={[44, 62, 38, 74, 52, 86, 58, 92, 68, 78, 60, 88]} />
+          </div>
+        </div>
+
+        <div className="mt-2.5 space-y-1">
+          {[
+            { id: 'MO-4821', tone: 'ok' as const, state: 'running' },
+            { id: 'MO-4822', tone: 'warn' as const, state: 'hold' },
+            { id: 'MO-4823', tone: 'idle' as const, state: 'queued' }
+          ].map((row) => (
+            <div key={row.id} className="flex items-center gap-2">
+              <span className="font-mono text-[0.5rem] text-steel-500">{row.id}</span>
+              <span className="h-px flex-1 bg-steel-100" />
+              <span className="hidden h-1 w-10 rounded-pill bg-steel-200 sm:block" />
+              <Pill tone={row.tone}>{row.state}</Pill>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Payroll: a pay run being reviewed. Amounts are obviously sample values. */
+export function PayrollScreen() {
+  const rows = [
+    { id: 'EMP-001', amount: '32,500', tone: 'ok' as const },
+    { id: 'EMP-002', amount: '28,900', tone: 'ok' as const },
+    { id: 'EMP-003', amount: '41,200', tone: 'warn' as const },
+    { id: 'EMP-004', amount: '26,750', tone: 'ok' as const }
+  ];
+
+  return (
+    <div className="flex h-full">
+      <Sidebar active={2} />
+      <div className="flex min-w-0 flex-1 flex-col p-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <p className="truncate text-[0.6875rem] font-semibold text-ink">รอบเงินเดือน</p>
+            <p className="font-mono text-[0.5rem] text-steel-400">PERIOD 2026-09 · SAMPLE</p>
+          </div>
+          <span className="shrink-0 rounded-[4px] border border-brand-300 bg-brand-50 px-2 py-1 font-mono text-[0.5rem] text-brand-700">
+            ตรวจสอบ
+          </span>
+        </div>
+
+        <div className="mt-2.5 grid grid-cols-3 gap-1.5">
+          <Kpi label="พนักงาน" value="128" />
+          <Kpi label="ผ่านการตรวจ" value="124" />
+          <Kpi label="ต้องแก้ไข" value="4" />
+        </div>
+
+        <div className="mt-2.5 min-h-0 flex-1 overflow-hidden rounded-[6px] border border-steel-100">
+          <div className="flex items-center gap-2 border-b border-steel-100 bg-steel-50/70 px-2.5 py-1.5">
+            <span className="w-14 font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+              รหัส
+            </span>
+            <span className="flex-1 font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+              เวลาทำงาน
+            </span>
+            <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+              สุทธิ
+            </span>
+          </div>
+          {rows.map((row) => (
+            <div
+              key={row.id}
+              className="flex items-center gap-2 border-b border-steel-50 px-2.5 py-[0.3125rem] last:border-b-0"
+            >
+              <span className="w-14 shrink-0 font-mono text-[0.5rem] text-steel-500">{row.id}</span>
+              <span className="flex flex-1 items-center gap-1">
+                <span className="h-1 w-full rounded-pill bg-steel-200" />
+              </span>
+              <span className="shrink-0 font-mono text-[0.5rem] tabular-nums text-ink">
+                {row.amount}
+              </span>
+              <Pill tone={row.tone}>{row.tone === 'ok' ? 'ok' : 'check'}</Pill>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-2 flex items-center justify-between rounded-[6px] bg-brand-50 px-2.5 py-1.5">
+          <span className="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-brand-700">
+            ยอดรวมรอบนี้
+          </span>
+          <span className="font-mono text-[0.625rem] font-semibold tabular-nums text-brand-800">
+            3,842,150
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Document management: folders, files, versioning. */
+export function DocumentsScreen() {
+  return (
+    <div className="flex h-full">
+      <div className="hidden w-24 shrink-0 flex-col gap-1 border-r border-steel-100 bg-steel-50/60 p-2 sm:flex">
+        <span className="mb-1 h-1.5 w-12 rounded-pill bg-steel-300" />
+        {['สัญญา', 'ใบกำกับ', 'HR', 'บัญชี', 'อื่น ๆ'].map((folder, index) => (
+          <span
+            key={folder}
+            className={cn(
+              'flex items-center gap-1.5 rounded-[5px] px-1 py-1',
+              index === 0 && 'bg-brand-50'
+            )}
+          >
+            <span
+              className={cn(
+                'h-2.5 w-3 shrink-0 rounded-[2px]',
+                index === 0 ? 'bg-brand-400' : 'bg-steel-300'
+              )}
+            />
+            <span className="truncate text-[0.5rem] text-steel-500">{folder}</span>
+          </span>
+        ))}
+      </div>
+
+      <div className="flex min-w-0 flex-1 flex-col p-3">
+        <div className="flex items-center gap-2">
+          <span className="flex min-w-0 flex-1 items-center gap-1.5 rounded-[5px] border border-steel-200 px-2 py-1">
+            <span className="h-2 w-2 shrink-0 rounded-full border border-steel-300" />
+            <span className="h-1 w-16 rounded-pill bg-steel-200" />
+          </span>
+          <span className="shrink-0 rounded-[4px] bg-brand-500 px-2 py-1 font-mono text-[0.5rem] text-white">
+            อัปโหลด
+          </span>
+        </div>
+
+        <div className="mt-2.5 grid min-h-0 flex-1 grid-cols-3 gap-1.5 sm:grid-cols-4">
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((file) => (
+            <div
+              key={file}
+              className={cn(
+                'flex min-h-0 flex-col justify-between rounded-[5px] border p-1.5',
+                file === 1 ? 'border-brand-300 bg-brand-50' : 'border-steel-100'
+              )}
+            >
+              <span
+                className={cn(
+                  'h-3 w-2.5 rounded-[2px]',
+                  file === 1 ? 'bg-brand-400' : 'bg-steel-200'
+                )}
+              />
+              <span className="space-y-0.5">
+                <span className="block h-1 w-full rounded-pill bg-steel-200" />
+                <span className="block font-mono text-[0.4375rem] text-steel-400">
+                  DOC-240{file + 1}
+                </span>
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-2 flex items-center justify-between border-t border-steel-100 pt-2">
+          <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+            v.4 · สิทธิ์: ฝ่ายบัญชี
+          </span>
+          <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-brand-600">
+            synced
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** HR LINE bot: clock-in and leave, in a LINE-style thread. */
+export function HrLineScreen() {
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex shrink-0 items-center gap-2 bg-brand-800 px-2.5 py-2">
+        <span className="h-4 w-4 rounded-full bg-brand-400" />
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[0.5rem] font-semibold text-white">HR Assistant</span>
+          <span className="block font-mono text-[0.4375rem] text-brand-300">LINE OFFICIAL</span>
+        </span>
+      </div>
+
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-hidden bg-[#E9EEEA] p-2">
+        <div className="w-[82%] rounded-[8px] rounded-tl-[2px] bg-white px-2 py-1.5">
+          <span className="block text-[0.5rem] leading-snug text-steel-600">
+            เลือกรายการที่ต้องการ
+          </span>
+        </div>
+        <div className="ml-auto w-[62%] rounded-[8px] rounded-br-[2px] bg-brand-400 px-2 py-1.5">
+          <span className="block text-[0.5rem] leading-snug text-brand-900">ลงเวลาเข้างาน</span>
+        </div>
+        <div className="w-[88%] rounded-[8px] rounded-tl-[2px] bg-white px-2 py-1.5">
+          <span className="block text-[0.5rem] leading-snug text-steel-600">
+            บันทึกเวลาเรียบร้อย
+          </span>
+          <span className="mt-1 block font-mono text-[0.4375rem] text-brand-600">
+            08:57 · สำนักงานใหญ่
+          </span>
+        </div>
+      </div>
+
+      <div className="shrink-0 space-y-1 border-t border-steel-200 bg-white p-1.5">
+        <div className="flex gap-1">
+          <span className="flex-1 rounded-[5px] border border-brand-200 bg-brand-50 py-1 text-center text-[0.4375rem] text-brand-700">
+            ลงเวลา
+          </span>
+          <span className="flex-1 rounded-[5px] border border-steel-200 py-1 text-center text-[0.4375rem] text-steel-500">
+            ยื่นลา
+          </span>
+        </div>
+        <span className="block rounded-[5px] border border-steel-200 py-1 text-center text-[0.4375rem] text-steel-500">
+          สลิปเงินเดือน
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/** Corporate website. */
+export function WebsiteScreen() {
+  return (
+    <div className="flex h-full flex-col bg-white">
+      <div className="flex shrink-0 items-center justify-between border-b border-steel-100 px-3 py-2">
+        <span className="flex items-center gap-1.5">
+          <span className="h-3 w-3 rounded-[3px] bg-brand-500" />
+          <span className="h-1.5 w-12 rounded-pill bg-steel-300" />
+        </span>
+        <span className="hidden gap-2 sm:flex">
+          {[0, 1, 2, 3].map((nav) => (
+            <span key={nav} className="h-1 w-6 rounded-pill bg-steel-200" />
+          ))}
+        </span>
+        <span className="h-3.5 w-14 rounded-pill bg-brand-500" />
+      </div>
+
+      <div className="min-h-0 flex-1 p-3">
+        <span className="block h-2.5 w-1/2 rounded-pill bg-ink/80" />
+        <span className="mt-1.5 block h-2.5 w-2/5 rounded-pill bg-brand-500" />
+        <span className="mt-2.5 block h-1 w-4/5 rounded-pill bg-steel-200" />
+        <span className="mt-1 block h-1 w-3/5 rounded-pill bg-steel-200" />
+        <span className="mt-2.5 flex gap-1.5">
+          <span className="h-4 w-16 rounded-pill bg-brand-500" />
+          <span className="h-4 w-14 rounded-pill border border-steel-200" />
+        </span>
+        <div className="mt-3 grid grid-cols-3 gap-1.5">
+          {[0, 1, 2].map((card) => (
+            <span
+              key={card}
+              className="flex h-12 flex-col justify-between rounded-[5px] border border-steel-100 p-1.5"
+            >
+              <span className="h-2.5 w-2.5 rounded-[3px] bg-brand-100" />
+              <span className="space-y-0.5">
+                <span className="block h-1 w-full rounded-pill bg-steel-200" />
+                <span className="block h-1 w-2/3 rounded-pill bg-steel-100" />
+              </span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** NAS / storage. */
+export function NasScreen() {
+  return (
+    <div className="flex h-full">
+      <Sidebar active={4} />
+      <div className="flex min-w-0 flex-1 flex-col p-3">
+        <p className="truncate text-[0.6875rem] font-semibold text-ink">พื้นที่จัดเก็บเอกสาร</p>
+
+        <div className="mt-2.5 grid grid-cols-3 gap-1.5">
+          <Kpi label="ใช้ไป" value="1.2 TB" />
+          <Kpi label="คงเหลือ" value="2.8 TB" />
+          <Kpi label="สำรองล่าสุด" value="02:00" />
+        </div>
+
+        <div className="mt-2.5 space-y-2 rounded-[6px] border border-steel-100 p-2.5">
+          {[
+            { label: 'VOLUME 01', pct: 62 },
+            { label: 'VOLUME 02', pct: 38 },
+            { label: 'ARCHIVE', pct: 84 }
+          ].map((vol) => (
+            <div key={vol.label}>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+                  {vol.label}
+                </span>
+                <span className="font-mono text-[0.4375rem] tabular-nums text-steel-500">
+                  {vol.pct}%
+                </span>
+              </div>
+              <span className="mt-1 block h-1.5 w-full overflow-hidden rounded-pill bg-steel-100">
+                <span
+                  className={cn(
+                    'block h-full rounded-pill',
+                    vol.pct > 80 ? 'bg-amber-400' : 'bg-brand-500'
+                  )}
+                  style={{ width: `${vol.pct}%` }}
+                />
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-2.5 min-h-0 flex-1 space-y-1">
+          {[0, 1, 2].map((row) => (
+            <div key={row} className="flex items-center gap-2">
+              <span className="h-2.5 w-2 rounded-[2px] bg-steel-200" />
+              <span className="h-1 flex-1 rounded-pill bg-steel-100" />
+              <span className="font-mono text-[0.4375rem] text-steel-400">
+                {(row + 1) * 14} MB
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Approval workflow. */
+export function WorkflowScreen() {
+  const lanes = ['คำขอ', 'หัวหน้า', 'บัญชี', 'อนุมัติ'];
+  return (
+    <div className="flex h-full flex-col p-3">
+      <p className="truncate text-[0.6875rem] font-semibold text-ink">เส้นทางอนุมัติเอกสาร</p>
+      <div className="mt-3 grid min-h-0 flex-1 grid-cols-4 gap-1.5">
+        {lanes.map((lane, index) => (
+          <div key={lane} className="flex min-h-0 flex-col">
+            <span className="mb-1.5 flex items-center gap-1">
+              <span
+                className={cn(
+                  'h-1.5 w-1.5 rounded-full',
+                  index === lanes.length - 1 ? 'bg-brand-500' : 'bg-steel-300'
+                )}
+              />
+              <span className="truncate font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+                {lane}
+              </span>
+            </span>
+            <div className="min-h-0 flex-1 space-y-1 rounded-[5px] bg-steel-50/70 p-1">
+              {Array.from({ length: index === 0 ? 3 : index === 3 ? 1 : 2 }).map((_, card) => (
+                <span
+                  key={card}
+                  className={cn(
+                    'block space-y-0.5 rounded-[4px] border bg-white p-1',
+                    index === 3 ? 'border-brand-200' : 'border-steel-100'
+                  )}
+                >
+                  <span className="block h-1 w-full rounded-pill bg-steel-200" />
+                  <span className="block h-1 w-1/2 rounded-pill bg-steel-100" />
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 flex items-center justify-between border-t border-steel-100 pt-2">
+        <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+          เฉลี่ย 1.1 วัน · SAMPLE
+        </span>
+        <Pill tone="ok">auditable</Pill>
+      </div>
+    </div>
+  );
+}
+
+/** Tracking / dispatch. */
+export function TrackingScreen() {
+  return (
+    <div className="flex h-full flex-col p-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="truncate text-[0.6875rem] font-semibold text-ink">ติดตามงานหน้างาน</p>
+        <Pill tone="ok">live</Pill>
+      </div>
+      <div className="mt-2.5 grid min-h-0 flex-1 grid-cols-5 gap-1.5">
+        <div className="col-span-3 min-h-0 overflow-hidden rounded-[6px] border border-steel-100 bg-steel-50/60">
+          <div className="relative h-full">
+            <span
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(6,59,42,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.05) 1px, transparent 1px)',
+                backgroundSize: '16px 16px'
+              }}
+            />
+            <svg viewBox="0 0 100 60" className="absolute inset-0 h-full w-full">
+              <path
+                d="M8 48 C 26 40, 34 24, 52 20 S 78 14, 92 8"
+                fill="none"
+                stroke="#1DAA61"
+                strokeWidth="1"
+                strokeDasharray="3 2"
+                vectorEffect="non-scaling-stroke"
+              />
+              <circle cx="8" cy="48" r="2" fill="#9AA89F" />
+              <circle cx="52" cy="20" r="2.5" fill="#1DAA61" />
+              <circle cx="92" cy="8" r="2" fill="#9AA89F" />
+            </svg>
+          </div>
+        </div>
+        <div className="col-span-2 min-h-0 space-y-1">
+          {[
+            { id: 'JOB-118', tone: 'ok' as const },
+            { id: 'JOB-119', tone: 'ok' as const },
+            { id: 'JOB-120', tone: 'warn' as const },
+            { id: 'JOB-121', tone: 'idle' as const }
+          ].map((job) => (
+            <div
+              key={job.id}
+              className="flex items-center gap-1.5 rounded-[4px] border border-steel-100 px-1.5 py-1"
+            >
+              <span className="font-mono text-[0.4375rem] text-steel-500">{job.id}</span>
+              <span className="h-1 flex-1 rounded-pill bg-steel-100" />
+              <Pill tone={job.tone}>{job.tone === 'ok' ? 'on' : job.tone === 'warn' ? 'late' : 'new'}</Pill>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Analytics dashboard. */
+export function AnalyticsScreen() {
+  return (
+    <div className="flex h-full">
+      <Sidebar active={5} />
+      <div className="flex min-w-0 flex-1 flex-col p-3">
+        <p className="truncate text-[0.6875rem] font-semibold text-ink">Dashboard ผู้บริหาร</p>
+        <div className="mt-2.5 grid grid-cols-4 gap-1.5">
+          <Kpi label="รายการ" value="4,128" delta="+8%" />
+          <Kpi label="รอดำเนินการ" value="36" />
+          <Kpi label="เฉลี่ย/วัน" value="182" />
+          <Kpi label="ผิดปกติ" value="2" />
+        </div>
+        <div className="mt-2.5 grid min-h-0 flex-1 grid-cols-3 gap-1.5">
+          <div className="col-span-2 rounded-[6px] border border-steel-100 p-2">
+            <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+              แนวโน้ม · SAMPLE
+            </span>
+            <div className="mt-1.5 h-[calc(100%-1rem)] min-h-[2rem]">
+              <Bars data={[38, 52, 46, 68, 58, 78, 66, 88, 74, 92]} />
+            </div>
+          </div>
+          <div className="space-y-1.5 rounded-[6px] border border-steel-100 p-2">
+            {[64, 42, 28].map((pct, index) => (
+              <div key={pct}>
+                <span className="block h-1 w-full overflow-hidden rounded-pill bg-steel-100">
+                  <span
+                    className={cn('block h-full rounded-pill', index === 0 ? 'bg-brand-500' : 'bg-brand-200')}
+                    style={{ width: `${pct}%` }}
+                  />
+                </span>
+              </div>
+            ))}
+            <span className="mt-1 block h-8 rounded-[4px] bg-steel-50" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- registry -- */
+
+const SCREENS: Record<MockKind, () => JSX.Element> = {
+  erp: ErpScreen,
+  payroll: PayrollScreen,
+  documents: DocumentsScreen,
+  hrLine: HrLineScreen,
+  website: WebsiteScreen,
+  nas: NasScreen,
+  workflow: WorkflowScreen,
+  tracking: TrackingScreen,
+  analytics: AnalyticsScreen
+};
+
+/**
+ * Renders a system mock, framed. `frame="none"` gives the bare screen for
+ * callers that supply their own chrome.
+ */
+export function SystemMock({
+  kind,
+  label,
+  className,
+  frame = 'auto',
+  flush = false
+}: {
+  kind: MockKind;
+  label?: string;
+  className?: string;
+  frame?: 'auto' | 'browser' | 'phone' | 'none';
+  flush?: boolean;
+}) {
+  const Screen = SCREENS[kind];
+  const resolved = frame === 'auto' ? (isPhoneMock(kind) ? 'phone' : 'browser') : frame;
+
+  if (resolved === 'none') {
+    return (
+      <div className={cn('h-full bg-white', className)}>
+        <Screen />
+      </div>
+    );
+  }
+
+  if (resolved === 'phone') {
+    return (
+      <PhoneFrame className={className}>
+        <Screen />
+      </PhoneFrame>
+    );
+  }
+
+  return (
+    <BrowserFrame label={label} className={className} flush={flush}>
+      <Screen />
+    </BrowserFrame>
+  );
+}

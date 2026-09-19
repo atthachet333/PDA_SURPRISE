@@ -61,7 +61,7 @@ export function ProcessPath({ code = '06 / PROCESS' }: { code?: string } = {}) {
       <Container className="relative">
         <div className="max-w-3xl">
           <p className="section-code">{code}</p>
-          <h2 className="thai-display mt-4 text-mega font-bold text-ink">
+          <h2 className="thai-display mt-3 text-statement font-bold text-ink">
             จากไอเดีย
             <br />
             <span className="text-brand-600">สู่ระบบที่ใช้งานได้จริง</span>
@@ -82,7 +82,7 @@ export function ProcessPath({ code = '06 / PROCESS' }: { code?: string } = {}) {
               />
             </div>
 
-            <ol className="relative space-y-12 sm:space-y-16">
+            <ol className="relative space-y-9 sm:space-y-11">
               {process.map((step, index) => {
                 const isActive = index === activeIndex;
                 const isPast = index < activeIndex;
@@ -123,7 +123,7 @@ export function ProcessPath({ code = '06 / PROCESS' }: { code?: string } = {}) {
                         animate={
                           reduced
                             ? undefined
-                            : { fontSize: isActive ? '2.25rem' : '1.25rem' }
+                            : { fontSize: isActive ? '1.75rem' : '1.125rem' }
                         }
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                       >

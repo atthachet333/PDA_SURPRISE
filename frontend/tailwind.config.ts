@@ -83,22 +83,34 @@ const config: Config = {
         display: ['clamp(2.75rem, 6vw, 5.5rem)', { lineHeight: '0.98', letterSpacing: '-0.035em' }],
         headline: ['clamp(2rem, 4vw, 3.5rem)', { lineHeight: '1.05', letterSpacing: '-0.025em' }],
         title: ['clamp(1.5rem, 2.4vw, 2.25rem)', { lineHeight: '1.15', letterSpacing: '-0.015em' }],
-        lead: ['clamp(1.0625rem, 1.3vw, 1.25rem)', { lineHeight: '1.65' }],
+        lead: ['clamp(1rem, 1.1vw, 1.1875rem)', { lineHeight: '1.7' }],
         /**
-         * Gen-Z corporate scale. Thai needs more line-height than Latin at
-         * these sizes or the ascenders/vowel marks collide, so `mega` and
-         * `giant` sit at 0.95-1.0 rather than the 0.85 a Latin-only face
-         * would take.
+         * ── CORPORATE DISPLAY SCALE ──────────────────────────────────────────
+         * Deliberately capped. An earlier pass ran `giant` up to 11rem / 11vw,
+         * which put the homepage H1 at 158px and made it 1007px tall at
+         * 1440x900 — taller than the viewport, pushing the product visual
+         * entirely below the fold. Typography now supports the product shots
+         * instead of replacing them.
+         *
+         * Ceilings: hero 96px, large section 72px, normal section 52px.
+         *
+         * Thai needs more vertical room than Latin (ascenders plus tone marks
+         * stack above the x-height), so line-heights stay at 1.06-1.25 and
+         * tracking stays shallow — tight negative tracking collapses vowel
+         * marks into their consonants.
+         * ─────────────────────────────────────────────────────────────────────
          */
-        giant: ['clamp(3.25rem, 11vw, 11rem)', { lineHeight: '1.0', letterSpacing: '-0.04em' }],
-        mega: ['clamp(2.5rem, 7.5vw, 7rem)', { lineHeight: '1.02', letterSpacing: '-0.035em' }],
-        statement: ['clamp(1.75rem, 3.6vw, 3.25rem)', { lineHeight: '1.22', letterSpacing: '-0.02em' }],
-        /** Marquee + section numerals. */
-        marquee: ['clamp(3rem, 9vw, 8.5rem)', { lineHeight: '1', letterSpacing: '-0.03em' }],
-        numeral: ['clamp(2.5rem, 6vw, 5.5rem)', { lineHeight: '0.9', letterSpacing: '-0.04em' }]
+        giant: ['clamp(3rem, 6vw, 6rem)', { lineHeight: '1.08', letterSpacing: '-0.02em' }],
+        mega: ['clamp(2.625rem, 4.5vw, 4.5rem)', { lineHeight: '1.12', letterSpacing: '-0.018em' }],
+        statement: ['clamp(2rem, 3vw, 3.25rem)', { lineHeight: '1.22', letterSpacing: '-0.015em' }],
+        /** Marquee is an accent strip, not content: 36px to 64px. */
+        marquee: ['clamp(2.25rem, 4vw, 4rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        /** Section numerals, used as quiet structure rather than as a visual. */
+        numeral: ['clamp(1.75rem, 3vw, 3rem)', { lineHeight: '1', letterSpacing: '-0.03em' }]
       },
       spacing: {
-        section: 'clamp(5rem, 10vw, 9rem)',
+        /** Tightened from clamp(5rem,10vw,9rem): the old rhythm left big voids. */
+        section: 'clamp(3.75rem, 6vw, 6.5rem)',
         gutter: 'clamp(1.25rem, 4vw, 3rem)',
         /** Floating-contact dock: 52px, a comfortable thumb target. */
         13: '3.25rem'

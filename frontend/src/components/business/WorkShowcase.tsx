@@ -3,8 +3,9 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon } from '@/components/shared/Button';
-import { ProjectVisual } from './ProjectVisual';
+import { ProductPanel } from './ProductPanel';
 import { portfolio, type PortfolioItem } from '@/data/portfolio';
+import { visualForPortfolio } from '@/data/visuals';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
@@ -63,13 +64,13 @@ export function WorkShowcase({
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="section-code text-brand-400">{code}</p>
-            <h2 className="thai-display mt-4 text-mega font-bold text-white">{title}</h2>
+            <h2 className="thai-display mt-3 text-statement font-bold text-white">{title}</h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-brand-100/60">{lead}</p>
         </div>
       </Container>
 
-      <div className="mt-16 space-y-20 sm:mt-20 sm:space-y-28">
+      <div className="mt-12 space-y-16 sm:mt-14 sm:space-y-20">
         {items.map((item, index) => (
           <WorkBand key={item.id} item={item} index={index} flipped={index % 2 === 1} />
         ))}
@@ -102,6 +103,8 @@ function WorkBand({
   const bandRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
+  const visual = visualForPortfolio(item.id);
+
   const { scrollYProgress } = useScroll({
     target: bandRef,
     offset: ['start end', 'end start']
@@ -117,16 +120,21 @@ function WorkBand({
         <Link
           to={`/work/${item.id}`}
           data-cursor="project"
-          className="group grid items-center gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14"
+          className="group grid items-center gap-7 lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)] lg:gap-12"
         >
           {/* ------------------------------------------------------ visual -- */}
           <div className={cn('relative', flipped && 'lg:order-2')}>
-            <div className="relative aspect-[16/10] overflow-hidden rounded-panel border border-brand-400/20 shadow-lift-lg transition-transform duration-slow ease-smooth group-hover:-translate-y-1.5">
+            {/*
+              The interface IS the visual. An earlier version used a branded
+              abstract plate plus a huge empty index numeral as the focal point,
+              which showed a prospect nothing about the software.
+            */}
+            <div className="relative aspect-[16/10] overflow-hidden rounded-panel border border-brand-400/20 bg-white shadow-lift-lg transition-transform duration-slow ease-smooth group-hover:-translate-y-1.5">
               <motion.div
-                className="absolute inset-[-8%]"
+                className="absolute inset-[-3%]"
                 style={reduced ? undefined : { y: visualY, scale: visualScale }}
               >
-                <ProjectVisual item={item} />
+                <ProductPanel slot={visual} className="h-full" frame="none" />
               </motion.div>
 
               {/* Reveal mask that lifts on first view */}
@@ -136,7 +144,7 @@ function WorkBand({
                 initial={reduced ? false : { scaleY: 1 }}
                 whileInView={{ scaleY: 0 }}
                 viewport={{ once: true, amount: 0.35 }}
-                transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
+                transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
               />
 
               {/* Hover sheen */}
@@ -148,18 +156,17 @@ function WorkBand({
                     'linear-gradient(120deg, transparent 40%, rgba(53,201,111,0.14) 60%, transparent 80%)'
                 }}
               />
-            </div>
 
-            {/* Oversized index, crossing the plate edge */}
-            <span
-              aria-hidden="true"
-              className={cn(
-                'pointer-events-none absolute -top-8 font-mono text-[clamp(2.5rem,6vw,5rem)] font-medium leading-none text-white/10 sm:-top-10',
-                flipped ? '-right-2 lg:-right-6' : '-left-2 lg:-left-6'
-              )}
-            >
-              {String(index + 1).padStart(2, '0')}
-            </span>
+              {/* Small index chip and mock notice, both out of the way. */}
+              <span className="pointer-events-none absolute left-3 top-3 rounded-pill bg-ink/70 px-2 py-0.5 font-mono text-[0.5rem] tabular-nums text-white/85 backdrop-blur-sm">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              {!visual.screenshot ? (
+                <span className="pointer-events-none absolute bottom-3 right-3 rounded-pill bg-ink/70 px-2 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.12em] text-white/80 backdrop-blur-sm">
+                  ภาพตัวอย่างระบบ
+                </span>
+              ) : null}
+            </div>
           </div>
 
           {/* -------------------------------------------------------- text -- */}
@@ -175,16 +182,16 @@ function WorkBand({
               ) : null}
             </div>
 
-            <h3 className="thai-display mt-5 text-statement font-bold text-white">
+            <h3 className="thai-display mt-4 text-xl font-bold text-white sm:text-2xl">
               {item.titleTh}
             </h3>
 
-            <p className="mt-4 max-w-lg text-[0.975rem] leading-relaxed text-brand-100/70">
+            <p className="mt-3 max-w-lg text-[0.9375rem] leading-relaxed text-brand-100/70">
               {item.summary}
             </p>
 
             {/* Features animate in on hover, and are always present for a11y */}
-            <ul className="mt-6 space-y-1.5">
+            <ul className="mt-5 space-y-1.5">
               {item.features.slice(0, 3).map((feature, featureIndex) => (
                 <motion.li
                   key={feature}
@@ -211,7 +218,7 @@ function WorkBand({
               ))}
             </ul>
 
-            <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-white">
+            <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white">
               ดูรายละเอียด
               <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1.5" />
             </span>

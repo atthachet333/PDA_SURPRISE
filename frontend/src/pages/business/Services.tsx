@@ -2,6 +2,7 @@ import { PageHeader } from '@/components/business/PageHeader';
 import { ServiceExplorer } from '@/components/business/ServiceExplorer';
 import { TechDiagram } from '@/components/business/TechDiagram';
 import { ProcessPath } from '@/components/business/ProcessPath';
+import { SystemShowreel } from '@/components/business/SystemShowreel';
 import { BigCTA } from '@/components/business/BigCTA';
 import { services, primaryServices } from '@/data/services';
 
@@ -46,9 +47,10 @@ export default function Services() {
         lead="งานกลุ่มนี้ส่วนใหญ่เป็นส่วนหนึ่งของโปรเจกต์ใหญ่ ไม่ได้ขายแยกเป็นงานเดี่ยว"
       />
 
-      <ProcessPath code="04 / PROCESS" />
-      <TechDiagram code="05 / STACK" />
-      <BigCTA code="06 / START" />
+      <SystemShowreel code="04 / SYSTEMS" />
+      <ProcessPath code="05 / PROCESS" />
+      <TechDiagram code="06 / STACK" />
+      <BigCTA code="07 / START" />
     </>
   );
 }

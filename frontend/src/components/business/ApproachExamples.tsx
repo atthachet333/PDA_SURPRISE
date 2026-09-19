@@ -26,7 +26,7 @@ export function ApproachExamples() {
 
       <Container className="relative">
         <div className="max-w-2xl">
-          <p className="section-code">03 / APPROACH</p>
+          <p className="section-code">04 / APPROACH</p>
           <h2 className="thai-display mt-4 text-statement font-bold text-ink">
             ตัวอย่างแนวทางการพัฒนา
           </h2>

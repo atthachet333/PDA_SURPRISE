@@ -209,7 +209,7 @@ const EDGES = (() => {
   return edges;
 })();
 
-export function SystemUniverse() {
+export function SystemUniverse({ code = '03 / SYSTEM' }: { code?: string } = {}) {
   const [ref, inView] = useInViewOnce<HTMLDivElement>({ threshold: 0.2 });
   const [activeId, setActiveId] = useState<string | null>(null);
   const reduced = useReducedMotion();
@@ -240,26 +240,36 @@ export function SystemUniverse() {
       <div className="sect-layer mesh-lines" aria-hidden="true" />
 
       <Container className="relative">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <p className="section-code text-brand-300">02 / SYSTEM</p>
-            <h2 className="thai-display mt-4 text-mega font-bold text-white">
-              เราไม่ได้สร้างแอปแยกกัน
-              <br />
-              <span className="text-brand-400">เราสร้างระบบที่เชื่อมถึงกัน</span>
-            </h2>
-          </div>
-          <p className="max-w-sm text-sm leading-relaxed text-brand-100/70">
-            เลือกโมดูลเพื่อดูว่ามันทำอะไร เชื่อมกับส่วนไหน และใช้เทคโนโลยีอะไรอยู่เบื้องหลัง
-          </p>
-        </div>
-
+        {/*
+          Copy left (~40%), graph right (~60%). The graph is the argument this
+          section makes, so it gets the larger share and the headline is sized to
+          sit beside it rather than above it — an earlier version stacked a
+          `text-mega` headline on top and pushed the graph out of view.
+        */}
         <div
           ref={ref}
-          className="mt-12 grid gap-8 lg:mt-16 lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-12"
+          className="grid gap-10 lg:grid-cols-[minmax(0,0.66fr)_minmax(0,1fr)] lg:items-center lg:gap-14"
         >
+          {/* ------------------------------------------- copy + detail panel -- */}
+          <div className="order-1">
+            <p className="section-code text-brand-300">{code}</p>
+            <h2 className="thai-display mt-3 text-statement font-bold text-white">
+              ระบบที่เชื่อมต่อกัน
+              <br />
+              <span className="text-brand-400">ทำงานได้มากกว่า</span>
+            </h2>
+            <p className="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-brand-100/70">
+              เลือกโมดูลบนแผนภาพเพื่อดูว่ามันทำอะไร เชื่อมกับส่วนไหน
+              และใช้เทคโนโลยีอะไรอยู่เบื้องหลัง
+            </p>
+
+            <div className="mt-7" onPointerLeave={() => setActiveId(null)}>
+              <DetailPanel active={active} reduced={reduced} nodeCount={NODES.length} edgeCount={EDGES.length} />
+            </div>
+          </div>
+
           {/* ---------------------------------------------------- the graph -- */}
-          <div className="relative mx-auto aspect-square w-full max-w-[34rem]">
+          <div className="relative order-2 mx-auto aspect-square w-full max-w-[40rem] lg:max-w-none">
             <svg viewBox={`0 0 ${VIEW} ${VIEW}`} className="h-full w-full overflow-visible">
               <defs>
                 <radialGradient id={`${gradientId}-core`}>
@@ -436,81 +446,101 @@ export function SystemUniverse() {
             })}
           </div>
 
-          {/* ------------------------------------------------ detail panel -- */}
-          <div
-            className="plane-dark relative min-h-[19rem] rounded-panel p-6 sm:p-7"
-            onPointerLeave={() => setActiveId(null)}
-          >
-            {active ? (
-              <motion.div
-                key={active.id}
-                initial={reduced ? false : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                id={`universe-detail-${active.id}`}
-              >
-                <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-brand-300">
-                  {active.labelEn}
-                </p>
-                <h3 className="thai-display mt-3 text-xl font-bold text-white sm:text-2xl">
-                  {active.label}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-brand-100/75">{active.summary}</p>
-
-                <div className="mt-5">
-                  <NodeVisual visual={active.visual} />
-                </div>
-
-                <ul className="mt-5 flex flex-wrap gap-1.5">
-                  {active.stack.map((item) => (
-                    <li
-                      key={item}
-                      className="rounded-pill border border-brand-400/25 px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.1em] text-brand-200"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                {active.serviceId ? (
-                  <Link
-                    to={`/services#${active.serviceId}`}
-                    className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-brand-300 transition-colors hover:text-white"
-                  >
-                    ดูรายละเอียดบริการ
-                    <span aria-hidden="true">→</span>
-                  </Link>
-                ) : null}
-              </motion.div>
-            ) : (
-              <div className="flex h-full min-h-[17rem] flex-col justify-center">
-                <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-brand-300/70">
-                  idle
-                </p>
-                <p className="thai-display mt-3 text-lg font-semibold leading-snug text-white/90 sm:text-xl">
-                  ทุกโมดูลใช้ข้อมูลชุดเดียวกัน
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-brand-100/60">
-                  ไม่ต้องคีย์ซ้ำ ไม่ต้องกระทบยอดด้วยมือ และไม่ต้องเดาว่าตัวเลขไหนคือตัวเลขจริง
-                </p>
-                <ul className="mt-6 space-y-2">
-                  {[
-                    `${NODES.length} โมดูลในระบบเดียว`,
-                    `${EDGES.length} จุดเชื่อมต่อระหว่างโมดูล`,
-                    'ข้อมูลชุดเดียว ตรวจย้อนกลับได้'
-                  ].map((line) => (
-                    <li key={line} className="flex items-center gap-2 text-xs text-brand-100/70">
-                      <span className="h-px w-4 bg-brand-400/60" />
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
         </div>
       </Container>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------- detail panel -- */
+
+/**
+ * The module read-out. Lives beside the graph rather than under it, and keeps a
+ * fixed minimum height so selecting a module never reflows the section.
+ */
+function DetailPanel({
+  active,
+  reduced,
+  nodeCount,
+  edgeCount
+}: {
+  active: SystemNode | null;
+  reduced: boolean;
+  nodeCount: number;
+  edgeCount: number;
+}) {
+  return (
+    <div className="plane-dark relative min-h-[16.5rem] rounded-panel p-5 sm:p-6">
+      {active ? (
+        <motion.div
+          key={active.id}
+          initial={reduced ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          id={`universe-detail-${active.id}`}
+        >
+          <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-brand-300">
+            {active.labelEn}
+          </p>
+          <h3 className="thai-display mt-2 text-lg font-bold text-white sm:text-xl">
+            {active.label}
+          </h3>
+          <p className="mt-2.5 text-sm leading-relaxed text-brand-100/75">{active.summary}</p>
+
+          <div className="mt-4">
+            <NodeVisual visual={active.visual} />
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <ul className="flex flex-wrap gap-1.5">
+              {active.stack.map((item) => (
+                <li
+                  key={item}
+                  className="rounded-pill border border-brand-400/25 px-2.5 py-1 font-mono text-[0.5rem] uppercase tracking-[0.1em] text-brand-200"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+            {active.serviceId ? (
+              <Link
+                to={`/services#${active.serviceId}`}
+                className="group inline-flex items-center gap-1.5 text-xs font-semibold text-brand-300 transition-colors hover:text-white"
+              >
+                ดูบริการ
+                <span aria-hidden="true" className="transition-transform duration-base group-hover:translate-x-0.5">
+                  →
+                </span>
+              </Link>
+            ) : null}
+          </div>
+        </motion.div>
+      ) : (
+        <div className="flex h-full min-h-[14.5rem] flex-col justify-center">
+          <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-brand-300/70">
+            idle
+          </p>
+          <p className="thai-display mt-2.5 text-base font-semibold leading-snug text-white/90 sm:text-lg">
+            ทุกโมดูลใช้ข้อมูลชุดเดียวกัน
+          </p>
+          <p className="mt-2.5 text-sm leading-relaxed text-brand-100/60">
+            ไม่ต้องคีย์ซ้ำ ไม่ต้องกระทบยอดด้วยมือ และไม่ต้องเดาว่าตัวเลขไหนคือตัวเลขจริง
+          </p>
+          <ul className="mt-5 space-y-1.5">
+            {[
+              `${nodeCount} โมดูลในระบบเดียว`,
+              `${edgeCount} จุดเชื่อมต่อระหว่างโมดูล`,
+              'ข้อมูลชุดเดียว ตรวจย้อนกลับได้'
+            ].map((line) => (
+              <li key={line} className="flex items-center gap-2 text-xs text-brand-100/70">
+                <span className="h-px w-4 bg-brand-400/60" />
+                {line}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 }
 

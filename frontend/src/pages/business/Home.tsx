@@ -3,6 +3,7 @@ import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { Container } from '@/components/shared/Layout';
 import { HeroSystem } from '@/components/business/HeroSystem';
 import { KineticMarquee } from '@/components/business/KineticMarquee';
+import { SystemShowreel } from '@/components/business/SystemShowreel';
 import { SystemUniverse } from '@/components/business/SystemUniverse';
 import { ServiceExplorer } from '@/components/business/ServiceExplorer';
 import { SolutionShowcase } from '@/components/business/SolutionShowcase';
@@ -13,43 +14,47 @@ import { VerifiedMetrics } from '@/components/business/VerifiedMetrics';
 import { TechDiagram } from '@/components/business/TechDiagram';
 import { InsightStrip } from '@/components/business/InsightStrip';
 import { BigCTA } from '@/components/business/BigCTA';
-import { company, cta, targetMarket } from '@/data/company';
+import { company, cta } from '@/data/company';
 import { portfolio } from '@/data/portfolio';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useEntranceReveal } from '@/hooks/useEntranceReveal';
 
 /**
- * HOME — a sequence of distinct compositions, not a stack of card grids.
+ * HOME
  *
- *   01 hero            cinematic, oversized Thai type + a live system rig
- *      marquee         the seven services as kinetic display type
- *   02 system universe the signature interactive graph
- *   03 services        three-column explorer
- *   04 solutions       sticky visual, scrolling stories
- *   05 work            immersive editorial bands
- *   06 process         scroll-driven path
- *   07 why us          oversized single-word statements
- *   08 numbers         the two verified figures, nothing else
- *   09 stack           capability diagram
- *   10 insights        editorial cards
- *      CTA             full-bleed green
+ *   01 hero        balanced text + a legible software rig, above the fold
+ *      marquee     compact kinetic service strip
+ *   02 showreel    six real interfaces, fanned — product evidence, early
+ *   03 universe    the connected-systems graph (the one dark section up here)
+ *   04 services    interactive explorer, visual-led
+ *   05 solutions   sticky product storytelling
+ *   06 work        large project visuals
+ *   07 process     scroll-driven sequence
+ *   08 why us      strengths
+ *   09 numbers     the two verified figures
+ *   10 stack       capability diagram
+ *   11 insights    editorial cards
+ *      CTA         full-bleed green
  *
- * No two adjacent sections share a ground or a layout.
+ * Light-to-dark rhythm is roughly 70/30 by area: only the universe, work, CTA
+ * and footer are dark, so the dark green reads as emphasis rather than default.
  */
 export default function Home() {
   return (
     <>
       <Hero />
       <KineticMarquee />
-      <SystemUniverse />
-      <ServiceExplorer showAllLink />
-      <SolutionShowcase />
-      <WorkShowcase items={portfolio.slice(0, 3)} showAllLink />
-      <ProcessPath />
-      <StrengthStatements />
-      <VerifiedMetrics />
-      <TechDiagram />
-      <InsightStrip />
-      <BigCTA />
+      <SystemShowreel code="02 / SYSTEMS" />
+      <SystemUniverse code="03 / CONNECTED" />
+      <ServiceExplorer code="04 / SERVICES" showAllLink />
+      <SolutionShowcase code="05 / SOLUTIONS" />
+      <WorkShowcase code="06 / WORK" items={portfolio.slice(0, 3)} showAllLink />
+      <ProcessPath code="07 / PROCESS" />
+      <StrengthStatements code="08 / WHY US" />
+      <VerifiedMetrics code="09 / NUMBERS" />
+      <TechDiagram code="10 / STACK" />
+      <InsightStrip code="11 / INSIGHTS" />
+      <BigCTA code="12 / START" />
     </>
   );
 }
@@ -57,77 +62,86 @@ export default function Home() {
 /* --------------------------------------------------------------------- hero -- */
 
 /**
- * The headline is split into explicit lines rather than left to wrap, because
- * Thai has no inter-word spaces: a browser given one long string will break it
- * mid-word at this size. Each line masks and rises independently.
+ * Explicit line breaks, not wrapping: Thai has no inter-word spaces, so a
+ * browser handed one long string will break it mid-word at display size.
  */
 const HEADLINE = ['ไอเดียของคุณ', 'เราทำให้มัน', 'ใช้งานได้จริง'];
 
+/** Short proof points under the CTAs — concrete, and all independently true. */
+const CAPABILITIES = [
+  'ERP · Payroll · เอกสาร',
+  'เชื่อมระบบเดิมได้',
+  'ส่งมอบซอร์สโค้ดทั้งหมด'
+];
+
 function Hero() {
   const reduced = useReducedMotion();
+  /* The masked headline must never be left parked outside its clip box. */
+  const reveal = useEntranceReveal();
 
   return (
-    <section className="sect sect--hero relative overflow-hidden pb-20 pt-32 sm:pb-24 sm:pt-40 lg:pb-32 lg:pt-44">
-      {/* Aurora + network ground */}
+    <section
+      className="sect sect--hero relative flex items-center overflow-hidden pb-14 pt-24 sm:pb-16 sm:pt-28 lg:min-h-[max(38rem,calc(100vh-5rem))] lg:max-h-[56rem] lg:pb-20 lg:pt-32"
+    >
+      {/* Soft green atmosphere — light, not a dark slab */}
       <div className="sect-layer" aria-hidden="true">
         <span
-          className="absolute inset-0 opacity-[0.55]"
+          className="absolute inset-0 opacity-[0.5]"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(6,59,42,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.045) 1px, transparent 1px)',
-            backgroundSize: '84px 84px',
-            maskImage: 'radial-gradient(75% 65% at 50% 28%, black, transparent)',
-            WebkitMaskImage: 'radial-gradient(75% 65% at 50% 28%, black, transparent)'
+              'linear-gradient(rgba(6,59,42,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.04) 1px, transparent 1px)',
+            backgroundSize: '76px 76px',
+            maskImage: 'radial-gradient(80% 70% at 40% 30%, black, transparent)',
+            WebkitMaskImage: 'radial-gradient(80% 70% at 40% 30%, black, transparent)'
           }}
         />
         <span
-          className={`absolute -right-[12%] -top-[18%] h-[42rem] w-[42rem] rounded-full bg-[radial-gradient(circle,rgba(53,201,111,0.2),transparent_66%)] blur-2xl ${
+          className={`absolute -right-[10%] -top-[14%] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(53,201,111,0.18),transparent_68%)] blur-2xl ${
             reduced ? '' : 'animate-aurora-drift'
           }`}
         />
       </div>
 
-      <Container className="relative">
-        <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,1fr)] lg:gap-8">
-          {/* ---------------------------------------------------- headline -- */}
-          <div>
+      <Container className="relative w-full">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-10 xl:gap-14">
+          {/* ---------------------------------------------------- left: copy -- */}
+          <div className="max-w-xl">
             <motion.div
-              initial={reduced ? false : { opacity: 0, y: 10 }}
+              initial={reduced ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-wrap items-center gap-x-3 gap-y-2"
             >
-              <span className="rounded-pill border border-brand-200 bg-brand-50 px-3 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-brand-700">
+              <span className="rounded-pill border border-brand-200 bg-brand-50 px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-700">
                 {company.foundedVerified ? `SINCE ${company.founded}` : company.heroBadge}
               </span>
-              <span className="font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-steel-400">
+              <span className="font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-steel-400">
                 {company.legalName}
               </span>
             </motion.div>
 
-            <h1 className="thai-display mt-8 text-giant font-bold text-ink">
+            <h1 className="thai-display mt-6 text-giant font-bold text-ink">
               {HEADLINE.map((line, index) => (
-                <span key={line} className="block overflow-hidden py-[0.04em]">
+                <span key={line} className="block overflow-hidden py-[0.02em]">
                   <motion.span
                     className="block"
-                    initial={reduced ? false : { y: '106%' }}
+                    initial={reveal ? { y: '104%' } : false}
                     animate={{ y: 0 }}
                     transition={{
-                      duration: 1.05,
-                      delay: 0.08 + index * 0.11,
+                      duration: 0.95,
+                      delay: 0.06 + index * 0.09,
                       ease: [0.16, 1, 0.3, 1]
                     }}
                   >
                     {index === HEADLINE.length - 1 ? (
                       <span className="relative inline-block">
                         <span className="relative z-10 text-brand-600">{line}</span>
-                        {/* Emphasis rule under the payoff line */}
                         <motion.span
                           aria-hidden="true"
-                          className="absolute inset-x-0 bottom-[0.12em] block h-[0.14em] origin-left bg-brand-400/35"
+                          className="absolute inset-x-0 bottom-[0.1em] block h-[0.12em] origin-left bg-brand-400/35"
                           initial={reduced ? false : { scaleX: 0 }}
                           animate={{ scaleX: 1 }}
-                          transition={{ duration: 1, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                          transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
                         />
                       </span>
                     ) : (
@@ -139,20 +153,20 @@ function Hero() {
             </h1>
 
             <motion.p
-              initial={reduced ? false : { opacity: 0, y: 16 }}
+              initial={reduced ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-9 max-w-xl text-lead text-steel-600"
+              transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-5 max-w-lg text-lead text-steel-600"
             >
               พัฒนาซอฟต์แวร์ ระบบธุรกิจ เว็บแอปพลิเคชัน และระบบภายในองค์กร
               จาก Workflow ที่ใช้งานจริงของธุรกิจ
             </motion.p>
 
             <motion.div
-              initial={reduced ? false : { opacity: 0, y: 16 }}
+              initial={reduced ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.62, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-11 flex flex-wrap items-center gap-3"
+              transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-7 flex flex-wrap items-center gap-2.5"
             >
               <ButtonLink to="/contact" size="lg" data-cursor="cta">
                 {cta.primary.label}
@@ -163,26 +177,34 @@ function Hero() {
               </ButtonLink>
             </motion.div>
 
-            {/* Who it is for — the locked target-market groups, as a quiet strip */}
+            {/* Capability indicators — small, factual, no invented numbers */}
             <motion.ul
               initial={reduced ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.9, delay: 0.85 }}
-              className="mt-12 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-steel-200/80 pt-6"
+              transition={{ duration: 0.8, delay: 0.66 }}
+              className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-steel-200/80 pt-5"
             >
-              {targetMarket.groups.slice(0, 5).map((group) => (
+              {CAPABILITIES.map((item) => (
                 <li
-                  key={group.label}
-                  className="font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-steel-400"
+                  key={item}
+                  className="thai-display flex items-center gap-2 text-xs text-steel-500"
                 >
-                  {group.label}
+                  <span className="h-1 w-1 shrink-0 rounded-full bg-brand-500" />
+                  {item}
                 </li>
               ))}
             </motion.ul>
           </div>
 
-          {/* ------------------------------------------------- system rig -- */}
-          <HeroSystem className="h-[20rem] sm:h-[26rem] lg:h-[34rem]" />
+          {/* ------------------------------------------- right: the software -- */}
+          <motion.div
+            initial={reduced ? false : { opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="relative -mx-2 sm:mx-0"
+          >
+            <HeroSystem className="aspect-[13/10] w-full sm:aspect-[14/10]" />
+          </motion.div>
         </div>
       </Container>
     </section>
