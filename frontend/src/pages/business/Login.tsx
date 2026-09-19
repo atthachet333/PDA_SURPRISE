@@ -48,17 +48,17 @@ export default function Login() {
     /*
      * A short dim before the route changes.
      *
-     * Swapping straight to /workspace put a white flash between two light
+     * Swapping routes immediately put a white flash between two light
      * screens and dropped the corporate header out from under the cursor in one
      * frame. Dimming first means the corporate surface visibly recedes and the
-     * workspace materialises out of it - the same handoff the portal does later,
+     * memory gate materialises out of it - the same handoff the portal does later,
      * at a fraction of the length.
      *
      * The audio is unlocked ABOVE this, inside the gesture, so the delay never
      * costs the gesture chain.
      */
     setLeaving(true);
-    window.setTimeout(() => navigate('/workspace'), 420);
+    window.setTimeout(() => navigate('/memory-gate'), 420);
   };
 
   return (

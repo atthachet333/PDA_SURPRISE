@@ -8,6 +8,7 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:memory-gate": "node --test --experimental-strip-types tests/memoryGate.test.mjs",
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {

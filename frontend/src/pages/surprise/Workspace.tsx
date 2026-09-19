@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Logo } from '@/components/business/Logo';
 import { Button } from '@/components/shared/Button';
 import { PortalTransition } from '@/components/surprise/PortalTransition';
@@ -8,6 +8,7 @@ import { anniversary } from '@/data/anniversary';
 import { useAudio } from '@/app/audioContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { formatMemoryDate } from '@/lib/memoryGate';
 
 type Phase = 'checking' | 'listing' | 'project' | 'leaving';
 
@@ -18,11 +19,17 @@ const CHECKS = [
 ];
 
 export default function Workspace() {
-  const [phase, setPhase] = useState<Phase>('checking');
+  const location = useLocation();
+  const [receivedMemoryGate] = useState(
+    () => Boolean((location.state as { memoryGateReveal?: boolean } | null)?.memoryGateReveal)
+  );
+  const [phase, setPhase] = useState<Phase>(() => (receivedMemoryGate ? 'project' : 'checking'));
   const [checkIndex, setCheckIndex] = useState(0);
+  const [handoffVisible, setHandoffVisible] = useState(receivedMemoryGate);
   const navigate = useNavigate();
   const { play, unlock, prepare, start } = useAudio();
   const reduced = useReducedMotion();
+  const weddingDate = formatMemoryDate(anniversary.relationship.weddingDate);
   const anniversaryProgress = Math.min(
     100,
     Math.round((anniversary.project.days / anniversary.project.milestone) * 100)
@@ -44,6 +51,14 @@ export default function Workspace() {
     unlock();
     prepare();
   }, [prepare, unlock]);
+
+  /** Consume the route handoff once so refresh/back never replays the reveal. */
+  useEffect(() => {
+    if (!receivedMemoryGate) return;
+    navigate(`${location.pathname}${location.search}`, { replace: true, state: null });
+    const timer = window.setTimeout(() => setHandoffVisible(false), reduced ? 420 : 1250);
+    return () => window.clearTimeout(timer);
+  }, [location.pathname, location.search, navigate, receivedMemoryGate, reduced]);
 
   // Sequential access checks, then the single private project.
   useEffect(() => {
@@ -144,6 +159,35 @@ export default function Workspace() {
         />
       </motion.div>
 
+      <AnimatePresence>
+        {handoffVisible ? (
+          <motion.div
+            key="memory-date-handoff"
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 z-[95] flex items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_48%,rgba(23,50,77,0.96),rgba(12,27,41,1)_68%)] px-5 text-center"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduced ? 0.2 : 0.72, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div
+              initial={false}
+              animate={{
+                opacity: reduced ? 0.85 : [1, 1, 0],
+                y: reduced ? 0 : [0, 0, -42],
+                filter: reduced ? 'blur(0px)' : ['blur(0px)', 'blur(0px)', 'blur(8px)']
+              }}
+              transition={{ duration: reduced ? 0.3 : 1.7, times: [0, 0.45, 1], ease: [0.16, 1, 0.3, 1] }}
+            >
+              <p className="font-display text-[clamp(2.25rem,8vw,4.75rem)] font-light tracking-[0.08em] text-sky-100">
+                {weddingDate.english}
+              </p>
+              <p className="mt-2 text-sm font-light text-cream/55">{weddingDate.thai}</p>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
       {/*
         The 365 outlives the UI by a beat. Everything else blurs out from under
         it, the numeral holds alone against the opening orbit, and only then does
@@ -172,7 +216,11 @@ export default function Workspace() {
             ? { scale: 1.06, opacity: 0, filter: 'blur(14px)' }
             : { scale: 1, opacity: 1, filter: 'blur(0px)' }
         }
-        transition={{ duration: 1.4, ease: [0.7, 0, 0.84, 0] }}
+        transition={{
+          duration: phase === 'leaving' ? 1.4 : receivedMemoryGate ? 1.1 : 0.3,
+          delay: phase === 'leaving' ? 0 : receivedMemoryGate ? 0.42 : 0,
+          ease: phase === 'leaving' ? [0.7, 0, 0.84, 0] : [0.16, 1, 0.3, 1]
+        }}
       >
         <div className="flex items-center justify-between">
           <Logo compact />
@@ -284,7 +332,11 @@ export default function Workspace() {
                   <motion.h1
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.2, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{
+                      duration: 1.2,
+                      delay: receivedMemoryGate ? 0.78 : 0.25,
+                      ease: [0.16, 1, 0.3, 1]
+                    }}
                     className="mt-7 font-display text-[clamp(2.35rem,5.5vw,3rem)] font-light uppercase leading-[0.9] tracking-[0.01em] text-navy-800 sm:whitespace-nowrap sm:leading-none"
                   >
                     <span className="block sm:inline">{anniversary.couple.nameA}</span>{' '}
@@ -295,7 +347,11 @@ export default function Workspace() {
                   <motion.div
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.36, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{
+                      duration: 0.8,
+                      delay: receivedMemoryGate ? 1.12 : 0.36,
+                      ease: [0.16, 1, 0.3, 1]
+                    }}
                     className="relative mt-8 overflow-hidden rounded-card border border-sky-200/70 bg-white/65 p-5 backdrop-blur-sm sm:p-6"
                   >
                     <div className="flex items-end justify-between gap-5">
@@ -378,7 +434,7 @@ export default function Workspace() {
         className="pointer-events-none absolute inset-0 z-[90] bg-[radial-gradient(circle_at_50%_45%,rgba(9,26,20,0.55),rgba(4,12,9,0.92))]"
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
-        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: receivedMemoryGate ? 1.45 : 0.75, ease: [0.16, 1, 0.3, 1] }}
       />
 
       <PortalTransition active={phase === 'leaving'} onComplete={onTransitionComplete} />

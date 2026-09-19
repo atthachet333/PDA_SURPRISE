@@ -204,6 +204,9 @@ export interface ImageSlot {
  */
 export const RELATIONSHIP_START_DATE = '2025-10-12';
 
+/** The wedding date used by the private memory gate. Format: YYYY-MM-DD. */
+export const WEDDING_DATE = '2026-07-28';
+
 /** Days together, recomputed on every page load. */
 export function daysTogether(from: string = RELATIONSHIP_START_DATE): number {
   return daysBetween(new Date(from));
@@ -228,6 +231,18 @@ export const anniversary = {
    * Do not duplicate this value anywhere else.
    */
   relationshipStartDate: RELATIONSHIP_START_DATE,
+
+  relationship: {
+    startDate: RELATIONSHIP_START_DATE,
+    weddingDate: WEDDING_DATE
+  },
+
+  memoryGate: {
+    hint: {
+      enabled: true,
+      afterAttempts: 3
+    }
+  },
 
   // ------------------------------------------------------------------ pets --
   /** Optional section. Not wired into any scene yet — the redesign pass owns it. */

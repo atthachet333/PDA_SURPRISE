@@ -8,6 +8,7 @@ import { FloatingContact } from '@/components/business/FloatingContact';
 import { BackToTop } from '@/components/business/BackToTop';
 import { CookieConsentProvider } from '@/app/CookieConsent';
 import { AILoader } from '@/components/surprise/AILoader';
+import { MemoryGateGuard } from '@/components/surprise/MemoryGateGuard';
 import { useLenis } from '@/hooks/useLenis';
 import Home from '@/pages/business/Home';
 
@@ -32,6 +33,7 @@ const Privacy = lazy(() => import('@/pages/business/Privacy'));
 const CookiePolicy = lazy(() => import('@/pages/business/CookiePolicy'));
 const Terms = lazy(() => import('@/pages/business/Terms'));
 const Login = lazy(() => import('@/pages/business/Login'));
+const MemoryGate = lazy(() => import('@/pages/surprise/MemoryGate'));
 const NotFound = lazy(() => import('@/pages/business/NotFound'));
 const Workspace = lazy(() => import('@/pages/surprise/Workspace'));
 const Experience = lazy(() => import('@/pages/surprise/Experience'));
@@ -104,19 +106,31 @@ export default function App() {
           }
         />
         <Route
-          path="/workspace"
+          path="/memory-gate"
           element={
             <Suspense fallback={<FullScreenFallback />}>
-              <Workspace />
+              <MemoryGate />
             </Suspense>
+          }
+        />
+        <Route
+          path="/workspace"
+          element={
+            <MemoryGateGuard>
+              <Suspense fallback={<FullScreenFallback />}>
+                <Workspace />
+              </Suspense>
+            </MemoryGateGuard>
           }
         />
         <Route
           path="/us"
           element={
-            <Suspense fallback={<AILoader />}>
-              <Experience />
-            </Suspense>
+            <MemoryGateGuard>
+              <Suspense fallback={<AILoader />}>
+                <Experience />
+              </Suspense>
+            </MemoryGateGuard>
           }
         />
 
