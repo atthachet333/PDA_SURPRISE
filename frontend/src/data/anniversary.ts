@@ -62,6 +62,9 @@ export interface Memory {
   scene?: MemoryScene[];
   /** Accent for the generated placeholder. */
   tone?: 'sky' | 'cream' | 'navy' | 'champagne';
+  /** Per-photo framing controls. */
+  objectPosition?: string;
+  cropMode?: 'cover' | 'contain';
 }
 
 export interface Place {
@@ -128,6 +131,8 @@ export interface TimelineMoment {
   location?: string;
   /** Reserved: no player is implemented yet, the field is here for later. */
   video?: string;
+  objectPosition?: string;
+  cropMode?: 'cover' | 'contain';
 }
 
 export interface StatItem {
@@ -142,6 +147,31 @@ export interface AudioCue {
   id: string;
   /** Seconds into the main track. Only used when a track is present. */
   time: number;
+}
+
+/**
+ * An optional discovery. Nothing in the story depends on one being found.
+ *
+ * `message` is what the visitor sees. An EMPTY message means the copy has not
+ * been supplied yet: the interaction still gives its small light response, but
+ * no words are shown. Inventing something sentimental to fill the gap would be
+ * putting words in the owner's mouth.
+ */
+export interface Secret {
+  /** Session-scoped discovery id. */
+  id: string;
+  /** Shown on discovery. Empty = light response only, no text. */
+  message: string;
+  /** How long the reveal stays, in ms. */
+  duration: number;
+}
+
+/** One scene's music level, and the ramp used to reach it. */
+export interface SceneMix {
+  /** Multiplier on the configured music volume, 0-1. */
+  level: number;
+  /** Ramp duration in ms. Never zero — levels are never hard-cut. */
+  ms: number;
 }
 
 /**
@@ -162,6 +192,8 @@ export interface ImageSlot {
   tags?: string[];
   featured?: boolean;
   scene?: MemoryScene;
+  objectPosition?: string;
+  cropMode?: 'cover' | 'contain';
 }
 
 // --------------------------------------------------------------- canonical --
@@ -207,26 +239,30 @@ export const anniversary = {
   // ----------------------------------------------------------------- intro --
   intro: {
     mark: 'A&I',
-    title: ['A private space', "for everything we've become."],
-    subtitle: [`${DAYS} days.`, 'Countless memories.', 'One story.'],
-    cta: 'BEGIN'
+    title: ['พื้นที่เล็ก ๆ', 'สำหรับเรื่องราวของเรา'],
+    subtitle: ['12.10.2025 — ∞'],
+    cta: 'เริ่มเรื่องราวของเรา'
   },
 
   /** Shown inside the disguised client-portal reveal. */
   project: {
-    codename: 'PROJECT_365',
+    codename: 'ATTHACHET & ISARIYA',
     status: 'ACTIVE',
+    days: DAYS,
     duration: `${DAYS} Days`,
+    milestone: 365,
+    milestoneLabel: 'DAYS OF US',
+    yearOneComplete: DAYS >= 365,
     users: 2,
     access: 'PRIVATE',
-    openLabel: 'OPEN PROJECT'
+    openLabel: 'เข้าสู่เรื่องราวของเรา'
   },
 
   dayCounter: {
     /** Derived, never hardcoded: the count lands on today's real figure. */
     target: DAYS,
-    headline: `${DAYS} DAYS`,
-    subline: ['and somehow,', 'it still feels like the beginning.']
+    headline: `${DAYS} วัน`,
+    subline: ['ทุกวันระหว่างนั้น', 'กลายเป็นเรื่องหนึ่งของเรา', 'และนี่...', 'คือปีแรกของเรา']
   },
 
   // -------------------------------------------------------------- memories --
@@ -259,23 +295,11 @@ export const anniversary = {
 
   // ----------------------------------------------------------------- places --
   /**
-   * ── PLACEHOLDER ──
-   * These five pins are the ORIGINAL SAMPLE DATA and are NOT the owner's real
-   * places. They stay only because Scene05Map is a 3D globe that cannot render
-   * a pin without coordinates, and the owner has asked that no coordinate be
-   * fabricated.
-   *
-   * The real roster lives in `journey` below, with `coordinatesPending: true`.
-   * Replace this array as soon as the owner supplies or approves coordinates,
-   * then delete this comment.
+   * No public map uses this legacy coordinate collection. It stays empty until
+   * every coordinate is owner-supplied or approved; Scene05 renders the real
+   * `journey` roster without pretending that a name is a geographic point.
    */
-  locations: [
-    { id: 'p1', label: 'First Meet', title: 'Where it started', location: 'Bangkok', lat: 13.7563, lng: 100.5018, date: 'Day 001', caption: 'Sample pin — awaiting real coordinates.', status: 'visited' },
-    { id: 'p2', label: 'First Trip', title: 'Our first trip together', location: 'Chiang Mai', lat: 18.7883, lng: 98.9853, date: 'Sample', caption: 'Sample pin — awaiting real coordinates.', status: 'visited' },
-    { id: 'p3', label: 'Special Day', title: 'The day I remember most', location: 'Phuket', lat: 7.8804, lng: 98.3923, date: 'Sample', caption: 'Sample pin — awaiting real coordinates.', status: 'visited' },
-    { id: 'p4', label: 'Favourite Place', title: 'The place we keep returning to', location: 'Pattaya', lat: 12.9236, lng: 100.8825, date: 'Sample', caption: 'Sample pin — awaiting real coordinates.', status: 'visited' },
-    { id: 'p5', label: 'More To Go', title: 'Somewhere we have not been yet', location: 'Tokyo', lat: 35.6762, lng: 139.6503, date: 'Year 02', caption: 'Not yet. But soon.', status: 'future' }
-  ] as Place[],
+  locations: [] as Place[],
 
   // --------------------------------------------------------------- journey --
   /**
@@ -359,25 +383,25 @@ export const anniversary = {
     { id: 'days', value: DAYS, label: 'วันที่อยู่ด้วยกัน', caption: 'นับสดจากวันที่ 12 ตุลาคม 2025' },
     { id: 'provinces', value: 10, label: 'จังหวัดที่ไปด้วยกัน', caption: 'จากกรุงเทพถึงสุโขทัย' },
     { id: 'places', value: 18, label: 'ที่ที่ไปด้วยกัน', caption: 'ที่จำได้และจดไว้' },
-    { id: 'cats', value: 2, label: 'แมวของเรา', caption: 'ถ้วยฟู และ หนมถ้วย' },
-    { id: 'custom', value: '∞', label: 'ที่ยังไม่ได้ไป', caption: 'ตัวเลขที่เราไม่ห่วงเลย' }
+    { id: 'cats', value: 2, label: 'แมวของเรา', caption: 'ถ้วยฟู และ หนมถ้วย' }
   ] as StatItem[],
 
   // -------------------------------------------------------- emotional pause --
   /** From the owner's own words: it was not always easy, and we stayed anyway. */
   quietLines: [
-    'มันไม่ได้สมบูรณ์แบบ',
-    'มีวันที่ทะเลาะกัน',
-    'มีวันที่งอน มีวันที่น้อยใจ',
-    'แต่ไม่มีวันไหนที่ปล่อยมือ',
-    'เราผ่านมันมาด้วยกันทุกครั้ง',
-    'และจะยังเลือกกันอยู่'
+    'แน่นอนว่า มันไม่ได้ง่ายทุกวัน',
+    'เรามีทะเลาะกัน',
+    'งอนกัน',
+    'น้อยใจกัน',
+    'บางวันก็เหนื่อยมาก',
+    'แต่เรายังไม่ปล่อยมือกัน',
+    'และนั่นคือสิ่งที่สำคัญที่สุด'
   ],
 
   // ------------------------------------------------------------ convergence --
   convergence: {
     glyph: String(DAYS),
-    caption: 'ทั้งหมดนี้ พร้อมกัน'
+    caption: 'ทั้งหมดนี้ คือสิ่งที่เราเป็นในวันนี้'
   },
 
   // ------------------------------------------------------------------ final --
@@ -390,13 +414,13 @@ export const anniversary = {
    */
   finalMessages: {
     yearOneLabel: 'YEAR 01',
-    archivedLabel: 'ARCHIVED',
-    yearTwoLabel: 'INITIALIZING YEAR 02',
+    archivedLabel: 'COMPLETE',
+    yearTwoLabel: 'YEAR 02',
     yearTwoProgress: 10,
-    lines: ['ที่เหลือยังไม่เกิดขึ้น', 'เราไปสร้างมันด้วยกัน'],
+    lines: ['เรื่องที่เหลือ ยังไม่ได้เกิดขึ้น', 'เรามาช่วยกันเขียนมันต่อนะ'],
     signature: 'A&I',
-    replayLabel: 'ย้อนดูเรื่องของเราอีกครั้ง',
-    memoriesLabel: 'กลับไปดูความทรงจำ',
+    replayLabel: 'เริ่มเรื่องราวใหม่',
+    memoriesLabel: 'ดูความทรงจำอีกครั้ง',
 
     segments: {
       opening: 'มีเรื่องที่อยากบอก แต่พูดตรง ๆ ไม่เคยพูดได้ดีเท่าที่คิดไว้',
@@ -404,7 +428,7 @@ export const anniversary = {
       gratitude: [
         'ขอบคุณที่อยู่ด้วยกันมาถึงวันนี้',
         'ขอบคุณที่แต่งงานด้วยกัน',
-        'ขอบคุณที่ให้โอกาสกันเสมอ',
+        'ขอบคุณที่ให้โอกาสเด็กคนนี้',
         'ขอบคุณที่ไม่ทิ้งกันในวันที่ไม่ได้ง่าย'
       ],
 
@@ -412,12 +436,13 @@ export const anniversary = {
         'มีวันที่ทะเลาะกัน มีวันที่งอน มีวันที่น้อยใจ',
         'แต่ไม่เคยมีวันที่ปล่อยมือกัน',
         'เราผ่านอุปสรรคมาด้วยกันหลายอย่าง',
+        'ถ้าวันหนึ่งเหนื่อย ให้มองย้อนกลับมา',
         'ลองมองย้อนกลับไปดูสิ่งที่เราสร้างขึ้นมาด้วยกัน'
       ],
 
       future: [
         'อยากอยู่ด้วยกันไปจนแก่',
-        'ช่วยกันเลี้ยงปอร์เช่จนโต',
+        'ช่วยกันเลี้ยงปอร์เช่ไปจนโต',
         'ช่วยกันทำความฝันให้เป็นจริง',
         'เป็นกำลังใจและเป็นที่พึ่งให้กันไปเรื่อย ๆ',
         'เรากำลังสร้างครอบครัวและอนาคตร่วมกัน'
@@ -439,6 +464,32 @@ export const anniversary = {
     { id: 'hero-03', category: 'hero', intent: 'ภาพพื้นหลังกว้าง สำหรับฉากแรก' }
   ] as ImageSlot[],
 
+  /** Stable slots for the editorial photo groups used across the experience. */
+  featuredMemories: [
+    { id: 'featured-01', category: 'hero', intent: 'ภาพเด่นของเรื่อง — ภาพของสองคน', featured: true },
+    { id: 'featured-02', category: 'timeline', intent: 'ภาพเด่นจากช่วงเริ่มต้น', featured: true },
+    { id: 'featured-03', category: 'travel', intent: 'ภาพเด่นจากการเดินทาง', featured: true },
+    { id: 'featured-04', category: 'family', intent: 'ภาพเด่นของครอบครัว', featured: true }
+  ] as ImageSlot[],
+
+  dailyMemories: [
+    { id: 'daily-01', category: 'daily', intent: 'ชีวิตประจำวัน — ภาพแนวนอน' },
+    { id: 'daily-02', category: 'daily', intent: 'ชีวิตประจำวัน — ภาพแนวตั้ง' },
+    { id: 'daily-03', category: 'funny', intent: 'โมเมนต์ขำ ๆ ของสองคน' }
+  ] as ImageSlot[],
+
+  travelMemories: [
+    { id: 'travel-01', category: 'travel', intent: 'ทริปด้วยกัน — ภาพกว้าง' },
+    { id: 'travel-02', category: 'travel', intent: 'ทริปด้วยกัน — ภาพสถานที่' },
+    { id: 'travel-03', category: 'travel', intent: 'ทริปด้วยกัน — ภาพของสองคน' }
+  ] as ImageSlot[],
+
+  familyMemories: [
+    { id: 'family-01', category: 'family', intent: 'ภาพครอบครัว' },
+    { id: 'family-02', category: 'pets', intent: 'ภาพถ้วยฟู' },
+    { id: 'family-03', category: 'pets', intent: 'ภาพหนมถ้วย' }
+  ] as ImageSlot[],
+
   finalImages: [
     { id: 'final-01', category: 'finale', intent: 'ภาพปิด — ภาพล่าสุดของสองคน' },
     { id: 'final-02', category: 'finale', intent: 'ภาพจากงานแต่ง' },
@@ -450,6 +501,95 @@ export const anniversary = {
     { id: 'pet-01', category: 'pets', intent: 'ถ้วยฟู' },
     { id: 'pet-02', category: 'pets', intent: 'หนมถ้วย' }
   ] as ImageSlot[],
+
+  // ---------------------------------------------------------------- secrets --
+  /**
+   * OPTIONAL DISCOVERIES.
+   *
+   * Every one of these is supplementary. No story beat, no date, no name and no
+   * part of the letter is reachable only through a secret - they reward
+   * curiosity and never require it, and the experience reads as complete to
+   * someone who finds none of them.
+   *
+   * All secret copy lives here rather than inside components, so the owner can
+   * change or silence any of it in one place.
+   */
+  secrets: {
+    /** Tap the A&I mark a few times. */
+    mark: {
+      id: 'mark',
+      message: 'เจอแล้ว :)',
+      duration: 2800,
+      /** Deliberate taps needed. Low enough to find, high enough to not be an accident. */
+      taps: 5,
+      /** Taps must land within this window of each other, in ms. */
+      windowMs: 1200
+    },
+    /** One star in the persistent sky that rewards a closer look. */
+    star: {
+      id: 'star',
+      message: 'ดาวดวงนี้เก็บไว้ให้แก',
+      duration: 4200,
+      /**
+       * Position in the viewport. Off to one side, never over the reading
+       * column. Phones get their own coordinates: at 430px the desktop
+       * placement lands on top of the entry headline.
+       */
+      x: '82%',
+      y: '22%',
+      xMobile: '86%',
+      yMobile: '13%'
+    },
+    /**
+     * The two cats, hidden in the Life scene. Names come from `pets` - this
+     * carries no copy of its own, so the names can never drift apart.
+     */
+    cats: {
+      id: 'cats',
+      message: '',
+      duration: 3400
+    },
+    /** Hold the big numeral. */
+    day: {
+      id: 'day',
+      message: 'ยังนับต่ออยู่นะ',
+      duration: 3600,
+      /** Deliberate hold, in ms. */
+      holdMs: 1500
+    },
+    /**
+     * The letter's signature.
+     *
+     * OWNER INPUT. Empty on purpose: this is the most personal line in the whole
+     * experience and it is not ours to write. While it is empty the signature
+     * still answers with light, and shows no words.
+     */
+    letter: {
+      id: 'letter',
+      message: '',
+      duration: 4600
+    },
+    /** The Year 02 indicator, after the finale has settled. */
+    finale: {
+      id: 'finale',
+      message: 'ยังมีอีกเยอะเลย',
+      duration: 3200,
+      /** Staying this long with the finale also reveals it, in ms. */
+      dwellMs: 6000
+    },
+    /**
+     * A future "เดี๋ยวก่อน..." moment.
+     *
+     * Disabled means ZERO UI - no trigger, no placeholder, no empty frame. It
+     * stays that way until there is something real to put in it.
+     */
+    oneMoreThing: {
+      enabled: false,
+      id: 'one-more-thing',
+      message: '',
+      duration: 5000
+    }
+  },
 
   // ------------------------------------------------------------------ audio --
   audio: {
@@ -463,8 +603,56 @@ export const anniversary = {
     musicSrc: '/audio/main-track.mp3',
     /** Optional recorded effects; synthesised fallbacks are used when absent. */
     sfxDir: '/audio/sfx',
-    defaultMusicVolume: 0.45,
-    defaultSfxVolume: 0.6,
+    /**
+     * Recorded effect files that actually exist under `sfxDir`, without
+     * extension. Empty means the synthesised palette is used for everything and
+     * NOTHING is fetched — so a bare sfx directory produces no 404s at all.
+     * Add a name here only once the file is really in place.
+     */
+    sfxFiles: [] as string[],
+    /**
+     * Baseline mix. Present, never blasting: the master sits under unity so the
+     * track has headroom, and effects sit well under the music so they colour a
+     * moment instead of interrupting it.
+     */
+    defaultMasterVolume: 0.75,
+    defaultMusicVolume: 0.62,
+    defaultSfxVolume: 0.32,
+    /**
+     * SCENE MIX MAP — multipliers on the configured music volume, keyed by
+     * scene id, with the ramp used to REACH each level.
+     *
+     * This is the only channel through which a scene may touch the music. No
+     * entry seeks, restarts or stops anything: the song is one continuous
+     * journey and the scenes only decide how present it is.
+     *
+     * The shape of the arc: the story opens held back, opens up through the
+     * Universe, settles for family, drops right down for Quiet, climbs hardest
+     * into Convergence, pulls back so the Letter stays readable, then opens
+     * warmly — not explosively — for Year 02.
+     *
+     * `ms` is the ramp INTO that level. Ordinary moves are ~1s; the emotional
+     * ones are long enough to be felt as a move rather than heard as a change.
+     */
+    sceneMix: {
+      entry: { level: 0.7, ms: 1800 },
+      days: { level: 0.78, ms: 1400 },
+      beginning: { level: 0.84, ms: 1600 },
+      'little-moments': { level: 0.88, ms: 1400 },
+      journey: { level: 0.92, ms: 1600 },
+      memories: { level: 0.95, ms: 1800 },
+      places: { level: 0.88, ms: 1400 },
+      life: { level: 0.78, ms: 1600 },
+      stats: { level: 0.83, ms: 1200 },
+      /** The world goes quiet. Slowest fade down in the whole story. */
+      quiet: { level: 0.42, ms: 3500 },
+      /** Progressive rise — the energy has to come back, not snap back. */
+      converge: { level: 0.98, ms: 3200 },
+      /** Soft but never absent: the visitor controls the reading speed. */
+      letter: { level: 0.56, ms: 2600 },
+      /** Opens back up, warm rather than loud. */
+      final: { level: 0.9, ms: 3000 }
+    } as Record<string, SceneMix>,
     /**
      * Optional beat map. Times only matter when a track is present; every
      * scene also has its own trigger, so nothing depends on the music.
@@ -508,7 +696,15 @@ export function allImagePaths(): string[] {
     if (moment.image) paths.add(moment.image);
     moment.images?.forEach((image) => paths.add(image));
   });
-  [...anniversary.heroImages, ...anniversary.finalImages, ...anniversary.petImages].forEach(
+  [
+    ...anniversary.heroImages,
+    ...anniversary.featuredMemories,
+    ...anniversary.dailyMemories,
+    ...anniversary.travelMemories,
+    ...anniversary.familyMemories,
+    ...anniversary.finalImages,
+    ...anniversary.petImages
+  ].forEach(
     (slot) => slot.image && paths.add(slot.image)
   );
   return [...paths];
@@ -516,9 +712,15 @@ export function allImagePaths(): string[] {
 
 /** Every image slot still waiting for a file. */
 export function pendingImageSlots(): ImageSlot[] {
-  return [...anniversary.heroImages, ...anniversary.finalImages, ...anniversary.petImages].filter(
-    (slot) => !slot.image
-  );
+  return [
+    ...anniversary.heroImages,
+    ...anniversary.featuredMemories,
+    ...anniversary.dailyMemories,
+    ...anniversary.travelMemories,
+    ...anniversary.familyMemories,
+    ...anniversary.finalImages,
+    ...anniversary.petImages
+  ].filter((slot) => !slot.image);
 }
 
 /** Real places whose coordinates the owner has not supplied yet. */

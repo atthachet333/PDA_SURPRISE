@@ -5,6 +5,9 @@ import { anniversary } from '@/data/anniversary';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useAudio } from '@/app/audioContext';
+import { useLongPress } from '@/hooks/useLongPress';
+import { useSecret } from '@/hooks/useSecret';
+import { SecretReveal } from '@/components/surprise/SecretReveal';
 import { pad } from '@/lib/format';
 
 /**
@@ -104,6 +107,7 @@ export function Scene02Days() {
 
     const began = performance.now();
     let frame = 0;
+    let ticks = 0;
     let lastTickDay = 0;
     let impactPlayed = false;
 
@@ -113,11 +117,20 @@ export function Scene02Days() {
       if (seconds < COUNT_END) {
         const next = dayAtTime(seconds);
         setDay(next);
-        // One soft tick per visible change in the slow sections only, so the
-        // fast middle does not turn into a machine-gun.
-        if (next !== lastTickDay && (seconds < 1.6 || seconds > 5.6)) {
-          lastTickDay = next;
-          play('hover');
+        /*
+         * AUDIBLE STEPS ONLY. Two soft ticks as the count leaves day one, then
+         * nothing at all through the accelerating middle, then one tick for each
+         * of the final ratchet days. Every other visible change is silent — a
+         * tick per day would be hundreds of them.
+         */
+        if (next !== lastTickDay) {
+          const opening = ticks < 2 && seconds < 1.3;
+          const ratcheting = seconds >= RATCHET_START;
+          if (opening || ratcheting) {
+            lastTickDay = next;
+            ticks += 1;
+            play('softClick');
+          }
         }
         frame = requestAnimationFrame(tick);
         return;
@@ -134,7 +147,12 @@ export function Scene02Days() {
       setPhase('revealed');
       if (!impactPlayed) {
         impactPlayed = true;
-        play('impact');
+        /*
+         * The landing is on the REAL current day, whatever it is today. Before
+         * the anniversary that is the true count; on the day itself it happens
+         * to be 365. Nothing here celebrates a completion that has not happened.
+         */
+        play('softImpact');
         triggerCue('day365');
       }
     };
@@ -159,8 +177,29 @@ export function Scene02Days() {
   const revealed = phase === 'revealed';
   const holding = phase === 'holding';
 
+  /*
+   * THE 365 SECRET.
+   *
+   * Hold the numeral and it shows the count against the milestone. The two
+   * states are NOT cosmetic: before the anniversary it reads the real current
+   * day over 365 and says the counting is still going, and only on or after day
+   * 365 does it say Year 01 is complete. Showing completion early would be the
+   * one lie this whole experience has been built to avoid.
+   *
+   * Offered only once the counter has landed, so it can never interfere with
+   * the signature beat.
+   */
+  const DAY_SECRET = anniversary.secrets.day;
+  const daySecret = useSecret(DAY_SECRET.id, { duration: DAY_SECRET.duration });
+  const { milestone } = anniversary.project;
+  const yearOneComplete = TARGET >= milestone;
+  const hold = useLongPress(daySecret.discover, {
+    ms: DAY_SECRET.holdMs,
+    enabled: revealed && !daySecret.discovered
+  });
+
   return (
-    <SceneSection id="story" ref={ref} label="Day count" className="overflow-hidden text-center">
+    <SceneSection id="days" ref={ref} label="001 ถึงวันนี้" className="overflow-hidden text-center">
       {/* Radial light burst */}
       <AnimatePresence>
         {revealed ? (
@@ -229,10 +268,17 @@ export function Scene02Days() {
           animate={{ opacity: holding ? 0.35 : 0.6 }}
           className="font-mono text-[0.625rem] uppercase tracking-[0.44em] text-sky-100"
         >
-          Day
+          01 · DAY
         </motion.p>
 
         <div className="relative mt-4 flex justify-center">
+          {/*
+            A plain span, not a button: this is the hero numeral of the scene and
+            turning it into a control would put a focus ring and a pressed state
+            on the single most important piece of type in the story. The hold is
+            an extra on top of decoration, and the number itself is already read
+            out as text.
+          */}
           <motion.span
             animate={
               revealed
@@ -242,12 +288,55 @@ export function Scene02Days() {
                   : { scale: 1 }
             }
             transition={{ duration: revealed ? 1.8 : 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="ai-legible font-mono text-[clamp(4.5rem,19vw,12rem)] font-light leading-none tabular-nums text-ivory"
-            style={{ textShadow: revealed ? '0 0 90px rgba(255,255,255,0.6)' : undefined }}
+            className="ai-legible select-none font-display text-[clamp(5rem,19vw,12rem)] font-light leading-none tabular-nums text-ivory"
+            style={{
+              textShadow:
+                hold.holding || daySecret.revealing
+                  ? '0 0 120px rgba(233,213,168,0.85)'
+                  : revealed
+                    ? '0 0 90px rgba(255,255,255,0.6)'
+                    : undefined,
+              touchAction: 'manipulation'
+            }}
+            {...hold.handlers}
           >
             {pad(day, 3)}
           </motion.span>
+
+          {/* The hold has to be visible while it happens, or it is a secret
+              nobody can tell they are close to finding. */}
+          {hold.holding && !reduced ? (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-3 left-1/2 h-px w-32 -translate-x-1/2 overflow-hidden bg-ivory/15"
+            >
+              <span
+                className="block h-full bg-champagne/80 transition-none"
+                style={{ width: `${Math.round(hold.progress * 100)}%` }}
+              />
+            </span>
+          ) : null}
         </div>
+
+        {/* The hidden layer */}
+        <AnimatePresence>
+          {daySecret.revealing ? (
+            <motion.div
+              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduced ? 0.3 : 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="pointer-events-none absolute inset-x-0 -bottom-2 flex flex-col items-center gap-1"
+            >
+              <span className="font-mono text-[0.6875rem] tracking-[0.3em] text-champagne/90">
+                {yearOneComplete
+                  ? `${milestone} / YEAR 01 COMPLETE`
+                  : `${TARGET} / ${milestone}`}
+              </span>
+              <SecretReveal show text={DAY_SECRET.message} polite={false} />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
 
         <div className="mt-10 min-h-[7rem]">
           <AnimatePresence mode="wait">
@@ -281,7 +370,7 @@ export function Scene02Days() {
                 transition={{ duration: 0.6 }}
                 className="font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-ivory"
               >
-                counting
+                กำลังนับ
               </motion.p>
             )}
           </AnimatePresence>

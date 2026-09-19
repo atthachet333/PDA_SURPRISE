@@ -2,22 +2,24 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CelestialBackground, type CameraLanguage } from '@/components/surprise/CelestialBackground';
 import { SurpriseNav } from '@/components/surprise/SurpriseNav';
 import { AICursor } from '@/components/surprise/AICursor';
-import { FullscreenHint, SoundPrompt } from '@/components/surprise/SoundPrompt';
+import { FullscreenHint, MusicUnlockPrompt, SoundPrompt } from '@/components/surprise/SoundPrompt';
+import { SecretStar } from '@/components/surprise/SecretStar';
 import { Scene01Entry } from '@/scenes/surprise/Scene01Entry';
 import { Scene02Days } from '@/scenes/surprise/Scene02Days';
 import { Scene03Journey } from '@/scenes/surprise/Scene03Journey';
 import { Scene04Universe } from '@/scenes/surprise/Scene04Universe';
 import { Scene05Map } from '@/scenes/surprise/Scene05Map';
 import { Scene06Gallery } from '@/scenes/surprise/Scene06Gallery';
-import { Scene07Tunnel } from '@/scenes/surprise/Scene07Tunnel';
+import { Scene07Life } from '@/scenes/surprise/Scene07Life';
 import { Scene08Timeline } from '@/scenes/surprise/Scene08Timeline';
 import { Scene09Stats } from '@/scenes/surprise/Scene09Stats';
 import { Scene10Quiet } from '@/scenes/surprise/Scene10Quiet';
 import { Scene11Converge } from '@/scenes/surprise/Scene11Converge';
 import { Scene12Final } from '@/scenes/surprise/Scene12Final';
+import { Scene12Letter } from '@/scenes/surprise/Scene12Letter';
 import { useLenis } from '@/hooks/useLenis';
 import { useAudio } from '@/app/audioContext';
-import { featuredMemories } from '@/data/anniversary';
+import { anniversary, featuredMemories } from '@/data/anniversary';
 import { preloadImages, whenIdle } from '@/lib/preload';
 
 /**
@@ -46,24 +48,19 @@ interface SceneDirection {
 }
 
 const DIRECTION: Record<string, SceneDirection> = {
-  // Act I — calm
-  entry: { nav: 'story', mood: 0.34, camera: 'push' },
-  // Act II — build to the first wow
-  story: { nav: 'story', mood: 0.58, camera: 'push', immersive: true },
-  journey: { nav: 'story', mood: 0.44, camera: 'still' },
-  // Act III — warm, interactive
-  memories: { nav: 'memories', mood: 0.38, camera: 'orbit' },
-  map: { nav: 'journey', mood: 0.32, camera: 'glide' },
-  gallery: { nav: 'memories', mood: 0.42, camera: 'circle' },
-  tunnel: { nav: 'memories', mood: 0.48, camera: 'push', immersive: true },
-  // Act IV — narrative
-  timeline: { nav: 'moments', mood: 0.5, camera: 'glide' },
-  stats: { nav: 'moments', mood: 0.44, camera: 'still' },
-  // Act V — the pause
-  quiet: { nav: 'final', mood: 0.1, camera: 'still', alive: false, immersive: true },
-  // Act VI — the second wow, then the calm finale
-  converge: { nav: 'final', mood: 0.72, camera: 'push', immersive: true },
-  final: { nav: 'final', mood: 1, camera: 'pull' }
+  entry: { nav: 'beginning', mood: 0.18, camera: 'push' },
+  days: { nav: 'beginning', mood: 0.5, camera: 'push', immersive: true },
+  beginning: { nav: 'beginning', mood: 0.38, camera: 'still' },
+  'little-moments': { nav: 'little-moments', mood: 0.5, camera: 'circle' },
+  journey: { nav: 'journey', mood: 0.54, camera: 'glide' },
+  memories: { nav: 'little-moments', mood: 0.33, camera: 'orbit' },
+  places: { nav: 'places', mood: 0.42, camera: 'glide' },
+  life: { nav: 'places', mood: 0.6, camera: 'still' },
+  stats: { nav: 'places', mood: 0.5, camera: 'still' },
+  quiet: { nav: 'letter', mood: 0.08, camera: 'still', alive: false, immersive: true },
+  converge: { nav: 'letter', mood: 0.74, camera: 'push', immersive: true },
+  letter: { nav: 'letter', mood: 0.5, camera: 'still' },
+  final: { nav: 'letter', mood: 1, camera: 'pull' }
 };
 
 const SECTION_IDS = Object.keys(DIRECTION);
@@ -72,9 +69,9 @@ const DEFAULT_DIRECTION: SceneDirection = { nav: 'story', mood: 0.35, camera: 'g
 
 export default function Experience() {
   const [current, setCurrent] = useState('entry');
-  const { unlock } = useAudio();
+  const { unlock, start, musicEnabled, status, setSceneMix } = useAudio();
 
-  useLenis({ lerp: 0.085 });
+  useLenis({ lerp: 0.105 });
 
   // The A&I palette is a separate design system; flag it on <body> so global
   // styles (background, selection, focus ring) switch with it.
@@ -96,23 +93,49 @@ export default function Experience() {
     void import('@/lib/anniversaryValidation').then((module) => module.reportConfigInDev());
   }, []);
 
-  // Audio is normally unlocked by the gesture that opened the project; re-arm
-  // here in case the visitor landed on /us directly.
+  /**
+   * DIRECT ENTRY to /us, without passing through the workspace gateway.
+   *
+   * There has been no gesture, so the browser will refuse to play. Rather than
+   * calling play() in a loop and collecting rejections, the first real gesture
+   * arms the context and — only if the visitor has music enabled — starts the
+   * track with the usual fade. Both handlers run synchronously inside the
+   * gesture, which is what iOS Safari requires. If the visitor chose silence,
+   * this arms the context and nothing more.
+   *
+   * These are NOT `once: true`: a gesture that arrives while the track is still
+   * loading, or one the browser still refuses, should be followed by another
+   * chance rather than being the only chance. The handlers detach as soon as the
+   * music is actually playing.
+   */
   useEffect(() => {
-    const arm = () => void unlock();
-    window.addEventListener('pointerdown', arm, { once: true });
-    window.addEventListener('keydown', arm, { once: true });
+    // Already playing (the usual case, arriving from the gateway): nothing to arm.
+    if (status === 'playing') return;
+    const arm = () => {
+      unlock();
+      if (musicEnabled) start();
+    };
+    window.addEventListener('pointerdown', arm);
+    window.addEventListener('keydown', arm);
     return () => {
       window.removeEventListener('pointerdown', arm);
       window.removeEventListener('keydown', arm);
     };
-  }, [unlock]);
+  }, [musicEnabled, start, status, unlock]);
 
   // Warm only the featured photographs up front, once the browser is idle.
   // Each scene preloads its own set as it approaches.
   useEffect(() => whenIdle(() => {
     void preloadImages(featuredMemories().map((memory) => memory.image), 3);
   }), []);
+
+  // Deep links are useful for private review and photo curation. React mounts
+  // after the browser's native anchor pass, so resolve the hash once here.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id || !SECTION_IDS.includes(id)) return;
+    window.requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: 'start' }));
+  }, []);
 
   // Track which scene owns the middle of the viewport.
   useEffect(() => {
@@ -123,7 +146,10 @@ export default function Experience() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (visible?.target.id) setCurrent(visible.target.id);
       },
-      { threshold: [0.2, 0.5, 0.8], rootMargin: '-20% 0px -20% 0px' }
+      // Tall scroll-choreographed scenes can never occupy 20% of their own
+      // height inside the viewport. A low first threshold lets Quiet and
+      // Convergence own the director state while their sticky frame is active.
+      { threshold: [0.04, 0.12, 0.3, 0.6], rootMargin: '-20% 0px -20% 0px' }
     );
 
     SECTION_IDS.forEach((id) => {
@@ -135,10 +161,28 @@ export default function Experience() {
   }, []);
 
   const onEnter = useCallback(() => {
-    document.getElementById('story')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('days')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 
   const direction = useMemo(() => DIRECTION[current] ?? DEFAULT_DIRECTION, [current]);
+
+  /**
+   * SCENE-AWARE MIXING — the director's only channel into the music.
+   *
+   * Whichever section owns the middle of the viewport sets the music level, and
+   * the ramp comes from the same table. Nothing here seeks, restarts, reloads or
+   * stops anything: the song is one continuous journey and this only decides how
+   * present it is. A scene the table does not name leaves the level alone rather
+   * than resetting it, so an unmapped section can never punch a hole in the mix.
+   *
+   * This is also why scrolling backwards works: the level follows the section
+   * under the viewport, not a position in the song.
+   */
+  useEffect(() => {
+    const mix = anniversary.audio.sceneMix[current];
+    if (!mix) return;
+    setSceneMix(mix.level, mix.ms);
+  }, [current, setSceneMix]);
 
   return (
     <div className="relative min-h-screen bg-navy-800 text-ivory">
@@ -148,23 +192,33 @@ export default function Experience() {
         alive={direction.alive ?? true}
       />
 
-      <SurpriseNav activeSection={direction.nav} dimmed={direction.immersive ?? false} />
+      <SurpriseNav
+        activeSection={direction.nav}
+        dimmed={direction.immersive ?? false}
+        sceneNumber={Math.max(0, SECTION_IDS.indexOf(current))}
+        sceneCount={SECTION_IDS.length}
+      />
       <AICursor />
       <SoundPrompt />
+      <MusicUnlockPrompt />
       <FullscreenHint />
+      {/* Belongs to the sky rather than to any scene, so it stays put while the
+          story scrolls past it. */}
+      <SecretStar />
 
-      <main id="main">
+      <main id="main" className="relative z-10">
         <Scene01Entry onEnter={onEnter} />
         <Scene02Days />
         <Scene03Journey />
+        <Scene06Gallery />
+        <Scene08Timeline />
         <Scene04Universe />
         <Scene05Map />
-        <Scene06Gallery />
-        <Scene07Tunnel />
-        <Scene08Timeline />
+        <Scene07Life />
         <Scene09Stats />
         <Scene10Quiet />
         <Scene11Converge />
+        <Scene12Letter />
         <Scene12Final />
       </main>
     </div>

@@ -65,7 +65,7 @@ export function SceneTitle({
       viewport={{ once: true, margin: '0px 0px -18% 0px' }}
       transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        'font-display text-[clamp(2.25rem,5.5vw,4.25rem)] font-light leading-[1.05] text-ivory',
+        'ai-scene-title',
         className
       )}
     >
@@ -89,7 +89,7 @@ export function SceneText({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '0px 0px -18% 0px' }}
       transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={cn('text-[0.975rem] leading-relaxed text-ivory/65', className)}
+      className={cn('ai-body', className)}
     >
       {children}
     </motion.p>

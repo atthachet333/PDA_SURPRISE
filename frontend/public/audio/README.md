@@ -76,7 +76,7 @@ a track of any length. Navigation never depends on song timing.
 ## 4. How the audio system behaves
 
 - **No autoplay.** Nothing plays until the visitor's own gesture — the
-  BEGIN / OPEN PROJECT click, or the first-visit "Sound on" choice.
+  story-entry click, or the first-visit "Sound on" choice.
 - **Fades only.** Music never starts or stops abruptly; every change is a ramp.
 - **Ducking.** The quiet scene pulls music down to ~32%, the finale opens it
   back to full over four seconds.

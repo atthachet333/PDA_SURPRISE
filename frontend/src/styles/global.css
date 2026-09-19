@@ -47,6 +47,14 @@
   body[data-theme='ai'] {
     --page-bg: #112538;
     --page-fg: #ffffff;
+    --ai-sky: #7ec8ff;
+    --ai-sky-soft: #dcefff;
+    --ai-cream: #f7f1e8;
+    --ai-navy: #17324d;
+    --ai-ink: #112538;
+    --ai-white: #ffffff;
+    --ai-champagne: #ebd9bc;
+    --ai-glow: rgba(126, 200, 255, 0.32);
   }
 
   @media (pointer: fine) and (hover: hover) {
@@ -120,6 +128,17 @@
     padding-block: 0.06em;
   }
 
+  @media (max-width: 639px) {
+    /* Long Thai card titles have no spaces; allow dictionary line breaking on
+       narrow screens instead of hiding the final words beyond the viewport. */
+    :lang(th),
+    .font-thai,
+    .thai-display {
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+  }
+
   p {
     text-wrap: pretty;
   }
@@ -182,6 +201,69 @@
     -webkit-backdrop-filter: blur(18px) saturate(140%);
   }
 
+  /*
+   * A&I volume slider.
+   *
+   * A real <input type="range">, restyled rather than replaced, so it keeps
+   * keyboard operation, the screen-reader value and the native drag behaviour.
+   * The track is a hairline in the A&I palette; the thumb is a small light.
+   */
+  .ai-volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 1.25rem;
+    background: transparent;
+  }
+
+  .ai-volume-slider::-webkit-slider-runnable-track {
+    height: 1px;
+    border-radius: 999px;
+    background: rgba(220, 239, 255, 0.28);
+  }
+
+  .ai-volume-slider::-moz-range-track {
+    height: 1px;
+    border-radius: 999px;
+    background: rgba(220, 239, 255, 0.28);
+  }
+
+  .ai-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0.625rem;
+    height: 0.625rem;
+    margin-top: -0.3125rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(186 222 255);
+    box-shadow: 0 0 10px -1px rgba(126, 200, 255, 0.85);
+  }
+
+  .ai-volume-slider::-moz-range-thumb {
+    width: 0.625rem;
+    height: 0.625rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(186 222 255);
+    box-shadow: 0 0 10px -1px rgba(126, 200, 255, 0.85);
+  }
+
+  .ai-volume-slider:focus-visible {
+    outline: none;
+  }
+
+  .ai-volume-slider:focus-visible::-webkit-slider-thumb {
+    box-shadow:
+      0 0 0 3px rgba(126, 200, 255, 0.45),
+      0 0 10px -1px rgba(126, 200, 255, 0.85);
+  }
+
+  .ai-volume-slider:focus-visible::-moz-range-thumb {
+    box-shadow:
+      0 0 0 3px rgba(126, 200, 255, 0.45),
+      0 0 10px -1px rgba(126, 200, 255, 0.85);
+  }
+
   .ai-glass {
     background: linear-gradient(
       140deg,
@@ -212,6 +294,237 @@
   /* Keeps white type legible wherever the sky brightens behind it. */
   .ai-legible {
     text-shadow: 0 1px 24px rgba(12, 27, 41, 0.55), 0 1px 3px rgba(12, 27, 41, 0.4);
+  }
+
+  /* A&I type system: Thai is calm and highly readable; Latin display copy
+     carries the cinematic identity. Handwritten treatment is deliberately
+     only an italic accent so no additional font payload is introduced. */
+  .ai-scene-title {
+    @apply thai-display ai-legible font-thai font-light text-ivory;
+    font-size: clamp(1.875rem, 5vw, 4rem);
+    line-height: 1.16;
+  }
+
+  .ai-body {
+    @apply font-thai text-ivory/70;
+    font-size: clamp(1rem, 1.45vw, 1.1875rem);
+    line-height: 1.85;
+  }
+
+  .ai-caption {
+    @apply font-thai text-ivory/60;
+    font-size: clamp(0.8125rem, 1vw, 0.9375rem);
+    line-height: 1.65;
+  }
+
+  .ai-micro {
+    @apply font-mono uppercase text-sky-100/60;
+    font-size: clamp(0.6875rem, 0.75vw, 0.8125rem);
+    letter-spacing: 0.2em;
+  }
+
+  .ai-wordmark {
+    @apply font-display font-light uppercase text-gradient-ai;
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 30px rgba(126, 200, 255, 0.2);
+  }
+
+  .ai-handwritten {
+    font-family: theme('fontFamily.display');
+    font-style: italic;
+    letter-spacing: 0.01em;
+  }
+
+  /* Reusable photo grammar. Each scene can choose a role without changing the
+     image component or applying a destructive filter to future real photos. */
+  .ai-frame-cinematic,
+  .ai-frame-memory,
+  .ai-frame-polaroid,
+  .ai-frame-orbit {
+    position: relative;
+    isolation: isolate;
+    background: rgba(23, 50, 77, 0.58);
+    box-shadow: 0 28px 80px -38px rgba(7, 21, 35, 0.92), 0 0 42px -24px var(--ai-glow);
+  }
+
+  .ai-frame-cinematic {
+    overflow: hidden;
+    border: 1px solid rgba(220, 239, 255, 0.18);
+    border-radius: 1.5rem;
+  }
+
+  .ai-frame-memory {
+    overflow: hidden;
+    border: 1px solid rgba(247, 241, 232, 0.38);
+    border-radius: 1rem;
+    box-shadow: 0 24px 65px -35px rgba(7, 21, 35, 0.95), 0 0 38px -25px var(--ai-glow);
+  }
+
+  .ai-frame-polaroid {
+    overflow: hidden;
+    padding: 0.45rem 0.45rem 1.85rem;
+    border: 1px solid rgba(247, 241, 232, 0.34);
+    border-radius: 0.75rem;
+    background: rgba(247, 241, 232, 0.12);
+  }
+
+  .ai-frame-orbit {
+    overflow: hidden;
+    border: 1px solid rgba(126, 200, 255, 0.34);
+    border-radius: 9999px;
+    box-shadow: 0 0 50px -20px rgba(126, 200, 255, 0.65);
+  }
+
+  .ai-photo-spill::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -14%;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 60%, rgba(126, 200, 255, 0.2), transparent 65%);
+    filter: blur(24px);
+    opacity: 0.72;
+    pointer-events: none;
+  }
+
+  /*
+   * SECRET WHISPER.
+   *
+   * The resting state is VISIBLE. The keyframe only adds the rise on top, so a
+   * whisper whose animation never runs — throttled tab, stalled compositor,
+   * reduced motion — is simply readable instead of invisible. It lives for a few
+   * seconds and then unmounts, so an entrance that gates opacity would mean it
+   * was never seen at all.
+   */
+  .secret-whisper {
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    opacity: 1;
+    font-family: theme('fontFamily.thai');
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: rgb(247 241 232 / 0.85);
+    text-shadow: 0 0 18px rgba(126, 200, 255, 0.55);
+    /*
+     * NOTE THE ABSENCE OF `both`, AND OF OPACITY IN THE KEYFRAME.
+     *
+     * `fill-mode: both` re-applies the `from` state outside the animation, which
+     * put the element back at opacity 0 whenever the animation did not progress
+     * — measured exactly that. And a THROTTLED animation holds whatever frame it
+     * stalled on, so even without a fill mode, animating opacity would still be
+     * able to hide the text.
+     *
+     * So opacity and blur are never animated here. Only `translate` is, and a
+     * rise that stalls leaves the whisper eight pixels low and perfectly
+     * readable. There is no state of this animation, running or not, in which
+     * the words are invisible.
+     */
+    animation: secret-whisper-in 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /*
+   * Uses the independent `translate` property, NOT `transform`.
+   *
+   * Several of these whispers are centred with Tailwind's `-translate-x-1/2`,
+   * which compiles to `transform`. Animating `transform` here would overwrite
+   * that centring for the life of the animation and — with `fill-mode: both` —
+   * keep it overwritten afterwards, knocking the text off-centre. `translate`
+   * composes with `transform` instead of replacing it.
+   */
+  @keyframes secret-whisper-in {
+    from {
+      translate: 0 8px;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+
+  /*
+   * A&I CONTROLS.
+   *
+   * `touch-action: manipulation` removes the browser's double-tap-to-zoom wait,
+   * which is what makes a tap feel like it lands late on a phone even when the
+   * handler fires immediately.
+   *
+   * Every control also needs a PRESSED state, not just a hover one: hover does
+   * not exist on touch, so without this a tap gives no feedback at all until the
+   * scene reacts. The scale is small and the timing short - these are quiet
+   * controls in a cinematic scene, not app buttons.
+   */
+  .ai-button-primary,
+  .ai-button-secondary,
+  .ai-button-text {
+    @apply relative inline-flex min-h-11 items-center justify-center overflow-hidden rounded-pill px-6 font-thai text-sm transition-all duration-slow;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ai-button-primary:active,
+  .ai-button-secondary:active,
+  .ai-button-text:active {
+    transform: scale(0.975);
+    transition-duration: 120ms;
+  }
+
+  .ai-button-primary:disabled,
+  .ai-button-secondary:disabled,
+  .ai-button-text:disabled {
+    @apply cursor-default opacity-40;
+    transform: none;
+  }
+
+  /* Shared pressed response for the smaller A&I controls (nav, toggles, cards). */
+  .ai-pressable {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 180ms cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 180ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ai-pressable:active {
+    transform: scale(0.94);
+    transition-duration: 110ms;
+  }
+
+  .ai-pressable:disabled:active {
+    transform: none;
+  }
+
+  .ai-button-primary {
+    @apply border border-sky-100/55 bg-ivory text-navy-800 shadow-glow;
+  }
+
+  .ai-button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 44px -20px rgba(126, 200, 255, 0.8);
+  }
+
+  .ai-button-secondary {
+    @apply border border-sky-200/30 bg-sky-400/5 text-ivory/80;
+  }
+
+  .ai-button-secondary:hover {
+    @apply border-sky-200/60 bg-sky-400/10 text-ivory;
+  }
+
+  .ai-button-text {
+    @apply px-3 text-ivory/55;
+  }
+
+  .ai-button-text:hover {
+    @apply text-ivory;
+    transform: translateX(2px);
+  }
+
+  .ai-warm-wash {
+    background:
+      radial-gradient(70% 60% at 50% 86%, rgba(247, 241, 232, 0.2), transparent 70%),
+      radial-gradient(42% 36% at 78% 25%, rgba(235, 217, 188, 0.12), transparent 75%);
   }
 
   .text-gradient-brand {
@@ -404,6 +717,35 @@
     -webkit-mask-image: linear-gradient(to top, black, transparent 72%);
   }
 
+  .solution-hero-grid {
+    background-image:
+      linear-gradient(rgba(6, 59, 42, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6, 59, 42, 0.055) 1px, transparent 1px);
+    background-size: 68px 68px;
+    mask-image: radial-gradient(75% 85% at 62% 42%, black, transparent 86%);
+    -webkit-mask-image: radial-gradient(75% 85% at 62% 42%, black, transparent 86%);
+  }
+
+  .footer-grid-drift {
+    animation: footer-grid-drift 36s linear infinite;
+    will-change: transform;
+  }
+
+  .footer-particle {
+    animation: footer-particle 8s ease-in-out infinite;
+    box-shadow: 0 0 16px rgba(127, 217, 166, 0.8);
+  }
+
+  @keyframes footer-grid-drift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(56px, 56px, 0); }
+  }
+
+  @keyframes footer-particle {
+    0%, 100% { opacity: 0.2; transform: translate3d(0, 8px, 0); }
+    50% { opacity: 0.9; transform: translate3d(10px, -16px, 0); }
+  }
+
   /* ===================================================================== */
   /* Kinetic type                                                           */
   /* ===================================================================== */
@@ -453,6 +795,21 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+  /* No entrance at all — the resting state is already the readable one. */
+  .secret-whisper {
+    animation: none;
+  }
+
+  /* The pressed state stays useful without the scale: opacity still confirms
+     the tap landed. */
+  .ai-button-primary:active,
+  .ai-button-secondary:active,
+  .ai-button-text:active,
+  .ai-pressable:active {
+    transform: none;
+    opacity: 0.75;
+  }
+
     /* No reveal at all — the natural, readable state. */
     .reveal-line.is-armed > span {
       animation: none;

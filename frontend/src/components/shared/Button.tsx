@@ -51,12 +51,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         else if (forwardedRef) forwardedRef.current = node;
       }}
       className={cn(BASE, VARIANTS[variant], SIZES[size], className)}
-      onPointerEnter={(event) => {
-        play('hover');
-        onPointerEnter?.(event);
-      }}
+      onPointerEnter={onPointerEnter}
       onClick={(event) => {
-        play('click');
+        play('softClick');
         onClick?.(event);
       }}
       {...rest}
@@ -82,7 +79,6 @@ export function ButtonLink({
       <a
         href={to}
         className={cn(BASE, VARIANTS[variant], SIZES[size], className)}
-        onPointerEnter={() => play('hover')}
         {...rest}
       >
         {children}
@@ -94,8 +90,7 @@ export function ButtonLink({
     <Link
       to={to}
       className={cn(BASE, VARIANTS[variant], SIZES[size], className)}
-      onPointerEnter={() => play('hover')}
-      onClick={() => play('click')}
+      onClick={() => play('softClick')}
       {...rest}
     >
       {children}

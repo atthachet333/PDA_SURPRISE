@@ -44,6 +44,8 @@ export const company = {
   lineOA: '@593oiwec',
   /** Replace with the real LINE OA link when it is issued. */
   lineUrl: 'https://line.me/R/ti/p/@593oiwec',
+  /** Add a verified Google Maps or other map URL here to make the address actionable. */
+  mapUrl: '',
 
   /** Registered address — the only place it is defined. */
   address: {
@@ -64,8 +66,8 @@ export const company = {
   addressNote: 'กรุงเทพมหานคร ประเทศไทย',
 
   businessHours: {
-    days: 'จันทร์ – ศุกร์',
-    time: '09:00 – 18:00 น.',
+    days: 'จันทร์ – เสาร์',
+    time: '08:30 – 17:30 น.',
     note: 'ตอบกลับภายใน 1 วันทำการ'
   },
 
@@ -254,7 +256,7 @@ export const process = [
 export const footer = {
   menuHeading: 'เมนูหลัก',
   servicesHeading: 'บริการของเรา',
-  contactHeading: 'ติดต่อ',
+  contactHeading: 'ติดต่อเรา',
   /** Mirrors the seven primary services in data/services.ts. */
   servicesLinks: [
     { label: 'ระบบ ERP / บริหารธุรกิจ', to: '/services#business-systems' },
@@ -267,8 +269,8 @@ export const footer = {
   ],
   legalLinks: [
     { label: 'นโยบายความเป็นส่วนตัว', to: '/privacy' },
+    { label: 'นโยบายคุกกี้', to: '/cookie-policy' },
     { label: 'เงื่อนไขการใช้งาน', to: '/terms' },
-    { label: 'Sitemap', to: '/sitemap' }
   ]
 } as const;
 

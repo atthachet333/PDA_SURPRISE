@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon } from '@/components/shared/Button';
 import { ProductPanel } from './ProductPanel';
-import { portfolio, type PortfolioItem } from '@/data/portfolio';
-import { VisibilityBadge } from './LiveLink';
+import { canShowLiveLink, portfolio, type PortfolioItem } from '@/data/portfolio';
+import { LiveProjectCta, VisibilityBadge } from './LiveLink';
 import { SectionBackdrop } from './SectionBackdrop';
-import { visualForPortfolio } from '@/data/visuals';
+import { visualForPortfolioItem } from '@/data/visuals';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
@@ -98,7 +98,8 @@ function WorkBand({
   const bandRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
-  const visual = visualForPortfolio(item.id);
+  const visual = visualForPortfolioItem(item);
+  const live = canShowLiveLink(item);
 
   const { scrollYProgress } = useScroll({
     target: bandRef,
@@ -112,11 +113,7 @@ function WorkBand({
   return (
     <div ref={bandRef}>
       <Container wide>
-        <Link
-          to={`/work/${item.id}`}
-          data-cursor="project"
-          className="group grid items-center gap-7 lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)] lg:gap-12"
-        >
+        <div className="group grid items-center gap-7 lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)] lg:gap-12">
           {/* ------------------------------------------------------ visual -- */}
           <div className={cn('relative', flipped && 'lg:order-2')}>
             {/*
@@ -131,16 +128,6 @@ function WorkBand({
               >
                 <ProductPanel slot={visual} className="h-full" frame="none" />
               </motion.div>
-
-              {/* Reveal mask that lifts on first view */}
-              <motion.span
-                aria-hidden="true"
-                className="absolute inset-0 origin-bottom bg-ink"
-                initial={reduced ? false : { scaleY: 1 }}
-                whileInView={{ scaleY: 0 }}
-                viewport={{ once: true, amount: 0.35 }}
-                transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
-              />
 
               {/* Hover sheen */}
               <span
@@ -159,6 +146,11 @@ function WorkBand({
               {!visual.screenshot ? (
                 <span className="pointer-events-none absolute bottom-3 right-3 rounded-pill bg-ink/70 px-2 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.12em] text-white/80 backdrop-blur-sm">
                   ภาพตัวอย่างระบบ
+                </span>
+              ) : null}
+              {live ? (
+                <span className="pointer-events-none absolute right-3 top-3 rounded-pill border border-brand-300/40 bg-brand-900/75 px-2.5 py-1 font-mono text-[0.5rem] uppercase tracking-[0.14em] text-brand-200 backdrop-blur-sm">
+                  LIVE WEBSITE
                 </span>
               ) : null}
             </div>
@@ -214,12 +206,22 @@ function WorkBand({
               ))}
             </ul>
 
-            <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white">
-              ดูรายละเอียด
-              <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1.5" />
-            </span>
+            <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <Link
+                to={`/work/${item.id}`}
+                data-cursor="project"
+                className="group/case inline-flex h-12 items-center gap-2 rounded-pill border border-white/25 px-5 text-sm font-semibold text-white transition-colors hover:border-brand-300 hover:bg-white/5"
+              >
+                ดู Case Study
+                <ArrowIcon className="transition-transform duration-base group-hover/case:translate-x-1.5" />
+              </Link>
+              <LiveProjectCta item={item} className="bg-brand-500 hover:bg-brand-400" />
+              {!live && item.visibility === 'public' ? (
+                <span className="text-xs text-brand-100/45">ลิงก์เว็บไซต์รออัปเดต</span>
+              ) : null}
+            </div>
           </div>
-        </Link>
+        </div>
       </Container>
     </div>
   );

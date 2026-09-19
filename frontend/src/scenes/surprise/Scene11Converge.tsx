@@ -93,7 +93,7 @@ export function Scene11Converge() {
       scrollYProgress.on('change', (value) => {
         if (value > 0.52 && value < 0.72 && !impactFired.current) {
           impactFired.current = true;
-          play('impact');
+          play('softImpact');
         }
         if (value < 0.3) impactFired.current = false;
       }),
@@ -125,15 +125,17 @@ export function Scene11Converge() {
   const markScale = useTransform(scrollYProgress, [0.76, 1], [0.85, 1]);
   const captionOpacity = useTransform(scrollYProgress, [0.84, 0.95], [0, 1]);
   const glyphGlow = useTransform(scrollYProgress, [0.48, 0.6, 0.74], [0, 0.6, 0]);
+  const glyphOpacity = useTransform(scrollYProgress, [0.5, 0.58, 0.76, 0.86], [0, 0.16, 0.16, 0]);
 
   if (reduced) {
     return (
       <section id="converge" aria-label="Everything at once" className="px-6 py-28 text-center">
         <div ref={ref} aria-hidden="true" className="h-px" />
+        <p className="mb-10 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/55">10 · ทุกอย่างที่เราเป็น</p>
         <div className="mx-auto grid max-w-2xl grid-cols-6 gap-1.5">
           {cards.slice(0, 30).map((card) => (
             <span key={card.key} className="ai-surface aspect-[3/4] overflow-hidden rounded-[4px]">
-              <MemoryImage photo={card.memory.image} alt="" tone={card.memory.tone} index={card.index} />
+              <MemoryImage photo={card.memory.image} alt="" tone={card.memory.tone} index={card.index} objectPosition={card.memory.objectPosition} cropMode={card.memory.cropMode} />
             </span>
           ))}
         </div>
@@ -151,13 +153,24 @@ export function Scene11Converge() {
     <div ref={container} id="converge" className="relative h-[380vh]">
       <div ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[50vh]" />
 
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden">
+      <div className="sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden">
+        <p className="pointer-events-none absolute top-24 z-30 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/55">10 · ทุกอย่างที่เราเป็น</p>
         {/* Light released as the glyph locks */}
         <motion.span
           aria-hidden="true"
           style={{ opacity: flash }}
           className="pointer-events-none absolute h-[42rem] w-[42rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.65),rgba(126,200,255,0.28)_42%,transparent_72%)] blur-3xl"
         />
+
+        {/* A quiet silhouette makes the completed form legible immediately;
+            the photo cards remain the substance of the glyph. */}
+        <motion.p
+          aria-hidden="true"
+          style={{ opacity: glyphOpacity }}
+          className="pointer-events-none absolute z-0 font-display text-[clamp(7rem,25vw,18rem)] font-light leading-none tracking-[0.02em] text-sky-100"
+        >
+          {anniversary.convergence.glyph}
+        </motion.p>
 
         {/* Glow held behind the assembled shape */}
         <motion.span
@@ -223,8 +236,8 @@ function ConvergeCard({
   const drift = 0.22 + offset;    // free float
   const gravity = 0.42 + offset;  // pulled inward
   const locked = 0.58;            // glyph readable
-  const hold = 0.72;              // held
-  const gone = 0.84;              // dissolved
+  const hold = 0.76;              // held long enough to read
+  const gone = 0.88;              // dissolved
 
   const x = useTransform(
     progress,
@@ -260,7 +273,7 @@ function ConvergeCard({
       style={{ x: translateX, y: translateY, scale, rotate, opacity, filter }}
     >
       <span className="block" style={{ width: small ? '4.6rem' : '7rem', aspectRatio: '3 / 4' }}>
-        <MemoryImage photo={card.memory.image} alt="" tone={card.memory.tone} index={card.index} />
+        <MemoryImage photo={card.memory.image} alt="" tone={card.memory.tone} index={card.index} objectPosition={card.memory.objectPosition} cropMode={card.memory.cropMode} />
       </span>
     </motion.figure>
   );

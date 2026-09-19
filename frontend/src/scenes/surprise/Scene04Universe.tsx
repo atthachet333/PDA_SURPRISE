@@ -32,7 +32,8 @@ const BANDS = [
   { radius: 1.24, speed: 0.68, yScale: 1.35 }
 ] as const;
 
-const IDLE_SPEED = 0.022; // degrees per ms
+const IDLE_SPEED = 0.016; // degrees per ms
+const HINT_KEY = 'ai:universe-hint';
 
 interface Placed extends Memory {
   theta: number;
@@ -70,6 +71,13 @@ export function Scene04Universe() {
   const [rotation, setRotation] = useState(0);
   const [selected, setSelected] = useState<Placed | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [showHint, setShowHint] = useState(() => {
+    try {
+      return window.localStorage.getItem(HINT_KEY) !== '1';
+    } catch {
+      return true;
+    }
+  });
 
   const rotationRef = useRef(0);
   const velocity = useRef(0);
@@ -79,14 +87,30 @@ export function Scene04Universe() {
 
   const memories = useMemo(() => memoriesForScene('universe'), []);
   const placed = useMemo(() => placeMemories(memories), [memories]);
-  const radius = device.isMobile ? 156 : device.tier === 'medium' ? 270 : 320;
+  const radius = device.isMobile ? 170 : device.tier === 'medium' ? 275 : 325;
+
+  const acknowledgeHint = useCallback(() => {
+    setShowHint(false);
+    try {
+      window.localStorage.setItem(HINT_KEY, '1');
+    } catch {
+      // The hint can reappear in private browsing without affecting interaction.
+    }
+  }, []);
 
   // Warm this scene's photos as it comes into view.
   useEffect(() => {
     if (!inView) return;
     triggerCue('memoryUniverse');
+    /*
+     * One subtle spatial pass, the first time the Universe opens. `useInViewOnce`
+     * guarantees this fires once — orbiting and dragging stay silent, because a
+     * continuous loop under a continuous motion becomes irritating within
+     * seconds.
+     */
+    play('orbitPass');
     void preloadImages(memories.map((memory) => memory.image));
-  }, [inView, memories, triggerCue]);
+  }, [inView, memories, play, triggerCue]);
 
   // One loop drives idle rotation and drag inertia.
   useEffect(() => {
@@ -112,13 +136,14 @@ export function Scene04Universe() {
   }, [dragging, inView, reduced, selected, visible]);
 
   const onPointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    acknowledgeHint();
     setDragging(true);
     lastPointer.current = event.clientX;
     lastTime.current = performance.now();
     dragDistance.current = 0;
     velocity.current = 0;
     event.currentTarget.setPointerCapture(event.pointerId);
-  }, []);
+  }, [acknowledgeHint]);
 
   const onPointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -147,14 +172,16 @@ export function Scene04Universe() {
     (memory: Placed) => {
       // Ignore the click that ends a drag.
       if (dragDistance.current > 6) return;
-      play('sparkle');
+      acknowledgeHint();
+      // Very small focus cue — the memory coming into view, nothing more.
+      play('memoryFocus');
       setSelected(memory);
     },
-    [play]
+    [acknowledgeHint, play]
   );
 
   const closeMemory = useCallback(() => {
-    play('click');
+    play('softClick');
     setSelected(null);
   }, [play]);
 
@@ -175,8 +202,8 @@ export function Scene04Universe() {
           animate={{ opacity: selected ? 0.25 : 1, y: selected ? -12 : 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <SceneLabel>Memory universe</SceneLabel>
-          <SceneTitle className="mt-5">Everything still orbiting us.</SceneTitle>
+          <SceneLabel>05 · จักรวาลความทรงจำ</SceneLabel>
+          <SceneTitle className="thai-display mt-5 font-thai">ถ้าแต่ละความทรงจำ<br />เป็นดาวหนึ่งดวง...</SceneTitle>
         </motion.div>
 
         <div
@@ -200,7 +227,7 @@ export function Scene04Universe() {
           >
             <AIMark size="inline" />
             <span className="mt-3 block font-mono text-[0.5rem] uppercase tracking-[0.28em] text-sky-100/45">
-              {memories.length} memories
+              {memories.length} ความทรงจำ
             </span>
           </motion.div>
 
@@ -247,7 +274,6 @@ export function Scene04Universe() {
                 <button
                   key={memory.id}
                   type="button"
-                  onPointerEnter={() => play('hover')}
                   onClick={() => openMemory(memory)}
                   aria-label={`${memory.title}, ${memory.date}`}
                   data-cursor="open"
@@ -260,7 +286,7 @@ export function Scene04Universe() {
                     transition: dragging ? 'none' : 'opacity 300ms linear'
                   }}
                 >
-                  <span className="ai-surface block w-[7rem] overflow-hidden rounded-card shadow-glow transition-transform duration-slow ease-entrance group-hover:scale-[1.07] sm:w-[9.5rem]">
+                  <span className="ai-frame-orbit block w-[8rem] overflow-hidden shadow-glow transition-transform duration-slow ease-entrance group-hover:scale-[1.06] sm:w-[10.5rem]">
                     <span
                       className={cn('block aspect-[4/5]', !reduced && 'animate-drift')}
                       style={{
@@ -274,6 +300,8 @@ export function Scene04Universe() {
                         tone={memory.tone}
                         label={memory.date}
                         index={memory.index}
+                        objectPosition={memory.objectPosition}
+                        cropMode={memory.cropMode}
                       />
                     </span>
                     <span className="block truncate px-2.5 py-2 text-left font-mono text-[0.5rem] uppercase tracking-[0.16em] text-ivory/55">
@@ -299,7 +327,7 @@ export function Scene04Universe() {
                 aria-modal="true"
                 aria-label={selected.title}
               >
-                <div className="ai-glass flex w-full max-w-lg flex-col overflow-hidden rounded-panel sm:flex-row">
+                <div className="ai-glass ai-photo-spill relative flex w-full max-w-lg flex-col overflow-hidden rounded-panel sm:flex-row">
                   <div className="aspect-[4/3] w-full shrink-0 sm:aspect-auto sm:w-1/2">
                     <MemoryImage
                       photo={selected.image}
@@ -309,6 +337,8 @@ export function Scene04Universe() {
                       label={selected.date}
                       index={selected.index}
                       instant
+                      objectPosition={selected.objectPosition}
+                      cropMode={selected.cropMode}
                     />
                   </div>
                   <div className="flex flex-1 flex-col justify-center p-6">
@@ -326,7 +356,7 @@ export function Scene04Universe() {
                       data-cursor="interactive"
                       className="mt-6 self-start rounded-pill border border-sky-200/30 px-4 py-2 text-[0.5625rem] uppercase tracking-[0.2em] text-ivory/70 transition-colors duration-base hover:border-sky-200/60 hover:text-ivory"
                     >
-                      Close
+                      ปิด
                     </button>
                   </div>
                 </div>
@@ -347,10 +377,10 @@ export function Scene04Universe() {
         </div>
 
         <motion.p
-          animate={{ opacity: selected ? 0 : 0.3 }}
+          animate={{ opacity: selected || !showHint ? 0 : 0.52 }}
           className="mt-6 font-mono text-[0.5rem] uppercase tracking-[0.28em] text-ivory"
         >
-          {device.isTouch ? 'swipe to rotate · tap to open' : 'drag to rotate · click to open'}
+          {device.isTouch ? 'ปัดเพื่อหมุน · แตะเพื่อเปิด' : 'ลากเพื่อหมุน · คลิกเพื่อเปิด'}
         </motion.p>
       </div>
     </SceneSection>

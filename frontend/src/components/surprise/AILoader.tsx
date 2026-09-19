@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { AIMark } from './AIMark';
 
-const MESSAGES = ['Preparing our story...', 'Gathering memories...', 'Almost there...'];
+const MESSAGES = ['กำลังเตรียมเรื่องราวของเรา...', 'กำลังรวบรวมความทรงจำ...', 'อีกนิดเดียว...'];
 
 /**
  * The only loading state in the A&I experience: the mark, one rotating line of
@@ -47,7 +47,7 @@ export function AILoader({ label }: { label?: string }) {
             animate={{ opacity: 0.7, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.5 }}
-            className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sky-100/70"
+            className="font-thai text-sm leading-relaxed text-sky-100/70"
           >
             {label ?? MESSAGES[index]}
           </motion.p>

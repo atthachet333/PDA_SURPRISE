@@ -45,7 +45,7 @@ export function Scene06Gallery() {
   const step = useCallback(
     (direction: 1 | -1) => {
       setActive((current) => (current + direction + memories.length) % memories.length);
-      play('hover');
+      play('memoryFocus');
     },
     [memories.length, play]
   );
@@ -100,11 +100,11 @@ export function Scene06Gallery() {
   const current = memories[active];
 
   return (
-    <SceneSection id="gallery" ref={ref} label="Rotating gallery" className="overflow-hidden">
+    <SceneSection id="little-moments" ref={ref} label="โมเมนต์เล็ก ๆ" className="overflow-hidden">
       <div className="flex w-full max-w-6xl flex-col items-center">
         <div className="text-center">
-          <SceneLabel>The gallery</SceneLabel>
-          <SceneTitle className="mt-5">Turn it slowly.</SceneTitle>
+          <SceneLabel>03 · โมเมนต์เล็ก ๆ ของเรา</SceneLabel>
+          <SceneTitle className="thai-display mt-5 font-thai">เรื่องเล็ก ๆ ที่อยากจำไว้นาน ๆ</SceneTitle>
         </div>
 
         <div
@@ -155,7 +155,7 @@ export function Scene06Gallery() {
                     pause();
                     if (!isActive) {
                       setActive(index);
-                      play('hover');
+                      play('memoryFocus');
                     }
                   }}
                   className="absolute left-1/2 top-1/2 origin-center"
@@ -180,8 +180,8 @@ export function Scene06Gallery() {
                 >
                   <span
                     className={cn(
-                      'ai-surface block w-[10rem] overflow-hidden rounded-panel transition-shadow duration-slow sm:w-[14.75rem]',
-                      isActive ? 'shadow-glow-lg ring-1 ring-sky-200/35' : ''
+                      'ai-frame-memory block w-[10rem] overflow-hidden transition-shadow duration-slow sm:w-[14.75rem]',
+                      isActive ? 'ai-photo-spill shadow-glow-lg ring-1 ring-sky-200/35' : ''
                     )}
                   >
                     <span className="block aspect-[3/4]">
@@ -192,6 +192,8 @@ export function Scene06Gallery() {
                         loading={distance <= 1 ? 'eager' : 'lazy'}
                         label={memory.date}
                         index={index}
+                        objectPosition={memory.objectPosition}
+                        cropMode={memory.cropMode}
                       />
                     </span>
                   </span>

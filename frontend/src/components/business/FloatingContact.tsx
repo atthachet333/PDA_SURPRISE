@@ -4,27 +4,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { company, cta } from '@/data/company';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { ContactIcon } from './Footer';
+import { Logo } from './Logo';
 
-/**
- * FLOATING CONTACT — a small dock that expands upward.
- *
- * Functionality is unchanged: consultation, LINE, phone, email. The treatment is
- * now a dark technical dock with green accents rather than a white card.
- *
- * Mobile
- *   Collapses to a single round button so it never covers content, and it sits
- *   inside the safe-area insets (see `.floating-contact-position`). Opening it
- *   shows the same four channels at full tap size.
- */
-
-interface Channel {
-  label: string;
-  href: string;
-  /** Internal router links use `to` instead of `href`. */
-  to?: string;
-  hint: string;
-  primary?: boolean;
-}
+type DockIcon = 'phone' | 'line' | 'mail' | 'calendar';
+type Channel = { icon: DockIcon; eyebrow: string; label: string; detail: string; href?: string; to?: string; bright?: boolean };
 
 export function FloatingContact() {
   const [open, setOpen] = useState(false);
@@ -32,138 +16,64 @@ export function FloatingContact() {
   const reduced = useReducedMotion();
 
   useEffect(() => setOpen(false), [location.pathname]);
-
   useEffect(() => {
     if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
-    };
+    const onKey = (event: KeyboardEvent) => event.key === 'Escape' && setOpen(false);
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
   const channels: Channel[] = [
-    { label: cta.consult.label, href: '', to: cta.consult.to, hint: 'แบบฟอร์ม', primary: true },
-    { label: `LINE ${company.lineOA}`, href: company.lineUrl, hint: 'LINE OA' },
-    { label: company.phoneDisplay, href: `tel:${company.phone}`, hint: 'โทร' },
-    { label: company.email, href: `mailto:${company.email}`, hint: 'อีเมล' }
+    { icon: 'phone', eyebrow: 'โทรหาเรา', label: company.phoneDisplay, detail: 'โทรศัพท์', href: `tel:${company.phone}` },
+    { icon: 'line', eyebrow: 'LINE OA', label: company.lineOA, detail: 'เปิดแชต LINE', href: company.lineUrl, bright: true },
+    { icon: 'mail', eyebrow: 'ส่งอีเมล', label: company.email, detail: 'อีเมล', href: `mailto:${company.email}` },
+    { icon: 'calendar', eyebrow: 'ขอรับคำปรึกษา', label: 'นัดหมายพูดคุยเกี่ยวกับโปรเจกต์', detail: 'Consultation', to: cta.consult.to }
   ];
 
   return (
-    <div className="floating-contact-position fixed z-40">
-      <AnimatePresence>
-        {open ? (
-          <motion.div
-            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduced ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.98 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-3 w-[min(19rem,calc(100vw-2.5rem))] overflow-hidden rounded-panel border border-brand-400/25 bg-[linear-gradient(160deg,rgba(6,59,42,0.97),rgba(4,26,19,0.98))] shadow-lift-lg backdrop-blur-xl"
-          >
-            <div className="border-b border-brand-400/15 px-5 py-4">
-              <p className="flex items-center gap-2 font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-brand-300">
-                <span
-                  className={cn('h-1.5 w-1.5 rounded-full bg-brand-400', !reduced && 'animate-status-blink')}
-                />
-                contact
-              </p>
-              <p className="thai-display mt-2.5 text-base font-bold text-white">
-                คุยเรื่องโปรเจกต์กับเรา
-              </p>
-              <p className="mt-1.5 text-xs leading-relaxed text-brand-100/60">
-                {company.businessHours.note}
-              </p>
-            </div>
+    <>
+      <AnimatePresence>{open ? <motion.button type="button" aria-label="ปิดช่องทางติดต่อ" onClick={() => setOpen(false)} className="fixed inset-0 z-[54] bg-ink/35 backdrop-blur-[2px] sm:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} /> : null}</AnimatePresence>
+      <div className="floating-contact-position fixed z-[55]">
+        <AnimatePresence>
+          {open ? (
+            <motion.section
+              role="dialog"
+              aria-modal="false"
+              aria-label="ช่องทางติดต่อ PDA BLISS"
+              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18, scale: .94, transformOrigin: 'bottom right' }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={reduced ? { opacity: 0 } : { opacity: 0, y: 12, scale: .97 }}
+              transition={{ duration: reduced ? 0 : .38, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed inset-x-3 bottom-[calc(1rem+env(safe-area-inset-bottom))] max-h-[78dvh] overflow-y-auto rounded-panel border border-brand-300/20 bg-[linear-gradient(155deg,rgba(5,47,34,.98),rgba(3,22,16,.99))] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-lift-lg backdrop-blur-xl sm:absolute sm:inset-auto sm:bottom-full sm:right-0 sm:mb-3 sm:w-[22rem] sm:p-4"
+            >
+              <span className="mx-auto mb-3 block h-1 w-10 rounded-pill bg-white/20 sm:hidden" />
+              <div className="relative overflow-hidden rounded-card border border-brand-400/15 bg-white/[.04] p-4">
+                <span aria-hidden="true" className="absolute inset-0 mesh-lines opacity-25" />
+                <div className="relative flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-3"><Logo compact inverted /><div><p className="thai-display text-sm font-bold text-white">พร้อมช่วยเรื่องโปรเจกต์ของคุณ</p><p className="mt-1 text-xs text-brand-100/55">{company.businessHours.note}</p></div></div>
+                  <button type="button" onClick={() => setOpen(false)} aria-label="ปิด" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/65 transition hover:bg-white/10 hover:text-white">×</button>
+                </div>
+              </div>
 
-            <div className="p-3">
-              {channels.map((channel, index) => {
-                const inner = (
-                  <>
-                    <span className="font-mono text-[0.5rem] uppercase tracking-[0.16em] text-brand-300/60">
-                      {channel.hint}
-                    </span>
-                    <span
-                      className={cn(
-                        'mt-1 block truncate text-sm font-medium',
-                        channel.primary ? 'text-brand-800' : 'text-white'
-                      )}
-                    >
-                      {channel.label}
-                    </span>
-                  </>
-                );
+              <div className="mt-3 space-y-2">
+                {channels.map((channel, index) => {
+                  const content = <><span className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-all', channel.bright ? 'border-brand-300/40 bg-brand-400/15 text-brand-200' : 'border-white/10 bg-white/[.04] text-brand-300 group-hover:border-brand-400/35 group-hover:text-brand-200')}><ContactIcon name={channel.icon} /></span><span className="min-w-0 flex-1"><span className="block text-xs text-brand-100/50">{channel.eyebrow}</span><span className="mt-0.5 block truncate text-sm font-semibold text-white">{channel.label}</span></span><span aria-hidden="true" className="text-brand-300/55 transition-transform group-hover:translate-x-1">→</span></>;
+                  const classes = 'group flex min-h-16 items-center gap-3 rounded-card border border-transparent px-3 py-2.5 transition-colors hover:border-brand-400/15 hover:bg-brand-400/[.07]';
+                  return <motion.div key={channel.eyebrow} initial={reduced ? false : { opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .25, delay: .08 + index * .045 }}>{channel.to ? <Link to={channel.to} className={classes}>{content}</Link> : <a href={channel.href} target={channel.href?.startsWith('http') ? '_blank' : undefined} rel={channel.href?.startsWith('http') ? 'noopener noreferrer' : undefined} className={classes}>{content}</a>}</motion.div>;
+                })}
+              </div>
 
-                const className = cn(
-                  'block rounded-card px-4 py-3 transition-colors duration-base',
-                  channel.primary
-                    ? 'bg-brand-400 hover:bg-brand-300'
-                    : 'hover:bg-brand-400/10'
-                );
+              <div className="mt-3 flex items-center gap-3 border-t border-white/10 px-3 pt-4"><span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-brand-300"><ContactIcon name="clock" /></span><p className="text-xs leading-5 text-brand-100/60"><span className="text-white">{company.businessHours.days}</span><br />{company.businessHours.time}</p></div>
+            </motion.section>
+          ) : null}
+        </AnimatePresence>
 
-                return (
-                  <motion.div
-                    key={channel.label}
-                    initial={reduced ? false : { opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.05 + index * 0.05 }}
-                  >
-                    {channel.to ? (
-                      <Link to={channel.to} className={className}>
-                        {inner}
-                      </Link>
-                    ) : (
-                      <a
-                        href={channel.href}
-                        className={className}
-                        target={channel.href.startsWith('http') ? '_blank' : undefined}
-                        rel={channel.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      >
-                        {inner}
-                      </a>
-                    )}
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-
-      <button
-        type="button"
-        onClick={() => setOpen((value) => !value)}
-        aria-expanded={open}
-        aria-label={open ? 'ปิดช่องทางติดต่อ' : 'เปิดช่องทางติดต่อ'}
-        className={cn(
-          'ml-auto flex items-center justify-center gap-2.5 border border-brand-400/30 bg-[linear-gradient(150deg,#063B2A,#04261B)] text-white shadow-lift transition-all duration-base ease-smooth hover:-translate-y-0.5 hover:border-brand-400/60',
-          // Round on mobile so it never covers content; labelled from sm up.
-          'h-13 w-13 rounded-full sm:h-14 sm:w-auto sm:rounded-pill sm:px-5'
-        )}
-      >
-        {/* Mobile is icon-only, so it needs a real icon — a bare status dot is
-            not a recognisable affordance at 52px. From sm up the label returns
-            and the dot goes back to signalling "we are open". */}
-        <svg
-          viewBox="0 0 20 20"
-          aria-hidden="true"
-          className="h-5 w-5 shrink-0 text-brand-400 sm:hidden"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M17 12.5a2 2 0 0 1-2 2H7l-4 3v-12a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z" />
-          <path d="M7 7.5h6M7 10.5h4" />
-        </svg>
-        <span
-          className={cn(
-            'hidden h-2 w-2 shrink-0 rounded-full bg-brand-400 shadow-brand-glow sm:block',
-            !reduced && 'animate-status-blink'
-          )}
-        />
-        <span className="thai-display hidden text-sm font-semibold sm:inline">ติดต่อเรา</span>
-      </button>
-    </div>
+        <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? 'ปิดช่องทางติดต่อ' : 'เปิดช่องทางติดต่อ'} className="group ml-auto flex h-13 w-13 items-center justify-center gap-2.5 rounded-full border border-brand-400/35 bg-[linear-gradient(150deg,#063B2A,#031b13)] text-white shadow-lift transition-all duration-base hover:-translate-y-1 hover:border-brand-300/60 hover:shadow-brand-glow sm:h-14 sm:w-auto sm:rounded-pill sm:px-5">
+          <motion.span animate={open && !reduced ? { rotate: 24 } : { rotate: 0 }} className="text-brand-300"><ContactIcon name="chat" className="h-5 w-5" /></motion.span>
+          <span className={cn('hidden h-2 w-2 rounded-full bg-brand-400 shadow-brand-glow sm:block', !reduced && 'animate-status-blink')} />
+          <span className="thai-display hidden text-sm font-semibold sm:inline">ติดต่อเรา</span>
+        </button>
+      </div>
+    </>
   );
 }

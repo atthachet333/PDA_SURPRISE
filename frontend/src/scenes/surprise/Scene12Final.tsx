@@ -2,10 +2,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 import { SceneSection } from '@/components/surprise/SceneSection';
 import { AIMark } from '@/components/surprise/AIMark';
+import { MemoryImage } from '@/components/surprise/MemoryImage';
 import { anniversary } from '@/data/anniversary';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useAudio } from '@/app/audioContext';
+import { useSecret } from '@/hooks/useSecret';
+import { SecretReveal } from '@/components/surprise/SecretReveal';
 import { cn } from '@/lib/cn';
 
 /**
@@ -30,13 +33,14 @@ export function Scene12Final() {
   const [yearOne, setYearOne] = useState(0);
   const [yearTwo, setYearTwo] = useState(0);
   const reduced = useReducedMotion();
-  const { play, duck, triggerCue } = useAudio();
+  const { play, triggerCue, restart } = useAudio();
 
   useEffect(() => {
     if (!inView) return;
     triggerCue('finale');
-    // The music opens back up after the quiet scene held it down.
-    duck(1, 4000);
+    // The music opens back up on its own: the scene mix map raises `final` to
+    // 0.90 over 3s as this section takes the viewport. Nothing is set here, so
+    // the finale is warm rather than a jump to full.
 
     if (reduced) {
       setYearOne(100);
@@ -57,13 +61,12 @@ export function Scene12Final() {
         return;
       }
 
-      play('transition');
+      play('transitionRise');
       setStage('archived');
 
       timers.push(
         window.setTimeout(() => {
           setStage('loading');
-          play('hover');
           const loadBegan = performance.now();
           const load = (time: number) => {
             const value = Math.min(
@@ -95,20 +98,54 @@ export function Scene12Final() {
       timers.forEach((timer) => window.clearTimeout(timer));
       window.clearTimeout(failsafe);
     };
-  }, [duck, inView, play, reduced, triggerCue]);
+  }, [inView, play, reduced, triggerCue]);
 
   const showLines = stage === 'lines' || stage === 'settled';
   const settled = stage === 'settled';
 
-  const replay = useCallback(() => {
-    play('click');
-    document.getElementById('entry')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [play]);
+  /*
+   * THE YEAR 02 SECRET.
+   *
+   * Two ways in, both of them patient: touch the Year 02 indicator, or simply
+   * still be here a few seconds after the finale has settled. The second is the
+   * one that matters - the reward is for staying with the ending rather than
+   * for hunting.
+   *
+   * It adds no scene and changes no state: a line appears, a faint orbit opens
+   * beyond the horizon, and the finale continues exactly as before.
+   */
+  const FINALE = anniversary.secrets.finale;
+  const finaleSecret = useSecret(FINALE.id, { duration: FINALE.duration });
+  const { discover: discoverFinale, discovered: finaleFound } = finaleSecret;
 
+  useEffect(() => {
+    if (!settled || finaleFound) return;
+    const timer = window.setTimeout(discoverFinale, FINALE.dwellMs);
+    return () => window.clearTimeout(timer);
+  }, [FINALE.dwellMs, discoverFinale, finaleFound, settled]);
+
+  /**
+   * Replay the story. The music fades out, returns to the top, and fades back in
+   * around the reset — never a hard cut to full volume at zero. `restart` runs
+   * the reset callback even when there is no track, so this works with music off.
+   */
+  const replay = useCallback(() => {
+    play('softClick');
+    restart(() => {
+      document.getElementById('entry')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [play, restart]);
+
+  /**
+   * Back to the memories — a move WITHIN the story, so the music is untouched.
+   * It keeps playing from where it is.
+   */
   const toMemories = useCallback(() => {
-    play('click');
+    play('softClick');
     document.getElementById('memories')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [play]);
+
+  const finalImage = anniversary.finalImages[0];
 
   return (
     <SceneSection id="final" ref={ref} label="The close" className="overflow-hidden">
@@ -130,6 +167,7 @@ export function Scene12Final() {
       />
 
       <div className="relative w-full max-w-lg">
+        <p className="mb-10 text-center font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/55">12 · YEAR 02</p>
         <ProgressBlock
           label={finalMessages.yearOneLabel}
           value={yearOne}
@@ -144,10 +182,41 @@ export function Scene12Final() {
             y: stage === 'loading' || showLines ? 0 : 14
           }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-9"
+          className="relative mt-9"
         >
-          <ProgressBlock label={finalMessages.yearTwoLabel} value={yearTwo} state="loading" />
+          <ProgressBlock label={finalMessages.yearTwoLabel} value={yearTwo} state="loading" tag="INITIALIZING" />
+
+          {/* The indicator is touchable once the finale has settled. Before
+              that it is inert, so it can never interrupt the sequence. */}
+          {settled && !finaleFound ? (
+            <button
+              type="button"
+              onClick={() => discoverFinale()}
+              aria-label={finalMessages.yearTwoLabel}
+              className="absolute inset-0 rounded-card transition-colors duration-300 hover:bg-sky-200/[0.06] active:bg-sky-200/[0.1] focus-visible:outline-none"
+              style={{ touchAction: 'manipulation' }}
+            />
+          ) : null}
+
+          <div className="pointer-events-none absolute inset-x-0 top-full mt-3 flex justify-center">
+            <SecretReveal show={finaleSecret.revealing} text={FINALE.message} />
+          </div>
         </motion.div>
+
+        {/* A faint orbit beyond the horizon: there is more out there, and it has
+            not happened yet. Purely decorative, and it leaves with the reveal. */}
+        <AnimatePresence>
+          {finaleSecret.revealing ? (
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none fixed left-1/2 top-[76%] -z-10 h-[52rem] w-[52rem] -translate-x-1/2 rounded-full border border-champagne/20"
+              initial={{ opacity: 0, scale: 0.86 }}
+              animate={{ opacity: reduced ? 0.5 : [0, 0.6, 0.35], scale: reduced ? 1 : [0.86, 1.04, 1.1] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduced ? 0.4 : 4, ease: [0.16, 1, 0.3, 1] }}
+            />
+          ) : null}
+        </AnimatePresence>
 
         <div className="mt-16 min-h-[9rem] text-center">
           {finalMessages.lines.map((line, index) => (
@@ -172,6 +241,22 @@ export function Scene12Final() {
           ))}
         </div>
 
+        <motion.figure
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: settled ? 1 : 0, y: settled ? 0 : 18 }}
+          transition={{ duration: 1.8, delay: 0.5 }}
+          className="ai-frame-memory ai-photo-spill relative mx-auto mt-10 aspect-[4/5] w-40 overflow-hidden shadow-glow sm:w-48"
+        >
+          <MemoryImage
+            photo={finalImage?.image}
+            alt="ภาพปิดของ A และ I"
+            tone="champagne"
+            label="YEAR 02"
+            objectPosition={finalImage?.objectPosition}
+            cropMode={finalImage?.cropMode}
+          />
+        </motion.figure>
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: settled ? 1 : 0 }}
@@ -185,9 +270,8 @@ export function Scene12Final() {
           <div className="mt-8">
             <AIMark size="loader" />
           </div>
-          <span className="mt-6 font-mono text-[0.5rem] uppercase tracking-[0.3em] text-sky-100/45">
-            to be continued
-          </span>
+          <span className="ai-wordmark mt-6 text-xl">Atthachet &amp; Isariya</span>
+          <span className="mt-3 font-mono text-[0.5625rem] tracking-[0.24em] text-sky-100/55">12.10.2025 — ∞</span>
         </motion.div>
 
         {/* Offered late, and quietly — the moment comes first */}
@@ -199,9 +283,9 @@ export function Scene12Final() {
               transition={{ duration: 1.6, delay: 3.2 }}
               className="mt-14 flex flex-wrap items-center justify-center gap-3"
             >
-              <FinalButton onClick={replay}>{finalMessages.replayLabel}</FinalButton>
-              <FinalButton onClick={toMemories} subtle>
-                {finalMessages.memoriesLabel}
+              <FinalButton onClick={toMemories}>{finalMessages.memoriesLabel}</FinalButton>
+              <FinalButton onClick={replay} subtle>
+                {finalMessages.replayLabel}
               </FinalButton>
             </motion.div>
           ) : null}
@@ -226,10 +310,7 @@ function FinalButton({
       onClick={onClick}
       data-cursor="interactive"
       className={cn(
-        'rounded-pill px-5 py-2.5 text-[0.5625rem] uppercase tracking-[0.22em] transition-all duration-base',
-        subtle
-          ? 'text-ivory/45 hover:text-ivory/80'
-          : 'border border-sky-200/30 text-ivory/80 hover:border-sky-200/60 hover:bg-sky-400/10 hover:text-ivory'
+        subtle ? 'ai-button-text' : 'ai-button-secondary'
       )}
     >
       {children}
@@ -251,9 +332,8 @@ function ProgressBlock({
   return (
     <div>
       <div className="flex items-baseline justify-between">
-        <span className="font-mono text-[0.6875rem] uppercase tracking-[0.3em] text-ivory/80">
+        <span className="font-display text-lg uppercase tracking-[0.18em] text-ivory/85 sm:text-xl">
           {label}
-          {state === 'loading' ? '...' : ''}
         </span>
         <span className="font-mono text-[0.6875rem] tabular-nums text-sky-100/80">{value}%</span>
       </div>

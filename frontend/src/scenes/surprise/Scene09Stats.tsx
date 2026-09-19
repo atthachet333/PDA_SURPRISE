@@ -21,12 +21,12 @@ export function Scene09Stats() {
   const stats = anniversary.statistics;
 
   return (
-    <SceneSection id="stats" ref={ref} label="Our story in numbers">
+    <SceneSection id="stats" ref={ref} label="เรื่องของเราในตัวเลข">
       <div className="flex w-full max-w-5xl flex-col items-center text-center">
-        <SceneLabel>Our story in numbers</SceneLabel>
-        <SceneTitle className="mt-5">Some of it can be counted.</SceneTitle>
+        <SceneLabel>08 · เรื่องของเราในตัวเลข</SceneLabel>
+        <SceneTitle className="thai-display mt-5 font-thai">บางอย่างของเรา นับเป็นตัวเลขได้</SceneTitle>
 
-        <div className="mt-16 grid w-full grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 lg:grid-cols-3 lg:gap-12">
+        <div className="mt-16 grid w-full grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 lg:grid-cols-4 lg:gap-10">
           {stats.map((stat, index) => (
             <StatPlate key={stat.id} stat={stat} active={inView} index={index} />
           ))}
@@ -44,8 +44,7 @@ function StatPlate({ stat, active, index }: { stat: StatItem; active: boolean; i
     duration: 2200 + index * 240
   });
 
-  // The infinity plate is the punchline; give it the warm accent.
-  const accent = !numeric;
+  const accent = stat.id === 'cats';
 
   return (
     <motion.div
@@ -88,7 +87,7 @@ function StatPlate({ stat, active, index }: { stat: StatItem; active: boolean; i
 
         <span
           className={cn(
-            'relative font-mono font-light tabular-nums',
+            'relative font-display font-light tabular-nums',
             accent ? 'text-[clamp(2rem,5vw,3rem)] text-champagne' : 'text-[clamp(1.5rem,4vw,2.5rem)] text-ivory'
           )}
         >
@@ -97,11 +96,11 @@ function StatPlate({ stat, active, index }: { stat: StatItem; active: boolean; i
         </span>
       </div>
 
-      <p className="mt-5 font-mono text-[0.5rem] uppercase tracking-[0.24em] text-sky-100/65 sm:text-[0.5625rem]">
+      <p className="ai-legible mt-5 font-mono text-[0.5rem] uppercase tracking-[0.24em] text-sky-100/80 sm:text-[0.5625rem]">
         {stat.label}
       </p>
       {stat.caption ? (
-        <p className="mt-2 max-w-[20ch] text-xs leading-relaxed text-ivory/45">{stat.caption}</p>
+        <p className="ai-legible mt-2 max-w-[20ch] text-xs leading-relaxed text-ivory/70">{stat.caption}</p>
       ) : null}
     </motion.div>
   );

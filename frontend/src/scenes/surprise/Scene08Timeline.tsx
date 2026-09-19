@@ -38,13 +38,13 @@ export function Scene08Timeline() {
   }, [inView, triggerCue]);
 
   return (
-    <SceneSection id="timeline" label="The story" fullHeight={false} className="py-28 sm:py-36">
+    <SceneSection id="journey" label="เส้นทางของเรา" fullHeight={false} className="py-28 sm:py-36">
       <div ref={container} className="relative w-full max-w-6xl">
         <div ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-40" />
 
         <div className="text-center">
-          <SceneLabel>The story</SceneLabel>
-          <SceneTitle className="mt-5">How the year actually went.</SceneTitle>
+          <SceneLabel>04 · เส้นทางของเรา</SceneLabel>
+          <SceneTitle className="thai-display mt-5 font-thai">จากวันแรก มาถึงวันนี้</SceneTitle>
         </div>
 
         {/* A single thread of light running the length of the story */}
@@ -105,7 +105,7 @@ function FullBleed({ moment, index }: { moment: TimelineMoment; index: number })
       transition={{ ...ENTER, duration: 1.6 }}
       className="relative"
     >
-      <figure className="ai-surface relative overflow-hidden rounded-panel shadow-glow">
+      <figure className="ai-frame-cinematic ai-photo-spill relative overflow-hidden shadow-glow">
         <span className="block aspect-[16/9] sm:aspect-[21/9]">
           <MemoryImage
             photo={moment.image}
@@ -113,6 +113,8 @@ function FullBleed({ moment, index }: { moment: TimelineMoment; index: number })
             tone="champagne"
             label={moment.label}
             index={index}
+            objectPosition={moment.objectPosition}
+            cropMode={moment.cropMode}
           />
         </span>
         <span
@@ -143,7 +145,7 @@ function Split({ moment, index }: { moment: TimelineMoment; index: number }) {
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: '0px 0px -15% 0px' }}
         transition={ENTER}
-        className={cn('ai-surface overflow-hidden rounded-panel', flipped && 'lg:order-2')}
+        className={cn('ai-frame-cinematic overflow-hidden', flipped && 'lg:order-2')}
       >
         <span className="block aspect-[5/4]">
           <MemoryImage
@@ -152,6 +154,8 @@ function Split({ moment, index }: { moment: TimelineMoment; index: number }) {
             tone="sky"
             label={moment.label}
             index={index}
+            objectPosition={moment.objectPosition}
+            cropMode={moment.cropMode}
           />
         </span>
       </motion.figure>
@@ -183,7 +187,7 @@ function Polaroid({ moment, index }: { moment: TimelineMoment; index: number }) 
         viewport={{ once: true, margin: '0px 0px -15% 0px' }}
         transition={ENTER}
         className={cn(
-          'w-[15rem] shrink-0 rounded-[4px] bg-cream p-3 pb-12 shadow-[0_30px_60px_-30px_rgba(12,27,41,0.95)] sm:w-[17rem]',
+          'ai-frame-polaroid w-[15rem] shrink-0 bg-cream p-3 pb-12 shadow-[0_30px_60px_-30px_rgba(12,27,41,0.95)] sm:w-[17rem]',
           !reduced && 'animate-drift'
         )}
         style={{ animationDuration: '11s' }}
@@ -195,6 +199,8 @@ function Polaroid({ moment, index }: { moment: TimelineMoment; index: number }) 
             tone="cream"
             label={moment.label}
             index={index}
+            objectPosition={moment.objectPosition}
+            cropMode={moment.cropMode}
           />
         </span>
         <figcaption className="mt-4 text-center font-display text-sm italic text-navy-700">
@@ -240,7 +246,7 @@ function DateType({ moment, index }: { moment: TimelineMoment; index: number }) 
         transition={{ ...ENTER, delay: 0.2 }}
         className="relative -mt-[6vw] flex flex-col items-center"
       >
-        <figure className="ai-surface w-[13rem] overflow-hidden rounded-panel shadow-glow sm:w-[16rem]">
+        <figure className="ai-frame-memory w-[13rem] overflow-hidden shadow-glow sm:w-[16rem]">
           <span className="block aspect-[4/5]">
             <MemoryImage
               photo={moment.image}
@@ -248,6 +254,8 @@ function DateType({ moment, index }: { moment: TimelineMoment; index: number }) 
               tone="champagne"
               label={moment.label}
               index={index}
+              objectPosition={moment.objectPosition}
+              cropMode={moment.cropMode}
             />
           </span>
         </figure>
@@ -276,7 +284,7 @@ function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
             whileInView={{ opacity: 1, y: 0, rotate: rotations[stackIndex] ?? 0 }}
             viewport={{ once: true, margin: '0px 0px -15% 0px' }}
             transition={{ ...ENTER, delay: stackIndex * 0.14 }}
-            className="ai-surface absolute inset-0 overflow-hidden rounded-panel shadow-glow"
+            className="ai-frame-memory absolute inset-0 overflow-hidden shadow-glow"
             style={{ zIndex: 3 - stackIndex }}
           >
             <span className="block h-full">
@@ -286,6 +294,8 @@ function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
                 tone={stackIndex === 0 ? 'sky' : 'navy'}
                 label={stackIndex === 0 ? moment.label : undefined}
                 index={index + stackIndex}
+                objectPosition={moment.objectPosition}
+                cropMode={moment.cropMode}
               />
             </span>
           </motion.figure>
@@ -342,7 +352,7 @@ function BlurFocus({ moment, index }: { moment: TimelineMoment; index: number })
         transition={{ ...ENTER, duration: 2 }}
         className="absolute inset-0 blur-xl"
       >
-        <MemoryImage photo={moment.image} alt="" tone="sky" index={index} />
+        <MemoryImage photo={moment.image} alt="" tone="sky" index={index} objectPosition={moment.objectPosition} cropMode={moment.cropMode} />
       </motion.span>
       <span aria-hidden="true" className="absolute inset-0 bg-navy-900/45" />
 
@@ -353,7 +363,7 @@ function BlurFocus({ moment, index }: { moment: TimelineMoment; index: number })
         transition={{ ...ENTER, delay: 0.18 }}
         className="relative z-10 flex flex-col items-center gap-7 px-6 py-14 text-center sm:flex-row sm:gap-9 sm:text-left"
       >
-        <figure className="ai-glass w-[11rem] shrink-0 overflow-hidden rounded-panel shadow-glow-lg sm:w-[13rem]">
+        <figure className="ai-frame-memory ai-photo-spill relative w-[11rem] shrink-0 overflow-hidden shadow-glow-lg sm:w-[13rem]">
           <span className="block aspect-[4/5]">
             <MemoryImage
               photo={moment.image}
@@ -361,6 +371,8 @@ function BlurFocus({ moment, index }: { moment: TimelineMoment; index: number })
               tone="sky"
               label={moment.label}
               index={index}
+              objectPosition={moment.objectPosition}
+              cropMode={moment.cropMode}
             />
           </span>
         </figure>

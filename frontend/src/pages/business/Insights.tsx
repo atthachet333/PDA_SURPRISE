@@ -8,12 +8,12 @@ export default function Insights() {
     <>
       <PageHeader
         eyebrow="01 / INSIGHTS"
-        title={<>บทความและมุมมอง</>}
+        title={<>มองระบบธุรกิจ<br /><span className="text-brand-700">ให้ชัดก่อนตัดสินใจ</span></>}
         lead={insightsIntro.lead}
       />
 
       <InsightStrip variant="grid" code="02 / ARTICLES" />
-      <BigCTA code="03 / START" />
+      <BigCTA code="03 / TALK" />
     </>
   );
 }

@@ -1,160 +1,106 @@
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { activeSocials, company, cta, footer, navigation } from '@/data/company';
+import { company, cta, footer, navigation } from '@/data/company';
 import { Container } from '@/components/shared/Layout';
+import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { HeroSystem } from './HeroSystem';
+import { Logo } from './Logo';
 
-/**
- * FOOTER — the final scene, not a sitemap dump.
- *
- * Near-black green ground, a slow data grid fading up from the bottom, a green
- * beam travelling across the seam, and a giant PDA BLISS wordmark cropped by the
- * bottom edge so the page feels like it continues past the viewport.
- *
- * Every contact detail comes from the central config. Nothing here is literal.
- */
 export function Footer() {
-  const year = new Date().getFullYear();
   const reduced = useReducedMotion();
+  const footerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: footerRef, offset: ['start end', 'end start'] });
+  const wordmarkY = useTransform(scrollYProgress, [0, 1], [-14, 22]);
 
   return (
-    <footer className="sect sect--horizon relative overflow-hidden text-white">
-      {/* Data horizon */}
-      <div className="sect-layer" aria-hidden="true">
-        <span className="horizon-grid absolute inset-0" />
-      </div>
-
-      {/* Beam travelling across the top seam */}
-      <div className="relative h-px w-full overflow-hidden bg-brand-400/15" aria-hidden="true">
-        {!reduced ? (
-          <span className="absolute inset-y-0 w-1/4 bg-[linear-gradient(90deg,transparent,rgba(53,201,111,0.9),transparent)] animate-beam-x" />
-        ) : null}
-      </div>
-
-      <Container className="relative pb-10 pt-20 sm:pt-24">
-        {/* ------------------------------------------------------- top row -- */}
-        <div className="grid gap-12 border-b border-white/10 pb-16 lg:grid-cols-[1.4fr_0.75fr_0.9fr_1fr]">
-          <div className="max-w-md">
-            <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-brand-300/70">
-              {company.legalName}
-            </p>
-            <p className="thai-display mt-5 text-statement font-bold leading-tight text-white">
-              เปลี่ยนไอเดีย
-              <br />
-              <span className="text-brand-400">ให้ใช้งานได้จริง</span>
-            </p>
-            <p className="mt-6 text-sm leading-7 text-brand-100/60">{company.footerBlurb}</p>
-            <Link
-              to={cta.primary.to}
-              className="group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-brand-300 transition-colors hover:text-white"
-            >
-              {cta.primary.label}
-              <span aria-hidden="true" className="transition-transform duration-base group-hover:translate-x-1">
-                →
-              </span>
-            </Link>
+    <footer ref={footerRef} className="relative overflow-hidden text-white">
+      {/* A — final CTA: a distinct cinematic scene. */}
+      <section className="sect sect--immersive relative overflow-hidden border-t border-brand-400/20 py-section">
+        <FooterAtmosphere reduced={reduced} />
+        <Container wide className="relative">
+          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)]">
+            <div>
+              <p className="section-code text-brand-300">FINAL / START</p>
+              <h2 className="thai-display mt-5 text-mega font-bold">พร้อมเปลี่ยนไอเดีย<br /><span className="text-brand-300">ให้เป็นระบบที่ใช้งานได้จริงหรือยัง?</span></h2>
+              <p className="mt-6 max-w-xl text-sm leading-7 text-brand-100/70">คุยกับเราเรื่องแนวคิด ระบบ หรือ Workflow ที่คุณกำลังวางแผน<br className="hidden sm:block" /> เราช่วยประเมินแนวทางก่อนเริ่มโปรเจกต์ได้</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <ButtonLink to={cta.primary.to} size="lg" className="bg-white text-brand-900 hover:bg-brand-50">เริ่มโปรเจกต์ <ArrowIcon /></ButtonLink>
+                <ButtonLink to={`tel:${company.phone}`} size="lg" variant="ghost" className="border border-white/25 text-white hover:bg-white/10">พูดคุยกับเรา</ButtonLink>
+              </div>
+            </div>
+            <div className="hidden h-[30rem] lg:block"><HeroSystem className="h-full" /></div>
           </div>
+        </Container>
+      </section>
 
-          <FooterColumn title={footer.menuHeading}>
-            {navigation.map((item) => (
-              <li key={item.to}>
-                <Link className="footer-link" to={item.to}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </FooterColumn>
+      {/* B — informational footer: quieter and denser than the CTA. */}
+      <section className="relative bg-[#031b13] py-14 sm:py-16">
+        <Container wide>
+          <div className="grid gap-12 lg:grid-cols-[1.15fr_.72fr_1fr_1.12fr]">
+            <div>
+              <Logo inverted className="h-9" />
+              <p className="thai-display mt-7 text-sm font-semibold text-white">{company.legalNameTh}</p>
+              <p className="mt-1 font-mono text-[.5625rem] uppercase tracking-[.16em] text-brand-300/55">{company.legalName}</p>
+              <p className="mt-6 max-w-xs text-sm leading-7 text-brand-100/60">พัฒนาซอฟต์แวร์และระบบธุรกิจ<br />ที่ออกแบบจากกระบวนการทำงานจริง</p>
+            </div>
+            <FooterColumn title={footer.menuHeading}>{navigation.map((item) => <li key={item.to}><Link className="footer-link" to={item.to}>{item.label}</Link></li>)}</FooterColumn>
+            <FooterColumn title={footer.servicesHeading}>{footer.servicesLinks.map((item) => <li key={item.to}><Link className="footer-link" to={item.to}>{item.label}</Link></li>)}</FooterColumn>
+            <FooterColumn title={footer.contactHeading}>
+              <ContactItem icon="phone"><a className="footer-link" href={`tel:${company.phone}`}>{company.phoneDisplay}</a></ContactItem>
+              <ContactItem icon="mail"><a className="footer-link break-all" href={`mailto:${company.email}`}>{company.email}</a></ContactItem>
+              <ContactItem icon="line"><a className="footer-link" href={company.lineUrl} target="_blank" rel="noopener noreferrer">{company.lineOA}</a></ContactItem>
+              <ContactItem icon="map">{company.mapUrl ? <a href={company.mapUrl} target="_blank" rel="noopener noreferrer" className="footer-link"><address className="not-italic text-xs leading-6">{company.address.lines.map((line) => <span key={line} className="block">{line}</span>)}</address></a> : <address className="not-italic text-xs leading-6 text-brand-100/55">{company.address.lines.map((line) => <span key={line} className="block">{line}</span>)}</address>}</ContactItem>
+              <ContactItem icon="clock"><span className="text-xs leading-6 text-brand-100/55">{company.businessHours.days}<br />{company.businessHours.time}</span></ContactItem>
+            </FooterColumn>
+          </div>
+        </Container>
+      </section>
 
-          <FooterColumn title={footer.servicesHeading}>
-            {footer.servicesLinks.map((item) => (
-              <li key={item.to}>
-                <Link className="footer-link" to={item.to}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </FooterColumn>
-
-          <FooterColumn title={footer.contactHeading}>
-            <li>
-              <a className="footer-link" href={`tel:${company.phone}`}>
-                {company.phoneDisplay}
-              </a>
-            </li>
-            <li>
-              <a className="footer-link break-all" href={`mailto:${company.email}`}>
-                {company.email}
-              </a>
-            </li>
-            <li>
-              <a className="footer-link" href={company.lineUrl} target="_blank" rel="noopener noreferrer">
-                LINE {company.lineOA}
-              </a>
-            </li>
-            {activeSocials.map((item) => (
-              <li key={item.label}>
-                <a className="footer-link" href={item.href} target="_blank" rel="noopener noreferrer">
-                  {item.label}
-                </a>
-              </li>
-            ))}
-            <li className="pt-4">
-              <address className="not-italic text-xs leading-6 text-brand-100/50">
-                {company.address.lines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </address>
-            </li>
-            <li className="pt-2 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-brand-300/50">
-              {company.businessHours.days} · {company.businessHours.time}
-            </li>
-          </FooterColumn>
-        </div>
-
-        {/* ------------------------------------------------ status microcopy -- */}
-        <div className="flex flex-wrap items-center gap-x-8 gap-y-3 py-8 font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-brand-300/50">
-          <span className="flex items-center gap-2">
-            <span
-              className={cn('h-1.5 w-1.5 rounded-full bg-brand-400', !reduced && 'animate-status-blink')}
-            />
-            systems operational
-          </span>
-          <span>tz · asia/bangkok</span>
-          <span>{company.businessHours.note}</span>
-        </div>
-
-        {/* ------------------------------------------------ giant wordmark -- */}
-        <div className="relative select-none overflow-hidden pt-6" aria-hidden="true">
-          <span className="block translate-y-[14%] whitespace-nowrap text-center text-[clamp(3.5rem,17vw,15rem)] font-bold leading-[0.8] tracking-[-0.045em] text-white/[0.07]">
-            PDA BLISS
-          </span>
-        </div>
-
-        {/* -------------------------------------------------------- legal -- */}
-        <div className="flex flex-col gap-4 border-t border-white/10 pt-7 text-xs text-brand-100/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} {company.legalName}
-          </p>
-          <p className="thai-display">
-            {company.legalNameTh} · {company.addressNote}
-          </p>
-        </div>
-      </Container>
+      {/* C — brand finale. */}
+      <section className="sect sect--horizon relative overflow-hidden border-t border-white/8">
+        <FooterAtmosphere reduced={reduced} finale />
+        <Container wide className="relative pt-8">
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[.5625rem] uppercase tracking-[.18em] text-brand-300/50"><span>PDA BLISS · DIGITAL SYSTEMS</span><span>tz · asia/bangkok</span><span>{company.businessHours.note}</span></div>
+          <motion.div style={reduced ? undefined : { y: wordmarkY }} className="relative mt-8 select-none overflow-hidden" aria-hidden="true">
+            <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 opacity-35"><Logo compact inverted className="h-10 w-10" /></div>
+            <span className="block translate-y-[14%] whitespace-nowrap text-center text-[clamp(3.5rem,17vw,15rem)] font-bold leading-[.8] tracking-[-.045em] text-white/[.07]">PDA BLISS</span>
+          </motion.div>
+          <div className="flex flex-col gap-4 border-t border-white/10 py-7 text-xs text-brand-100/45 lg:flex-row lg:items-center lg:justify-between">
+            <div><p>© {new Date().getFullYear()} {company.legalName}</p><p className="thai-display mt-1">{company.legalNameTh} · {company.addressNote}</p></div>
+            <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="นโยบายและข้อกำหนด">{footer.legalLinks.map((item) => <Link key={item.to} to={item.to} className="transition-colors hover:text-white">{item.label}</Link>)}</nav>
+          </div>
+        </Container>
+      </section>
     </footer>
   );
 }
 
+function FooterAtmosphere({ reduced, finale = false }: { reduced: boolean; finale?: boolean }) {
+  return <div className="sect-layer" aria-hidden="true"><span className={cn('horizon-grid absolute -inset-[10%]', !reduced && 'footer-grid-drift')} /><span className="absolute inset-x-0 bottom-0 h-2/3 bg-[radial-gradient(ellipse_at_bottom,rgba(53,201,111,.18),transparent_68%)]" />{!reduced ? <><span className="absolute inset-y-0 w-1/3 animate-beam-x bg-[linear-gradient(90deg,transparent,rgba(53,201,111,.1),transparent)]" />{finale ? <><span className="footer-particle absolute left-[18%] top-[35%] h-1 w-1 rounded-full bg-brand-300/50" /><span className="footer-particle absolute right-[22%] top-[48%] h-1 w-1 rounded-full bg-brand-300/45 [animation-delay:2s]" /></> : null}</> : null}</div>;
+}
+
 function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h3 className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-brand-400">
-        {title}
-      </h3>
-      <ul className="mt-6 space-y-3 [&_.footer-link]:text-sm [&_.footer-link]:text-brand-100/65 [&_.footer-link]:transition-colors [&_.footer-link]:duration-base hover:[&_.footer-link]:text-white">
-        {children}
-      </ul>
-    </div>
-  );
+  return <div><h3 className="font-mono text-[.5625rem] uppercase tracking-[.2em] text-brand-400">{title}</h3><ul className="mt-6 space-y-3 [&_.footer-link]:text-sm [&_.footer-link]:text-brand-100/65 [&_.footer-link]:transition-colors hover:[&_.footer-link]:text-white">{children}</ul></div>;
+}
+
+function ContactItem({ icon, children }: { icon: ContactIconName; children: React.ReactNode }) {
+  return <li className="group flex items-start gap-3"><span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-400/15 text-brand-300/60 transition group-hover:border-brand-400/40 group-hover:text-brand-300"><ContactIcon name={icon} /></span><div>{children}</div></li>;
+}
+
+type ContactIconName = 'phone' | 'mail' | 'line' | 'map' | 'clock';
+export function ContactIcon({ name, className }: { name: ContactIconName | 'calendar' | 'chat' | 'up'; className?: string }) {
+  const paths: Record<ContactIconName | 'calendar' | 'chat' | 'up', React.ReactNode> = {
+    phone: <path d="M5 3.5 7 7 5.5 8.5a10 10 0 0 0 5 5L12 12l3.5 2v2.5a1.5 1.5 0 0 1-1.7 1.5A13.5 13.5 0 0 1 3.5 5.2 1.5 1.5 0 0 1 5 3.5Z" />,
+    mail: <><rect x="3" y="5" width="14" height="10" rx="2" /><path d="m4 6 6 4.5L16 6" /></>,
+    line: <><path d="M17 10a6.5 6.5 0 0 1-7 6.5L6 18l1-3A6.5 6.5 0 1 1 17 10Z" /><path d="M7 10h.01M10 10h.01M13 10h.01" /></>,
+    map: <><path d="M10 18s5-4.7 5-9a5 5 0 1 0-10 0c0 4.3 5 9 5 9Z" /><circle cx="10" cy="9" r="1.5" /></>,
+    clock: <><circle cx="10" cy="10" r="7" /><path d="M10 6v4l2.5 1.5" /></>,
+    calendar: <><rect x="3" y="5" width="14" height="12" rx="2" /><path d="M6 3v4M14 3v4M3 9h14" /></>,
+    chat: <><path d="M17 12.5a2 2 0 0 1-2 2H7l-4 3v-12a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z" /><path d="M7 8h6M7 11h4" /></>,
+    up: <><path d="m5 11 5-5 5 5" /><path d="M10 6v9" /></>
+  };
+  return <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={cn('h-4 w-4', className)}>{paths[name]}</svg>;
 }

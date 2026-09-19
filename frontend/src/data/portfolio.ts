@@ -68,6 +68,10 @@ export interface PortfolioItem {
   features: string[];
   stack: string[];
   screenshots: PortfolioScreenshot[];
+  /** Preferred privacy-reviewed hero image for this project. */
+  approvedScreenshot?: PortfolioScreenshot;
+  /** Optional capture of the public marketing site, used after approvedScreenshot. */
+  publicWebsiteImage?: PortfolioScreenshot;
   /** True only when every screenshot is reviewed and free of private data. */
   publicSafe: boolean;
   /** True only when the owner has confirmed this description is accurate. */
@@ -106,7 +110,7 @@ export interface PortfolioItem {
  * actually exists.
  */
 export function canShowLiveLink(item: PortfolioItem): boolean {
-  return item.visibility === 'public' && item.publicSafe && Boolean(item.publicUrl);
+  return item.visibility === 'public' && item.publicSafe === true && Boolean(item.publicUrl);
 }
 
 /** Badge text for how a system may be shown. */

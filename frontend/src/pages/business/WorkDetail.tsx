@@ -6,7 +6,7 @@ import { BigCTA } from '@/components/business/BigCTA';
 import { ProductPanel } from '@/components/business/ProductPanel';
 import { MiniChart, MiniFlow, MiniKanban, MiniTable } from '@/components/business/UIPreview';
 import { getPortfolioItem, portfolio, type PortfolioItem } from '@/data/portfolio';
-import { visualForPortfolio } from '@/data/visuals';
+import { visualForPortfolioItem } from '@/data/visuals';
 import { LiveProjectCta, NoLiveLinkNotice, VisibilityBadge } from '@/components/business/LiveLink';
 import {
   caseStudies,
@@ -59,7 +59,7 @@ function RealSystem({ item }: { item: PortfolioItem }) {
   const index = portfolio.findIndex((entry) => entry.id === item.id);
   const next = portfolio[(index + 1) % portfolio.length];
   const reviewed = item.publicSafe ? item.screenshots.filter((shot) => shot.reviewed) : [];
-  const visual = visualForPortfolio(item.id);
+  const visual = visualForPortfolioItem(item);
 
   return (
     <>

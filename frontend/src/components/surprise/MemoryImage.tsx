@@ -24,6 +24,8 @@ interface MemoryImageProps {
   loading?: 'lazy' | 'eager';
   /** Skips the fade-in, for images already known to be warm. */
   instant?: boolean;
+  objectPosition?: string;
+  cropMode?: 'cover' | 'contain';
 }
 
 /**
@@ -41,7 +43,9 @@ export function MemoryImage({
   label,
   index,
   loading = 'lazy',
-  instant = false
+  instant = false,
+  objectPosition = '50% 50%',
+  cropMode = 'cover'
 }: MemoryImageProps) {
   const [failed, setFailed] = useState(() => isKnownBroken(photo));
   const [ready, setReady] = useState(instant);
@@ -70,8 +74,10 @@ export function MemoryImage({
         decoding="async"
         onLoad={() => setReady(true)}
         onError={() => setFailed(true)}
+        style={{ objectPosition }}
         className={cn(
-          'h-full w-full object-cover transition-opacity duration-slow ease-entrance',
+          'h-full w-full transition-opacity duration-slow ease-entrance',
+          cropMode === 'contain' ? 'object-contain' : 'object-cover',
           ready ? 'opacity-100' : 'opacity-0',
           className
         )}

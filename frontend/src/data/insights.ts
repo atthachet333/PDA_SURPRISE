@@ -1,104 +1,117 @@
+export const insightCategories = [
+  'ERP & Business Systems',
+  'Automation',
+  'Web & Application',
+  'HR & Payroll',
+  'Data & Integration',
+  'Technology Strategy'
+] as const;
+
+export type InsightCategory = (typeof insightCategories)[number];
+
 export interface Insight {
+  id: string;
   slug: string;
-  category: string;
-  title: string;
+  titleTh: string;
+  titleEn?: string;
+  category: InsightCategory;
   excerpt: string;
-  /** Reading time in minutes. */
-  minutes: number;
-  /**
-   * OWNER INPUT REQUIRED: no dates or authors are published until they are
-   * real. `published` stays false so the card shows "เร็ว ๆ นี้" instead of a
-   * fabricated publication date.
-   */
-  published: boolean;
-  date?: string;
-  author?: string;
   body?: string[];
+  published: boolean;
+  /** Branded illustration key or a future approved image path. */
+  image: string;
+  readingTime?: number;
+  author?: string;
+  date?: string;
 }
 
 export const insightsIntro = {
   eyebrow: 'INSIGHTS',
   title: ['บทความและมุมมอง', 'เรื่องระบบธุรกิจที่ใช้งานได้จริง'],
-  lead: 'เขียนจากงานที่ทำจริง ไม่ใช่บทความ SEO เนื้อหาชุดแรกกำลังทยอยเผยแพร่'
+  lead: 'แนวคิดสำหรับคนที่กำลังตัดสินใจเรื่องระบบธุรกิจ เนื้อหาฉบับเต็มจะเผยแพร่เมื่อเรียบเรียงและตรวจสอบครบแล้ว'
 } as const;
 
-/**
- * Local content for now — no CMS. Add `body` and set `published: true` with a
- * real `date` and `author` when an article is ready.
- */
+/** A card only becomes interactive after real body copy is present. */
+export const isInsightPublished = (insight: Insight): boolean =>
+  insight.published === true && Boolean(insight.body?.length);
+
 export const insights: Insight[] = [
   {
-    slug: 'what-is-erp',
-    category: 'ERP',
-    title: 'ERP คืออะไร และธุรกิจแบบไหนควรเริ่มใช้',
-    excerpt:
-      'ไม่ใช่ทุกธุรกิจต้องมี ERP ตั้งแต่วันแรก บทความนี้อธิบายสัญญาณที่บอกว่าถึงเวลาแล้ว และสิ่งที่ควรเตรียมก่อนเริ่ม',
-    minutes: 8,
-    published: false
+    id: 'insight-erp-101', slug: 'what-is-erp', titleTh: 'ERP คืออะไร และธุรกิจแบบไหนควรเริ่มใช้',
+    category: 'ERP & Business Systems', excerpt: 'สัญญาณที่บอกว่าข้อมูลและขั้นตอนของธุรกิจเริ่มต้องการระบบกลาง มากกว่าการเพิ่มไฟล์หรือเพิ่มคนประสานงาน',
+    published: false, image: 'diagram:erp'
   },
   {
-    slug: 'internal-tools-reduce-rework',
-    category: 'Internal Tools',
-    title: 'ทำไมระบบภายในองค์กรถึงช่วยลดงานซ้ำ',
-    excerpt:
-      'งานซ้ำส่วนใหญ่ไม่ได้เกิดจากคนทำงานช้า แต่เกิดจากข้อมูลอยู่คนละที่ และไม่มีใครเห็นภาพรวมพร้อมกัน',
-    minutes: 6,
-    published: false
+    id: 'insight-custom-software', slug: 'custom-software-vs-off-the-shelf', titleTh: 'Custom Software ต่างจากโปรแกรมสำเร็จรูปอย่างไร',
+    category: 'Technology Strategy', excerpt: 'เปรียบเทียบความยืดหยุ่น ต้นทุนระยะยาว และภาระการเปลี่ยนวิธีทำงานให้เข้ากับซอฟต์แวร์แต่ละแบบ',
+    published: false, image: 'diagram:build-or-buy'
   },
   {
-    slug: 'custom-vs-off-the-shelf',
-    category: 'Custom Software',
-    title: 'Custom Software ต่างจากโปรแกรมสำเร็จรูปอย่างไร',
-    excerpt:
-      'เปรียบเทียบต้นทุนจริงทั้งสองทาง ทั้งค่าลิขสิทธิ์ ค่าปรับแต่ง ค่าฝึกอบรม และต้นทุนแฝงจากการเปลี่ยนวิธีทำงานตามโปรแกรม',
-    minutes: 9,
-    published: false
+    id: 'insight-spreadsheet', slug: 'reduce-spreadsheet-dependency', titleTh: 'ทำไมธุรกิจควรลดการพึ่ง Spreadsheet',
+    category: 'ERP & Business Systems', excerpt: 'จุดเปลี่ยนจากไฟล์ที่คล่องตัว ไปสู่ความเสี่ยงจากหลายเวอร์ชัน หลายผู้แก้ และข้อมูลที่ตรวจสอบยาก',
+    published: false, image: 'diagram:spreadsheet'
   },
   {
-    slug: 'system-before-or-after-growth',
-    category: 'Strategy',
-    title: 'ควรวางระบบก่อนธุรกิจโต หรือหลังธุรกิจโต',
-    excerpt:
-      'วางเร็วไปก็เสียเงินกับสิ่งที่ยังไม่จำเป็น วางช้าไปก็ต้องรื้อ บทความนี้เสนอเกณฑ์ที่ใช้ตัดสินใจได้จริง',
-    minutes: 7,
-    published: false
+    id: 'insight-automation', slug: 'automation-reduces-repetitive-work', titleTh: 'Automation ช่วยลดงานซ้ำในองค์กรได้อย่างไร',
+    category: 'Automation', excerpt: 'แนวทางเลือกงานที่ทำซ้ำตามกฎชัดเจนให้ระบบรับช่วง โดยยังคงจุดตรวจสอบที่คนต้องตัดสินใจไว้',
+    published: false, image: 'diagram:automation'
   },
   {
-    slug: 'reduce-spreadsheet-dependency',
-    category: 'Operations',
-    title: 'ทำไมธุรกิจควรลดการพึ่ง Spreadsheet',
-    excerpt:
-      'Spreadsheet ทำงานได้ดีจนถึงจุดหนึ่ง ปัญหาเริ่มตอนที่มีหลายฉบับ หลายคนแก้ และไม่มีใครรู้ว่าไฟล์ไหนคือฉบับจริง',
-    minutes: 7,
-    published: false
+    id: 'insight-payroll', slug: 'what-good-payroll-needs', titleTh: 'ระบบ Payroll ที่ดีควรมีอะไรบ้าง',
+    category: 'HR & Payroll', excerpt: 'มากกว่าการคำนวณเงินเดือน คือกฎที่แก้ได้ การตรวจย้อนหลัง และคำอธิบายตัวเลขที่ฝ่ายบุคคลตอบได้ทันที',
+    published: false, image: 'diagram:payroll'
   },
   {
-    slug: 'how-automation-cuts-repetitive-work',
-    category: 'Automation',
-    title: 'Automation ช่วยลดงานซ้ำอย่างไร',
-    excerpt:
-      'ไม่ใช่ทุกงานควรถูกทำให้อัตโนมัติ บทความนี้อธิบายวิธีเลือกงานที่คุ้มค่าที่สุดที่จะเริ่มก่อน',
-    minutes: 6,
-    published: false
+    id: 'insight-web-app', slug: 'who-needs-a-web-application', titleTh: 'Web Application เหมาะกับธุรกิจแบบไหน',
+    category: 'Web & Application', excerpt: 'เมื่อเว็บไซต์ธรรมดาไม่พอ และทีมต้องใช้ข้อมูล ทำรายการ หรือทำงานร่วมกันผ่านเบราว์เซอร์',
+    published: false, image: 'device:web-app'
   },
   {
-    slug: 'what-good-payroll-needs',
-    category: 'Payroll',
-    title: 'ระบบ Payroll ที่ดีควรมีอะไร',
-    excerpt:
-      'นอกจากคำนวณถูกต้อง ระบบเงินเดือนที่ดีต้องตรวจย้อนหลังได้ แก้กฎได้เอง และตอบข้อโต้แย้งของพนักงานได้ทันที',
-    minutes: 8,
-    published: false
+    id: 'insight-mobile-app', slug: 'does-every-business-need-a-mobile-app', titleTh: 'Mobile Application จำเป็นกับทุกธุรกิจหรือไม่',
+    category: 'Web & Application', excerpt: 'เกณฑ์ตัดสินใจจากพฤติกรรมผู้ใช้ ฟังก์ชันอุปกรณ์ และความถี่ในการใช้งาน ก่อนลงทุนทำแอป',
+    published: false, image: 'device:mobile'
   },
   {
-    slug: 'who-needs-an-internal-system',
-    category: 'Internal Tools',
-    title: 'Internal System เหมาะกับธุรกิจแบบไหน',
-    excerpt:
-      'สัญญาณที่บอกว่าธุรกิจของคุณควรมีระบบภายในของตัวเอง และสัญญาณที่บอกว่ายังไม่ถึงเวลา',
-    minutes: 6,
-    published: false
+    id: 'insight-documents', slug: 'document-system-reduces-risk', titleTh: 'ระบบจัดเก็บเอกสารช่วยลดความเสี่ยงอย่างไร',
+    category: 'ERP & Business Systems', excerpt: 'สิทธิ์ เวอร์ชัน ประวัติ และการค้นหา ช่วยลดความเสี่ยงที่เอกสารสำคัญจะหายหรือถูกใช้งานผิดฉบับ',
+    published: false, image: 'diagram:documents'
+  },
+  {
+    id: 'insight-api', slug: 'what-is-api-integration', titleTh: 'API Integration คืออะไร และช่วยเชื่อมระบบอย่างไร',
+    category: 'Data & Integration', excerpt: 'อธิบายการส่งข้อมูลระหว่างระบบ และสิ่งที่ต้องวางแผนเรื่องสิทธิ์ ความผิดพลาด และการตรวจสอบย้อนหลัง',
+    published: false, image: 'diagram:api'
+  },
+  {
+    id: 'insight-internal-system', slug: 'internal-systems-help-teams-move-faster', titleTh: 'ทำไม Internal System ถึงช่วยให้ทีมทำงานเร็วขึ้น',
+    category: 'Technology Strategy', excerpt: 'ลดการส่งต่องานผ่านแชตและไฟล์ ด้วยสถานะ สิทธิ์ และข้อมูลที่ทุกฝ่ายเห็นร่วมกันในบริบทเดียว',
+    published: false, image: 'diagram:internal-tools'
+  },
+  {
+    id: 'insight-erp-crm', slug: 'erp-vs-crm', titleTh: 'ERP กับ CRM ต่างกันอย่างไร',
+    category: 'ERP & Business Systems', excerpt: 'แยกบทบาทของระบบหลังบ้านและระบบความสัมพันธ์ลูกค้า พร้อมจุดที่ข้อมูลของทั้งสองระบบควรเชื่อมกัน',
+    published: false, image: 'diagram:erp-crm'
+  },
+  {
+    id: 'insight-build-or-saas', slug: 'build-software-or-use-saas', titleTh: 'ควรทำ Software เองหรือใช้ SaaS สำเร็จรูป',
+    category: 'Technology Strategy', excerpt: 'กรอบคิดจากความแตกต่างของ Workflow งบประมาณ เวลา และความสำคัญเชิงกลยุทธ์ของระบบนั้นต่อธุรกิจ',
+    published: false, image: 'diagram:saas'
+  },
+  {
+    id: 'insight-workflow-first', slug: 'design-workflow-before-code', titleTh: 'การออกแบบ Workflow ก่อนเขียนโปรแกรมสำคัญอย่างไร',
+    category: 'Automation', excerpt: 'การเห็นจุดตัดสินใจ ผู้รับผิดชอบ และข้อยกเว้นก่อนเริ่มพัฒนา ช่วยลดการแก้ระบบจากความเข้าใจไม่ตรงกัน',
+    published: false, image: 'diagram:workflow'
+  },
+  {
+    id: 'insight-line-hr', slug: 'who-needs-hr-through-line', titleTh: 'ระบบ HR ผ่าน LINE เหมาะกับองค์กรแบบไหน',
+    category: 'HR & Payroll', excerpt: 'เหมาะเมื่อพนักงานต้องทำรายการสั้น ๆ บ่อยครั้ง และองค์กรต้องการลดแรงต้านจากการติดตั้งหรือเรียนรู้แอปใหม่',
+    published: false, image: 'device:line-hr'
+  },
+  {
+    id: 'insight-dashboard', slug: 'what-a-good-dashboard-shows', titleTh: 'Dashboard ที่ดีควรแสดงข้อมูลอะไร',
+    category: 'Data & Integration', excerpt: 'เริ่มจากคำถามที่ต้องตัดสินใจ ไม่ใช่จำนวนกราฟ พร้อมแนวคิดเรื่องนิยามตัวเลขและการเจาะกลับไปยังข้อมูลต้นทาง',
+    published: false, image: 'diagram:dashboard'
   }
 ];
 
-export const publishedInsights = insights.filter((insight) => insight.published);
+export const publishedInsights = insights.filter(isInsightPublished);
+export const getInsight = (slug: string) => insights.find((insight) => insight.slug === slug);

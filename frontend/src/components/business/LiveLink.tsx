@@ -140,7 +140,7 @@ export function NoLiveLinkNotice({ item }: { item: PortfolioItem }) {
       ? 'ระบบภายในองค์กร ไม่เปิดเผยลิงก์สาธารณะ'
       : item.visibility === 'client'
         ? 'ระบบของลูกค้า ไม่เปิดเผยลิงก์สาธารณะ'
-        : 'ยังไม่ได้เผยแพร่ลิงก์สาธารณะสำหรับระบบนี้';
+        : 'ลิงก์เว็บไซต์รออัปเดต';
 
   return (
     <p className="flex items-start gap-2.5 text-xs leading-relaxed text-steel-500">

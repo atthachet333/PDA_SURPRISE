@@ -1,66 +1,75 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Container } from '@/components/shared/Layout';
-import { solutionCategories, solutions, type SolutionCategory } from '@/data/solutions';
+import { ArrowIcon } from '@/components/shared/Button';
+import { solutionCategories, solutions, type Solution, type SolutionCategory } from '@/data/solutions';
+import { visualForSolution } from '@/data/visuals';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
-import { PREVIEWS } from './UIPreview';
+import { ProductPanel } from './ProductPanel';
 
-/**
- * SOLUTION INDEX — the full catalogue, filterable.
- *
- * The homepage and the top of /solutions make the argument with the sticky
- * showcase; this is the reference list underneath it, for a visitor who arrived
- * knowing the name of what they want. Hairline rows on a shared bleed rather
- * than twelve floating cards, so it reads as an index and does not compete with
- * the showcase above.
- */
+const categorySurface: Record<SolutionCategory, string> = {
+  operations: 'border-brand-200 bg-[linear-gradient(145deg,#fff,#f2faf5)]',
+  people: 'border-steel-300 bg-[linear-gradient(145deg,#fff,#f5f7f5)]',
+  revenue: 'border-brand-300/70 bg-[linear-gradient(145deg,#fff,#eef8f1)]',
+  insight: 'border-steel-300 bg-[linear-gradient(145deg,#fff,#f1f5f2)]'
+};
+
+function isDocumentSolution(solution: Solution) {
+  return solution.id === 'document-workflow' || solution.id === 'approval';
+}
+
+/** Filterable catalogue whose cards are real controls for the detail panel below. */
 export function SolutionGrid({ code = '03 / INDEX' }: { code?: string } = {}) {
-  const [active, setActive] = useState<SolutionCategory | 'all'>('all');
+  const [activeCategory, setActiveCategory] = useState<SolutionCategory | 'all'>('all');
+  const [selectedId, setSelectedId] = useState(solutions[0]?.id ?? 'erp');
+  const detailRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
   const visible = useMemo(
-    () => (active === 'all' ? solutions : solutions.filter((item) => item.category === active)),
-    [active]
+    () => activeCategory === 'all' ? solutions : solutions.filter((item) => item.category === activeCategory),
+    [activeCategory]
   );
+  const selected = solutions.find((item) => item.id === selectedId) ?? visible[0];
+
+  const selectSolution = (id: string) => {
+    setSelectedId(id);
+    window.requestAnimationFrame(() => detailRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' }));
+  };
+
+  const selectCategory = (category: SolutionCategory | 'all') => {
+    setActiveCategory(category);
+    if (category !== 'all') {
+      const first = solutions.find((item) => item.category === category);
+      if (first) setSelectedId(first.id);
+    }
+  };
 
   return (
-    <section className="sect sect--grid relative overflow-hidden py-section">
-      <div className="sect-layer grid-lines opacity-60" aria-hidden="true" />
-
-      <Container className="relative">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <section id="solution-catalogue" className="sect sect--grid relative overflow-hidden py-section">
+      <div className="sect-layer grid-lines opacity-70" aria-hidden="true" />
+      <Container wide className="relative">
+        <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>
-            <h2 className="thai-display mt-4 text-statement font-bold text-ink">
-              โซลูชันทั้งหมด
-            </h2>
+            <h2 className="thai-display mt-4 text-statement font-bold text-ink">เลือกจากงานที่ต้องการแก้</h2>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-steel-600">กรองตามทีม แล้วเลือกการ์ดเพื่อดูรายละเอียด ฟีเจอร์ และหน้าจอระบบในมุมที่ใหญ่ขึ้น</p>
           </div>
 
-          <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="หมวดโซลูชัน">
+          <div className="no-scrollbar -mx-1 flex max-w-full gap-1 overflow-x-auto rounded-pill border border-steel-200 bg-white/90 p-1 shadow-soft" role="tablist" aria-label="หมวดโซลูชัน">
             {solutionCategories.map((category) => {
-              const selected = active === category.id;
+              const selectedCategory = activeCategory === category.id;
               return (
                 <button
                   key={category.id}
                   type="button"
                   role="tab"
-                  aria-selected={selected}
-                  onClick={() => setActive(category.id)}
-                  className={cn(
-                    'relative rounded-pill px-4 py-2 text-xs font-medium transition-colors duration-base',
-                    selected ? 'text-white' : 'text-steel-500 hover:text-ink'
-                  )}
+                  aria-selected={selectedCategory}
+                  onClick={() => selectCategory(category.id)}
+                  className={cn('relative shrink-0 rounded-pill px-4 py-2.5 text-xs font-medium transition-colors duration-base', selectedCategory ? 'text-white' : 'text-steel-600 hover:text-ink focus-visible:text-ink')}
                 >
-                  {selected ? (
-                    <motion.span
-                      layoutId="solution-filter"
-                      className="absolute inset-0 rounded-pill bg-ink"
-                      transition={
-                        reduced ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 34 }
-                      }
-                    />
-                  ) : null}
+                  {selectedCategory ? <motion.span layoutId="solution-filter" className="absolute inset-0 rounded-pill bg-brand-700" transition={reduced ? { duration: 0 } : { type: 'spring', stiffness: 420, damping: 36 }} /> : null}
                   <span className="relative">{category.label}</span>
                 </button>
               );
@@ -68,75 +77,83 @@ export function SolutionGrid({ code = '03 / INDEX' }: { code?: string } = {}) {
           </div>
         </div>
 
-        <motion.div
-          layout={!reduced}
-          className="mt-12 grid gap-px overflow-hidden border border-steel-200 bg-steel-200 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <motion.div layout={!reduced} className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           <AnimatePresence mode="popLayout">
             {visible.map((solution) => {
-              const Preview = PREVIEWS[solution.preview];
+              const active = selected?.id === solution.id;
               return (
-                <motion.article
+                <motion.button
                   key={solution.id}
+                  type="button"
                   layout={!reduced}
-                  initial={reduced ? false : { opacity: 0, scale: 0.97 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={reduced ? undefined : { opacity: 0, scale: 0.97 }}
-                  transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-                  /*
-                    A reference index, not a set of links — there is no
-                    per-solution route to go to. It previously carried a hover
-                    background, a growing top rule and a lifting preview, all of
-                    which promised a click that never existed. The card is now
-                    plainly inert; the interactive selector lives in
-                    SolutionShowcase above.
-                  */
-                  className="relative flex flex-col bg-white p-6 sm:p-7"
+                  initial={reduced ? false : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduced ? undefined : { opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
+                  onClick={() => selectSolution(solution.id)}
+                  aria-expanded={active}
+                  aria-controls="solution-detail"
+                  className={cn(
+                    'group relative flex min-h-[31rem] flex-col overflow-hidden rounded-card border p-5 text-left shadow-soft transition duration-slow hover:-translate-y-1 hover:shadow-lift focus-visible:-translate-y-1 focus-visible:shadow-lift sm:p-6',
+                    categorySurface[solution.category],
+                    isDocumentSolution(solution) && 'bg-[linear-gradient(145deg,#fff,#edf6f1)]',
+                    active && 'border-brand-500 ring-1 ring-brand-500/20'
+                  )}
                 >
-                  <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-steel-200" />
-
+                  <span aria-hidden="true" className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-brand-500 transition-transform duration-slow group-hover:scale-x-100 group-focus-visible:scale-x-100" />
                   <div className="flex items-start justify-between gap-3">
-                    <span className="font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-600">
-                      {solution.eyebrow}
-                    </span>
+                    <span className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-brand-700">{solution.eyebrow}</span>
+                    <span className="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-steel-400">{isDocumentSolution(solution) ? 'DOCUMENTS' : solution.category}</span>
                   </div>
+                  <h3 className="thai-display mt-4 text-lg font-bold text-ink">{solution.title}</h3>
+                  <p className="mt-2 min-h-[3.25rem] text-sm leading-relaxed text-steel-600">{solution.summary}</p>
 
-                  <h3 className="thai-display mt-5 text-base font-bold text-ink">
-                    {solution.title}
-                  </h3>
-                  <p className="mt-2.5 text-sm leading-relaxed text-steel-500">{solution.summary}</p>
-
-                  <div className="mt-6 h-24 rounded-card border border-steel-100 bg-steel-50/60 p-3.5">
-                    <Preview className="h-full" />
+                  <div className="relative mt-5 h-44 overflow-hidden rounded-card border border-steel-200/80 bg-white p-2 shadow-ring sm:h-48">
+                    <div className="h-full transition-transform duration-slow ease-smooth group-hover:scale-[1.025] group-focus-visible:scale-[1.025]">
+                      <ProductPanel slot={visualForSolution(solution.id)} className="h-full" frame="none" />
+                    </div>
+                    <span aria-hidden="true" className="absolute inset-y-0 -left-1 w-px bg-[linear-gradient(transparent,rgba(29,170,97,.7),transparent)] transition-transform duration-slow group-hover:translate-x-[19rem] group-focus-visible:translate-x-[19rem]" />
                   </div>
 
                   <ul className="mt-5 space-y-1.5">
-                    {solution.highlights.map((highlight) => (
-                      <li
-                        key={highlight}
-                        className="flex items-start gap-2 text-xs leading-relaxed text-steel-500"
-                      >
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-brand-400" />
-                        {highlight}
-                      </li>
+                    {solution.benefits.slice(0, 3).map((benefit) => (
+                      <li key={benefit} className="flex items-start gap-2 text-xs leading-relaxed text-steel-600"><span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-brand-500" />{benefit}</li>
                     ))}
                   </ul>
-
-                  <ul className="mt-5 flex flex-wrap gap-1.5 border-t border-steel-100 pt-4">
-                    {solution.benefits.map((benefit) => (
-                      <li
-                        key={benefit}
-                        className="rounded-pill bg-brand-50 px-2.5 py-1 text-[0.625rem] text-brand-700"
-                      >
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
-                </motion.article>
+                  <span className="mt-auto inline-flex items-center gap-2 pt-5 text-xs font-semibold text-brand-700">ดูรายละเอียด<ArrowIcon className="h-3.5 w-3.5 transition-transform duration-base group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5" /></span>
+                </motion.button>
               );
             })}
           </AnimatePresence>
         </motion.div>
+
+        {selected ? (
+          <div ref={detailRef} id="solution-detail" className="mt-8 scroll-mt-28" aria-live="polite">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={selected.id}
+                initial={reduced ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduced ? undefined : { opacity: 0, y: -8 }}
+                transition={{ duration: 0.38 }}
+                className="grid overflow-hidden rounded-panel border border-brand-300/70 bg-brand-900 text-white shadow-lift-lg lg:grid-cols-[minmax(0,.78fr)_minmax(0,1.22fr)]"
+              >
+                <div className="p-7 sm:p-9">
+                  <p className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-brand-300">SELECTED · {selected.eyebrow}</p>
+                  <h3 className="thai-display mt-4 text-title font-bold">{selected.title}</h3>
+                  <p className="mt-4 text-sm leading-relaxed text-brand-100/70">{selected.summary}</p>
+                  <ul className="mt-6 space-y-2">
+                    {selected.highlights.map((highlight) => <li key={highlight} className="flex items-start gap-2.5 text-sm text-brand-100/75"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-400" />{highlight}</li>)}
+                  </ul>
+                  <Link to="/contact" className="group mt-7 inline-flex items-center gap-2 text-sm font-semibold text-brand-200">ปรึกษาโซลูชันนี้<ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" /></Link>
+                </div>
+                <div className="min-h-[22rem] bg-brand-800 p-5 sm:p-7">
+                  <div className="h-full min-h-[20rem] overflow-hidden rounded-card shadow-lift-lg ring-1 ring-brand-300/20"><ProductPanel slot={visualForSolution(selected.id)} className="h-full" frame="none" showMockNotice /></div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        ) : null}
       </Container>
     </section>
   );

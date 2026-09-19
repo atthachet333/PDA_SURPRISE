@@ -106,7 +106,7 @@ export function ContactForm() {
       setReference(result.reference);
       setStatus('success');
       setValues(EMPTY);
-      play('transition');
+      play('transitionRise');
     } catch (error) {
       setStatus('error');
       if (error instanceof ApiError) {

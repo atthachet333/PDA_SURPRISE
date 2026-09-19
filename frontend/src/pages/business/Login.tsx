@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
@@ -20,6 +20,7 @@ export default function Login() {
   const [remember, setRemember] = useState(true);
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const navigate = useNavigate();
   const { unlock, play } = useAudio();
 
@@ -35,10 +36,29 @@ export default function Login() {
     }, 850);
   };
 
-  const onContinue = async () => {
-    await unlock();
-    play('whoosh');
-    navigate('/workspace');
+  /**
+   * The gateway gesture. `unlock()` opens the AudioContext synchronously here,
+   * inside the click, because that is the only place iOS Safari accepts it — but
+   * it deliberately loads no music. The track is prepared on the next screen and
+   * only starts when the visitor opens the project.
+   */
+  const onContinue = () => {
+    unlock();
+    play('airWhoosh');
+    /*
+     * A short dim before the route changes.
+     *
+     * Swapping straight to /workspace put a white flash between two light
+     * screens and dropped the corporate header out from under the cursor in one
+     * frame. Dimming first means the corporate surface visibly recedes and the
+     * workspace materialises out of it - the same handoff the portal does later,
+     * at a fraction of the length.
+     *
+     * The audio is unlocked ABOVE this, inside the gesture, so the delay never
+     * costs the gesture chain.
+     */
+    setLeaving(true);
+    window.setTimeout(() => navigate('/workspace'), 420);
   };
 
   return (
@@ -197,6 +217,7 @@ export default function Login() {
               variant="secondary"
               size="md"
               className="mt-3 w-full"
+              disabled={leaving}
               onClick={() => void onContinue()}
             >
               Continue with this device
@@ -211,6 +232,20 @@ export default function Login() {
           </p></div>
         </motion.div>
       </div>
+
+      {/* Corporate surface recedes; the workspace comes up out of the dim. */}
+      <AnimatePresence>
+        {leaving ? (
+          <motion.div
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 z-[100] bg-[radial-gradient(circle_at_50%_45%,rgba(9,26,20,0.55),rgba(4,12,9,0.92))]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.42, ease: [0.7, 0, 0.84, 0] }}
+          />
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

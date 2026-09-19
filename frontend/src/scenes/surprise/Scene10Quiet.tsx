@@ -1,9 +1,9 @@
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { anniversary } from '@/data/anniversary';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
-import { useAudio, useMusicDuck } from '@/app/audioContext';
+import { useAudio } from '@/app/audioContext';
 
 /**
  * Scene 10 — the pause.
@@ -21,7 +21,6 @@ export function Scene10Quiet() {
   const [ref, inView] = useInViewOnce<HTMLDivElement>({ threshold: 0.2 });
   const reduced = useReducedMotion();
   const { triggerCue } = useAudio();
-  const [active, setActive] = useState(false);
 
   const lines = anniversary.quietLines;
 
@@ -30,18 +29,25 @@ export function Scene10Quiet() {
 
   useEffect(() => {
     if (!inView) return;
-    setActive(true);
     triggerCue('quietScene');
   }, [inView, triggerCue]);
 
-  // Hold the music back for the length of the scene, then let it return.
-  useMusicDuck(active, 0.32, 2400);
+  /*
+   * The music is NOT ducked from here any more.
+   *
+   * The scene mix map holds `quiet` at 0.42 with a 3.5s ramp — the slowest fade
+   * in the story — and `converge` then climbs to 0.98 over 3.2s. Driving both
+   * from one place is what makes the recovery feel like a build rather than a
+   * level being restored: this scene no longer snaps the music back on exit, the
+   * next scene takes it from where Quiet left it.
+   */
 
   return (
     <div ref={container} id="quiet" className="relative" style={{ height: `${lines.length * 62}vh` }}>
       <div ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[50vh]" />
 
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden px-6">
+      <div className="sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden px-7 sm:px-10">
+        <p className="pointer-events-none absolute left-7 top-24 z-20 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/45 sm:left-10 lg:left-[max(2.5rem,calc((100vw-56rem)/2))]">09 · ไม่ใช่ทุกวันที่ง่าย</p>
         {/* Softening wash: the celestial layer recedes for this scene only */}
         <motion.span
           aria-hidden="true"
@@ -57,7 +63,7 @@ export function Scene10Quiet() {
           transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        <div className="relative w-full max-w-2xl text-center">
+        <div className="relative w-full max-w-4xl text-left">
           {lines.map((line, index) => {
             const start = index / lines.length;
             const end = (index + 1) / lines.length;
@@ -109,8 +115,8 @@ function QuietLine({
       style={reduced ? { opacity } : { opacity, y, filter }}
       className={
         emphasis
-          ? 'ai-legible absolute inset-x-0 top-1/2 -translate-y-1/2 font-display text-[clamp(1.85rem,5vw,3.5rem)] font-light leading-snug text-ivory'
-          : 'ai-legible absolute inset-x-0 top-1/2 -translate-y-1/2 font-display text-[clamp(1.5rem,4vw,2.75rem)] font-light leading-snug text-ivory/85'
+          ? 'thai-display ai-legible absolute inset-x-0 top-1/2 max-w-3xl -translate-y-1/2 font-thai text-[clamp(2rem,5vw,3.5rem)] font-light text-ivory'
+          : 'thai-display ai-legible absolute inset-x-0 top-1/2 max-w-3xl -translate-y-1/2 font-thai text-[clamp(1.65rem,4vw,2.8rem)] font-light text-ivory/85'
       }
     >
       {text}

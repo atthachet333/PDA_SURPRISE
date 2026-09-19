@@ -61,15 +61,28 @@ const fragmentShader = /* glsl */ `
 
     float grain = hash(vUv * 420.0 + uTime) * 0.025;
 
-    vec3 base = mix(NAVY, SKY, smoothstep(0.35, 1.0, uProgress));
+    /*
+     * COLOUR HANDOFF.
+     *
+     * The overlay used to finish on full SKY with a white core, while the /us
+     * Arrival opens on deep NAVY - so the route change landed as a bright frame
+     * followed by a dark one, which is exactly the cut this transition exists to
+     * hide. The sky now blooms through the middle and SETTLES BACK to navy over
+     * the last third, so the final frame here and the first frame of Arrival are
+     * the same colour and the swap is genuinely hard to see.
+     */
+    float bloom = smoothstep(0.30, 0.68, uProgress) * (1.0 - smoothstep(0.72, 1.0, uProgress));
+    vec3 base = mix(NAVY, SKY, bloom);
+
     vec3 color = base;
     color = mix(color, GREEN, ring * smoothstep(0.5, 0.0, uProgress));
     color = mix(color, SKY, ring * smoothstep(0.3, 0.9, uProgress));
-    color = mix(color, IVORY, core * 0.95);
-    color += streak * 0.35;
+    // The core fades out with the bloom rather than holding white to the end.
+    color = mix(color, IVORY, core * 0.95 * (1.0 - smoothstep(0.66, 0.96, uProgress)));
+    color += streak * 0.35 * (1.0 - smoothstep(0.6, 0.9, uProgress));
     color += grain;
 
-    // Fade the whole overlay in at the start and hold opaque at the end.
+    // Fade in at the start and hold opaque at the end.
     float alpha = smoothstep(0.0, 0.12, uProgress);
     gl_FragColor = vec4(color, alpha);
   }
@@ -164,7 +177,13 @@ function ConvergingParticles({
     attribute.needsUpdate = true;
 
     const material = points.current.material as THREE.PointsMaterial;
-    material.opacity = Math.min(1, p * 3) * (1 - burst * 0.75);
+    /*
+     * Particle density has to match what Arrival opens with, not fall to zero:
+     * the star field on the other side is present from the first frame, so the
+     * portal keeps a little light in the air rather than emptying the sky just
+     * before the handover.
+     */
+    material.opacity = Math.min(1, p * 3) * (1 - burst * 0.55);
   });
 
   return (
@@ -182,7 +201,7 @@ function ConvergingParticles({
   );
 }
 
-const STEPS = ['Releasing workspace theme', 'Loading private environment', 'Opening'];
+const STEPS = ['กำลังเตรียมเรื่องราวของเรา...', 'กำลังรวบรวมความทรงจำ...', 'อีกนิดเดียว...'];
 
 interface PortalTransitionProps {
   active: boolean;
@@ -211,8 +230,14 @@ export function PortalTransition({ active, onComplete, duration = 3600 }: Portal
     const began = performance.now();
     let frame = 0;
 
-    play('whoosh');
-    const impact = window.setTimeout(() => play('impact'), total * 0.55);
+    /*
+     * ONE sound for the whole crossing. The music itself is already running -
+     * it started on the click that opened the project and continues straight
+     * through this overlay into /us on the same instance - so the portal only
+     * adds a single breath of air and never touches the track.
+     */
+    play('airWhoosh');
+    const impact = window.setTimeout(() => play('transitionRise'), total * 0.52);
 
     // This overlay gates navigation, so it must never be able to strand the
     // visitor. requestAnimationFrame is throttled (or stopped) whenever the
@@ -254,7 +279,9 @@ export function PortalTransition({ active, onComplete, duration = 3600 }: Portal
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          /* Slower out than in: the overlay dissolves into Arrival rather than
+             being switched off in front of it. */
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           role="status"
           aria-live="polite"
         >
@@ -271,7 +298,14 @@ export function PortalTransition({ active, onComplete, duration = 3600 }: Portal
             />
           </Canvas>
 
-          <div className="pointer-events-none absolute inset-0 flex items-end justify-center pb-24">
+          {/* The caption clears before the handover so the last frame is sky
+              and nothing else - Arrival opens on its own title, not on the tail
+              of a loading line. */}
+          <motion.div
+            className="pointer-events-none absolute inset-0 flex items-end justify-center pb-24"
+            animate={{ opacity: step >= 2 ? 0 : 1 }}
+            transition={{ duration: 0.8, delay: step >= 2 ? 0.5 : 0 }}
+          >
             <AnimatePresence mode="wait">
               <motion.p
                 key={step}
@@ -279,12 +313,12 @@ export function PortalTransition({ active, onComplete, duration = 3600 }: Portal
                 animate={{ opacity: 0.85, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4 }}
-                className="font-mono text-[0.6875rem] uppercase tracking-[0.28em] text-ivory/85"
+                className="font-thai text-sm leading-relaxed text-ivory/85"
               >
                 {STEPS[step]}
               </motion.p>
             </AnimatePresence>
-          </div>
+          </motion.div>
         </motion.div>
       ) : null}
     </AnimatePresence>

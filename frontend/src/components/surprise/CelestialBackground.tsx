@@ -36,7 +36,9 @@ const skyVertex = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    // The sky is a screen-space layer, not a world-space card. Keeping it in
+    // clip space guarantees full coverage at every viewport and camera depth.
+    gl_Position = vec4(position.xy, 0.999, 1.0);
   }
 `;
 
@@ -293,7 +295,7 @@ export function CelestialBackground({
   const layer = { mood, calm, camera, pointer };
 
   return (
-    <div className="fixed inset-0 -z-10" aria-hidden="true">
+    <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
       <Canvas
         dpr={[1, device.maxDpr]}
         // 'demand' rather than 'never': R3F still performs its initial render

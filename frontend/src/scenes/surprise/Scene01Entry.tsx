@@ -38,11 +38,8 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
     return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, [reduced, triggerCue]);
 
-  const showMark = stage !== 'flash';
-  const showCopy = stage === 'copy' || stage === 'ready';
-
   return (
-    <SceneSection id="entry" label="Entry" className="text-center">
+    <SceneSection id="entry" label="00 · Arrival" className="text-center">
       {/* The portal hands over on white; it opens into sky here. */}
       <AnimatePresence>
         {stage === 'flash' ? (
@@ -60,62 +57,67 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
 
       <div className="relative flex flex-col items-center">
         <motion.div
-          initial={reduced ? false : { opacity: 0, scale: 1.14 }}
-          animate={showMark ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.14 }}
+          initial={false}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 2.4, ease: [0.16, 1, 0.3, 1] }}
         >
-          <AIMark size="hero" animateIn={showMark && !reduced} />
+          <AIMark size="hero" />
         </motion.div>
 
-        <div className="mt-10 flex flex-col items-center px-2">
+        <motion.p
+          initial={false}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.25 }}
+          className="ai-wordmark mt-7 text-[clamp(1rem,2vw,1.35rem)]"
+        >
+          Atthachet &amp; Isariya
+        </motion.p>
+
+        <div className="mt-7 flex flex-col items-center px-2">
           {intro.title.map((line, index) => (
             <motion.p
               key={line}
-              initial={reduced ? false : { opacity: 0, y: 14, filter: 'blur(10px)' }}
-              animate={
-                showCopy
-                  ? { opacity: 1, y: 0, filter: 'blur(0px)' }
-                  : { opacity: 0, y: 14, filter: 'blur(10px)' }
-              }
+              initial={false}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 1.6, delay: index * 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="ai-legible font-display text-[clamp(1.5rem,4.2vw,2.6rem)] font-light leading-tight text-ivory"
+              className="thai-display ai-legible font-thai text-[clamp(1.75rem,4.2vw,2.75rem)] font-light text-ivory"
             >
               {line}
             </motion.p>
           ))}
 
           <motion.p
-            initial={reduced ? false : { opacity: 0 }}
-            animate={{ opacity: showCopy ? 1 : 0 }}
+            initial={false}
+            animate={{ opacity: 1 }}
             transition={{ duration: 1.6, delay: 0.9 }}
-            className="mt-7 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-mono text-[0.625rem] uppercase tracking-[0.3em] text-sky-100/70"
+            className="mt-7 flex max-w-[18rem] flex-col items-center justify-center gap-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sky-100/70 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-x-3 sm:gap-y-1 sm:text-[0.625rem] sm:tracking-[0.3em]"
           >
             {intro.subtitle.map((line, index) => (
               <span key={line} className="flex items-center gap-3">
-                {index > 0 ? <span className="h-1 w-1 rounded-full bg-sky-200/40" /> : null}
+                {index > 0 ? <span className="hidden h-1 w-1 rounded-full bg-sky-200/40 sm:block" /> : null}
                 {line}
               </span>
             ))}
           </motion.p>
+
         </div>
 
         <motion.button
           type="button"
-          initial={reduced ? false : { opacity: 0, y: 18 }}
-          animate={stage === 'ready' ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
-          style={{ pointerEvents: stage === 'ready' ? 'auto' : 'none' }}
-          onPointerEnter={() => play('hover')}
+          style={{ pointerEvents: 'auto' }}
           onClick={() => {
-            play('whoosh');
+            play('airWhoosh');
             onEnter();
           }}
           data-cursor="interactive"
-          className="group relative mt-14 overflow-hidden rounded-pill border border-sky-200/35 px-10 py-4 text-[0.6875rem] uppercase tracking-[0.32em] text-ivory transition-colors duration-slow hover:border-sky-200/80"
+          className="ai-button-primary group mt-14 min-h-12 px-9"
         >
           <span className="absolute inset-0 -translate-x-full bg-[linear-gradient(90deg,transparent,rgba(220,239,255,0.28),transparent)] transition-transform duration-[1500ms] ease-smooth group-hover:translate-x-full" />
           <span className="absolute inset-0 rounded-pill bg-sky-400/0 transition-colors duration-slow group-hover:bg-sky-400/10" />
-          <span className="relative">{intro.cta}</span>
+          <span className="relative flex items-center gap-3">{intro.cta}<span aria-hidden="true" className="transition-transform duration-base group-hover:translate-x-1">→</span></span>
         </motion.button>
       </div>
 
@@ -126,7 +128,7 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
         transition={{ duration: 3.4, delay: 1.2, repeat: Infinity }}
         className="absolute bottom-10 flex flex-col items-center gap-2"
       >
-        <span className="font-mono text-[0.5rem] uppercase tracking-[0.3em] text-ivory/40">scroll</span>
+        <span className="font-mono text-[0.5rem] uppercase tracking-[0.3em] text-ivory/40">เลื่อนลง</span>
         <span className="h-9 w-px bg-gradient-to-b from-sky-200/60 to-transparent" />
       </motion.div>
     </SceneSection>

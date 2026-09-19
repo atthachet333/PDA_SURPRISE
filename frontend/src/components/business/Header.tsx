@@ -81,9 +81,12 @@ export function Header() {
           )}
         >
           <Link to="/" className="relative z-10 shrink-0" aria-label="PDA BLISS — หน้าแรก">
-            {/* Compact mark on mobile; full wordmark from sm up. */}
             <Logo compact className="sm:hidden" />
-            <Logo className="hidden origin-left transition-transform duration-slow ease-smooth sm:inline-flex" />
+            {scrolled ? (
+              <span className="hidden items-center gap-2.5 sm:inline-flex"><Logo compact /><span className="text-sm font-semibold tracking-[.02em] text-ink">PDA BLISS</span></span>
+            ) : (
+              <Logo className="hidden origin-left transition-transform duration-slow ease-smooth sm:inline-flex" />
+            )}
           </Link>
 
           {/* ------------------------------------------------- desktop nav -- */}

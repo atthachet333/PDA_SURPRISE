@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { useDeviceProfile } from '@/hooks/useDeviceProfile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
-type CursorMode = 'default' | 'interactive' | 'open' | 'drag';
+type CursorMode = 'default' | 'interactive' | 'open' | 'drag' | 'read';
 
 const LABELS: Record<CursorMode, string> = {
   default: '',
   interactive: '',
   open: 'OPEN',
-  drag: 'DRAG'
+  drag: 'DRAG',
+  read: 'READ'
 };
 
 /**
@@ -57,7 +58,7 @@ export function AICursor() {
       const tagged = target.closest('[data-cursor]');
       if (tagged) {
         const value = tagged.getAttribute('data-cursor');
-        if (value === 'open' || value === 'drag' || value === 'interactive') return value;
+        if (value === 'open' || value === 'drag' || value === 'read' || value === 'interactive') return value;
       }
       return target.closest('a, button, [role="button"], input, select, textarea') ? 'interactive' : 'default';
     };
@@ -108,8 +109,8 @@ export function AICursor() {
         ref={ring}
         className="absolute left-0 top-0 flex items-center justify-center rounded-full border border-sky-200/70 transition-[width,height,opacity,background-color] duration-300 ease-entrance"
         style={{
-          width: expanded ? 54 : 26,
-          height: expanded ? 54 : 26,
+          width: expanded ? 48 : 24,
+          height: expanded ? 48 : 24,
           opacity: visible ? (expanded ? 1 : 0.55) : 0,
           backgroundColor: expanded ? 'rgba(126,200,255,0.10)' : 'transparent'
         }}

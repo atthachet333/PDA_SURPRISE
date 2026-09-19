@@ -26,6 +26,7 @@
  */
 
 import type { MockKind } from '@/lib/systemMocks';
+import type { PortfolioItem } from '@/data/portfolio';
 
 export interface VisualSlot {
   id: string;
@@ -197,6 +198,18 @@ export const portfolioVisuals: Record<string, VisualSlot> = {
 
 export const visualForPortfolio = (itemId: string): VisualSlot =>
   portfolioVisuals[itemId] ?? { id: `pf-${itemId}`, mock: 'analytics', label: 'system' };
+
+/**
+ * Project visual priority: approved screenshot → reviewed public-site capture
+ * → first reviewed gallery image → branded mock. Unsafe media is never used.
+ */
+export function visualForPortfolioItem(item: PortfolioItem): VisualSlot {
+  const base = visualForPortfolio(item.id);
+  if (!item.publicSafe) return base;
+  const image = [item.approvedScreenshot, item.publicWebsiteImage, ...item.screenshots]
+    .find((candidate) => candidate?.reviewed);
+  return image ? { ...base, screenshot: image.src, alt: image.caption } : base;
+}
 
 /** Slots still waiting on a reviewed screenshot — useful for an owner checklist. */
 export function slotsAwaitingScreenshots(): VisualSlot[] {

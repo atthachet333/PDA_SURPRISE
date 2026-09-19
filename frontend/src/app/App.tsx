@@ -5,6 +5,8 @@ import { Footer } from '@/components/business/Footer';
 import { CorporateBackground } from '@/components/business/CorporateBackground';
 import { CorporateCursor } from '@/components/business/CorporateCursor';
 import { FloatingContact } from '@/components/business/FloatingContact';
+import { BackToTop } from '@/components/business/BackToTop';
+import { CookieConsentProvider } from '@/app/CookieConsent';
 import { AILoader } from '@/components/surprise/AILoader';
 import { useLenis } from '@/hooks/useLenis';
 import Home from '@/pages/business/Home';
@@ -25,6 +27,10 @@ const WorkDetail = lazy(() => import('@/pages/business/WorkDetail'));
 const About = lazy(() => import('@/pages/business/About'));
 const Contact = lazy(() => import('@/pages/business/Contact'));
 const Insights = lazy(() => import('@/pages/business/Insights'));
+const InsightDetail = lazy(() => import('@/pages/business/InsightDetail'));
+const Privacy = lazy(() => import('@/pages/business/Privacy'));
+const CookiePolicy = lazy(() => import('@/pages/business/CookiePolicy'));
+const Terms = lazy(() => import('@/pages/business/Terms'));
 const Login = lazy(() => import('@/pages/business/Login'));
 const NotFound = lazy(() => import('@/pages/business/NotFound'));
 const Workspace = lazy(() => import('@/pages/surprise/Workspace'));
@@ -49,16 +55,17 @@ function ScrollToTop() {
 function BusinessLayout({ children }: { children: React.ReactNode }) {
   useLenis();
   return (
-    <div className="corporate-shell flex min-h-screen flex-col">
-      <CorporateBackground />
-      <CorporateCursor />
-      <Header />
-      <main id="main" className="flex-1">
-        {children}
-      </main>
-      <Footer />
-      <FloatingContact />
-    </div>
+    <CookieConsentProvider>
+      <div className="corporate-shell flex min-h-screen flex-col">
+        <CorporateBackground />
+        <CorporateCursor />
+        <Header />
+        <main id="main" className="flex-1">{children}</main>
+        <Footer />
+        <BackToTop />
+        <FloatingContact />
+      </div>
+    </CookieConsentProvider>
   );
 }
 
@@ -140,6 +147,10 @@ export default function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/insights" element={<Insights />} />
+                  <Route path="/insights/:slug" element={<InsightDetail />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/cookie-policy" element={<CookiePolicy />} />
+                  <Route path="/terms" element={<Terms />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
