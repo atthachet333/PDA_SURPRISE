@@ -4,7 +4,12 @@ import { Link } from "react-router-dom";
 import { Container } from "@/components/shared/Layout";
 import { ArrowIcon } from "@/components/shared/Button";
 import { ProductPanel } from "./ProductPanel";
-import { showreelVisuals, type VisualSlot } from "@/data/visuals";
+import {
+  showreelVisuals,
+  showreelDestination,
+  type VisualSlot,
+} from "@/data/visuals";
+import { SectionBackdrop } from "./SectionBackdrop";
 import { useDeviceProfile } from "@/hooks/useDeviceProfile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/cn";
@@ -66,9 +71,9 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
       ref={sectionRef}
       className="sect sect--field relative overflow-hidden py-section"
     >
-      <div className="sect-layer field-lines opacity-60" aria-hidden="true" />
+      <SectionBackdrop variant="data-field" pointer />
 
-      <Container className="relative">
+      <Container wide className="relative">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
             <p className="section-code">{code}</p>
@@ -124,26 +129,38 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
             fanned && "lg:hidden",
           )}
         >
-          {showreelVisuals.map((slot) => (
-            <figure
-              key={slot.id}
-              className="w-[78vw] shrink-0 snap-center sm:w-[60vw] md:w-[44vw] lg:w-[32vw]"
-            >
-              <div
-                className={cn(
-                  "overflow-hidden rounded-card shadow-lift ring-1 ring-black/5",
-                  slot.mock === "hrLine"
-                    ? "aspect-[10/13] mx-auto max-w-[15rem]"
-                    : "aspect-[16/10]",
-                )}
+          {showreelVisuals.map((slot) => {
+            /* The rail is the mobile/touch path, so its cards must be links too. */
+            const to = slot.portfolioId
+              ? `/work/${slot.portfolioId}`
+              : (showreelDestination[slot.id] ?? "/work");
+            return (
+              <Link
+                key={slot.id}
+                to={to}
+                className="group w-[78vw] shrink-0 snap-center sm:w-[60vw] md:w-[44vw] lg:w-[32vw]"
               >
-                <ProductPanel slot={slot} className="h-full" />
-              </div>
-              <figcaption className="thai-display mt-3 text-sm font-semibold text-ink">
-                {slot.titleTh ?? slot.label}
-              </figcaption>
-            </figure>
-          ))}
+                <div
+                  className={cn(
+                    "overflow-hidden rounded-card shadow-lift ring-1 ring-black/5 transition-shadow duration-base group-hover:shadow-lift-lg",
+                    slot.mock === "hrLine"
+                      ? "aspect-[10/13] mx-auto max-w-[15rem]"
+                      : "aspect-[16/10]",
+                  )}
+                >
+                  <ProductPanel slot={slot} className="h-full" />
+                </div>
+                <p className="mt-3 flex flex-wrap items-center gap-x-2">
+                  <span className="thai-display text-sm font-semibold text-ink">
+                    {slot.titleTh ?? slot.label}
+                  </span>
+                  <span className="font-mono text-[0.5rem] uppercase tracking-[0.12em] text-brand-600">
+                    {slot.portfolioId ? "ดูระบบ" : "ดูบริการ"} →
+                  </span>
+                </p>
+              </Link>
+            );
+          })}
         </div>
       </Container>
     </section>
@@ -189,6 +206,16 @@ function ShowreelCard({
 
   const isPhone = slot.mock === "hrLine";
 
+  /*
+    Every card has a real destination: its case study when the slot maps to a
+    portfolio item, otherwise the service that describes the capability. No card
+    is a decorative dead end.
+  */
+  const destination = slot.portfolioId
+    ? `/work/${slot.portfolioId}`
+    : (showreelDestination[slot.id] ?? "/work");
+  const actionLabel = slot.portfolioId ? "ดูระบบ" : "ดูบริการ";
+
   return (
     /*
       Three nested elements on purpose:
@@ -230,13 +257,13 @@ function ShowreelCard({
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <Link
-            to="/work"
+            to={destination}
             onPointerEnter={onActivate}
             onFocus={onActivate}
             onBlur={onDeactivate}
             data-cursor="project"
             className="block h-full focus-visible:outline-none"
-            aria-label={`ดูผลงาน — ${slot.titleTh ?? slot.label}`}
+            aria-label={`${actionLabel} — ${slot.titleTh ?? slot.label}`}
           >
             <div
               className={cn(
@@ -255,8 +282,11 @@ function ShowreelCard({
               animate={{ opacity: active ? 1 : 0, y: active ? 0 : -6 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="thai-display rounded-pill bg-ink px-3 py-1 text-xs font-semibold text-white">
+              <span className="thai-display inline-flex items-center gap-1.5 rounded-pill bg-ink px-3 py-1 text-xs font-semibold text-white">
                 {slot.titleTh ?? slot.label}
+                <span className="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-brand-300">
+                  {actionLabel} →
+                </span>
               </span>
             </motion.span>
           </Link>

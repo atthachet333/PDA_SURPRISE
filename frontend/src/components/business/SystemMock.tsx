@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { cn } from '@/lib/cn';
 
 /**
@@ -89,7 +90,18 @@ export function PhoneFrame({
 
 /* ------------------------------------------------------------- shared atoms -- */
 
-function Sidebar({ active }: { active: number }) {
+/**
+ * Sidebar. When `onSelect` is supplied the rows become real buttons, so the
+ * mock reacts to a visitor instead of only looking like software.
+ */
+function Sidebar({
+  active,
+  onSelect
+}: {
+  active: number;
+  onSelect?: (index: number) => void;
+}) {
+  const interactive = Boolean(onSelect);
   return (
     <div className="hidden w-[4.5rem] shrink-0 flex-col gap-1 border-r border-steel-100 bg-steel-50/60 p-2 sm:flex lg:w-24">
       <span className="mb-1 flex items-center gap-1.5 px-1">
@@ -97,11 +109,13 @@ function Sidebar({ active }: { active: number }) {
         <span className="hidden h-1.5 w-8 rounded-pill bg-steel-300 lg:block" />
       </span>
       {[0, 1, 2, 3, 4, 5].map((row) => (
-        <span
+        <Row
           key={row}
+          interactive={interactive}
+          onSelect={onSelect ? () => onSelect(row) : undefined}
           className={cn(
-            'flex items-center gap-1.5 rounded-[5px] px-1 py-1.5',
-            row === active ? 'bg-brand-50' : ''
+            'flex items-center gap-1.5 rounded-[5px] px-1 py-1.5 transition-colors duration-fast',
+            row === active ? 'bg-brand-50' : interactive ? 'hover:bg-steel-100' : ''
           )}
         >
           <span
@@ -116,9 +130,32 @@ function Sidebar({ active }: { active: number }) {
               row === active ? 'w-9 bg-brand-400' : 'w-7 bg-steel-200'
             )}
           />
-        </span>
+        </Row>
       ))}
     </div>
+  );
+}
+
+/**
+ * A row that is a real `button` when it does something and a plain `span` when
+ * it does not — so a mock never shows a hover state it cannot honour.
+ */
+function Row({
+  interactive,
+  onSelect,
+  className,
+  children
+}: {
+  interactive: boolean;
+  onSelect?: () => void;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  if (!interactive) return <span className={className}>{children}</span>;
+  return (
+    <button type="button" onClick={onSelect} onPointerEnter={onSelect} className={cn('w-full text-left', className)}>
+      {children}
+    </button>
   );
 }
 
@@ -172,21 +209,39 @@ function Pill({ tone, children }: { tone: 'ok' | 'warn' | 'idle'; children: Reac
 
 /* -------------------------------------------------------------- the screens -- */
 
-/** ERP: production and stock overview. */
+/**
+ * ERP: production and stock overview.
+ *
+ * Picking a module in the sidebar swaps the chart series and the headline
+ * figure. Lightweight on purpose — enough for the panel to feel like software a
+ * person can touch, nothing like real application behaviour.
+ */
+const ERP_MODULES = [
+  { label: 'ภาพรวมการผลิต', orders: '1,284', bars: [44, 62, 38, 74, 52, 86, 58, 92, 68, 78, 60, 88] },
+  { label: 'คลังสินค้า', orders: '3,910', bars: [62, 48, 70, 55, 82, 60, 74, 66, 88, 58, 72, 80] },
+  { label: 'จัดซื้อ', orders: '642', bars: [30, 44, 36, 58, 42, 66, 50, 72, 46, 60, 54, 68] },
+  { label: 'ต้นทุน', orders: '218', bars: [70, 58, 76, 64, 84, 72, 90, 66, 78, 86, 68, 94] },
+  { label: 'รายงาน', orders: '96', bars: [24, 40, 32, 52, 38, 60, 44, 68, 40, 56, 48, 64] },
+  { label: 'ตั้งค่า', orders: '12', bars: [18, 26, 22, 34, 28, 40, 30, 46, 26, 38, 32, 44] }
+];
+
 export function ErpScreen() {
+  const [module, setModule] = useState(1);
+  const view = ERP_MODULES[module] ?? ERP_MODULES[0]!;
+
   return (
     <div className="flex h-full">
-      <Sidebar active={1} />
+      <Sidebar active={module} onSelect={setModule} />
       <div className="flex min-w-0 flex-1 flex-col p-3">
         <div className="flex items-center justify-between gap-2">
-          <p className="truncate text-[0.6875rem] font-semibold text-ink">ภาพรวมการผลิต</p>
+          <p className="truncate text-[0.6875rem] font-semibold text-ink">{view.label}</p>
           <span className="hidden shrink-0 rounded-[4px] bg-brand-500 px-2 py-1 font-mono text-[0.5rem] text-white sm:block">
             + ใบสั่งผลิต
           </span>
         </div>
 
         <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-          <Kpi label="ใบสั่งผลิต" value="1,284" delta="+12%" />
+          <Kpi label="ใบสั่งผลิต" value={view.orders} delta="+12%" />
           <Kpi label="รอผลิต" value="7" />
           <Kpi label="คลัง" value="99.4%" />
           <Kpi label="ของเสีย" value="0.6%" />
@@ -200,7 +255,7 @@ export function ErpScreen() {
             <span className="font-mono text-[0.5rem] text-steel-300">SAMPLE</span>
           </div>
           <div className="mt-2 h-[calc(100%-1.25rem)] min-h-[2rem]">
-            <Bars data={[44, 62, 38, 74, 52, 86, 58, 92, 68, 78, 60, 88]} />
+            <Bars data={view.bars} />
           </div>
         </div>
 
@@ -225,6 +280,7 @@ export function ErpScreen() {
 
 /** Payroll: a pay run being reviewed. Amounts are obviously sample values. */
 export function PayrollScreen() {
+  const [view, setView] = useState<'rows' | 'summary'>('rows');
   const rows = [
     { id: 'EMP-001', amount: '32,500', tone: 'ok' as const },
     { id: 'EMP-002', amount: '28,900', tone: 'ok' as const },
@@ -241,8 +297,24 @@ export function PayrollScreen() {
             <p className="truncate text-[0.6875rem] font-semibold text-ink">รอบเงินเดือน</p>
             <p className="font-mono text-[0.5rem] text-steel-400">PERIOD 2026-09 · SAMPLE</p>
           </div>
-          <span className="shrink-0 rounded-[4px] border border-brand-300 bg-brand-50 px-2 py-1 font-mono text-[0.5rem] text-brand-700">
-            ตรวจสอบ
+          {/* A real toggle between the run list and the summary. */}
+          <span className="flex shrink-0 gap-1">
+            {(['rows', 'summary'] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => setView(mode)}
+                onPointerEnter={() => setView(mode)}
+                className={cn(
+                  'rounded-[4px] border px-2 py-1 font-mono text-[0.5rem] transition-colors duration-fast',
+                  view === mode
+                    ? 'border-brand-300 bg-brand-50 text-brand-700'
+                    : 'border-steel-200 text-steel-400 hover:border-steel-300'
+                )}
+              >
+                {mode === 'rows' ? 'รายคน' : 'สรุป'}
+              </button>
+            ))}
           </span>
         </div>
 
@@ -253,6 +325,31 @@ export function PayrollScreen() {
         </div>
 
         <div className="mt-2.5 min-h-0 flex-1 overflow-hidden rounded-[6px] border border-steel-100">
+          {view === 'summary' ? (
+            <div className="flex h-full flex-col justify-center gap-2 p-3">
+              {[
+                { label: 'เงินเดือนพื้นฐาน', pct: 78 },
+                { label: 'ค่าล่วงเวลา', pct: 34 },
+                { label: 'ประกันสังคม', pct: 18 },
+                { label: 'ภาษีหัก ณ ที่จ่าย', pct: 26 }
+              ].map((bar, index) => (
+                <div key={bar.label}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
+                      {bar.label}
+                    </span>
+                  </div>
+                  <span className="mt-1 block h-1.5 w-full overflow-hidden rounded-pill bg-steel-100">
+                    <span
+                      className={cn('block h-full rounded-pill', index === 0 ? 'bg-brand-500' : 'bg-brand-300')}
+                      style={{ width: `${bar.pct}%` }}
+                    />
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+          <>
           <div className="flex items-center gap-2 border-b border-steel-100 bg-steel-50/70 px-2.5 py-1.5">
             <span className="w-14 font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
               รหัส
@@ -279,6 +376,8 @@ export function PayrollScreen() {
               <Pill tone={row.tone}>{row.tone === 'ok' ? 'ok' : 'check'}</Pill>
             </div>
           ))}
+          </>
+          )}
         </div>
 
         <div className="mt-2 flex items-center justify-between rounded-[6px] bg-brand-50 px-2.5 py-1.5">
@@ -296,26 +395,31 @@ export function PayrollScreen() {
 
 /** Document management: folders, files, versioning. */
 export function DocumentsScreen() {
+  const [selected, setSelected] = useState(1);
+  const [folder, setFolder] = useState(0);
   return (
     <div className="flex h-full">
       <div className="hidden w-24 shrink-0 flex-col gap-1 border-r border-steel-100 bg-steel-50/60 p-2 sm:flex">
         <span className="mb-1 h-1.5 w-12 rounded-pill bg-steel-300" />
-        {['สัญญา', 'ใบกำกับ', 'HR', 'บัญชี', 'อื่น ๆ'].map((folder, index) => (
-          <span
-            key={folder}
+        {['สัญญา', 'ใบกำกับ', 'HR', 'บัญชี', 'อื่น ๆ'].map((name, index) => (
+          <button
+            key={name}
+            type="button"
+            onClick={() => setFolder(index)}
+            onPointerEnter={() => setFolder(index)}
             className={cn(
-              'flex items-center gap-1.5 rounded-[5px] px-1 py-1',
-              index === 0 && 'bg-brand-50'
+              'flex w-full items-center gap-1.5 rounded-[5px] px-1 py-1 text-left transition-colors duration-fast',
+              index === folder ? 'bg-brand-50' : 'hover:bg-steel-100'
             )}
           >
             <span
               className={cn(
                 'h-2.5 w-3 shrink-0 rounded-[2px]',
-                index === 0 ? 'bg-brand-400' : 'bg-steel-300'
+                index === folder ? 'bg-brand-400' : 'bg-steel-300'
               )}
             />
-            <span className="truncate text-[0.5rem] text-steel-500">{folder}</span>
-          </span>
+            <span className="truncate text-[0.5rem] text-steel-500">{name}</span>
+          </button>
         ))}
       </div>
 
@@ -332,17 +436,22 @@ export function DocumentsScreen() {
 
         <div className="mt-2.5 grid min-h-0 flex-1 grid-cols-3 gap-1.5 sm:grid-cols-4">
           {[0, 1, 2, 3, 4, 5, 6, 7].map((file) => (
-            <div
+            <button
               key={file}
+              type="button"
+              onClick={() => setSelected(file)}
+              onPointerEnter={() => setSelected(file)}
               className={cn(
-                'flex min-h-0 flex-col justify-between rounded-[5px] border p-1.5',
-                file === 1 ? 'border-brand-300 bg-brand-50' : 'border-steel-100'
+                'flex min-h-0 flex-col justify-between rounded-[5px] border p-1.5 text-left transition-colors duration-fast',
+                file === selected
+                  ? 'border-brand-300 bg-brand-50'
+                  : 'border-steel-100 hover:border-steel-200'
               )}
             >
               <span
                 className={cn(
                   'h-3 w-2.5 rounded-[2px]',
-                  file === 1 ? 'bg-brand-400' : 'bg-steel-200'
+                  file === selected ? 'bg-brand-400' : 'bg-steel-200'
                 )}
               />
               <span className="space-y-0.5">
@@ -351,13 +460,13 @@ export function DocumentsScreen() {
                   DOC-240{file + 1}
                 </span>
               </span>
-            </div>
+            </button>
           ))}
         </div>
 
         <div className="mt-2 flex items-center justify-between border-t border-steel-100 pt-2">
           <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-steel-400">
-            v.4 · สิทธิ์: ฝ่ายบัญชี
+            DOC-240{selected + 1} · v.4 · สิทธิ์: ฝ่ายบัญชี
           </span>
           <span className="font-mono text-[0.4375rem] uppercase tracking-[0.1em] text-brand-600">
             synced
@@ -623,14 +732,42 @@ export function TrackingScreen() {
 }
 
 /** Analytics dashboard. */
+const ANALYTICS_PERIODS = [
+  { label: '7D', bars: [38, 52, 46, 68, 58, 78, 66, 88, 74, 92], total: '4,128' },
+  { label: '30D', bars: [62, 48, 74, 58, 86, 64, 92, 70, 80, 96], total: '17,540' },
+  { label: '90D', bars: [44, 70, 52, 82, 60, 90, 68, 76, 88, 98], total: '52,306' }
+];
+
 export function AnalyticsScreen() {
+  const [period, setPeriod] = useState(0);
+  const view = ANALYTICS_PERIODS[period] ?? ANALYTICS_PERIODS[0]!;
   return (
     <div className="flex h-full">
       <Sidebar active={5} />
       <div className="flex min-w-0 flex-1 flex-col p-3">
-        <p className="truncate text-[0.6875rem] font-semibold text-ink">Dashboard ผู้บริหาร</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="truncate text-[0.6875rem] font-semibold text-ink">Dashboard ผู้บริหาร</p>
+          <span className="flex shrink-0 gap-1">
+            {ANALYTICS_PERIODS.map((item, index) => (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => setPeriod(index)}
+                onPointerEnter={() => setPeriod(index)}
+                className={cn(
+                  'rounded-[4px] border px-1.5 py-0.5 font-mono text-[0.4375rem] transition-colors duration-fast',
+                  index === period
+                    ? 'border-brand-300 bg-brand-50 text-brand-700'
+                    : 'border-steel-200 text-steel-400 hover:border-steel-300'
+                )}
+              >
+                {item.label}
+              </button>
+            ))}
+          </span>
+        </div>
         <div className="mt-2.5 grid grid-cols-4 gap-1.5">
-          <Kpi label="รายการ" value="4,128" delta="+8%" />
+          <Kpi label="รายการ" value={view.total} delta="+8%" />
           <Kpi label="รอดำเนินการ" value="36" />
           <Kpi label="เฉลี่ย/วัน" value="182" />
           <Kpi label="ผิดปกติ" value="2" />
@@ -641,7 +778,7 @@ export function AnalyticsScreen() {
               แนวโน้ม · SAMPLE
             </span>
             <div className="mt-1.5 h-[calc(100%-1rem)] min-h-[2rem]">
-              <Bars data={[38, 52, 46, 68, 58, 78, 66, 88, 74, 92]} />
+              <Bars data={view.bars} />
             </div>
           </div>
           <div className="space-y-1.5 rounded-[6px] border border-steel-100 p-2">

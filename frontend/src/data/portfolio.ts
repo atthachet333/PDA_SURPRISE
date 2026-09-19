@@ -48,6 +48,15 @@ export interface PortfolioScreenshot {
   reviewed: boolean;
 }
 
+/**
+ * How openly a system can be shown.
+ *
+ *   public    a live site anyone may visit
+ *   client    a client's system; may be described, never linked
+ *   internal  an internal tool; described only, no link, no screenshots
+ */
+export type PortfolioVisibility = 'public' | 'client' | 'internal';
+
 export interface PortfolioItem {
   id: string;
   titleTh: string;
@@ -65,6 +74,47 @@ export interface PortfolioItem {
   verified: boolean;
   /** Owner-facing note about what is still needed for this item. */
   pending?: string;
+
+  // --- public presence -----------------------------------------------------
+  /**
+   * How openly this system may be presented. Drives the badge a visitor sees
+   * and whether a live link can ever be rendered.
+   */
+  visibility: PortfolioVisibility;
+  /**
+   * The live, publicly reachable URL — a marketing site or a public app only.
+   *
+   * ─── OWNER INPUT REQUIRED ─────────────────────────────────────────────────
+   * NOTHING is guessed here. A domain is only added once the owner confirms it,
+   * because a wrong or dead link is worse than no link. Leave undefined and the
+   * UI simply shows no live action.
+   *
+   * NEVER put an admin panel, a staging host, an internal hostname or anything
+   * behind a login in this field. `canShowLiveLink()` additionally requires
+   * `visibility === 'public'` and `publicSafe`, so an internal system cannot be
+   * linked even if a URL is set by mistake.
+   * ──────────────────────────────────────────────────────────────────────────
+   */
+  publicUrl?: string;
+  /** Public source repository, when one exists. Same rules as `publicUrl`. */
+  repositoryUrl?: string;
+}
+
+/**
+ * The single gate for rendering a live link. Three conditions, all required:
+ * the owner marked it public, the media passed privacy review, and a URL
+ * actually exists.
+ */
+export function canShowLiveLink(item: PortfolioItem): boolean {
+  return item.visibility === 'public' && item.publicSafe && Boolean(item.publicUrl);
+}
+
+/** Badge text for how a system may be shown. */
+export function visibilityLabel(item: PortfolioItem): string {
+  if (canShowLiveLink(item)) return 'เปิดใช้งานจริง';
+  if (item.visibility === 'public') return 'เว็บไซต์สาธารณะ';
+  if (item.visibility === 'client') return 'ระบบของลูกค้า';
+  return 'ระบบภายในองค์กร';
 }
 
 export const portfolio: PortfolioItem[] = [
@@ -83,6 +133,8 @@ export const portfolio: PortfolioItem[] = [
     screenshots: [],
     publicSafe: false,
     verified: false,
+    // Payroll holds employee salary data: never linkable, screenshots need masking.
+    visibility: 'internal',
     pending: 'ต้องการคำยืนยันขอบเขตงานจากเจ้าของ และภาพหน้าจอที่ปิดข้อมูลส่วนบุคคลแล้ว'
   },
   {
@@ -100,6 +152,7 @@ export const portfolio: PortfolioItem[] = [
     screenshots: [],
     publicSafe: false,
     verified: false,
+    visibility: 'client',
     pending: 'ต้องการคำยืนยันขอบเขตงาน ชื่อที่ใช้เรียกต่อสาธารณะ และภาพหน้าจอที่ตรวจแล้ว'
   },
   {
@@ -115,7 +168,15 @@ export const portfolio: PortfolioItem[] = [
     screenshots: [],
     publicSafe: false,
     verified: false,
-    pending: 'ต้องการอนุญาตจากลูกค้าก่อนเปิดเผยชื่อและภาพ และยืนยัน URL ที่อ้างอิงได้'
+    /*
+      A public marketing site, so a live link is possible in principle — but
+      `publicUrl` stays undefined until the owner confirms the domain. Guessing
+      it would risk linking somewhere wrong, and `canShowLiveLink()` returns
+      false without it, so no dead button is rendered.
+    */
+    visibility: 'public',
+    pending:
+      'ต้องการอนุญาตจากลูกค้าก่อนเปิดเผยชื่อและภาพ และต้องการ URL จริงจากเจ้าของก่อนแสดงลิงก์'
   },
   {
     id: 's2-nas-document-storage',
@@ -130,6 +191,7 @@ export const portfolio: PortfolioItem[] = [
     screenshots: [],
     publicSafe: false,
     verified: false,
+    visibility: 'internal',
     pending: 'ระบบภายในของลูกค้า — ต้องการอนุญาตก่อนเผยแพร่ และต้องปิดชื่อไฟล์/ชื่อผู้ใช้ในภาพทุกภาพ'
   },
   {
@@ -144,7 +206,14 @@ export const portfolio: PortfolioItem[] = [
     stack: ['React', 'TypeScript', 'Vite', 'Fastify'],
     screenshots: [],
     publicSafe: true,
-    verified: true
+    verified: true,
+    /*
+      This site. Public and verified, but `publicUrl` waits on the owner
+      confirming the production domain — the site is not deployed from here and
+      no domain has been supplied, so there is nothing truthful to link to yet.
+    */
+    visibility: 'public',
+    pending: 'ต้องการโดเมนจริงจากเจ้าของ เพื่อแสดงปุ่ม "เปิดเว็บไซต์จริง"'
   }
 ];
 

@@ -83,12 +83,17 @@ export function SolutionGrid({ code = '03 / INDEX' }: { code?: string } = {}) {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={reduced ? undefined : { opacity: 0, scale: 0.97 }}
                   transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative flex flex-col bg-white p-6 transition-colors duration-slow hover:bg-steel-50 sm:p-7"
+                  /*
+                    A reference index, not a set of links — there is no
+                    per-solution route to go to. It previously carried a hover
+                    background, a growing top rule and a lifting preview, all of
+                    which promised a click that never existed. The card is now
+                    plainly inert; the interactive selector lives in
+                    SolutionShowcase above.
+                  */
+                  className="relative flex flex-col bg-white p-6 sm:p-7"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-brand-500 transition-transform duration-slow ease-smooth group-hover:scale-x-100"
-                  />
+                  <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-steel-200" />
 
                   <div className="flex items-start justify-between gap-3">
                     <span className="font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-600">
@@ -101,7 +106,7 @@ export function SolutionGrid({ code = '03 / INDEX' }: { code?: string } = {}) {
                   </h3>
                   <p className="mt-2.5 text-sm leading-relaxed text-steel-500">{solution.summary}</p>
 
-                  <div className="mt-6 h-24 rounded-card border border-steel-100 bg-steel-50/60 p-3.5 transition-colors duration-slow group-hover:border-brand-100 group-hover:bg-white">
+                  <div className="mt-6 h-24 rounded-card border border-steel-100 bg-steel-50/60 p-3.5">
                     <Preview className="h-full" />
                   </div>
 

@@ -5,6 +5,8 @@ import { Container } from '@/components/shared/Layout';
 import { ArrowIcon } from '@/components/shared/Button';
 import { ProductPanel } from './ProductPanel';
 import { portfolio, type PortfolioItem } from '@/data/portfolio';
+import { VisibilityBadge } from './LiveLink';
+import { SectionBackdrop } from './SectionBackdrop';
 import { visualForPortfolio } from '@/data/visuals';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
@@ -50,17 +52,9 @@ export function WorkShowcase({
 }: WorkShowcaseProps) {
   return (
     <section id="work" className="sect sect--deep relative overflow-hidden py-section text-white">
-      <div
-        className="sect-layer opacity-40"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(53,201,111,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(53,201,111,0.06) 1px, transparent 1px)',
-          backgroundSize: '72px 72px'
-        }}
-      />
+      <SectionBackdrop variant="mesh-dark" pointer intensity={0.85} />
 
-      <Container className="relative">
+      <Container wide className="relative">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="section-code text-brand-400">{code}</p>
@@ -116,7 +110,7 @@ function WorkBand({
 
   return (
     <div ref={bandRef}>
-      <Container>
+      <Container wide>
         <Link
           to={`/work/${item.id}`}
           data-cursor="project"
@@ -171,15 +165,16 @@ function WorkBand({
 
           {/* -------------------------------------------------------- text -- */}
           <div className={cn(flipped && 'lg:order-1')}>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
               <span className="rounded-pill border border-brand-400/30 px-3 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-300">
                 {item.titleEn}
               </span>
-              {item.verified ? (
-                <span className="font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-400/70">
-                  live
-                </span>
-              ) : null}
+              {/*
+                Status only — `asLink={false}` because the whole band is already
+                a Link to the case study and anchors cannot nest. The live link
+                itself lives on the case study page.
+              */}
+              <VisibilityBadge item={item} asLink={false} />
             </div>
 
             <h3 className="thai-display mt-4 text-xl font-bold text-white sm:text-2xl">

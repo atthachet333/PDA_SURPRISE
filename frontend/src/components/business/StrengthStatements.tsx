@@ -5,6 +5,7 @@ import { strengths } from '@/data/company';
 import type { IconName } from '@/data/services';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { SectionBackdrop } from './SectionBackdrop';
 
 /**
  * WHY PDA BLISS — oversized statements, alternating sides.
@@ -26,6 +27,8 @@ export function StrengthStatements({ code = '07 / WHY US' }: { code?: string } =
 
   return (
     <section className="sect sect--bright relative overflow-hidden py-section">
+      <SectionBackdrop variant="topographic" />
+
       <Container className="relative">
         <div className="max-w-3xl">
           <p className="section-code">{code}</p>

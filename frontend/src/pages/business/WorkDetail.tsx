@@ -7,6 +7,7 @@ import { ProductPanel } from '@/components/business/ProductPanel';
 import { MiniChart, MiniFlow, MiniKanban, MiniTable } from '@/components/business/UIPreview';
 import { getPortfolioItem, portfolio, type PortfolioItem } from '@/data/portfolio';
 import { visualForPortfolio } from '@/data/visuals';
+import { LiveProjectCta, NoLiveLinkNotice, VisibilityBadge } from '@/components/business/LiveLink';
 import {
   caseStudies,
   caseStudiesVerified,
@@ -76,13 +77,14 @@ function RealSystem({ item }: { item: PortfolioItem }) {
         <Container className="relative">
           <BackLink dark />
 
-          <div className="mt-10 flex flex-wrap items-center gap-3">
+          <div className="mt-10 flex flex-wrap items-center gap-2.5">
             <span className="rounded-pill border border-brand-400/30 px-3 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-300">
               {item.titleEn}
             </span>
             <span className="font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-400/70">
               {item.category}
             </span>
+            <VisibilityBadge item={item} />
           </div>
 
           <motion.h1
@@ -95,6 +97,16 @@ function RealSystem({ item }: { item: PortfolioItem }) {
           </motion.h1>
 
           <p className="mt-8 max-w-2xl text-lead text-brand-100/75">{item.summary}</p>
+
+          {/*
+            The real-world action. `LiveProjectCta` renders nothing unless the
+            item is public, privacy-reviewed AND has a confirmed URL, so this is
+            never a dead button — when there is no link, the panel below says
+            plainly why.
+          */}
+          <div className="mt-8">
+            <LiveProjectCta item={item} />
+          </div>
         </Container>
       </section>
 
@@ -121,6 +133,15 @@ function RealSystem({ item }: { item: PortfolioItem }) {
                 <MetaRow label="ประเภทระบบ" value={item.titleEn} />
                 <MetaRow label="หมวด" value={item.category} />
                 <MetaRow label="สถานะ" value="ส่งมอบแล้ว" />
+                <div>
+                  <dt className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-steel-400">
+                    การเข้าถึง
+                  </dt>
+                  <dd className="mt-2.5 space-y-2">
+                    <VisibilityBadge item={item} tone="light" />
+                    <NoLiveLinkNotice item={item} />
+                  </dd>
+                </div>
                 <div>
                   <dt className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-steel-400">
                     เทคโนโลยี

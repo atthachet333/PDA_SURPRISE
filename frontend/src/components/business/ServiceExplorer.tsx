@@ -7,6 +7,7 @@ import { ArrowIcon } from '@/components/shared/Button';
 import { ProductPanel } from './ProductPanel';
 import { primaryServices, services, type Service } from '@/data/services';
 import { visualForService } from '@/data/visuals';
+import { SectionBackdrop } from './SectionBackdrop';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
@@ -67,9 +68,9 @@ export function ServiceExplorer({
 
   return (
     <section id="services" className="sect sect--grid relative overflow-hidden py-section">
-      <div className="sect-layer grid-lines" aria-hidden="true" />
+      <SectionBackdrop variant="light-grid" pointer />
 
-      <Container className="relative">
+      <Container wide className="relative">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>

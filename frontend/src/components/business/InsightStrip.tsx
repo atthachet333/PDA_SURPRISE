@@ -5,6 +5,7 @@ import { ArrowIcon } from '@/components/shared/Button';
 import { insights, type Insight } from '@/data/insights';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { SectionBackdrop } from './SectionBackdrop';
 
 /**
  * INSIGHTS — large editorial cards.
@@ -31,6 +32,8 @@ export function InsightStrip({ items, variant = 'strip', code = '10 / INSIGHTS' 
 
   return (
     <section className="sect sect--bright relative overflow-hidden py-section">
+      <SectionBackdrop variant="aurora" intensity={0.6} />
+
       <Container className="relative">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
@@ -82,13 +85,25 @@ function InsightCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: (index % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative flex min-h-[15.5rem] flex-col justify-between bg-white p-6 transition-colors duration-slow hover:bg-steel-50 sm:p-8"
+      /*
+        Only a PUBLISHED article is a link, so only a published card gets hover
+        treatment. An unpublished card used to light up and slide its arrow
+        while doing nothing at all — a fake affordance.
+      */
+      className={cn(
+        'group relative flex min-h-[15.5rem] flex-col justify-between bg-white p-6 sm:p-8',
+        insight.published && 'transition-colors duration-slow hover:bg-steel-50'
+      )}
     >
-      {/* Top rule that draws in on hover */}
-      <span
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-brand-500 transition-transform duration-slow ease-smooth group-hover:scale-x-100"
-      />
+      {insight.published ? (
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-brand-500 transition-transform duration-slow ease-smooth group-hover:scale-x-100"
+        />
+      ) : (
+        /* Unpublished: a flat, obviously inert top rule. */
+        <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-steel-200" />
+      )}
 
       <div>
         <div className="flex items-center justify-between gap-3">
@@ -115,10 +130,13 @@ function InsightCard({
               {insight.date}
               {insight.author ? ` · ${insight.author}` : ''}
             </span>
-            <span className="inline-flex items-center gap-2 text-xs font-semibold text-ink">
+            <Link
+              to={`/insights/${insight.slug}`}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-ink after:absolute after:inset-0 hover:text-brand-600"
+            >
               อ่านบทความ
               <ArrowIcon className="h-3.5 w-3.5 transition-transform duration-base group-hover:translate-x-1" />
-            </span>
+            </Link>
           </>
         ) : (
           <>

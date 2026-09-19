@@ -15,12 +15,18 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export function Container({
   className,
-  children
+  children,
+  wide = false
 }: {
   className?: string;
   children: React.ReactNode;
+  /**
+   * Wider track for visual-led sections (hero rig, showreel, solutions, work).
+   * Text-led sections keep the default so the measure stays readable.
+   */
+  wide?: boolean;
 }) {
-  return <div className={cn('container-page', className)}>{children}</div>;
+  return <div className={cn('container-page', wide && 'container-page--wide', className)}>{children}</div>;
 }
 
 interface RevealProps {

@@ -208,6 +208,18 @@ const config: Config = {
           '0%, 100%': { transform: 'translate3d(0,0,0)' },
           '50%': { transform: 'translate3d(0,-10px,0)' }
         },
+        /** Corporate backdrop: a scan line sweeping down a light grid. */
+        'scan-y': {
+          '0%': { transform: 'translateY(0%)', opacity: '0' },
+          '10%': { opacity: '1' },
+          '90%': { opacity: '1' },
+          '100%': { transform: 'translateY(100vh)', opacity: '0' }
+        },
+        /** Corporate backdrop: slow lateral drift for contour lines. */
+        'contour-drift': {
+          '0%, 100%': { transform: 'translate3d(0,0,0) scale(1)' },
+          '50%': { transform: 'translate3d(2.5%,-1.5%,0) scale(1.04)' }
+        },
         /** Corporate: green beam travelling across a dark surface. */
         'beam-x': {
           '0%': { transform: 'translateX(-100%)' },
@@ -237,7 +249,9 @@ const config: Config = {
         'data-run': 'data-run 2.4s linear infinite',
         'status-blink': 'status-blink 2.8s ease-in-out infinite',
         'plane-float': 'plane-float 7s ease-in-out infinite',
-        'beam-x': 'beam-x 7s ease-in-out infinite'
+        'beam-x': 'beam-x 7s ease-in-out infinite',
+        'scan-y': 'scan-y 11s linear infinite',
+        'contour-drift': 'contour-drift 44s ease-in-out infinite'
       }
     }
   },

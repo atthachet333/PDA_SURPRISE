@@ -87,13 +87,13 @@ export function Footer() {
               </a>
             </li>
             <li>
-              <a className="footer-link" href={company.lineUrl} target="_blank" rel="noreferrer">
+              <a className="footer-link" href={company.lineUrl} target="_blank" rel="noopener noreferrer">
                 LINE {company.lineOA}
               </a>
             </li>
             {activeSocials.map((item) => (
               <li key={item.label}>
-                <a className="footer-link" href={item.href} target="_blank" rel="noreferrer">
+                <a className="footer-link" href={item.href} target="_blank" rel="noopener noreferrer">
                   {item.label}
                 </a>
               </li>

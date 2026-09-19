@@ -29,6 +29,12 @@ import type { MockKind } from '@/lib/systemMocks';
 
 export interface VisualSlot {
   id: string;
+  /**
+   * Portfolio item this visual belongs to, when it represents real work.
+   * Lets a showreel card link to the right case study instead of a generic
+   * "see all work" destination.
+   */
+  portfolioId?: string;
   /** Mock drawn while no reviewed screenshot exists. */
   mock: MockKind;
   /** Short caption / frame label. Describes the SCREEN, not an outcome. */
@@ -64,13 +70,45 @@ export const heroVisuals: VisualSlot[] = [
 
 /** The interface showreel, left to right. */
 export const showreelVisuals: VisualSlot[] = [
-  { id: 'reel-payroll', mock: 'payroll', label: 'payroll', titleTh: 'ระบบเงินเดือน' },
-  { id: 'reel-erp', mock: 'erp', label: 'erp', titleTh: 'ระบบ ERP / การผลิต' },
-  { id: 'reel-nas', mock: 'nas', label: 'nas', titleTh: 'พื้นที่จัดเก็บเอกสาร' },
-  { id: 'reel-website', mock: 'website', label: 'website', titleTh: 'เว็บไซต์องค์กร' },
+  {
+    id: 'reel-payroll',
+    mock: 'payroll',
+    label: 'payroll',
+    titleTh: 'ระบบเงินเดือน',
+    portfolioId: 'payroll-management-system'
+  },
+  {
+    id: 'reel-erp',
+    mock: 'erp',
+    label: 'erp',
+    titleTh: 'ระบบ ERP / การผลิต',
+    portfolioId: 'production-inventory-costing-erp'
+  },
+  {
+    id: 'reel-nas',
+    mock: 'nas',
+    label: 'nas',
+    titleTh: 'พื้นที่จัดเก็บเอกสาร',
+    portfolioId: 's2-nas-document-storage'
+  },
+  {
+    id: 'reel-website',
+    mock: 'website',
+    label: 'website',
+    titleTh: 'เว็บไซต์องค์กร',
+    portfolioId: 's2-accounting-consultant-website'
+  },
+  // No portfolio entry yet — these two are capability demonstrations, so they
+  // link to the services that describe them rather than to a case study.
   { id: 'reel-hr', mock: 'hrLine', label: 'HR · LINE', titleTh: 'HR ผ่าน LINE' },
   { id: 'reel-workflow', mock: 'workflow', label: 'workflow', titleTh: 'เส้นทางอนุมัติเอกสาร' }
 ];
+
+/** Where a showreel card should go when clicked. */
+export const showreelDestination: Record<string, string> = {
+  'reel-hr': '/services#hr-line-bot',
+  'reel-workflow': '/services#document-management'
+};
 
 // --- services --------------------------------------------------------------
 

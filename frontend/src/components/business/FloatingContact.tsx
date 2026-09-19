@@ -116,7 +116,7 @@ export function FloatingContact() {
                         href={channel.href}
                         className={className}
                         target={channel.href.startsWith('http') ? '_blank' : undefined}
-                        rel={channel.href.startsWith('http') ? 'noreferrer' : undefined}
+                        rel={channel.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                       >
                         {inner}
                       </a>

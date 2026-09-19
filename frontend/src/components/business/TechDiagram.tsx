@@ -5,6 +5,7 @@ import { techStack } from '@/data/company';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { SectionBackdrop } from './SectionBackdrop';
 
 /**
  * TECHNOLOGY — a capability diagram, not a logo wall.
@@ -33,7 +34,7 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
 
   return (
     <section className="sect sect--grid relative overflow-hidden py-section">
-      <div className="sect-layer grid-lines opacity-70" aria-hidden="true" />
+      <SectionBackdrop variant="light-grid" intensity={0.8} />
 
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
@@ -106,7 +107,8 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
                     <span className="h-1 w-1 rounded-full bg-brand-500" />
                   </span>
 
-                  <div className="plane-light rounded-card p-5 transition-shadow duration-slow hover:shadow-soft">
+                  {/* Not interactive: the chips inside are the buttons. */}
+                  <div className="plane-light rounded-card p-5">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <h3 className="text-sm font-semibold text-ink">{group.group}</h3>
                       <span className="thai-display text-xs text-steel-400">{group.groupTh}</span>

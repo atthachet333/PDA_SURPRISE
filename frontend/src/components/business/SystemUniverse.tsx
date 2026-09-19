@@ -5,6 +5,7 @@ import { Container } from '@/components/shared/Layout';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { SectionBackdrop } from './SectionBackdrop';
 
 /**
  * SYSTEM UNIVERSE — the signature PDA BLISS section.
@@ -237,9 +238,9 @@ export function SystemUniverse({ code = '03 / SYSTEM' }: { code?: string } = {})
 
   return (
     <section className="sect sect--mesh relative overflow-hidden py-section text-white">
-      <div className="sect-layer mesh-lines" aria-hidden="true" />
+      <SectionBackdrop variant="mesh-dark" pointer />
 
-      <Container className="relative">
+      <Container wide className="relative">
         {/*
           Copy left (~40%), graph right (~60%). The graph is the argument this
           section makes, so it gets the larger share and the headline is sized to

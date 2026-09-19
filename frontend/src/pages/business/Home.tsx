@@ -18,6 +18,7 @@ import { company, cta } from '@/data/company';
 import { portfolio } from '@/data/portfolio';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useEntranceReveal } from '@/hooks/useEntranceReveal';
+import { SectionBackdrop } from '@/components/business/SectionBackdrop';
 
 /**
  * HOME
@@ -83,26 +84,10 @@ function Hero() {
     <section
       className="sect sect--hero relative flex items-center overflow-hidden pb-14 pt-24 sm:pb-16 sm:pt-28 lg:min-h-[max(38rem,calc(100vh-5rem))] lg:max-h-[56rem] lg:pb-20 lg:pt-32"
     >
-      {/* Soft green atmosphere — light, not a dark slab */}
-      <div className="sect-layer" aria-hidden="true">
-        <span
-          className="absolute inset-0 opacity-[0.5]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(6,59,42,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.04) 1px, transparent 1px)',
-            backgroundSize: '76px 76px',
-            maskImage: 'radial-gradient(80% 70% at 40% 30%, black, transparent)',
-            WebkitMaskImage: 'radial-gradient(80% 70% at 40% 30%, black, transparent)'
-          }}
-        />
-        <span
-          className={`absolute -right-[10%] -top-[14%] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(53,201,111,0.18),transparent_68%)] blur-2xl ${
-            reduced ? '' : 'animate-aurora-drift'
-          }`}
-        />
-      </div>
+      {/* Soft green atmosphere that tracks the pointer — light, not a dark slab. */}
+      <SectionBackdrop variant="aurora" pointer />
 
-      <Container className="relative w-full">
+      <Container wide className="relative w-full">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-10 xl:gap-14">
           {/* ---------------------------------------------------- left: copy -- */}
           <div className="max-w-xl">

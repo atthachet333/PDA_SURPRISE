@@ -144,9 +144,21 @@
    * the most room for it. Step the container up instead of stretching to full
    * width, which would break the measure of body copy.
    */
+  /*
+   * Visual-led sections get a wider track than text-led ones: product
+   * screenshots read better with more room, body copy does not.
+   */
+  .container-page--wide {
+    max-width: 1400px;
+  }
+
   @media (min-width: 1536px) {
     .container-page {
       max-width: 1440px;
+    }
+
+    .container-page--wide {
+      max-width: 1520px;
     }
   }
 

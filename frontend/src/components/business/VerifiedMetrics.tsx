@@ -5,6 +5,7 @@ import { useCountUp } from '@/hooks/useCountUp';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { SectionBackdrop } from './SectionBackdrop';
 
 /**
  * VERIFIED NUMBERS — built for exactly two figures.
@@ -28,6 +29,8 @@ export function VerifiedMetrics({ code = '08 / NUMBERS' }: { code?: string } = {
 
   return (
     <section className="sect sect--bright relative overflow-hidden border-y border-steel-200 py-section">
+      <SectionBackdrop variant="light-grid" intensity={0.55} />
+
       <Container className="relative">
         <div ref={ref} className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
           <div>

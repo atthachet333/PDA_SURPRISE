@@ -45,7 +45,7 @@ export default function Contact() {
                     className="hover:text-brand-600"
                     href={company.lineUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     {company.lineOA}
                   </a>

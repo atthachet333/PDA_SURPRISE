@@ -2,6 +2,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { usePageVisible } from '@/hooks/usePageVisible';
 import { primaryServices } from '@/data/services';
 import { cn } from '@/lib/cn';
+import { SectionBackdrop } from './SectionBackdrop';
 
 /**
  * KINETIC SERVICE STRIP — motion branding, not content.
@@ -36,6 +37,8 @@ export function KineticMarquee({ className }: { className?: string }) {
       )}
       aria-label="บริการของ PDA BLISS"
     >
+      <SectionBackdrop variant="light-grid" intensity={0.5} />
+
       {/* The names as real text, for screen readers and for no-CSS fallback. */}
       <ul className="sr-only">
         {primaryServices.map((service) => (
