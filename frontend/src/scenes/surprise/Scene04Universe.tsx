@@ -175,7 +175,7 @@ export function Scene04Universe() {
                 <button
                   type="button"
                   onClick={() => setSelected(null)}
-                  className="ai-pressable rounded-full border border-sky-200/20 px-4 py-2 font-thai text-xs text-ivory/75"
+                  className="ai-pressable inline-flex min-h-11 items-center rounded-full border border-sky-200/20 px-4 font-thai text-xs text-ivory/75"
                 >
                   ปิด
                 </button>
@@ -203,7 +203,10 @@ function FilterButton({
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        'ai-pressable shrink-0 rounded-full border px-4 py-2 font-thai text-xs',
+        /* min-h-11 (44px) rather than padding alone: measured at 34px, these
+           are the most-tapped controls in the archive and were the shortest. */
+        'ai-pressable inline-flex shrink-0 items-center rounded-full border px-4 font-thai text-xs',
+        'min-h-11',
         active
           ? 'border-sky-100/55 bg-sky-100/10 text-ivory'
           : 'border-sky-200/12 text-ivory/55 hover:border-sky-200/35 hover:text-ivory'

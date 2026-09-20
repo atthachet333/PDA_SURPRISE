@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/SceneSection';
 import { MemoryImage } from '@/components/surprise/MemoryImage';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { frameStyle } from '@/lib/mediaAspect';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -56,7 +57,6 @@ export function Scene06Gallery() {
             alt="ทริปน้ำตกสาริกา"
             caption="น้ำตกสาริกา"
             className="sm:col-span-7"
-            aspect="aspect-[4/5] sm:aspect-[4/3]"
             index={1}
           />
           <EditorialPhoto
@@ -64,7 +64,6 @@ export function Scene06Gallery() {
             alt="ความทรงจำที่สวนผึ้ง"
             caption="ปลายปีที่สวนผึ้ง"
             className="sm:col-span-5 sm:mb-10"
-            aspect="aspect-[4/5]"
             index={2}
           />
         </div>
@@ -91,19 +90,28 @@ export function Scene06Gallery() {
     </SceneSection>
   );
 }
+/**
+ * An editorial plate that takes its proportions from the photograph.
+ *
+ * It used to take a hand-written aspect, and the pair here were set to
+ * `aspect-[4/5] sm:aspect-[4/3]` and `aspect-[4/5]`. Both photographs are
+ * portrait, so the 4/3 box was showing 56% of น้ำตกสาริกา — a landscape frame
+ * imposed on an upright picture, which is the exact problem `mediaAspect`
+ * exists to prevent and which the rest of the experience already routes
+ * through. The asymmetry of the pair still comes from the column spans and the
+ * bottom offset, not from cropping one of them in half.
+ */
 function EditorialPhoto({
   photo,
   alt,
   caption,
   className,
-  aspect,
   index
 }: {
   photo: string;
   alt: string;
   caption: string;
   className: string;
-  aspect: string;
   index: number;
 }) {
   const reduced = useReducedMotion();
@@ -115,7 +123,7 @@ function EditorialPhoto({
       transition={{ duration: 1.05, delay: index * 0.08, ease: EASE }}
       className={className}
     >
-      <div className={`${aspect} overflow-hidden`}>
+      <div className="overflow-hidden" style={frameStyle(photo, 'editorial')}>
         <MemoryImage photo={photo} alt={alt} tone="cream" loading="lazy" cropMode="cover" />
       </div>
       <figcaption className="mt-3 font-thai text-sm text-ivory/65">{caption}</figcaption>

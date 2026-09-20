@@ -322,15 +322,15 @@ export default function MemoryGate() {
                   {gateState === 'wrong' ? (
                     <div role="status">
                       <p className="text-sm text-cream/85">ยังไม่ใช่วันนั้น :)</p>
-                      <p className="mt-1 text-xs text-sky-100/45">ลองนึกอีกทีนะ</p>
+                      <p className="mt-1 text-xs text-sky-100/65">ลองนึกอีกทีนะ</p>
                       {showHint ? (
-                        <p className="mt-2 font-mono text-xs tracking-[0.22em] text-sky-100/45">
+                        <p className="mt-2 font-mono text-xs tracking-[0.22em] text-sky-100/65">
                           28 · 07 · ____
                         </p>
                       ) : null}
                     </div>
                   ) : showHint ? (
-                    <p className="font-mono text-xs tracking-[0.22em] text-sky-100/45" role="status">
+                    <p className="font-mono text-xs tracking-[0.22em] text-sky-100/65" role="status">
                       28 · 07 · ____
                     </p>
                   ) : null}
@@ -434,7 +434,11 @@ const DateField = forwardRef<HTMLInputElement, DateFieldProps>(function DateFiel
 ) {
   return (
     <label htmlFor={id} className={width}>
-      <span className="mb-2 block text-[0.625rem] font-light tracking-[0.16em] text-sky-100/45">
+      {/* วัน / เดือน / ปี are the only thing saying which box is which, so they
+          are a functional label rather than decoration. At 10px and 45% alpha
+          on deep navy they sat below a comfortable contrast; 70% keeps the
+          quiet register and makes them legible. */}
+      <span className="mb-2 block text-[0.625rem] font-light tracking-[0.16em] text-sky-100/70">
         {label}
       </span>
       <input
