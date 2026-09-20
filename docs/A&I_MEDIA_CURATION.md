@@ -419,3 +419,69 @@ The current runtime mapping needs no additional owner choice. The separate
 historical curation review still has the open questions listed in §9, especially
 Q19 for `IMG_5398`; until that is answered, it remains labelled pre-wedding and
 is not treated as evidence of the actual ceremony.
+
+---
+
+## 14. Photo-correction continuation (2026-09-20)
+
+**Drive re-listed before relying on anything here: 129 files enumerated** from
+the shared folder, against 132 at the previous refresh. The difference is the
+enumeration method (a signed-out shared view, read by scrolling a virtualised
+list), not a change to the archive: every file the runtime depends on was
+present. **No new owner reference images have been added to Drive since the
+previous pass**, so no mapping was re-derived from source in this pass.
+
+### Mappings: verified, not re-litigated
+
+The owner-confirmed mappings recorded in §8b and §8c were already implemented in
+runtime data before this pass. They were checked rather than changed:
+
+| Beat | Asset | Status |
+| --- | --- | --- |
+| ร้าน Peak — ร้านที่เราเจอกันครั้งแรก | `peak-01`, `peak-02` | OWNER_CONFIRMED |
+| ร้าน TURR เกษตร — 12 OCT 2025 | *(none — text beat)* | OWNER_CONFIRMED |
+| พัทยา | `pattaya-01` | OWNER_CONFIRMED |
+| ชะอำ (beach beat) | `chaam-beach-02` | OWNER_CONFIRMED |
+| สวนผึ้ง | `suanphueng-01` | OWNER_CONFIRMED |
+| วันที่ตัดสินใจจดทะเบียนสมรสด้วยกัน | `marriage-decision-01` | OWNER_CONFIRMED |
+| เรายังอยู่ด้วยกัน | `together-now-01` | OWNER_CONFIRMED |
+| PRE-WEDDING | `wedding-01/02/03` | OWNER_CONFIRMED |
+| ACTUAL WEDDING | `wedding-actual-01/02/03` | OWNER_CONFIRMED |
+| หนมถ้วย / ถ้วยฟู | `cat-01` / `cat-02` | OWNER_CONFIRMED |
+
+Cross-checked against disk: **21 assets, 21 referenced, 0 broken references, 0
+orphans.** บ้านโป่ง remains in the place roster; only its photo beat was
+replaced, which is the distinction §11 of the brief asks for.
+
+### What this pass actually changed — presentation, not mapping
+
+1. **The fullbleed band was starving its photographs.** Measured at 1440, the
+   first-meeting, actual-wedding and present-day beats painted the picture
+   across **36–48%** of the band; the rest was blurred filler. That is one
+   defect reported as two ("ขยายให้ใหญ่หน่อย" and "รูปภาพมีพื้นที่ว่าง"). The band
+   now takes its width from the photograph rather than the page: **78%** at
+   1440 and 1920.
+2. **The same band clipped every phone.** At 390 the inner box resolved to
+   604px inside a 360px band, so all three photographs were cut on both sides.
+   The band's height is now capped by what the available width can support at
+   the picture's own ratio: **100% of width, zero clipping**, band height within
+   3px of the picture.
+3. **Text over a bright photograph.** The Pattaya beat's body line had neither
+   scrim nor shadow over sea and sky. It gained a radial scrim behind the
+   reading column and the standard legibility shadow — local, with the corners
+   of the image untouched.
+4. **Every photograph in the story was invisible at rest.** 19 containers and 27
+   `<img>` elements measured at computed `opacity: 0`, because entrances and a
+   fade-in transition owned visibility. Photo entrances now animate movement
+   only, and `MemoryImage` no longer fades. Re-measured: **0 hidden.**
+
+### Copy
+
+`finalMessages.segments.closing` now reads **"รักเปรี้ยวมาก ๆ เลย" / "และรักปอร์เช่"**,
+replacing the formal name with the nickname per owner instruction. The Pattaya
+beat's body names พัทยา rather than the province.
+
+### Still requiring owner confirmation
+
+Nothing in the current runtime mapping. The open historical questions in §9
+stand, and `IMG_5398` (Q19) remains labelled pre-wedding until answered.

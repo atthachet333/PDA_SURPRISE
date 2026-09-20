@@ -344,7 +344,6 @@ export function Scene04Universe() {
                       loading="eager"
                       label={selected.date}
                       index={selected.index}
-                      instant
                       objectPosition={selected.objectPosition}
                       cropMode={selected.cropMode}
                     />

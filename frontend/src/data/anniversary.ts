@@ -474,7 +474,9 @@ export const anniversary = {
     { id: 't4', label: '10 DEC 2025', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก', image: '/images/memories/sarika-01.webp' },
     { id: 't5', label: '25 DEC 2025', title: 'สวนผึ้ง', body: 'ปลายปีที่ราชบุรี', type: 'location', treatment: 'split', location: 'ราชบุรี', image: '/images/memories/suanphueng-01.webp' },
     /* Latest owner-confirmed reference #3: Pattaya. */
-    { id: 't6', label: 'พัทยา', title: 'วันที่เราไปพัทยาด้วยกัน', body: 'อีกหนึ่งวันที่ทะเลชลบุรี', type: 'photo', treatment: 'blurFocus', location: 'ชลบุรี', image: '/images/memories/pattaya-01.webp' },
+    /* OWNER_CONFIRMED พัทยา. The body used to read "ทะเลชลบุรี", which named the
+       province rather than the place the owner actually confirmed. */
+    { id: 't6', label: 'พัทยา', title: 'วันที่เราไปพัทยาด้วยกัน', body: 'ทะเลที่พัทยา ชลบุรี', type: 'photo', treatment: 'blurFocus', location: 'ชลบุรี', image: '/images/memories/pattaya-01.webp' },
     /* Latest owner-confirmed reference #5 replaces the former Ban Pong photo
        beat. Ban Pong remains in the place roster, but this photograph is Cha-am. */
     { id: 't7', label: 'ชายหาด ชะอำ', title: 'วันที่เราไปทะเลด้วยกัน', body: 'ชะอำ · เพชรบุรี', type: 'photo', treatment: 'polaroid', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
@@ -569,7 +571,12 @@ export const anniversary = {
         'เรากำลังสร้างครอบครัวและอนาคตร่วมกัน'
       ],
 
-      closing: ['รัก Isariya มาก', 'และรักปอร์เช่']
+      /* OWNER-CORRECTED. The owner asked for "รัก เปรี้ยว และ ปอร์เช่ มากๆเลย":
+         the nickname, not the formal name, and warmer. The two-beat shape is
+         kept because the letter gives the last beat its own handwritten
+         treatment — collapsing it to one line would promote an owner-written
+         reflection line into the closing position instead. */
+      closing: ['รักเปรี้ยวมาก ๆ เลย', 'และรักปอร์เช่']
     }
   },
 
@@ -610,8 +617,8 @@ export const anniversary = {
   familyMemories: [
     { id: 'family-01', category: 'family', intent: 'เรายังอยู่ด้วยกัน', image: '/images/memories/together-now-01.webp', caption: 'และยังเลือกกันอยู่ทุกวัน' },
     /* Identities OWNER-CONFIRMED. */
-    { id: 'family-02', category: 'pets', intent: 'ภาพหนมถ้วย', image: '/images/memories/cat-01.webp', caption: 'หนมถ้วย' },
-    { id: 'family-03', category: 'pets', intent: 'ภาพถ้วยฟู', image: '/images/memories/cat-02.webp', caption: 'ถ้วยฟู' }
+    { id: 'family-02', category: 'pets', intent: 'หนมถ้วย', image: '/images/memories/cat-01.webp', caption: 'หนมถ้วย' },
+    { id: 'family-03', category: 'pets', intent: 'ถ้วยฟู', image: '/images/memories/cat-02.webp', caption: 'ถ้วยฟู' }
   ] as ImageSlot[],
 
   finalImages: [

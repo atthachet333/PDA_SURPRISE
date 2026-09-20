@@ -23,8 +23,6 @@ interface MemoryImageProps {
   /** Sequence number drawn on the placeholder. */
   index?: number;
   loading?: 'lazy' | 'eager';
-  /** Skips the fade-in, for images already known to be warm. */
-  instant?: boolean;
   objectPosition?: string;
   cropMode?: 'cover' | 'contain';
 }
@@ -44,27 +42,28 @@ export function MemoryImage({
   label,
   index,
   loading = 'lazy',
-  instant = false,
   objectPosition = '50% 50%',
   cropMode = 'cover'
 }: MemoryImageProps) {
   const [failed, setFailed] = useState(() => isKnownBroken(photo));
-  const [ready, setReady] = useState(instant);
 
+  /*
+   * The probe's only remaining job is failure detection: a file that cannot be
+   * fetched swaps to the designed placeholder instead of leaving a broken
+   * image icon. It no longer gates whether the photograph is shown — see the
+   * note on the `img` below.
+   */
   useEffect(() => {
     setFailed(isKnownBroken(photo));
-    setReady(instant);
     if (!photo) return;
     let active = true;
     void preloadImage(photo).then((ok) => {
-      if (!active) return;
-      if (ok) setReady(true);
-      else setFailed(true);
+      if (active && !ok) setFailed(true);
     });
     return () => {
       active = false;
     };
-  }, [instant, photo]);
+  }, [photo]);
 
   if (photo && !failed) {
     const { width, height } = intrinsicAttrs(photo);
@@ -78,13 +77,26 @@ export function MemoryImage({
            so decoding a photograph never shifts the text beside it. */
         width={width}
         height={height}
-        onLoad={() => setReady(true)}
         onError={() => setFailed(true)}
         style={{ objectPosition }}
+        /*
+         * NO FADE-IN, DELIBERATELY.
+         *
+         * This used to mount at `opacity-0` and transition to `opacity-100`
+         * once `ready` flipped. Measured on the running site, twenty-seven
+         * photographs — effectively every picture in the story — were sitting
+         * at computed opacity 0, because a transition that never advances
+         * leaves the element on its starting value.
+         *
+         * A decoded image does not need to be faded in; it simply paints. The
+         * thing a fade was protecting against — a half-loaded image popping —
+         * is already handled by the reserved aspect box and the intrinsic
+         * width/height above. So the photograph is visible, full stop, and
+         * nothing about whether it can be seen depends on an animation clock.
+         */
         className={cn(
-          'h-full w-full transition-opacity duration-slow ease-entrance',
+          'h-full w-full',
           cropMode === 'contain' ? 'object-contain' : 'object-cover',
-          ready ? 'opacity-100' : 'opacity-0',
           className
         )}
       />

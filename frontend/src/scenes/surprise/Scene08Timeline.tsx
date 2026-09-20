@@ -107,8 +107,13 @@ function FullBleed({ moment, index }: { moment: TimelineMoment; index: number })
   const reduced = useReducedMotion();
   return (
     <motion.article
-      initial={reduced ? false : { opacity: 0, scale: 1.08, filter: 'blur(14px)' }}
-      whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+      /* The entrance moves the frame; it does NOT reveal it. Opacity is
+         deliberately absent: with `opacity: 0` here, every photograph in the
+         story was measured sitting invisible whenever the entrance did not
+         resolve. A photo that slides is a nice touch; a photo that is missing
+         is a broken page. */
+      initial={reduced ? false : { scale: 1.06 }}
+      whileInView={{ scale: 1 }}
       viewport={{ once: true, margin: '0px 0px -15% 0px' }}
       transition={{ ...ENTER, duration: 1.6 }}
       className="relative"
@@ -141,8 +146,10 @@ function FullBleed({ moment, index }: { moment: TimelineMoment; index: number })
           {moment.images.map((image, supportIndex) => (
             <motion.figure
               key={image}
-              initial={reduced ? false : { opacity: 0, y: 26 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              /* Supporting photographs, same rule as the plate above: the
+                 entrance moves them, it does not decide whether they exist. */
+              initial={reduced ? false : { y: 26 }}
+              whileInView={{ y: 0 }}
               viewport={{ once: true, margin: '0px 0px -12% 0px' }}
               transition={{ ...ENTER, delay: 0.12 + supportIndex * 0.1 }}
               className={cn('ai-frame-memory overflow-hidden', supportIndex === 1 && 'sm:mt-12')}
@@ -171,8 +178,13 @@ function Split({ moment, index }: { moment: TimelineMoment; index: number }) {
   return (
     <article className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
       <motion.figure
-        initial={reduced ? false : { opacity: 0, x: flipped ? 60 : -60 }}
-        whileInView={{ opacity: 1, x: 0 }}
+      /* The entrance moves the frame; it does NOT reveal it. Opacity is
+         deliberately absent: with `opacity: 0` here, every photograph in the
+         story was measured sitting invisible whenever the entrance did not
+         resolve. A photo that slides is a nice touch; a photo that is missing
+         is a broken page. */
+        initial={reduced ? false : { x: flipped ? 48 : -48 }}
+        whileInView={{ x: 0 }}
         viewport={{ once: true, margin: '0px 0px -15% 0px' }}
         transition={ENTER}
         className={cn('ai-frame-cinematic overflow-hidden', flipped && 'lg:order-2')}
@@ -213,8 +225,13 @@ function Polaroid({ moment, index }: { moment: TimelineMoment; index: number }) 
   return (
     <article className="flex flex-col items-center gap-10 lg:flex-row lg:justify-center lg:gap-16">
       <motion.figure
-        initial={reduced ? false : { opacity: 0, y: 60, rotate: -8 }}
-        whileInView={{ opacity: 1, y: 0, rotate: -4 }}
+      /* The entrance moves the frame; it does NOT reveal it. Opacity is
+         deliberately absent: with `opacity: 0` here, every photograph in the
+         story was measured sitting invisible whenever the entrance did not
+         resolve. A photo that slides is a nice touch; a photo that is missing
+         is a broken page. */
+        initial={reduced ? false : { y: 48, rotate: -8 }}
+        whileInView={{ y: 0, rotate: -4 }}
         viewport={{ once: true, margin: '0px 0px -15% 0px' }}
         transition={ENTER}
         className={cn(
@@ -317,10 +334,18 @@ function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
       className="grid items-center gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16"
       data-prewedding-preview="true"
     >
+      {/* No `key` here on purpose. Keying by the active photograph remounted
+          the plate on every thumbnail press, which replayed the whole entrance
+          for what is meant to be an instant preview — and re-entered the
+          hidden state each time. The image element cross-fades on its own. */}
       <motion.figure
-        key={activeImage}
-        initial={reduced ? false : { opacity: 0, y: 24, rotate: -1.5 }}
-        whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+        /* The entrance moves the frame; it does NOT reveal it. Opacity is
+             deliberately absent: with `opacity: 0` here, every photograph in the
+             story was measured sitting invisible whenever the entrance did not
+             resolve. A photo that slides is a nice touch; a photo that is missing
+             is a broken page. */
+        initial={reduced ? false : { y: 24, rotate: -1.5 }}
+        whileInView={{ y: 0, rotate: 0 }}
         viewport={{ once: true, margin: '0px 0px -12% 0px' }}
         transition={ENTER}
         className="ai-frame-cinematic ai-photo-spill relative mx-auto w-full max-w-xl overflow-hidden shadow-glow-lg"
@@ -429,11 +454,29 @@ function BlurFocus({ moment, index }: { moment: TimelineMoment; index: number })
       >
         <MemoryImage photo={moment.image} alt="" tone="sky" index={index} objectPosition={moment.objectPosition} cropMode={moment.cropMode} />
       </motion.span>
+      {/*
+        TWO scrims, not one.
+        The flat wash below lifts the whole backdrop away from the copy. The
+        radial one above concentrates behind the reading column, because the
+        flat wash alone is not enough over a BRIGHT photograph — the Pattaya
+        beat is sea and sky, and the owner's report of "ตัวอักษรมองไม่เห็น"
+        lands exactly there. This darkens the area behind the words and leaves
+        the corners of the image as they were, rather than dimming the picture.
+      */}
       <span aria-hidden="true" className="absolute inset-0 bg-navy-900/45" />
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 bg-[radial-gradient(70%_80%_at_50%_50%,rgba(12,27,41,0.72),rgba(12,27,41,0.28)_60%,transparent_85%)]"
+      />
 
       <motion.div
-        initial={reduced ? false : { opacity: 0, y: 36, scale: 0.94 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      /* The entrance moves the frame; it does NOT reveal it. Opacity is
+         deliberately absent: with `opacity: 0` here, every photograph in the
+         story was measured sitting invisible whenever the entrance did not
+         resolve. A photo that slides is a nice touch; a photo that is missing
+         is a broken page. */
+        initial={reduced ? false : { y: 30, scale: 0.96 }}
+        whileInView={{ y: 0, scale: 1 }}
         viewport={{ once: true, margin: '0px 0px -15% 0px' }}
         transition={{ ...ENTER, delay: 0.18 }}
         className="relative z-10 flex flex-col items-center gap-7 px-6 py-14 text-center sm:flex-row sm:gap-9 sm:text-left"
@@ -456,7 +499,9 @@ function BlurFocus({ moment, index }: { moment: TimelineMoment; index: number })
           <h3 className="ai-legible mt-3 font-display text-[clamp(1.6rem,3.2vw,2.4rem)] font-light leading-tight text-ivory">
             {moment.title}
           </h3>
-          <p className="mt-3 text-[0.95rem] leading-relaxed text-ivory/75">{moment.body}</p>
+          {/* `ai-legible` on the body too. The heading already carried it; the
+              line underneath did not, and it is the smaller of the two. */}
+          <p className="ai-legible mt-3 text-[0.95rem] leading-relaxed text-ivory/85">{moment.body}</p>
         </div>
       </motion.div>
     </article>

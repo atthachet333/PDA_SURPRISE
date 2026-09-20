@@ -126,8 +126,13 @@ function PlacePlate({
 }) {
   return (
     <motion.figure
-      initial={reduced ? false : { opacity: 0, y: 34, rotate: index % 2 ? 1.2 : -0.8 }}
-      whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+      /* The entrance moves the frame; it does NOT reveal it. Opacity is
+         deliberately absent: with `opacity: 0` here, every photograph in the
+         story was measured sitting invisible whenever the entrance did not
+         resolve. A photo that slides is a nice touch; a photo that is missing
+         is a broken page. */
+      initial={reduced ? false : { y: 34, rotate: index % 2 ? 1.2 : -0.8 }}
+      whileInView={{ y: 0, rotate: 0 }}
       viewport={{ once: true, margin: '0px 0px -12% 0px' }}
       transition={{ duration: 1.2, delay: index * 0.08, ease: EASE }}
       className={cn('group', className)}
