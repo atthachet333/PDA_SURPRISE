@@ -33,7 +33,7 @@ export default function Workspace() {
   const navigate = useNavigate();
   const { play, unlock, prepare, start } = useAudio();
   const reduced = useReducedMotion();
-  const weddingDate = formatMemoryDate(anniversary.relationship.weddingDate);
+  const registrationDate = formatMemoryDate(anniversary.relationship.registrationDate);
   const anniversaryProgress = Math.min(
     100,
     Math.round((anniversary.project.days / anniversary.project.milestone) * 100)
@@ -184,9 +184,9 @@ export default function Workspace() {
               transition={{ duration: reduced ? 0.3 : 1.7, times: [0, 0.45, 1], ease: [0.16, 1, 0.3, 1] }}
             >
               <p className="font-display text-[clamp(2.25rem,8vw,4.75rem)] font-light tracking-[0.08em] text-sky-100">
-                {weddingDate.english}
+                {registrationDate.english}
               </p>
-              <p className="mt-2 text-sm font-light text-cream/55">{weddingDate.thai}</p>
+              <p className="mt-2 text-sm font-light text-cream/55">{registrationDate.thai}</p>
             </motion.div>
           </motion.div>
         ) : null}

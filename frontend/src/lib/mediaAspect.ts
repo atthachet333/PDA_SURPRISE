@@ -44,7 +44,12 @@ const INTRINSIC: Record<string, number> = {
   '/images/memories/wedding-03.webp': 1066 / 1600,
   '/images/memories/wedding-actual-01.webp': 1200 / 1800,
   '/images/memories/wedding-actual-02.webp': 1066 / 1600,
-  '/images/memories/wedding-actual-03.webp': 1066 / 1600
+  '/images/memories/wedding-actual-03.webp': 1066 / 1600,
+  '/images/memories/special-roadtrip-wide.webp': 2000 / 1250,
+  '/images/memories/wedding-ceremony-01.webp': 1333 / 2000,
+  '/images/memories/wedding-ceremony-02.webp': 1333 / 2000,
+  '/images/memories/wedding-ceremony-03.webp': 1333 / 2000,
+  '/images/memories/marriage-registration-safe.webp': 1108 / 1477
 };
 
 /** What an unmeasured or absent photo is assumed to be: a phone portrait. */

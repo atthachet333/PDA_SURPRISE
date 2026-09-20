@@ -320,7 +320,7 @@ function DateType({ moment, index }: { moment: TimelineMoment; index: number }) 
   );
 }
 
-/** 5. Pre-wedding preview — one generous frame plus an obvious filmstrip. */
+/** 5. Editorial sequence — one generous frame plus a supporting filmstrip. */
 function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
   const reduced = useReducedMotion();
   const images = [moment.image, ...(moment.images ?? [])].filter(
@@ -332,7 +332,7 @@ function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
   return (
     <article
       className="grid items-center gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16"
-      data-prewedding-preview="true"
+      data-editorial-sequence="true"
     >
       {/* No `key` here on purpose. Keying by the active photograph remounted
           the plate on every thumbnail press, which replayed the whole entrance
@@ -360,7 +360,7 @@ function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
           objectPosition={moment.objectPosition}
         />
         <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-900/90 via-navy-900/20 to-transparent px-5 pb-5 pt-14 font-thai text-sm text-ivory/80">
-          ก่อนถึงวันแต่งงานจริง
+          {moment.label} · {moment.title}
         </figcaption>
       </motion.figure>
 
@@ -377,24 +377,24 @@ function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
         <p className="mt-4 max-w-md text-[0.95rem] leading-relaxed text-ivory/70">{moment.body}</p>
 
         <div className="mt-8">
-          <p className="font-thai text-xs text-sky-100/55">เลือกดูภาพก่อนวันงาน</p>
+          <p className="font-thai text-xs text-sky-100/55">ภาพในช่วงเดียวกัน</p>
           <div
             className="mt-3 grid grid-cols-3 gap-3"
             role="group"
-            aria-label="ภาพพรีเวดดิ้ง"
+            aria-label={`ภาพจาก ${moment.title}`}
           >
             {images.map((image, imageIndex) => (
               <button
                 key={image}
                 type="button"
                 aria-pressed={active === imageIndex}
-                aria-label={`ดูภาพพรีเวดดิ้งภาพที่ ${imageIndex + 1}`}
+                aria-label={`ดูภาพจาก ${moment.title} ภาพที่ ${imageIndex + 1}`}
                 onClick={() => setActive(imageIndex)}
                 className={cn(
-                  'ai-pressable ai-frame-memory overflow-hidden border bg-navy-800/40 p-1 transition-colors',
+                  'ai-pressable overflow-hidden bg-navy-800/20 transition-opacity',
                   active === imageIndex
-                    ? 'border-champagne/75 shadow-glow'
-                    : 'border-sky-200/15 opacity-65 hover:border-sky-200/45 hover:opacity-100'
+                    ? 'opacity-100 shadow-glow'
+                    : 'opacity-50 hover:opacity-90'
                 )}
               >
                 <span className="block overflow-hidden" style={frameStyle(image, 'tall')}>

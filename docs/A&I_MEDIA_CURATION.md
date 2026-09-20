@@ -9,6 +9,65 @@ Nothing in Drive was renamed, moved, deleted or modified.
 Machine-readable manifest: [`tools/anniversary-media-curation.json`](../tools/anniversary-media-curation.json)
 Review images: `review-local/` (gitignored — never commit)
 
+## Current authoritative pass — full media rebuild (2026-09-20)
+
+This section supersedes every historical count and chronology note below it.
+The shared Drive folder was re-enumerated from scratch and every source file was
+downloaded into a gitignored review workspace for pixel, metadata, duplicate,
+privacy and production-status inspection.
+
+- **132 sources:** 123 images and 9 videos, 346,181,482 source bytes.
+- **72 safe photographs used** in the read-only Memory Archive.
+- **72 full derivatives** (11,835,720 bytes) and **72 thumbnails**
+  (1,316,262 bytes), all local WebP with EXIF removed.
+- **42 duplicate/burst frames excluded:** 27 Cha-am burst frames and 15 other
+  near-duplicates. Two additional registration frames are both sensitive and
+  near-duplicates, so the manifest reports 44 duplicate-related exclusions.
+- **9 private/excluded images:** two child frames, two accidental screenshots,
+  two intimate frames, two raw duplicate certificate frames, and one
+  bystander-heavy frame.
+- The 9 source videos remain inventoried. The existing single optimized finale
+  video remains the only runtime video; no source MOV/HEIC ships.
+
+The 72-photo archive is progressively rendered in groups of 24. The field loads
+480px thumbnails lazily; the 1600px derivative is requested only when a memory
+is opened. There are zero Drive requests at runtime.
+
+### Current story chronology
+
+The current narrative is deliberately four separate milestones:
+
+1. **PRE-WEDDING** — the staged portrait set.
+2. **OUR WEDDING / วันแต่งงาน** — real ceremony and outdoor photographer
+   images. The ceremony date is not asserted.
+3. **วันที่เราตัดสินใจจดทะเบียนสมรสด้วยกัน** — the owner-confirmed decision
+   photograph, kept as its own beat.
+4. **MARRIAGE REGISTRATION / วันจดทะเบียนสมรส — 28 JUL 2026** — a quieter
+   documentary beat using `IMG_5643.JPG` only through a pixel-redacted WebP.
+
+The registration derivative blurs the name, registration-number, signature and
+serial fields in the exported pixels. Raw certificate sources are absent from
+public assets. The ceremony appears before registration throughout the story.
+
+### Current photo language
+
+- The rejected side-card carousel was removed. Its first visual is now the
+  previously unused action photograph `SP121756_26-12-68 (03).jpeg`, exported
+  as `special-roadtrip-wide.webp`.
+- Early story media uses a wide hero, asymmetric duo and three-frame film strip.
+- Peak remains the photographed first-meeting milestone.
+- TURR remains media-honest and text-driven, but now carries a full-scale
+  **12 OCT 2025** celestial date break equal in visual weight to Peak.
+- The old rotating card universe is now a progressive celestial memory field
+  with event filters, staggered scale and full-image focus on demand.
+- Photo frame borders were removed globally; native aspect, editorial crop and
+  layout composition replace blurred side filler.
+
+The authoritative per-source fields — source ID/name, MIME type, dimensions,
+capture date, internal-only GPS, hash, event, A–G category, duplicate group,
+privacy, owner-confirmation state, production asset, thumbnail, runtime status
+and exclusion reason — are in `tools/anniversary-media-curation.json`.
+
 ## Current amendment — 132-file refresh (2026-09-20)
 
 Drive was refreshed from 116 to **132 files**. The 16 additions include

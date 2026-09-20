@@ -47,7 +47,7 @@ export default function MemoryGate() {
   const reduced = useReducedMotion();
   const { play } = useAudio();
   const date = useMemo(
-    () => formatMemoryDate(anniversary.relationship.weddingDate),
+    () => formatMemoryDate(anniversary.relationship.registrationDate),
     []
   );
 
@@ -124,7 +124,7 @@ export default function MemoryGate() {
     if (gateState === 'success') return;
 
     const parsed = parseMemoryDateParts(day, month, year);
-    if (!isWeddingDateAnswer(parsed, anniversary.relationship.weddingDate)) {
+    if (!isWeddingDateAnswer(parsed, anniversary.relationship.registrationDate)) {
       setAttempts((current) => current + 1);
       setGateState('wrong');
       window.setTimeout(() => returnFocus(parsed), reduced ? 0 : 180);
@@ -233,7 +233,7 @@ export default function MemoryGate() {
                 <span className="block">มีวันหนึ่งที่ต้องจำให้ได้</span>
               </h1>
               <p className="mt-3 text-sm font-light text-sky-100/60 sm:text-base">
-                วันที่เราเลือกจะเดินไปด้วยกัน
+                วันที่เราไปจดทะเบียนสมรสด้วยกัน
               </p>
 
               <motion.form

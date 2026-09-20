@@ -220,8 +220,8 @@ export interface ImageSlot {
  */
 export const RELATIONSHIP_START_DATE = '2025-10-12';
 
-/** The wedding date used by the private memory gate. Format: YYYY-MM-DD. */
-export const WEDDING_DATE = '2026-07-28';
+/** Owner-confirmed legal registration date used by the private memory gate. */
+export const LEGAL_REGISTRATION_DATE = '2026-07-28';
 
 /** Days together, recomputed on every page load. */
 export function daysTogether(from: string = RELATIONSHIP_START_DATE): number {
@@ -250,7 +250,7 @@ export const anniversary = {
 
   relationship: {
     startDate: RELATIONSHIP_START_DATE,
-    weddingDate: WEDDING_DATE
+    registrationDate: LEGAL_REGISTRATION_DATE
   },
 
   memoryGate: {
@@ -347,17 +347,14 @@ export const anniversary = {
     /* ── MOMENTS, NOT PLACES ──────────────────────────────────────────────────
        Everything above is somewhere they went. These are things that happened,
        each backed by a photograph whose event is unambiguous in the frame.
-       Dates come from the camera's own EXIF, except the wedding, which comes
-       from owner truth (`WEDDING_DATE`) because the certificate's date is
-       obscured by the registrar's seal in every shot. ───────────────────────── */
+       Dates come from the camera's own EXIF. The wedding ceremony and legal
+       registration are separate events; the ceremony is intentionally undated. */
     { id: 'm21', title: 'วันรับปริญญา', date: '16 NOV 2025', caption: 'วันสำคัญที่ไปด้วยกัน', image: '/images/memories/graduation-01.webp', tags: ['family'], tone: 'champagne', featured: true },
-    /* ── THE ACTUAL WEDDING ─────────────────────────────────────────────────
-       OWNER-CONFIRMED: outdoor, real location, the day itself. Under the
-       owner's rule this — not the studio work below — is the wedding, so it is
-       the only memory that carries WEDDING_DATE. The ceremony banner in the
-       same set independently reads 28 กรกฎาคม 69. ──────────────────────────── */
-    { id: 'm29', title: 'วันแต่งงาน', date: '28 JUL 2026', caption: 'วันที่เรามาถึงจริง ๆ', image: '/images/memories/wedding-actual-01.webp', tags: ['family'], tone: 'cream', featured: true },
-    { id: 'm30', title: 'พิธีของเรา', date: '28 JUL 2026', caption: 'เช้าวันนั้น', image: '/images/memories/wedding-actual-03.webp', tags: ['family'], tone: 'champagne', featured: true },
+    /* The ceremony happened before the legal registration. No ceremony date is
+       asserted because the owner has not confirmed one. */
+    { id: 'm29', title: 'วันแต่งงาน', date: 'OUR WEDDING', caption: 'พิธีมงคลสมรสของเรา', image: '/images/memories/wedding-ceremony-01.webp', tags: ['family'], tone: 'cream', featured: true },
+    { id: 'm30', title: 'พิธีของเรา', date: 'OUR WEDDING', caption: 'วันที่ครอบครัวมาร่วมยินดี', image: '/images/memories/wedding-ceremony-03.webp', tags: ['family'], tone: 'champagne', featured: true },
+    { id: 'm31', title: 'วันจดทะเบียนสมรส', date: '28 JUL 2026', caption: 'อีกวันสำคัญหลังพิธีของเรา', image: '/images/memories/marriage-registration-safe.webp', tags: ['family'], tone: 'cream', featured: true },
 
     /* PRE-WEDDING, not the wedding day.
        Owner's rule: outdoor / real-location = the actual wedding; studio or
@@ -471,28 +468,21 @@ export const anniversary = {
     { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'fullbleed', image: '/images/memories/peak-01.webp', images: ['/images/memories/peak-02.webp'], objectPosition: '50% 42%' },
     /* Then the night it became official. Separate, text-only beat. */
     { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่เขาชวนเธอมาเป็นแฟน', type: 'text', treatment: 'textOnly' },
+    /* The archive proves the ceremony preceded the legal registration, but the
+       exact ceremony date remains unasserted. */
+    { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp', '/images/memories/wedding-02.webp'] },
+    { id: 't8c', label: 'OUR WEDDING', title: 'วันแต่งงานของเรา', body: 'พิธีมงคลสมรส — ก่อนวันที่เราจดทะเบียนสมรส', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-ceremony-01.webp', images: ['/images/memories/wedding-ceremony-02.webp', '/images/memories/wedding-ceremony-03.webp', '/images/memories/wedding-actual-01.webp', '/images/memories/wedding-actual-02.webp', '/images/memories/wedding-actual-03.webp'] },
     { id: 't4', label: '10 DEC 2025', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก', image: '/images/memories/sarika-01.webp' },
+    { id: 't7b', label: '20 DEC 2025', title: 'วันที่เราเลือกอนาคตเดียวกัน', body: 'วันที่เราตัดสินใจจดทะเบียนสมรสด้วยกัน', type: 'photo', treatment: 'split', image: '/images/memories/marriage-decision-01.webp' },
     { id: 't5', label: '25 DEC 2025', title: 'สวนผึ้ง', body: 'ปลายปีที่ราชบุรี', type: 'location', treatment: 'split', location: 'ราชบุรี', image: '/images/memories/suanphueng-01.webp' },
     /* Latest owner-confirmed reference #3: Pattaya. */
     /* OWNER_CONFIRMED พัทยา. The body used to read "ทะเลชลบุรี", which named the
        province rather than the place the owner actually confirmed. */
-    { id: 't6', label: 'พัทยา', title: 'วันที่เราไปพัทยาด้วยกัน', body: 'ทะเลที่พัทยา ชลบุรี', type: 'photo', treatment: 'blurFocus', location: 'ชลบุรี', image: '/images/memories/pattaya-01.webp' },
+    { id: 't6', label: 'พัทยา', title: 'วันที่เราไปพัทยาด้วยกัน', body: 'ทะเลที่พัทยา ชลบุรี', type: 'photo', treatment: 'split', location: 'ชลบุรี', image: '/images/memories/pattaya-01.webp' },
     /* Latest owner-confirmed reference #5 replaces the former Ban Pong photo
        beat. Ban Pong remains in the place roster, but this photograph is Cha-am. */
-    { id: 't7', label: 'ชายหาด ชะอำ', title: 'วันที่เราไปทะเลด้วยกัน', body: 'ชะอำ · เพชรบุรี', type: 'photo', treatment: 'polaroid', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
-    /* Latest owner-confirmed reference #4: the decision to register the
-       marriage. This is intentionally separate from pre-wedding and wedding. */
-    { id: 't7b', label: 'การตัดสินใจของเรา', title: 'วันที่เราตัดสินใจจดทะเบียนสมรสด้วยกัน', body: 'ก่อนพรีเวดดิ้ง และก่อนวันแต่งงานจริง', type: 'photo', treatment: 'split', image: '/images/memories/marriage-decision-01.webp' },
-    /* ── THE WEDDING, IN THREE BEATS ────────────────────────────────────────
-       The order is the payoff: the preparation, then the DATE alone with
-       nothing to look at, then the day itself. The date beat is what makes the
-       photograph that follows land — it is not a placeholder for a missing
-       image any more. 24.jpg has since arrived and is wired in below. ───────── */
-    { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp', '/images/memories/wedding-02.webp'] },
-    { id: 't8', label: '28 JUL 2026', title: 'วันแต่งงานจริง', body: 'วันที่เราแต่งงานกันจริง ๆ', type: 'highlight', treatment: 'date' },
-    /* OWNER-CONFIRMED actual wedding. Portrait frame, so it is held rather than
-       cropped to a letterbox. */
-    { id: 't8c', label: 'วันนั้น', title: 'แล้วเราก็มาถึงวันนี้', body: 'พิธีมงคลสมรสของเรา', type: 'photo', treatment: 'fullbleed', image: '/images/memories/wedding-actual-01.webp', images: ['/images/memories/wedding-actual-02.webp', '/images/memories/wedding-actual-03.webp'], cropMode: 'contain' },
+    { id: 't7', label: 'ชายหาด ชะอำ', title: 'วันที่เราไปทะเลด้วยกัน', body: 'ชะอำ · เพชรบุรี', type: 'photo', treatment: 'split', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
+    { id: 't8', label: '28 JUL 2026', title: 'วันจดทะเบียนสมรส', body: 'คนละวันกับพิธีแต่งงาน และเป็นอีกหนึ่งคำสัญญาของเรา', type: 'photo', treatment: 'split', image: '/images/memories/marriage-registration-safe.webp', cropMode: 'contain' },
     /* Latest owner-confirmed reference #6: the present-day emotional close. */
     { id: 't9', label: 'วันนี้', title: 'เรายังอยู่ด้วยกัน', body: 'และยังเลือกกันอยู่ทุกวัน', type: 'highlight', treatment: 'fullbleed', image: '/images/memories/together-now-01.webp', objectPosition: '50% 38%' }
   ] as TimelineMoment[],

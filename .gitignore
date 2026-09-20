@@ -22,6 +22,11 @@ backend/data/*.jsonl
 frontend/public/images/memories/*
 !frontend/public/images/memories/.gitkeep
 !frontend/public/images/memories/*.webp
+!frontend/public/images/memories/archive/
+frontend/public/images/memories/archive/*
+!frontend/public/images/memories/archive/*.webp
+!frontend/public/images/memories/archive/thumbs/
+!frontend/public/images/memories/archive/thumbs/*.webp
 
 # Optimized memory video only; never a source MOV.
 frontend/public/videos/memories/*

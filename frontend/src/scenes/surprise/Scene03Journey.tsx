@@ -91,19 +91,23 @@ export function Scene03Journey() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '0px 0px -18% 0px' }}
           transition={{ duration: 1.25, ease: EASE }}
-          className="mx-auto max-w-2xl text-center"
+          className="relative mx-auto w-full max-w-5xl py-8 text-center sm:py-16"
         >
-          <p className="font-mono text-[0.6875rem] uppercase tracking-[0.3em] text-sky-100/70">
-            12 OCT 2025
+          <span aria-hidden="true" className="absolute left-1/2 top-0 h-px w-[min(76vw,42rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-champagne/65 to-transparent" />
+          <p className="font-display text-[clamp(3.25rem,10vw,8.5rem)] font-light leading-none tracking-[-0.04em] text-champagne">
+            12 OCT
           </p>
-          <h3 className="thai-display ai-legible mt-5 font-thai text-[clamp(1.9rem,4.4vw,3.4rem)] font-light text-ivory">
+          <p className="mt-2 font-display text-[clamp(2rem,6vw,5rem)] font-light leading-none text-ivory/85">2025</p>
+          <p className="mt-7 font-mono text-[0.625rem] uppercase tracking-[0.34em] text-sky-100/65">TURR · KASET</p>
+          <h3 className="thai-display ai-legible mt-6 font-thai text-[clamp(2.2rem,5.2vw,4.25rem)] font-light text-ivory">
             วันที่เราเริ่มเป็น “เรา”
           </h3>
-          <p className="mt-6 font-thai text-[clamp(0.95rem,1.5vw,1.1rem)] leading-8 text-ivory/70">
+          <p className="mx-auto mt-7 max-w-2xl font-thai text-[clamp(1rem,1.6vw,1.2rem)] leading-9 text-ivory/72">
             ร้าน TURR เกษตร — คืนที่เขาชวนเธอมาเป็นแฟน
             <br />
             และเป็นวันที่เรานับมาตลอดตั้งแต่นั้น
           </p>
+          <span aria-hidden="true" className="mx-auto mt-10 block h-2 w-2 rounded-full bg-champagne shadow-[0_0_32px_rgba(235,217,188,0.85)]" />
         </motion.div>
       </div>
     </SceneSection>

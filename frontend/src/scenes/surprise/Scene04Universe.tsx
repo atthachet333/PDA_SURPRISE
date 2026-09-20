@@ -1,396 +1,215 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/SceneSection';
 import { MemoryImage } from '@/components/surprise/MemoryImage';
-import { frameAspect, frameStyle } from '@/lib/mediaAspect';
-import { AIMark } from '@/components/surprise/AIMark';
-import { memoriesForScene, type Memory } from '@/data/anniversary';
-import { useDeviceProfile } from '@/hooks/useDeviceProfile';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { usePageVisible } from '@/hooks/usePageVisible';
-import { useInViewOnce } from '@/hooks/useInViewOnce';
+import {
+  memoryArchive,
+  memoryArchiveGroups,
+  type MemoryArchiveGroup,
+  type MemoryArchiveItem
+} from '@/data/memoryArchive';
 import { useAudio } from '@/app/audioContext';
-import { preloadImages } from '@/lib/preload';
+import { useInViewOnce } from '@/hooks/useInViewOnce';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
+const PAGE_SIZE = 24;
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 /**
- * Scene 04 — the memory universe.
- *
- * Emotional job: WONDER, and the first scene the visitor can touch.
- *
- * Pseudo-3D by design: photos are placed on orbit bands with CSS transforms so
- * they stay real DOM images (crisp, selectable, accessible) and run on a phone,
- * where a WebGL equivalent costs far more for the same reading.
- *
- * Three orbit bands turn at different speeds — motion hierarchy inside a single
- * scene. Dragging spins the whole system with inertia. Selecting a memory pulls
- * it to the camera while everything else blurs back.
+ * The memory archive is a quiet celestial field, not a carousel or a masonry
+ * dump. Small derivatives paint the field; the 1600px image is requested only
+ * when a visitor chooses a memory. Every safe, meaningful Drive photograph has
+ * a documented home here.
  */
-
-const BANDS = [
-  { radius: 1, speed: 1, yScale: 1 },
-  { radius: 0.72, speed: 1.55, yScale: 0.6 },
-  { radius: 1.24, speed: 0.68, yScale: 1.35 }
-] as const;
-
-const IDLE_SPEED = 0.016; // degrees per ms
-const HINT_KEY = 'ai:universe-hint';
-
-interface Placed extends Memory {
-  theta: number;
-  y: number;
-  band: (typeof BANDS)[number];
-  bandIndex: number;
-  index: number;
-}
-
-function placeMemories(memories: Memory[]): Placed[] {
-  return memories.map((memory, index) => {
-    const bandIndex = index % BANDS.length;
-    const band = BANDS[bandIndex]!;
-    // Spread each band's members evenly around their own ring.
-    const inBand = Math.floor(index / BANDS.length);
-    const bandCount = Math.ceil(memories.length / BANDS.length);
-    return {
-      ...memory,
-      band,
-      bandIndex,
-      index,
-      theta: (360 / bandCount) * inBand + bandIndex * 26,
-      y: (bandIndex - 1) * 62 * band.yScale + ((index * 17) % 34) - 17
-    };
-  });
-}
-
 export function Scene04Universe() {
-  const device = useDeviceProfile();
+  const [sectionRef, inView] = useInViewOnce<HTMLElement>({ threshold: 0.08 });
+  const [group, setGroup] = useState<MemoryArchiveGroup | 'all'>('all');
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [selected, setSelected] = useState<MemoryArchiveItem | null>(null);
   const reduced = useReducedMotion();
-  const visible = usePageVisible();
   const { play, triggerCue } = useAudio();
-  const [sectionRef, inView] = useInViewOnce<HTMLElement>({ threshold: 0.25 });
 
-  const [rotation, setRotation] = useState(0);
-  const [selected, setSelected] = useState<Placed | null>(null);
-  const [dragging, setDragging] = useState(false);
-  const [showHint, setShowHint] = useState(() => {
-    try {
-      return window.localStorage.getItem(HINT_KEY) !== '1';
-    } catch {
-      return true;
-    }
-  });
-
-  const rotationRef = useRef(0);
-  const velocity = useRef(0);
-  const lastPointer = useRef<number | null>(null);
-  const lastTime = useRef(0);
-  const dragDistance = useRef(0);
-
-  const memories = useMemo(() => memoriesForScene('universe'), []);
-  const placed = useMemo(() => placeMemories(memories), [memories]);
-  const radius = device.isMobile ? 170 : device.tier === 'medium' ? 275 : 325;
-
-  const acknowledgeHint = useCallback(() => {
-    setShowHint(false);
-    try {
-      window.localStorage.setItem(HINT_KEY, '1');
-    } catch {
-      // The hint can reappear in private browsing without affecting interaction.
-    }
-  }, []);
-
-  // Warm this scene's photos as it comes into view.
   useEffect(() => {
-    if (!inView) return;
-    triggerCue('memoryUniverse');
-    /*
-     * One subtle spatial pass, the first time the Universe opens. `useInViewOnce`
-     * guarantees this fires once — orbiting and dragging stay silent, because a
-     * continuous loop under a continuous motion becomes irritating within
-     * seconds.
-     */
-    play('orbitPass');
-    void preloadImages(memories.map((memory) => memory.image));
-  }, [inView, memories, play, triggerCue]);
+    if (inView) triggerCue('memoryUniverse');
+  }, [inView, triggerCue]);
 
-  // One loop drives idle rotation and drag inertia.
   useEffect(() => {
-    if (reduced || !visible || !inView) return;
-    let frame = 0;
-    let previous = performance.now();
-
-    const tick = (now: number) => {
-      const delta = Math.min(48, now - previous);
-      previous = now;
-
-      if (!dragging && !selected) {
-        rotationRef.current += (IDLE_SPEED + velocity.current) * delta;
-        velocity.current *= 0.945;
-        if (Math.abs(velocity.current) < 0.0004) velocity.current = 0;
-        setRotation(rotationRef.current);
-      }
-      frame = requestAnimationFrame(tick);
-    };
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [dragging, inView, reduced, selected, visible]);
-
-  const onPointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    acknowledgeHint();
-    setDragging(true);
-    lastPointer.current = event.clientX;
-    lastTime.current = performance.now();
-    dragDistance.current = 0;
-    velocity.current = 0;
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }, [acknowledgeHint]);
-
-  const onPointerMove = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>) => {
-      if (!dragging || lastPointer.current === null) return;
-      const now = performance.now();
-      const dx = event.clientX - lastPointer.current;
-      const dt = Math.max(1, now - lastTime.current);
-
-      dragDistance.current += Math.abs(dx);
-      rotationRef.current += dx * 0.26;
-      velocity.current = (dx * 0.26) / dt;
-      setRotation(rotationRef.current);
-
-      lastPointer.current = event.clientX;
-      lastTime.current = now;
-    },
-    [dragging]
-  );
-
-  const endDrag = useCallback(() => {
-    setDragging(false);
-    lastPointer.current = null;
-  }, []);
-
-  const openMemory = useCallback(
-    (memory: Placed) => {
-      // Ignore the click that ends a drag.
-      if (dragDistance.current > 6) return;
-      acknowledgeHint();
-      // Very small focus cue — the memory coming into view, nothing more.
-      play('memoryFocus');
-      setSelected(memory);
-    },
-    [acknowledgeHint, play]
-  );
-
-  const closeMemory = useCallback(() => {
-    play('softClick');
-    setSelected(null);
-  }, [play]);
+    setVisibleCount(PAGE_SIZE);
+  }, [group]);
 
   useEffect(() => {
     if (!selected) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeMemory();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [closeMemory, selected]);
+    const close = (event: KeyboardEvent) => event.key === 'Escape' && setSelected(null);
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [selected]);
+
+  const filtered = useMemo(
+    () => (group === 'all' ? memoryArchive : memoryArchive.filter((item) => item.group === group)),
+    [group]
+  );
+  const visible = filtered.slice(0, visibleCount);
 
   return (
-    <SceneSection id="memories" ref={sectionRef} label="Memory universe" className="overflow-hidden">
-      <div className="relative flex w-full max-w-6xl flex-col items-center">
-        <motion.div
-          className="text-center"
-          animate={{ opacity: selected ? 0.25 : 1, y: selected ? -12 : 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <SceneLabel>05 · จักรวาลความทรงจำ</SceneLabel>
-          <SceneTitle className="thai-display mt-5 font-thai">ถ้าแต่ละความทรงจำ<br />เป็นดาวหนึ่งดวง...</SceneTitle>
-        </motion.div>
-
-        <div
-          onPointerDown={selected ? undefined : onPointerDown}
-          onPointerMove={selected ? undefined : onPointerMove}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-          data-cursor={selected ? undefined : 'drag'}
-          className={cn(
-            'perspective-1000 relative mt-12 h-[26rem] w-full touch-pan-y select-none sm:h-[32rem]',
-            !selected && (dragging ? 'cursor-grabbing' : 'cursor-grab')
-          )}
-          role="group"
-          aria-label="Memory universe. Drag to rotate, then select a memory to open it."
-        >
-          {/* Centre mark — recedes when a memory takes the camera */}
-          <motion.div
-            className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center"
-            animate={{ opacity: selected ? 0 : 1, scale: selected ? 0.8 : 1 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <AIMark size="inline" />
-            <span className="mt-3 block font-mono text-[0.5rem] uppercase tracking-[0.28em] text-sky-100/45">
-              {memories.length} ความทรงจำ
-            </span>
-          </motion.div>
-
-          {/* Orbit guides, each turning with its own band */}
-          {!reduced
-            ? BANDS.map((band, index) => (
-                <span
-                  key={index}
-                  aria-hidden="true"
-                  className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-sky-200/10"
-                  style={{
-                    width: `${radius * band.radius * 2}px`,
-                    height: `${radius * band.radius * 0.62}px`,
-                    opacity: selected ? 0.2 : 1,
-                    transition: 'opacity 700ms ease'
-                  }}
-                />
-              ))
-            : null}
-
-          <motion.div
-            className="preserve-3d absolute inset-0"
-            animate={{
-              scale: selected ? 1.14 : 1,
-              filter: selected ? 'blur(7px)' : 'blur(0px)',
-              opacity: selected ? 0.32 : 1
-            }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {placed.map((memory) => {
-              // Each band advances at its own rate off the shared rotation.
-              const angle = (memory.theta + rotation * memory.band.speed) % 360;
-              const radians = (angle * Math.PI) / 180;
-              const bandRadius = radius * memory.band.radius;
-              const z = Math.cos(radians) * bandRadius;
-              const x = Math.sin(radians) * bandRadius;
-              const depth = (z / bandRadius + 1) / 2; // 0 = behind, 1 = front
-              const scale = 0.54 + depth * 0.56;
-              const opacity = 0.16 + depth * 0.84;
-              // Cards tilt to face the camera as they come round.
-              const tilt = Math.sin(radians) * -16;
-
-              return (
-                <button
-                  key={memory.id}
-                  type="button"
-                  onClick={() => openMemory(memory)}
-                  aria-label={`${memory.title}, ${memory.date}`}
-                  data-cursor="open"
-                  className="group absolute left-1/2 top-1/2 origin-center rounded-card focus-visible:outline-offset-4"
-                  style={{
-                    transform: `translate3d(calc(-50% + ${x.toFixed(1)}px), calc(-50% + ${memory.y}px), 0) scale(${scale.toFixed(3)}) rotateY(${tilt.toFixed(1)}deg)`,
-                    opacity,
-                    zIndex: Math.round(depth * 100),
-                    pointerEvents: depth > 0.4 && !selected ? 'auto' : 'none',
-                    transition: dragging ? 'none' : 'opacity 300ms linear'
-                  }}
-                >
-                  <span className="ai-frame-orbit block w-[8rem] overflow-hidden shadow-glow transition-transform duration-slow ease-entrance group-hover:scale-[1.06] sm:w-[10.5rem]">
-                    <span
-                      className={cn('block', !reduced && 'animate-drift')}
-                      style={{
-                        ...frameStyle(memory.image, 'tall'),
-                        animationDelay: `${memory.index * 0.6}s`,
-                        animationDuration: `${9 + (memory.index % 5)}s`
-                      }}
-                    >
-                      <MemoryImage
-                        photo={memory.image}
-                        alt={memory.title}
-                        tone={memory.tone}
-                        label={memory.date}
-                        index={memory.index}
-                        objectPosition={memory.objectPosition}
-                        cropMode={memory.cropMode}
-                      />
-                    </span>
-                    <span className="block truncate px-2.5 py-2 text-left font-mono text-[0.5rem] uppercase tracking-[0.16em] text-ivory/55">
-                      {memory.date}
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
-          </motion.div>
-
-          {/* Focused memory — the camera has come to it */}
-          <AnimatePresence>
-            {selected ? (
-              <motion.div
-                key={selected.id}
-                initial={{ opacity: 0, scale: 0.86, y: 18 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.92, y: 10 }}
-                transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 z-30 flex items-center justify-center px-2"
-                role="dialog"
-                aria-modal="true"
-                aria-label={selected.title}
-              >
-                <div className="ai-glass ai-photo-spill relative flex w-full max-w-lg flex-col overflow-hidden rounded-panel sm:flex-row">
-                  {/* The opened photograph is the whole point of the dialog, so
-                      it gets its own proportions: 4/3 was cutting the top and
-                      bottom off every portrait in the pool. */}
-                  <div
-                    className="w-full shrink-0 sm:w-1/2"
-                    style={{ aspectRatio: String(frameAspect(selected.image, 'editorial')) }}
-                  >
-                    <MemoryImage
-                      photo={selected.image}
-                      alt={selected.title}
-                      tone={selected.tone}
-                      loading="eager"
-                      label={selected.date}
-                      index={selected.index}
-                      objectPosition={selected.objectPosition}
-                      cropMode={selected.cropMode}
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col justify-center p-6">
-                    <p className="font-mono text-[0.5rem] uppercase tracking-[0.26em] text-sky-100/70">
-                      {selected.date}
-                      {selected.location ? ` · ${selected.location}` : ''}
-                    </p>
-                    <h3 className="mt-3 font-display text-2xl font-light leading-tight text-ivory">
-                      {selected.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-ivory/70">{selected.caption}</p>
-                    <button
-                      type="button"
-                      onClick={closeMemory}
-                      data-cursor="interactive"
-                      className="mt-6 self-start rounded-pill border border-sky-200/30 px-4 py-2 text-[0.5625rem] uppercase tracking-[0.2em] text-ivory/70 transition-colors duration-base hover:border-sky-200/60 hover:text-ivory"
-                    >
-                      ปิด
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-
-          {/* Click-away layer sits under the card, above the orbit */}
-          {selected ? (
-            <button
-              type="button"
-              className="absolute inset-0 z-20 cursor-default"
-              onClick={closeMemory}
-              aria-label="Close memory"
-              tabIndex={-1}
-            />
-          ) : null}
+    <SceneSection id="memories" ref={sectionRef} label="คลังความทรงจำ" className="overflow-hidden" fullHeight={false}>
+      <div className="w-full max-w-[92rem] py-16 sm:py-24">
+        <div className="mx-auto max-w-3xl text-center">
+          <SceneLabel>06 · MEMORY ARCHIVE</SceneLabel>
+          <SceneTitle className="thai-display mt-5 font-thai">รูปของเรา<br />อยู่ที่นี่จริง ๆ</SceneTitle>
+          <p className="mx-auto mt-6 max-w-2xl font-thai text-base leading-8 text-ivory/65">
+            จากวันธรรมดา ระหว่างทาง ไปจนถึงวันที่กลายเป็นครอบครัวเดียวกัน — ทุกภาพที่ปลอดภัยและมีความหมายถูกเก็บไว้ในสนามความทรงจำนี้
+          </p>
+          <p className="mt-4 font-mono text-[0.58rem] uppercase tracking-[0.24em] text-sky-100/50">
+            {memoryArchive.length} SAFE MEMORIES · LOCAL &amp; PRIVATE
+          </p>
         </div>
 
-        <motion.p
-          animate={{ opacity: selected || !showHint ? 0 : 0.52 }}
-          className="mt-6 font-mono text-[0.5rem] uppercase tracking-[0.28em] text-ivory"
+        <div className="no-scrollbar mx-auto mt-10 flex max-w-full gap-2 overflow-x-auto px-1 pb-2 sm:justify-center">
+          <FilterButton active={group === 'all'} onClick={() => setGroup('all')}>
+            ทั้งหมด
+          </FilterButton>
+          {memoryArchiveGroups.map((entry) => (
+            <FilterButton key={entry.id} active={group === entry.id} onClick={() => setGroup(entry.id)}>
+              {entry.label}
+            </FilterButton>
+          ))}
+        </div>
+
+        <div
+          className="mt-12 grid auto-rows-[7.5rem] grid-cols-2 grid-flow-dense gap-2 sm:auto-rows-[10rem] sm:grid-cols-4 sm:gap-3 lg:auto-rows-[11rem] lg:grid-cols-6 lg:gap-4"
+          aria-live="polite"
         >
-          {device.isTouch ? 'ปัดเพื่อหมุน · แตะเพื่อเปิด' : 'ลากเพื่อหมุน · คลิกเพื่อเปิด'}
-        </motion.p>
+          {visible.map((item, index) => {
+            const landscape = item.width / item.height > 1.18;
+            const featured = item.special || index % 13 === 0;
+            return (
+              <motion.button
+                key={item.id}
+                type="button"
+                initial={reduced ? false : { y: 18 }}
+                whileInView={{ y: 0 }}
+                viewport={{ once: true, margin: '0px 0px -6% 0px' }}
+                transition={{ duration: 0.75, delay: Math.min(index % 8, 4) * 0.035, ease: EASE }}
+                onClick={() => {
+                  play('memoryFocus');
+                  setSelected(item);
+                }}
+                className={cn(
+                  'group relative min-h-0 overflow-hidden bg-navy-700/20 text-left focus-visible:outline-offset-4',
+                  featured && landscape && 'col-span-2 row-span-2',
+                  featured && !landscape && 'row-span-2',
+                  !featured && landscape && 'col-span-2',
+                  !featured && !landscape && index % 5 === 0 && 'row-span-2'
+                )}
+                aria-label={`เปิดความทรงจำ ${item.groupLabel}`}
+                data-cursor="open"
+              >
+                <MemoryImage
+                  photo={item.thumb}
+                  alt={item.groupLabel}
+                  tone="sky"
+                  loading="lazy"
+                  cropMode="cover"
+                />
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/72 via-transparent to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-95" />
+                <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-3 sm:p-4">
+                  <span className="font-thai text-xs text-ivory/90 sm:text-sm">{item.groupLabel}</span>
+                  {item.special ? (
+                    <span className="font-mono text-[0.46rem] uppercase tracking-[0.2em] text-champagne">ANCHOR</span>
+                  ) : null}
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {visibleCount < filtered.length ? (
+          <div className="mt-12 text-center">
+            <button
+              type="button"
+              onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+              className="ai-button-secondary ai-pressable rounded-full px-7 py-3 font-thai text-sm"
+            >
+              เปิดความทรงจำเพิ่ม · {Math.min(PAGE_SIZE, filtered.length - visibleCount)} ภาพ
+            </button>
+          </div>
+        ) : null}
       </div>
+
+      <AnimatePresence>
+        {selected ? (
+          <motion.div
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-navy-900/95 p-4 backdrop-blur-sm sm:p-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={selected.groupLabel}
+            onClick={() => setSelected(null)}
+          >
+            <motion.figure
+              initial={reduced ? false : { scale: 0.96, y: 16 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.98, y: 8 }}
+              transition={{ duration: 0.55, ease: EASE }}
+              className="relative flex max-h-[92vh] max-w-[92vw] flex-col"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <img
+                src={selected.image}
+                alt={selected.groupLabel}
+                width={selected.width}
+                height={selected.height}
+                className="max-h-[82vh] max-w-[92vw] object-contain"
+                decoding="async"
+              />
+              <figcaption className="flex items-center justify-between gap-6 py-4">
+                <div>
+                  <p className="font-thai text-sm text-ivory">{selected.groupLabel}</p>
+                  <p className="mt-1 font-mono text-[0.5rem] uppercase tracking-[0.22em] text-sky-100/50">
+                    {selected.dateLabel}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="ai-pressable rounded-full border border-sky-200/20 px-4 py-2 font-thai text-xs text-ivory/75"
+                >
+                  ปิด
+                </button>
+              </figcaption>
+            </motion.figure>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </SceneSection>
   );
 }
 
+function FilterButton({
+  active,
+  onClick,
+  children
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={cn(
+        'ai-pressable shrink-0 rounded-full border px-4 py-2 font-thai text-xs',
+        active
+          ? 'border-sky-100/55 bg-sky-100/10 text-ivory'
+          : 'border-sky-200/12 text-ivory/55 hover:border-sky-200/35 hover:text-ivory'
+      )}
+    >
+      {children}
+    </button>
+  );
+}
