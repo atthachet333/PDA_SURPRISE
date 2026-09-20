@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/SceneSection';
 import { MemoryImage } from '@/components/surprise/MemoryImage';
 import { MemoryBleed, MemoryFrame } from '@/components/surprise/MemoryFrame';
@@ -303,44 +303,41 @@ function DateType({ moment, index }: { moment: TimelineMoment; index: number }) 
   );
 }
 
-/** 5. Photo stack — a small pile, fanned. */
+/** 5. Pre-wedding preview — one generous frame plus an obvious filmstrip. */
 function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
   const reduced = useReducedMotion();
-  const images = moment.images?.length ? moment.images : [moment.image, undefined, undefined];
-  const rotations = [-7, 3, 9];
+  const images = [moment.image, ...(moment.images ?? [])].filter(
+    (image): image is string => Boolean(image)
+  );
+  const [active, setActive] = useState(0);
+  const activeImage = images[active] ?? images[0];
 
   return (
-    <article className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-      {/* The pile takes its proportions from the photograph on top, so the two
-          behind it are not forced into a different shape than the one in front. */}
-      <div
-        className="relative mx-auto w-[13rem] sm:w-[16rem]"
-        style={frameStyle(moment.image, 'tall')}
+    <article
+      className="grid items-center gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16"
+      data-prewedding-preview="true"
+    >
+      <motion.figure
+        key={activeImage}
+        initial={reduced ? false : { opacity: 0, y: 24, rotate: -1.5 }}
+        whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+        viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+        transition={ENTER}
+        className="ai-frame-cinematic ai-photo-spill relative mx-auto w-full max-w-xl overflow-hidden shadow-glow-lg"
       >
-        {images.slice(0, 3).map((image, stackIndex) => (
-          <motion.figure
-            key={stackIndex}
-            initial={reduced ? false : { opacity: 0, y: 40, rotate: 0 }}
-            whileInView={{ opacity: 1, y: 0, rotate: rotations[stackIndex] ?? 0 }}
-            viewport={{ once: true, margin: '0px 0px -15% 0px' }}
-            transition={{ ...ENTER, delay: stackIndex * 0.14 }}
-            className="ai-frame-memory absolute inset-0 overflow-hidden shadow-glow"
-            style={{ zIndex: 3 - stackIndex }}
-          >
-            <span className="block h-full">
-              <MemoryImage
-                photo={image}
-                alt={stackIndex === 0 ? moment.title : ''}
-                tone={stackIndex === 0 ? 'sky' : 'navy'}
-                label={stackIndex === 0 ? moment.label : undefined}
-                index={index + stackIndex}
-                objectPosition={moment.objectPosition}
-                cropMode={moment.cropMode}
-              />
-            </span>
-          </motion.figure>
-        ))}
-      </div>
+        <MemoryFrame
+          photo={activeImage}
+          alt={`${moment.title} · ภาพที่ ${active + 1}`}
+          shape="editorial"
+          tone="champagne"
+          label={`${active + 1} / ${images.length}`}
+          index={index + active}
+          objectPosition={moment.objectPosition}
+        />
+        <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-900/90 via-navy-900/20 to-transparent px-5 pb-5 pt-14 font-thai text-sm text-ivory/80">
+          ก่อนถึงวันแต่งงานจริง
+        </figcaption>
+      </motion.figure>
 
       <motion.div
         initial={reduced ? false : { opacity: 0, y: 26 }}
@@ -353,6 +350,44 @@ function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
           {moment.title}
         </h3>
         <p className="mt-4 max-w-md text-[0.95rem] leading-relaxed text-ivory/70">{moment.body}</p>
+
+        <div className="mt-8">
+          <p className="font-thai text-xs text-sky-100/55">เลือกดูภาพก่อนวันงาน</p>
+          <div
+            className="mt-3 grid grid-cols-3 gap-3"
+            role="group"
+            aria-label="ภาพพรีเวดดิ้ง"
+          >
+            {images.map((image, imageIndex) => (
+              <button
+                key={image}
+                type="button"
+                aria-pressed={active === imageIndex}
+                aria-label={`ดูภาพพรีเวดดิ้งภาพที่ ${imageIndex + 1}`}
+                onClick={() => setActive(imageIndex)}
+                className={cn(
+                  'ai-pressable ai-frame-memory overflow-hidden border bg-navy-800/40 p-1 transition-colors',
+                  active === imageIndex
+                    ? 'border-champagne/75 shadow-glow'
+                    : 'border-sky-200/15 opacity-65 hover:border-sky-200/45 hover:opacity-100'
+                )}
+              >
+                <span className="block overflow-hidden" style={frameStyle(image, 'tall')}>
+                  <MemoryImage
+                    photo={image}
+                    alt=""
+                    tone="champagne"
+                    index={index + imageIndex}
+                    loading="lazy"
+                  />
+                </span>
+              </button>
+            ))}
+          </div>
+          <p className="mt-3 font-mono text-[0.5rem] uppercase tracking-[0.22em] text-sky-100/40">
+            {String(active + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+          </p>
+        </div>
       </motion.div>
     </article>
   );

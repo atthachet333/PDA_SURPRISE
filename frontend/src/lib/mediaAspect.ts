@@ -3,9 +3,9 @@
  *
  * WHY THIS FILE EXISTS
  * --------------------
- * Twenty of the twenty-one photographs in this experience are PORTRAIT — they
+ * Nearly every photograph in this experience is PORTRAIT — they
  * were taken on a phone, held upright, the way people actually photograph each
- * other. Exactly one (`roadtrip-01`) is landscape.
+ * other. `roadtrip-01` is the deliberate landscape exception.
  *
  * The layouts were written the other way round: 16/9 and 21/9 bands, squares,
  * 5/4 splits, all filled with `object-fit: cover`. A 3:4 photograph poured into
@@ -28,12 +28,12 @@ const INTRINSIC: Record<string, number> = {
   '/images/memories/cat-02.webp': 1050 / 1400,
   '/images/memories/chaam-01.webp': 1200 / 1600,
   '/images/memories/chaam-shadows.webp': 1200 / 1600,
-  '/images/memories/chonburi-sea-01.webp': 1200 / 1600,
-  '/images/memories/daily-01.webp': 900 / 1600,
-  '/images/memories/family-01.webp': 900 / 1600,
+  '/images/memories/pattaya-01.webp': 1200 / 1600,
+  '/images/memories/marriage-decision-01.webp': 900 / 1600,
+  '/images/memories/together-now-01.webp': 900 / 1600,
   '/images/memories/finale-shadow-heart-poster.webp': 900 / 1600,
   '/images/memories/graduation-01.webp': 1200 / 1600,
-  '/images/memories/hero-01.webp': 1800 / 2400,
+  '/images/memories/chaam-beach-02.webp': 1800 / 2400,
   '/images/memories/roadtrip-01.webp': 1600 / 1000,
   '/images/memories/sarika-01.webp': 1200 / 1600,
   '/images/memories/suanphueng-01.webp': 900 / 1600,

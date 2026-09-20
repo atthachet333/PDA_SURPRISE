@@ -301,9 +301,9 @@
     text-shadow: 0 1px 24px rgba(12, 27, 41, 0.55), 0 1px 3px rgba(12, 27, 41, 0.4);
   }
 
-  /* A&I type system: Thai is calm and highly readable; Latin display copy
-     carries the cinematic identity. Handwritten treatment is deliberately
-     only an italic accent so no additional font payload is introduced. */
+  /* A&I type system: Anuphan softens body copy while Noto Serif Thai gives
+     emotional headings a warmer, more lyrical shape. Both are scoped to the
+     private flow; corporate typography stays on IBM Plex Sans Thai. */
   /*
    * SOFTER, ON PURPOSE.
    *
@@ -314,13 +314,30 @@
    * at up to 4rem.
    *
    * This loosens the line, releases the negative tracking, and caps the size a
-   * little lower. It matters more now than it did: nine of the nineteen places
+   * little lower. It matters more now than it did: eleven of the nineteen places
    * have no photograph, so those scenes are carried entirely by this type.
    *
-   * NO NEW FONT. A softer Thai serif is a real improvement but it is a payload
-   * decision and a whole-system change, so it belongs to the typography pass,
-   * not to a media pass.
+   * This refinement introduces the private-only pairing intentionally: three
+   * practical weights per family, with Latin and numeric display copy still
+   * led by Cormorant Garamond.
    */
+  .ai-private {
+    font-family: theme('fontFamily.thaiSoft');
+  }
+
+  .ai-private .font-thai {
+    font-family: theme('fontFamily.thaiSoft');
+    letter-spacing: 0.008em;
+  }
+
+  .ai-private .thai-display,
+  .ai-private .ai-scene-title {
+    font-family: theme('fontFamily.thaiRomantic');
+    font-weight: 300;
+    letter-spacing: 0.004em;
+    line-height: 1.34;
+  }
+
   .ai-scene-title {
     @apply thai-display ai-legible font-thai font-light text-ivory;
     font-size: clamp(1.75rem, 4.4vw, 3.5rem);
@@ -341,6 +358,13 @@
     @apply font-thai text-ivory/60;
     font-size: clamp(0.8125rem, 1vw, 0.9375rem);
     line-height: 1.65;
+  }
+
+  @media (min-width: 1024px) {
+    .ai-one-line-desktop {
+      max-width: none;
+      white-space: nowrap;
+    }
   }
 
   /*

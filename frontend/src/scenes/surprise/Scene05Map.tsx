@@ -13,8 +13,8 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
  * A photograph is evidence, not a required card field. Four verified places
- * become a small asymmetric photo essay; TURR and Status are carried by words
- * because no confirmed photograph exists. The complete owner-supplied roster stays
+ * become a small asymmetric photo essay; TURR is carried by words because no
+ * confirmed photograph exists. The complete owner-supplied roster stays
  * visible as one quiet index: 10 provinces, 19 recorded places, without
  * manufacturing 19 identical tiles.
  */
@@ -45,7 +45,7 @@ export function Scene05Map() {
           </p>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-4xl border-y border-sky-200/15 sm:grid-cols-2">
+        <div className="mx-auto mt-16 grid max-w-2xl border-y border-sky-200/15">
           {rememberedPlaces.map((place, index) => (
             <motion.article
               key={place.id}
@@ -53,7 +53,7 @@ export function Scene05Map() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '0px 0px -15% 0px' }}
               transition={{ duration: 1, delay: index * 0.12, ease: EASE }}
-              className={cn('px-5 py-9 text-center sm:px-10 sm:py-11', index === 1 && 'border-t border-sky-200/15 sm:border-l sm:border-t-0')}
+              className="px-5 py-9 text-center sm:px-10 sm:py-11"
             >
               <span className="font-mono text-[0.5rem] uppercase tracking-[0.28em] text-sky-100/45">ความทรงจำที่ไม่มีภาพยืนยัน</span>
               <h3 className="mt-4 font-thai text-2xl font-light text-ivory">{place.label}</h3>

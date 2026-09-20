@@ -31,7 +31,7 @@ export function Scene03Journey() {
     <SceneSection id="beginning" label="จุดเริ่มต้น" className="overflow-hidden">
       <div className="flex w-full max-w-6xl flex-col gap-20 lg:gap-28">
         {/* ── BEAT ONE: the photographed beginning at Peak. ───────────────── */}
-        <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           <motion.div
             initial={reduced ? false : { opacity: 0, x: -36 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -43,7 +43,7 @@ export function Scene03Journey() {
             <h2 className="thai-display ai-legible mt-5 font-thai text-[clamp(1.9rem,4.4vw,3.4rem)] font-light text-ivory">
               ครั้งแรกที่เราได้เจอกัน
             </h2>
-            <p className="mt-6 font-thai text-[clamp(0.95rem,1.5vw,1.1rem)] leading-8 text-ivory/70">
+            <p className="ai-one-line-desktop mt-6 font-thai text-[clamp(0.95rem,1.35vw,1.075rem)] leading-8 text-ivory/70">
               {beginning?.title} — {beginning?.caption}
             </p>
             <div className="mt-10 flex items-center gap-5">

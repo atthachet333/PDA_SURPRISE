@@ -39,10 +39,10 @@ function plates(): Plate[] {
 
   return [
     {
-      id: 'home',
+      id: 'together-now',
       photo: byId('family-01')?.image,
-      eyebrow: 'ครอบครัว',
-      caption: 'บ้านที่เรากลับไปหากันเสมอ',
+      eyebrow: 'วันนี้',
+      caption: 'เรายังอยู่ด้วยกัน และยังเลือกกันอยู่ทุกวัน',
       tone: 'cream'
     },
     {

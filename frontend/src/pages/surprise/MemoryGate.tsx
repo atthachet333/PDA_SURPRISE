@@ -143,7 +143,7 @@ export default function MemoryGate() {
   if (alreadyUnlocked) return <Navigate to="/workspace" replace />;
 
   return (
-    <main className="relative min-h-[100dvh] overflow-hidden bg-[#06110d] text-ivory">
+    <main className="ai-private relative min-h-[100dvh] overflow-hidden bg-[#06110d] text-ivory">
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-navy-900"

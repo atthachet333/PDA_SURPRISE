@@ -23,11 +23,14 @@ Owner-confirmed mappings now used by the runtime:
 | ร้าน Peak = จุดเริ่มต้น / ร้านที่เจอกันครั้งแรก | owner-confirmed reference images #1 and #2 | `peak-01.webp`, `peak-02.webp` |
 | ร้าน TURR เกษตร = วันที่ขอคบ, 2025-10-12 | no confirmed photo; text only | none |
 | สวนผึ้ง | Christmas-tree photograph | `suanphueng-01.webp` |
-| ร้าน Status | no real photo; text only | none |
 | หนมถ้วย | confirmed kitten image | `cat-01.webp` |
 | ถ้วยฟู | confirmed sleeping-cat image | `cat-02.webp` |
 | actual wedding, 2026-07-28 | `24.jpg` plus safe outdoor wedding set | `wedding-actual-01.webp` through `-03.webp` |
 | pre-wedding | studio / staged portrait set | `wedding-01.webp` through `-03.webp` |
+| พัทยา | owner-confirmed latest reference #3 (`IMG_7173.jpeg`) | `pattaya-01.webp` |
+| ตัดสินใจจดทะเบียนสมรสด้วยกัน | owner-confirmed latest reference #4 (`142C7102…JPG`) | `marriage-decision-01.webp` |
+| ชะอำ | owner-confirmed latest reference #5 (`IMG_3550.HEIC`) | `chaam-beach-02.webp` |
+| เรายังอยู่ด้วยกัน | owner-confirmed latest reference #6 (`686D8E0B…JPG`) | `together-now-01.webp` |
 
 The production runtime references only local optimized WebP assets. It makes no
 Google Drive requests and ships no HEIC originals.
@@ -193,7 +196,7 @@ Four known provinces have **no photographic evidence at all**: ราชบุ�
 | 7 | น้ำตกสาริกา | **PHOTO VERIFIED** | `IMG_5882/5883`, GPS + waterfall rock |
 | 8 | อุทยานพระพิฆเนศ | **PHOTO POSSIBLE** | `IMG_5768` is 700 m away the same morning; no Ganesha visible |
 | 9 | ชะอำ | **PHOTO VERIFIED** | 33 files across two visits |
-| 10 | พัทยา | **NODE ONLY** | no GPS anywhere near Pattaya |
+| 10 | พัทยา | **PHOTO VERIFIED** | owner-confirmed latest reference #3, `IMG_7173.jpeg` (§8c) |
 | 11 | บางแสน | **PHOTO POSSIBLE** | 2026-01-11 cluster (Q7) |
 | 12 | อ่างศิลา | **PHOTO POSSIBLE** | same cluster (Q7) |
 | 13 | บ้านกงเปรี้ยว | **TEXT-DRIVEN** | none |
@@ -204,19 +207,19 @@ Four known provinces have **no photographic evidence at all**: ราชบุ�
 | 18 | ทางรถไฟ | **TEXT-DRIVEN** | no railway image |
 | 19 | **ร้าน TURR เกษตร** | **TEXT-DRIVEN** | no confirmed photograph; the two formerly assigned images are Peak (§8b) |
 
-**Photo verified 4 · possible 4 · text-driven 10 · node only 1.** (Peak is photo-backed outside this 19-place roster; TURR remains text-driven.)
+**Photo verified 4 · possible 4 · text-driven 11 · node only 0.** TURR remains text-driven and does not reuse the Peak photograph.
 
-Which is a good result, not a poor one: **10 of 19 places becoming text is the
+Which is a good result, not a poor one: **11 of 19 places becoming text is the
 story, not a gap.** "บางที่มีรูป บางที่เหลือแค่ความทรงจำ" only works if it's true.
 
 ---
 
 ## 6. What to use
 
-18 selects, 11 backups, 5 owner decisions, 82 skips.
+19 selects, 11 backups, 4 owner decisions, 82 skips.
 
-**Hero** — primary `IMG_3550.HEIC` (Cha-am, both faces clear, 4284×5712, wide
-crop headroom). Backups `IMG_3551.HEIC`, `IMG_7193.jpeg`.
+**Cha-am** — selected `IMG_3550.HEIC` (both faces clear, 4284×5712, wide crop
+headroom). Runtime role: the owner-confirmed latest reference #5 beach memory.
 
 **Beginning** — *none proposed.* Text-driven until Q1–Q4 are answered.
 
@@ -299,6 +302,24 @@ The owner corrected the earlier mapping: reference images #1 and #2 are both
 recorded as `OWNER_CONFIRMED`. TURR must not use either image and remains a
 text-only relationship milestone until a separate photograph is confirmed.
 
+## 8c. Latest owner reference order
+
+The latest owner reference sequence is semantic, not the numeric filenames in
+Drive. A fresh 132-file listing confirmed that Drive's `3.jpg`–`6.jpg` are
+wedding photographs, so they were not substituted for these owner-confirmed
+story meanings.
+
+| ref | meaning | source file | local production asset |
+|---|---|---|---|
+| 3 | พัทยา | `IMG_7173.jpeg` | `pattaya-01.webp` |
+| 4 | วันที่ตัดสินใจจดทะเบียนสมรสด้วยกัน | `142C7102-D966-415C-9299-0742C5C486DC.JPG` | `marriage-decision-01.webp` |
+| 5 | ชะอำ | `IMG_3550.HEIC` | `chaam-beach-02.webp` |
+| 6 | ปัจจุบัน — เรายังอยู่ด้วยกัน | `686D8E0B-7CE2-48C0-97E3-AFD57D3DC4D0.JPG` | `together-now-01.webp` |
+
+The marriage-decision memory is a separate beat from both the pre-wedding shoot
+and the actual wedding. All four assets are optimized local WebP files; runtime
+code makes no Drive request.
+
 ### Wedding vs pre-wedding
 
 Owner's rule: **outdoor / real-location = the actual wedding; studio or staged
@@ -322,11 +343,12 @@ set remains explicitly pre-wedding.
 
 ## 9. Owner review
 
-**Resolved 2026-09-20:** Q1/Q2 (Peak), Q10/Q11/Q12 (cat identities), and the
-wedding/pre-wedding split. **Q19 is new:** is `IMG_5398` (Thai dress, real room)
-the actual ceremony or a pre-wedding shoot?
+**Resolved 2026-09-20:** Q1/Q2 (Peak), Q7 (the latest owner reference assigns
+the selected coast image to Pattaya), Q10/Q11/Q12 (cat identities), the latest
+reference order #3–#6, and the wedding/pre-wedding split. **Q19 remains:** is
+`IMG_5398` (Thai dress, real room) the actual ceremony or a pre-wedding shoot?
 
-Still open: Q1, Q5, Q6, Q7, Q8, Q9, Q13, Q14, Q15, Q16, Q17, Q18, Q19.
+Still open: Q5, Q6, Q8, Q9, Q13, Q14, Q15, Q16, Q17, Q18, Q19.
 
 `review-local/OWNER_REVIEW.jpg` — one sheet, **18 questions**, each with a
 thumbnail. Answer in shorthand:
@@ -342,7 +364,7 @@ never be committed.**
 
 ---
 
-## 10. Optimization plan (next pass, after answers)
+## 10. Optimization and local serving
 
 Drive stays the source; production never touches it.
 
@@ -361,38 +383,39 @@ All 44 HEIC files decode correctly and convert cleanly. Nothing is upscaled —
 `IMG_5642/5643/5644` are only 1108×1477 and `IMG_3479` is a screenshot, so those
 cap at their native size.
 
-Target names (only after confirmation): `hero-01.webp`, `travel-chaam-01.webp`,
-`travel-sarika-01.webp`, `daily-01.webp`, `family-01.webp`, `pet-01.webp`,
-`finale-01.webp`, `timeline-wedding-01.webp`.
+Confirmed semantic targets include `pattaya-01.webp`,
+`marriage-decision-01.webp`, `chaam-beach-02.webp`, and
+`together-now-01.webp`. Other runtime names remain purpose-specific, including
+`travel-chaam-01.webp`, `travel-sarika-01.webp`, `cat-01.webp`, `cat-02.webp`,
+and the separate pre-wedding and actual-wedding series.
 
 ---
 
-## 11. Typography note (observation only — no change made)
+## 11. Typography refinement (implemented 2026-09-20)
 
-The places that become text-driven are exactly the ones where the current
-display face will feel hardest: ten place names with no photograph behind them,
-carried entirely by type, plus the numeric beats (10 จังหวัด / 19 สถานที่). Those
-scenes — Places, Journey, Letter — are where a softer editorial Thai face would
-earn its keep. Flagged for the separate typography pass; nothing changed here.
+The private A&I flow now uses **Anuphan** for warm, readable Thai body copy and
+**Noto Serif Thai** for emotional display lines, with Cormorant Garamond retained
+for Latin editorial accents. The font rules are scoped beneath `.ai-private`, so
+corporate routes keep their existing typography. Important desktop lines use a
+deliberate single-line treatment where space allows, including
+`ร้าน Peak — ร้านที่เราเจอกันครั้งแรก`.
 
 ---
 
-## 12. Reconciliation needed before integration
+## 12. Reconciliation status
 
-- **19 places** is the current truth; runtime data still reflects **18**. Not
-  changed in this pass — the brief says reconcile after review.
+- **19 places** is the current truth and runtime data reflects all **19** without
+  retaining the removed venue as a place or timeline beat.
 - Two GPS clusters fall outside the ten known provinces (§4). Neither has been
   added.
-- Nothing in `data/anniversary.ts` was touched.
+- Runtime data now carries the latest owner-confirmed Pattaya, marriage-decision,
+  Cha-am, and present-day mappings.
 
 ---
 
-## 13. Next pass
+## 13. Remaining owner decisions
 
-1. Owner answers the 18 questions.
-2. Reconcile 18 → 19 places; decide the two out-of-province clusters.
-3. Convert only the confirmed selects; write them to `public/images/memories/`.
-4. Fill the slots — hero 1/3, featured, daily, travel, family, pets, finale —
-   **leaving unfilled anything with no worthy photo.**
-5. Build the text-driven treatment for the nine text places.
-6. Then, separately, the typography pass.
+The current runtime mapping needs no additional owner choice. The separate
+historical curation review still has the open questions listed in §9, especially
+Q19 for `IMG_5398`; until that is answered, it remains labelled pre-wedding and
+is not treated as evidence of the actual ceremony.

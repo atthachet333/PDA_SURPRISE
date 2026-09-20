@@ -190,7 +190,7 @@ export default function Experience() {
   }, [current, setSceneMix]);
 
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-navy-800 text-ivory">
+    <div className="ai-private relative min-h-screen overflow-x-clip bg-navy-800 text-ivory">
       <CelestialBackground
         mood={direction.mood}
         camera={direction.camera}

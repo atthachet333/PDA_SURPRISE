@@ -75,7 +75,9 @@ const config: Config = {
         // Thai-first: IBM Plex Sans Thai leads so Thai glyphs never fall back.
         sans: ['IBM Plex Sans Thai', 'Inter', 'system-ui', 'sans-serif'],
         thai: ['IBM Plex Sans Thai', 'Inter', 'sans-serif'],
-        display: ['Cormorant Garamond', 'Georgia', 'serif'],
+        thaiSoft: ['Anuphan', 'IBM Plex Sans Thai', 'Inter', 'sans-serif'],
+        thaiRomantic: ['Noto Serif Thai', 'Anuphan', 'serif'],
+        display: ['Cormorant Garamond', 'Noto Serif Thai', 'Georgia', 'serif'],
         mono: ['IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
       },
       fontSize: {
