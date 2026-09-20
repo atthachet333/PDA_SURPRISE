@@ -247,8 +247,8 @@ export const anniversary = {
   // ------------------------------------------------------------------ pets --
   /** Optional section. Not wired into any scene yet — the redesign pass owns it. */
   pets: [
-    { id: 'pet-tuayfu', name: 'ถ้วยฟู', kind: 'cat' },
-    { id: 'pet-kanomtuay', name: 'หนมถ้วย', kind: 'cat' }
+    { id: 'pet-tuayfu', name: 'ถ้วยฟู', kind: 'cat', image: '/images/memories/cat-02.webp' },
+    { id: 'pet-kanomtuay', name: 'หนมถ้วย', kind: 'cat', image: '/images/memories/cat-01.webp' }
   ] as Pet[],
 
   // ----------------------------------------------------------------- intro --
@@ -306,10 +306,12 @@ export const anniversary = {
     { id: 'm16', title: 'วัดไร่แตงทอง', date: 'MEMORY 16', caption: 'วัดที่นครปฐม', location: 'นครปฐม', tags: ['family'], tone: 'champagne' },
     { id: 'm17', title: 'วัดหุบกระทิง', date: 'MEMORY 17', caption: 'วัดที่ราชบุรี', location: 'ราชบุรี', tags: ['family'], tone: 'cream' },
     { id: 'm18', title: 'ทางรถไฟ', date: 'MEMORY 18', caption: 'เดินเล่นริมทางรถไฟ', tags: ['daily'], tone: 'navy', featured: true },
-    /* The 19th place. Deliberately without an image: the curation pass found no
-       photograph that can be tied to this venue, and a stand-in bar photo would
-       be a lie about where the story started. */
-    { id: 'm19', title: 'ร้าน TURR เกษตร', date: 'MEMORY 19', caption: 'ที่ที่เราเริ่มต้นกัน', tags: ['daily'], tone: 'champagne' },
+    /* The 19th place, and the one that matters most.
+       OWNER-CONFIRMED: this is ร้าน TURR เกษตร, the place he asked her to be his
+       partner. The curation pass could not prove it from metadata — the venue's
+       neon sign is blown out in every frame — so it stayed text-only until the
+       owner identified it directly. Owner confirmation outranks inference. */
+    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'ที่ที่เขาชวนเธอมาเป็นแฟน', image: '/images/memories/turr-01.webp', tags: ['daily'], tone: 'champagne', featured: true },
 
     /* ── MOMENTS, NOT PLACES ──────────────────────────────────────────────────
        Everything above is somewhere they went. These are things that happened,
@@ -319,8 +321,18 @@ export const anniversary = {
        obscured by the registrar's seal in every shot. ───────────────────────── */
     { id: 'm20', title: 'ทะเลชลบุรี', date: '11 JAN 2026', caption: 'วันที่ไปเดินริมทะเลกัน', location: 'ชลบุรี', image: '/images/memories/chonburi-sea-01.webp', tags: ['travel'], tone: 'sky', featured: true },
     { id: 'm21', title: 'วันรับปริญญา', date: '16 NOV 2025', caption: 'วันสำคัญที่ไปด้วยกัน', image: '/images/memories/graduation-01.webp', tags: ['family'], tone: 'champagne', featured: true },
-    { id: 'm22', title: 'วันแต่งงาน', date: '28 JUL 2026', caption: 'วันที่เราเลือกกันต่อหน้าทุกคน', image: '/images/memories/wedding-02.webp', tags: ['family'], tone: 'cream', featured: true },
-    { id: 'm23', title: 'แมวของเรา', date: 'AT HOME', caption: 'สองตัวที่ทำให้บ้านไม่เงียบ', image: '/images/memories/cat-01.webp', tags: ['daily'], tone: 'cream' },
+    /* PRE-WEDDING, not the wedding day.
+       Owner's rule: outdoor / real-location = the actual wedding; studio or
+       staged set = pre-wedding. This frame is Thai traditional dress in a real
+       room rather than on a studio sweep, so it is the one shot the rule does
+       not settle cleanly — it is labelled pre-wedding, the safer of the two,
+       and flagged for the owner. The canonical 2026-07-28 date is deliberately
+       NOT attached to it. */
+    { id: 'm22', title: 'ชุดไทยก่อนวันงาน', date: 'PRE-WEDDING', caption: 'วันถ่ายภาพชุดไทย', image: '/images/memories/wedding-02.webp', tags: ['family'], tone: 'cream', featured: true },
+    /* OWNER-CONFIRMED identities. Until now both cats carried a neutral label
+       because the curation could not tell a silver tabby from a silver tabby. */
+    { id: 'm23', title: 'หนมถ้วย', date: 'AT HOME', caption: 'แมวของเรา', image: '/images/memories/cat-01.webp', tags: ['daily'], tone: 'cream' },
+    { id: 'm28', title: 'ถ้วยฟู', date: 'AT HOME', caption: 'แมวของเรา', image: '/images/memories/cat-02.webp', tags: ['daily'], tone: 'cream' },
     { id: 'm24', title: 'วันธรรมดา', date: '20 DEC 2025', caption: 'วันที่ไม่มีอะไรพิเศษ แต่จำได้', image: '/images/memories/daily-01.webp', tags: ['daily'], tone: 'navy', featured: true },
     { id: 'm25', title: 'ทริปมอเตอร์ไซค์', date: '26 DEC 2025', caption: 'ถนนยาว ๆ กับคนข้างหลัง', image: '/images/memories/roadtrip-01.webp', tags: ['travel'], tone: 'navy' },
     { id: 'm26', title: 'คริสต์มาส', date: '25 DEC 2025', caption: 'ต้นคริสต์มาสกับคนที่ชอบถ่ายรูป', image: '/images/memories/daily-02.webp', tags: ['daily'], tone: 'champagne' },
@@ -400,14 +412,21 @@ export const anniversary = {
    * invented date. Bodies say only what is true.
    */
   timeline: [
-    { id: 't1', label: '12 OCT 2025', title: 'จุดเริ่มต้น', body: 'วันที่เราเริ่มนับเป็นวันแรกของเรา', type: 'highlight', treatment: 'fullbleed' },
+    { id: 't1', label: '12 OCT 2025', title: 'จุดเริ่มต้น', body: 'ร้าน TURR เกษตร — วันที่เขาชวนเธอมาเป็นแฟน', type: 'photo', treatment: 'fullbleed', image: '/images/memories/beginning-01.webp' },
     { id: 't2', label: 'MOMENT 02', title: 'ร้าน Peak', body: 'ร้านที่กลายเป็นร้านของเรา', type: 'photo', treatment: 'polaroid' },
     { id: 't3', label: 'MOMENT 03', title: 'ร้าน Status', body: 'อีกร้านที่เราไปกันบ่อย', type: 'photo', treatment: 'split' },
     { id: 't4', label: '10 DEC 2025', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก', image: '/images/memories/sarika-01.webp' },
     { id: 't5', label: 'MOMENT 05', title: 'สวนผึ้ง', body: 'ขึ้นไปราชบุรีด้วยกัน', type: 'location', treatment: 'stack', location: 'ราชบุรี' },
     { id: 't6', label: 'MOMENT 06', title: 'พัทยา', body: 'ทะเลที่ชลบุรี', type: 'photo', treatment: 'blurFocus', location: 'ชลบุรี' },
     { id: 't7', label: 'MOMENT 07', title: 'บ้านโป่ง', body: 'ที่ที่กลับไปหากันเสมอ', type: 'photo', treatment: 'polaroid', location: 'ราชบุรี' },
-    { id: 't8', label: '28 JUL 2026', title: 'งานแต่ง', body: 'วันที่เราตัดสินใจเดินไปด้วยกันจริง ๆ', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-02.webp', images: ['/images/memories/wedding-01.webp', '/images/memories/wedding-03.webp'] },
+    /* The wedding milestone keeps the canonical date and stays a DATE beat.
+       No photograph of the actual wedding day is in the pool — everything the
+       curation found is pre-wedding studio work, and the one outdoor/real
+       wedding image the owner referenced (24.jpg) is not in the Drive folder.
+       Attaching a studio portrait here would date a pre-wedding shoot as the
+       wedding, which is exactly what the owner's rule exists to prevent. */
+    { id: 't8', label: '28 JUL 2026', title: 'งานแต่ง', body: 'วันที่เราตัดสินใจเดินไปด้วยกันจริง ๆ', type: 'highlight', treatment: 'date' },
+    { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp', '/images/memories/wedding-02.webp'] },
     { id: 't9', label: 'วันนี้', title: 'ยังอยู่ด้วยกัน', body: 'และยังเลือกกันอยู่ทุกวัน', type: 'highlight', treatment: 'fullbleed' }
   ] as TimelineMoment[],
 
@@ -496,8 +515,11 @@ export const anniversary = {
    * before. See `docs/IMAGE_INGESTION.md` for the Drive → manifest workflow.
    */
   heroImages: [
-    { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — ภาพที่ดีที่สุดของสองคน', image: '/images/memories/hero-01.webp', caption: 'ริมทะเลด้วยกัน', objectPosition: '50% 38%' },
-    { id: 'hero-02', category: 'hero', intent: 'ภาพเปิดสำรอง — แนวตั้งสำหรับมือถือ' },
+    /* OWNER-CONFIRMED as จุดเริ่มต้น — the night at ร้าน TURR เกษตร. This
+       replaces the beach frame that stood here only because the beginning was
+       unresolved. */
+    { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — จุดเริ่มต้น (TURR เกษตร)', image: '/images/memories/beginning-01.webp', caption: 'คืนที่ทุกอย่างเริ่มต้น', objectPosition: '50% 42%' },
+    { id: 'hero-02', category: 'hero', intent: 'ภาพเปิดสำรอง — แนวตั้งสำหรับมือถือ', image: '/images/memories/hero-01.webp', caption: 'ริมทะเลด้วยกัน', objectPosition: '50% 38%' },
     { id: 'hero-03', category: 'hero', intent: 'ภาพพื้นหลังกว้าง สำหรับฉากแรก' }
   ] as ImageSlot[],
 
@@ -523,11 +545,9 @@ export const anniversary = {
 
   familyMemories: [
     { id: 'family-01', category: 'family', intent: 'ภาพครอบครัว', image: '/images/memories/family-01.webp', caption: 'ที่บ้าน' },
-    /* NOT named. The curation pass could not tell the two cats apart from the
-       photographs, and guessing which is ถ้วยฟู and which is หนมถ้วย would be
-       inventing a fact about them. Neutral captions until the owner says. */
-    { id: 'family-02', category: 'pets', intent: 'ภาพแมว (ยังไม่ระบุตัว)', image: '/images/memories/cat-01.webp', caption: 'แมวของเรา' },
-    { id: 'family-03', category: 'pets', intent: 'ภาพแมว (ยังไม่ระบุตัว)', image: '/images/memories/cat-02.webp', caption: 'แมวของเรา' }
+    /* Identities OWNER-CONFIRMED. */
+    { id: 'family-02', category: 'pets', intent: 'ภาพหนมถ้วย', image: '/images/memories/cat-01.webp', caption: 'หนมถ้วย' },
+    { id: 'family-03', category: 'pets', intent: 'ภาพถ้วยฟู', image: '/images/memories/cat-02.webp', caption: 'ถ้วยฟู' }
   ] as ImageSlot[],
 
   finalImages: [
@@ -539,11 +559,10 @@ export const anniversary = {
   ] as ImageSlot[],
 
   /** Pet photos, if the owner wants a pets beat in the redesign. */
-  /* Same rule as familyMemories: real cat photographs, no name attached to
-     either frame until the owner identifies them. */
+  /* Identities OWNER-CONFIRMED against the reference images. */
   petImages: [
-    { id: 'pet-01', category: 'pets', intent: 'แมวตัวที่หนึ่ง (ยังไม่ระบุตัว)', image: '/images/memories/cat-01.webp', caption: 'แมวของเรา' },
-    { id: 'pet-02', category: 'pets', intent: 'แมวตัวที่สอง (ยังไม่ระบุตัว)', image: '/images/memories/cat-02.webp', caption: 'แมวของเรา' }
+    { id: 'pet-01', category: 'pets', intent: 'หนมถ้วย', image: '/images/memories/cat-01.webp', caption: 'หนมถ้วย' },
+    { id: 'pet-02', category: 'pets', intent: 'ถ้วยฟู', image: '/images/memories/cat-02.webp', caption: 'ถ้วยฟู' }
   ] as ImageSlot[],
 
   // ----------------------------------------------------------------- video --

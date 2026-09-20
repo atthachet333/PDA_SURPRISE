@@ -44,6 +44,12 @@ camera's own capture timestamp.
 
 ### ร้าน TURR เกษตร — **no confident candidate found**
 
+> **⚠️ SUPERSEDED 2026-09-20 — see §8b.** The owner has since confirmed
+> `IMG_3479.PNG` as ร้าน TURR เกษตร and `IMG_3416.HEIC` as จุดเริ่มต้น. The
+> analysis below remains accurate about the *evidence* — the sign really is
+> illegible and the GPS really is 4–5 km off — it was simply never going to be
+> resolvable from metadata. Owner confirmation outranks it.
+
 There is **no file that places the couple at TURR Kaset**, and I am not going to
 nominate one on atmosphere alone.
 
@@ -71,6 +77,10 @@ at home, not by a bar. **Beginning should stay text-driven** until the owner
 says otherwise. Questions Q1–Q4 on the review sheet settle it in seconds.
 
 ### The wedding — **found, with strong evidence**
+
+> **⚠️ REFINED 2026-09-20 — see §8b.** Under the owner's outdoor-vs-studio rule,
+> every frame listed here is **pre-wedding studio work**, not the wedding day.
+> The actual wedding photograph is `24.jpg`, which is not in this folder.
 
 Not by date — no file carries a 2026-07-28 timestamp, and the whole pool stops
 at 2026-04-29 — but by unambiguous content. All are undated.
@@ -151,7 +161,7 @@ Four known provinces have **no photographic evidence at all**: ราชบุ�
 |---|---|---|---|
 | 1 | บ้านวิน | **TEXT-DRIVEN** | none |
 | 2 | งานกาชาด | **PHOTO POSSIBLE** | `IMG_2448` is a charity donation event — banner reads *การแบ่งปันของคุณ เปลี่ยนแปลงสังคมได้*, not กาชาด (Q5) |
-| 3 | ร้านเหล้า | **PHOTO VERIFIED** | `IMG_3416/3417/3423`, `IMG_3479` + 2 clips — a bar, unnamed |
+| 3 | ร้านเหล้า | **PHOTO VERIFIED** | `IMG_3416/3417/3423`, `IMG_3479` + 2 clips — now **owner-confirmed as ร้าน TURR เกษตร** (§8b) |
 | 4 | คอนโดพี่โด | **TEXT-DRIVEN** | none |
 | 5 | เขื่อน | **TEXT-DRIVEN** | none |
 | 6 | วันแคมป์ | **TEXT-DRIVEN** | none |
@@ -167,9 +177,9 @@ Four known provinces have **no photographic evidence at all**: ราชบุ�
 | 16 | วัดไร่แตงทอง | **TEXT-DRIVEN** | the Nakhon Pathom temple photo is ~35 km from วัดไร่แตงทอง, so it is probably a different temple (Q6) |
 | 17 | วัดหุบกระทิง | **TEXT-DRIVEN** | no Ratchaburi GPS at all |
 | 18 | ทางรถไฟ | **TEXT-DRIVEN** | no railway image |
-| 19 | **ร้าน TURR เกษตร** | **PHOTO POSSIBLE** | see §2 — bar photos exist, none tied to TURR (Q2–Q4) |
+| 19 | **ร้าน TURR เกษตร** | **PHOTO VERIFIED** | **owner-confirmed** (§8b): `IMG_3479.PNG`, integrated as `turr-01.webp` |
 
-**Photo verified 4 · possible 5 · text-driven 9 · node only 1.**
+**Photo verified 5 · possible 4 · text-driven 9 · node only 1.** (TURR moved to verified on owner confirmation, 2026-09-20.)
 
 Which is a good result, not a poor one: **9 of 19 places becoming text is the
 story, not a gap.** "บางที่มีรูป บางที่เหลือแค่ความทรงจำ" only works if it's true.
@@ -243,7 +253,61 @@ Recommendation: **two clips, three at most.**
 
 ---
 
+## 8b. Owner confirmations received (2026-09-20)
+
+Five reference images were confirmed by the owner. **The screenshots themselves
+did not arrive with the message**; the mapping below was read from the filename
+list in the brief, whose order matched reference order — independently verified
+at position 2, which the brief states outright.
+
+| ref | meaning | source file | status |
+|---|---|---|---|
+| 1 | จุดเริ่มต้น | `IMG_3416.HEIC` | integrated as `beginning-01.webp` (hero) |
+| 2 | **ร้าน TURR เกษตร** | `IMG_3479.PNG` | integrated as `turr-01.webp` — stated explicitly in the brief |
+| 3 | **หนมถ้วย** | `IMG_2536.JPG` | integrated as `cat-01.webp` |
+| 4 | งานแต่งจริง | `24.jpg` | **not in the 116-file folder — cannot be integrated** |
+| 5 | **ถ้วยฟู** | `IMG_6158.JPG` | integrated as `cat-02.webp` |
+
+### TURR is resolved
+
+§2 of the curation said *no confident TURR candidate*. That stands as a
+statement about the **evidence** — the venue's neon sign is blown out in every
+frame and the GPS sits 4–5 km from Kaset. It is now resolved by something
+stronger than evidence: the owner said so. Confidence is recorded as
+`OWNER_CONFIRMED`, which outranks any metadata inference.
+
+### Wedding vs pre-wedding
+
+Owner's rule: **outdoor / real-location = the actual wedding; studio or staged
+set = pre-wedding.** Applied to the six wedding frames:
+
+| file | verdict | why |
+|---|---|---|
+| `IMG_5393` | PRE-WEDDING | grey seamless studio; the WELCOME sign is a prop on the set |
+| `IMG_5394` | PRE-WEDDING | grey seamless studio portrait |
+| `IMG_5395` | PRE-WEDDING | staged overhead flat-lay with props |
+| `IMG_5396` | PRE-WEDDING | grey seamless studio portrait |
+| `IMG_5397` | PRE-WEDDING | grey seamless studio, Thai dress, prop pedestal |
+| `IMG_5398` | **UNCERTAIN → labelled pre-wedding** | Thai dress in a *real* room — carved doors, brass vessels — not a studio sweep. The one frame the rule does not settle. **Q19.** |
+
+**Consequence: every wedding image in the pool is pre-wedding.** The canonical
+date 2026-07-28 has therefore been *removed* from all of them. The wedding
+milestone stays a date beat with no photograph, and a separate pre-wedding beat
+carries the studio work. Dating a studio shoot as the wedding is precisely what
+the owner's rule exists to prevent.
+
+The actual wedding photograph (`24.jpg`) is not in the Drive folder — it needs
+to be added there, or supplied directly, before it can be used.
+
+---
+
 ## 9. Owner review
+
+**Resolved 2026-09-20:** Q2/Q3/Q4 (TURR), Q10/Q11/Q12 (cat identities), and the
+wedding/pre-wedding split. **Q19 is new:** is `IMG_5398` (Thai dress, real room)
+the actual ceremony or a pre-wedding shoot?
+
+Still open: Q1, Q5, Q6, Q7, Q8, Q9, Q13, Q14, Q15, Q16, Q17, Q18, Q19.
 
 `review-local/OWNER_REVIEW.jpg` — one sheet, **18 questions**, each with a
 thumbnail. Answer in shorthand:
