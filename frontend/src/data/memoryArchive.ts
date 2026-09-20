@@ -564,9 +564,9 @@ export const memoryArchive: MemoryArchiveItem[] = [
     'thumb': '/images/memories/archive/thumbs/memory-090.webp',
     'width': 1066,
     'height': 1600,
-    'group': 'prewedding',
-    'groupLabel': 'ก่อนวันงาน',
-    'dateLabel': 'PRE-WEDDING',
+    'group': 'moments',
+    'groupLabel': 'ความทรงจำของเรา',
+    'dateLabel': 'MEMORY',
     'special': false,
     'privacy': 'safe'
   },

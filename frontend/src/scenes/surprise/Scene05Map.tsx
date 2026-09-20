@@ -15,8 +15,8 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  * A photograph is evidence, not a required card field. Four verified places
  * become a small asymmetric photo essay; TURR is carried by words because no
  * confirmed photograph exists. The complete owner-supplied roster stays
- * visible as one quiet index: 10 provinces, 19 recorded places, without
- * manufacturing 19 identical tiles.
+ * visible as one quiet index, without manufacturing an identical tile for
+ * every entry. Counts derive from the canonical rosters below.
  */
 export function Scene05Map() {
   const [ref, inView] = useInViewOnce<HTMLElement>({ threshold: 0.12 });
@@ -81,7 +81,7 @@ export function Scene05Map() {
 
         <div className="mt-24 grid gap-12 border-t border-sky-200/15 pt-12 lg:grid-cols-[0.55fr_1.45fr] lg:gap-16">
           <div>
-            <p className="font-display text-[clamp(3.2rem,8vw,6.5rem)] font-light leading-none text-ivory">10</p>
+            <p className="font-display text-[clamp(3.2rem,8vw,6.5rem)] font-light leading-none text-ivory">{provinces.length}</p>
             <p className="mt-2 font-thai text-sm text-ivory/55">จังหวัดที่ไปด้วยกัน</p>
             <div className="mt-7 flex flex-wrap gap-x-4 gap-y-2">
               {provinces.map((province) => (
@@ -93,7 +93,7 @@ export function Scene05Map() {
           <div>
             <div className="flex items-end justify-between gap-5">
               <div>
-                <p className="font-display text-[clamp(3.2rem,8vw,6.5rem)] font-light leading-none text-ivory">19</p>
+                <p className="font-display text-[clamp(3.2rem,8vw,6.5rem)] font-light leading-none text-ivory">{visitedPlaces.length}</p>
                 <p className="mt-2 font-thai text-sm text-ivory/55">สถานที่ที่จดไว้</p>
               </div>
               <span className="hidden font-mono text-[0.5rem] uppercase tracking-[0.24em] text-sky-100/35 sm:block">PLACES TOGETHER</span>

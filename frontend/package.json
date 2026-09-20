@@ -8,6 +8,8 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build && node scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run test:memory-gate && npm run test:canonical-truth",
+    "test:canonical-truth": "node --test --experimental-strip-types tests/canonicalTruth.test.mjs",
     "test:memory-gate": "node --test --experimental-strip-types tests/memoryGate.test.mjs",
     "lint": "eslint . --max-warnings 0"
   },

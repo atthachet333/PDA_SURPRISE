@@ -90,24 +90,26 @@ Placeholder-ready only. No CMS. Eight topics in `insights.ts`, all
 
 - Names: Atthachet and Isariya
 - Pets: ถ้วยฟู, หนมถ้วย
-- 10 provinces travelled together
-- 6 important places, 18 visited places
+- 10 canonical provinces travelled together
+- 19 canonical visited places: Status is removed and TURR is included
+- Story-place highlights are a separate narrative concept and never contribute
+  to the canonical place count
 - The final message, split into `opening` / `gratitude[]` / `reflection[]` /
   `future[]` / `closing[]`, in the owner's own wording
 
 ### Statistics
 
 Reduced to figures that are actually true: days (live), 10 provinces,
-18 places, 2 cats, and ∞. The previous sample values — 1,842 photos, 12 trips,
+19 places and 2 cats. The previous sample values — 1,842 photos, 12 trips,
 47 inside jokes — were invented and have been removed rather than guessed at.
 
 ### Still missing
 
 | Item | Status |
 | --- | --- |
-| Photographs | None. Every memory renders a generated placeholder. |
-| Map coordinates | None supplied. All 24 real places carry `coordinatesPending: true`. |
-| Map pins | `locations[]` still holds the ORIGINAL SAMPLE pins (Chiang Mai, Phuket, Tokyo) because the 3D globe cannot render a pin without coordinates. Flagged `── PLACEHOLDER ──` in the file. |
+| Photographs | Safe local media is integrated; see `A&I_MEDIA_CURATION.md`. |
+| Map coordinates | None supplied. All 19 canonical visited places carry `coordinatesPending: true`. Story highlights are not coordinate entities. |
+| Map pins | None. `locations[]` is empty rather than manufacturing coordinates. |
 | Audio | `/public/audio/main-track.mp3` absent by design — "A Thousand Years" is copyrighted and the owner supplies a lawful private copy. Everything runs without it. |
-| Timeline dates | Only the start date is known. Other moments are labelled by sequence, not by an invented date. |
-| Memory captions | Neutral — they state the place and nothing more. Emotional captions are written when the owner sees the photos. |
+| Timeline dates | Relationship start and legal registration are known. The wedding-ceremony date remains an owner decision and is not fabricated. |
+| Memory captions | Current owner-confirmed mappings are documented in `A&I_MEDIA_CURATION.md`. |

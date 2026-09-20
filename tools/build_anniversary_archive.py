@@ -133,6 +133,8 @@ def privacy_safe_registration(image: Image.Image) -> Image.Image:
 
 
 def archive_group(name: str, old: dict[str, Any]) -> tuple[str, str, str]:
+    if name == "IMG_5398.JPG":
+        return "moments", "ความทรงจำของเรา", "MEMORY"
     if name in {"1.jpg", "3.jpg", "4.jpg", "6.jpg", "15.jpg", "17.jpg", "24.jpg", "44.jpg", "718_Original.JPG", "720_Original.JPG", "726_Original.JPG", "736_Original.JPG"}:
         return "wedding", "พิธีของเรา", "WEDDING CEREMONY"
     if name.startswith("IMG_539"):
@@ -182,7 +184,10 @@ def main() -> None:
             duplicate_group = configured_group or duplicate_group
             privacy = "private" if classification.startswith("E.") else "safe"
         else:
-            classification = "A. STORY HERO" if name in STORY_ASSETS or name in SPECIAL_ASSETS else ("C. MEMORY GALLERY" if record.get("captureDate") else "D. ARCHIVE / EXTRA MEMORY")
+            if name == "IMG_5398.JPG":
+                classification = "B. STORY SUPPORT"
+            else:
+                classification = "A. STORY HERO" if name in STORY_ASSETS or name in SPECIAL_ASSETS else ("C. MEMORY GALLERY" if record.get("captureDate") else "D. ARCHIVE / EXTRA MEMORY")
             source_path = SOURCE_DIR / name
             with Image.open(source_path) as opened:
                 image = ImageOps.exif_transpose(opened).convert("RGB")
@@ -240,7 +245,8 @@ def main() -> None:
             "category": classification,
             "duplicateGroup": duplicate_group,
             "privacy": privacy,
-            "ownerConfirmed": name in STORY_ASSETS or name == "IMG_5643.JPG",
+            "ownerConfirmed": (name in STORY_ASSETS and name != "IMG_5398.JPG") or name == "IMG_5643.JPG",
+            **({"ownerDecision": "classification pending: pre-wedding or wedding ceremony"} if name == "IMG_5398.JPG" else {}),
             "productionAssets": production,
             "thumb": thumb,
             "runtimeLocation": "local" if production else None,

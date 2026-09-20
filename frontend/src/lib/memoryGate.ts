@@ -96,8 +96,8 @@ export function parseMemoryDateParts(day: string, month: string, year: string): 
   return fromNumbers(Number(day), Number(month), Number(year));
 }
 
-export function isWeddingDateAnswer(parts: MemoryDateParts | null, weddingDate: string): boolean {
-  return parts?.iso === weddingDate;
+export function isRegistrationDateAnswer(parts: MemoryDateParts | null, registrationDate: string): boolean {
+  return parts?.iso === registrationDate;
 }
 
 /** All visible variants derive from the same ISO value, including the BE year. */

@@ -84,8 +84,10 @@ Owner-confirmed mappings now used by the runtime:
 | สวนผึ้ง | Christmas-tree photograph | `suanphueng-01.webp` |
 | หนมถ้วย | confirmed kitten image | `cat-01.webp` |
 | ถ้วยฟู | confirmed sleeping-cat image | `cat-02.webp` |
-| actual wedding, 2026-07-28 | `24.jpg` plus safe outdoor wedding set | `wedding-actual-01.webp` through `-03.webp` |
-| pre-wedding | studio / staged portrait set | `wedding-01.webp` through `-03.webp` |
+| wedding ceremony, date unknown / owner decision | `24.jpg` plus safe outdoor wedding set | `wedding-actual-01.webp` through `-03.webp` |
+| legal registration, 2026-07-28 | privacy-safe derivative of `IMG_5643.JPG` | `marriage-registration-safe.webp` |
+| pre-wedding | confirmed studio / staged portraits | `wedding-01.webp`, `wedding-03.webp` |
+| `IMG_5398` classification | owner decision; kept as a neutral memory | `wedding-02.webp` |
 | พัทยา | owner-confirmed latest reference #3 (`IMG_7173.jpeg`) | `pattaya-01.webp` |
 | ตัดสินใจจดทะเบียนสมรสด้วยกัน | owner-confirmed latest reference #4 (`142C7102…JPG`) | `marriage-decision-01.webp` |
 | ชะอำ | owner-confirmed latest reference #5 (`IMG_3550.HEIC`) | `chaam-beach-02.webp` |
@@ -183,7 +185,8 @@ at 2026-04-29 — but by unambiguous content. All are undated.
 Event confidence **HIGH**. Date confidence **UNKNOWN**: I magnified the
 certificate's date line and the handwritten date is covered by the official red
 seal. The photographs prove a marriage was registered at Bang Sue District
-Office; they do not prove the date, so nothing here is asserted as 2026-07-28.
+Office; they do not independently prove the date. The runtime's 2026-07-28
+registration date comes from owner-confirmed canonical truth, not image inference.
 
 ⚠️ The certificate photos show **names and a registration number at readable
 size**. See §7.
@@ -391,7 +394,7 @@ set = pre-wedding.** Applied to the six wedding frames:
 | `IMG_5395` | PRE-WEDDING | staged overhead flat-lay with props |
 | `IMG_5396` | PRE-WEDDING | grey seamless studio portrait |
 | `IMG_5397` | PRE-WEDDING | grey seamless studio, Thai dress, prop pedestal |
-| `IMG_5398` | **UNCERTAIN → labelled pre-wedding** | Thai dress in a *real* room — carved doors, brass vessels — not a studio sweep. The one frame the rule does not settle. **Q19.** |
+| `IMG_5398` | **OWNER DECISION — neutral runtime memory** | Thai dress in a *real* room — carved doors, brass vessels — not a studio sweep. The one frame the rule does not settle. **Q19.** |
 
 **Historical 116-file conclusion:** every wedding image in that original pool
 was pre-wedding. The 132-file refresh supersedes the missing-media conclusion:
@@ -404,10 +407,13 @@ set remains explicitly pre-wedding.
 
 **Resolved 2026-09-20:** Q1/Q2 (Peak), Q7 (the latest owner reference assigns
 the selected coast image to Pattaya), Q10/Q11/Q12 (cat identities), the latest
-reference order #3–#6, and the wedding/pre-wedding split. **Q19 remains:** is
-`IMG_5398` (Thai dress, real room) the actual ceremony or a pre-wedding shoot?
+reference order #3–#6, and the general wedding/pre-wedding split. The old
+worksheet questions below are retained only as historical curation evidence;
+they are not active canonical runtime decisions.
 
-Still open: Q5, Q6, Q8, Q9, Q13, Q14, Q15, Q16, Q17, Q18, Q19.
+The only current owner decisions are the exact wedding-ceremony date and Q19:
+whether `IMG_5398` (Thai dress, real room) is the actual ceremony or a
+pre-wedding shoot.
 
 `review-local/OWNER_REVIEW.jpg` — one sheet, **18 questions**, each with a
 thumbnail. Answer in shorthand:
@@ -463,8 +469,9 @@ deliberate single-line treatment where space allows, including
 
 ## 12. Reconciliation status
 
-- **19 places** is the current truth and runtime data reflects all **19** without
-  retaining the removed venue as a place or timeline beat.
+- `visitedPlaces` is the canonical visible roster. Its derived count is **19**:
+  Status is absent and TURR is the current nineteenth entry. Story highlights
+  are deliberately separate and do not contribute to this statistic.
 - Two GPS clusters fall outside the ten known provinces (§4). Neither has been
   added.
 - Runtime data now carries the latest owner-confirmed Pattaya, marriage-decision,
@@ -474,10 +481,10 @@ deliberate single-line treatment where space allows, including
 
 ## 13. Remaining owner decisions
 
-The current runtime mapping needs no additional owner choice. The separate
-historical curation review still has the open questions listed in §9, especially
-Q19 for `IMG_5398`; until that is answered, it remains labelled pre-wedding and
-is not treated as evidence of the actual ceremony.
+Only two owner decisions remain: the exact wedding-ceremony date, which is not
+displayed, and Q19 for `IMG_5398`. Until its classification is confirmed,
+`IMG_5398` remains a neutral memory and is not treated as evidence of either
+pre-wedding or the actual ceremony.
 
 ---
 
@@ -504,13 +511,14 @@ runtime data before this pass. They were checked rather than changed:
 | สวนผึ้ง | `suanphueng-01` | OWNER_CONFIRMED |
 | วันที่ตัดสินใจจดทะเบียนสมรสด้วยกัน | `marriage-decision-01` | OWNER_CONFIRMED |
 | เรายังอยู่ด้วยกัน | `together-now-01` | OWNER_CONFIRMED |
-| PRE-WEDDING | `wedding-01/02/03` | OWNER_CONFIRMED |
+| PRE-WEDDING | `wedding-01/03` | OWNER_CONFIRMED |
+| Unclassified Thai-attire memory | `wedding-02` (`IMG_5398`) | OWNER_DECISION |
 | ACTUAL WEDDING | `wedding-actual-01/02/03` | OWNER_CONFIRMED |
 | หนมถ้วย / ถ้วยฟู | `cat-01` / `cat-02` | OWNER_CONFIRMED |
 
 Cross-checked against disk: **21 assets, 21 referenced, 0 broken references, 0
-orphans.** บ้านโป่ง remains in the place roster; only its photo beat was
-replaced, which is the distinction §11 of the brief asks for.
+orphans.** บ้านโป่ง remains a separate story highlight rather than an entry in
+the canonical 19-place roster; only its photo beat was replaced.
 
 ### What this pass actually changed — presentation, not mapping
 
@@ -542,5 +550,5 @@ beat's body names พัทยา rather than the province.
 
 ### Still requiring owner confirmation
 
-Nothing in the current runtime mapping. The open historical questions in §9
-stand, and `IMG_5398` (Q19) remains labelled pre-wedding until answered.
+The exact wedding-ceremony date remains unknown, and `IMG_5398` (Q19) remains
+a neutral memory until the owner classifies it.

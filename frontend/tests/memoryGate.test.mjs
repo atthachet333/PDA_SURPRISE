@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   formatMemoryDate,
-  isWeddingDateAnswer,
+  isRegistrationDateAnswer,
   parseMemoryDateInput,
   parseMemoryDateParts
 } from '../src/lib/memoryGate.ts';
@@ -12,7 +12,7 @@ import {
   writeMemoryGateUnlock
 } from '../src/lib/memoryGateSession.ts';
 
-const WEDDING_DATE = '2026-07-28';
+const REGISTRATION_DATE = '2026-07-28';
 
 test('accepts every specified Gregorian and Buddhist Era form', () => {
   for (const input of [
@@ -25,7 +25,7 @@ test('accepts every specified Gregorian and Buddhist Era form', () => {
     '28.07.2569',
     '28072569'
   ]) {
-    assert.equal(isWeddingDateAnswer(parseMemoryDateInput(input), WEDDING_DATE), true, input);
+    assert.equal(isRegistrationDateAnswer(parseMemoryDateInput(input), REGISTRATION_DATE), true, input);
   }
 });
 
@@ -43,7 +43,7 @@ test('validates real calendar dates and rejects malformed input', () => {
   }
 
   assert.equal(parseMemoryDateParts('31', '04', '2026'), null);
-  assert.equal(parseMemoryDateParts('28', '07', '2569')?.iso, WEDDING_DATE);
+  assert.equal(parseMemoryDateParts('28', '07', '2569')?.iso, REGISTRATION_DATE);
 });
 
 test('rejects the complete wrong-answer matrix', () => {
@@ -55,13 +55,13 @@ test('rejects the complete wrong-answer matrix', () => {
     '28/07/2570',
     ''
   ]) {
-    assert.equal(isWeddingDateAnswer(parseMemoryDateInput(input), WEDDING_DATE), false, input);
+    assert.equal(isRegistrationDateAnswer(parseMemoryDateInput(input), REGISTRATION_DATE), false, input);
   }
-  assert.equal(isWeddingDateAnswer(parseMemoryDateParts('28', '07', ''), WEDDING_DATE), false);
+  assert.equal(isRegistrationDateAnswer(parseMemoryDateParts('28', '07', ''), REGISTRATION_DATE), false);
 });
 
 test('derives every displayed date from the canonical ISO date', () => {
-  assert.deepEqual(formatMemoryDate(WEDDING_DATE), {
+  assert.deepEqual(formatMemoryDate(REGISTRATION_DATE), {
     day: '28',
     month: '07',
     gregorianYear: '2026',

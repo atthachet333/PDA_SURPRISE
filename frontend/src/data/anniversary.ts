@@ -31,6 +31,13 @@
  */
 
 import { daysBetween } from '@/lib/format';
+import {
+  CANONICAL_PLACE_COUNT,
+  CANONICAL_PROVINCE_COUNT,
+  CANONICAL_PROVINCES,
+  CANONICAL_VISITED_PLACES,
+  STORY_PLACE_HIGHLIGHTS
+} from '@/data/journey';
 
 export type MemoryScene = 'universe' | 'gallery' | 'tunnel' | 'converge';
 
@@ -80,23 +87,6 @@ export interface Place {
   image?: string;
   /** 'future' renders an unfilled pin at the end of the path. */
   status?: 'visited' | 'future';
-}
-
-/**
- * A real place from the owner's list, held WITHOUT coordinates on purpose.
- * Coordinates are only added once the owner supplies or approves them, so no
- * pin is ever placed on a guess.
- */
-export interface JourneyPlace {
-  id: string;
-  /** Exactly as the owner wrote it. */
-  label: string;
-  /** Province, when known from the name itself. */
-  province?: string;
-  lat?: number;
-  lng?: number;
-  /** True until the owner supplies or approves coordinates. */
-  coordinatesPending: boolean;
 }
 
 export interface JourneyPhoto {
@@ -356,14 +346,9 @@ export const anniversary = {
     { id: 'm30', title: 'พิธีของเรา', date: 'OUR WEDDING', caption: 'วันที่ครอบครัวมาร่วมยินดี', image: '/images/memories/wedding-ceremony-03.webp', tags: ['family'], tone: 'champagne', featured: true },
     { id: 'm31', title: 'วันจดทะเบียนสมรส', date: '28 JUL 2026', caption: 'อีกวันสำคัญหลังพิธีของเรา', image: '/images/memories/marriage-registration-safe.webp', tags: ['family'], tone: 'cream', featured: true },
 
-    /* PRE-WEDDING, not the wedding day.
-       Owner's rule: outdoor / real-location = the actual wedding; studio or
-       staged set = pre-wedding. This frame is Thai traditional dress in a real
-       room rather than on a studio sweep, so it is the one shot the rule does
-       not settle cleanly — it is labelled pre-wedding, the safer of the two,
-       and flagged for the owner. The canonical 2026-07-28 date is deliberately
-       NOT attached to it. */
-    { id: 'm22', title: 'ชุดไทยก่อนวันงาน', date: 'PRE-WEDDING', caption: 'วันถ่ายภาพชุดไทย', image: '/images/memories/wedding-02.webp', tags: ['family'], tone: 'cream', featured: true },
+    /* IMG_5398 remains an owner decision. Keep the image reachable without
+       claiming that it belongs to either pre-wedding or the ceremony. */
+    { id: 'm22', title: 'ภาพชุดไทย', date: 'MEMORY', caption: 'อีกหนึ่งภาพของเรา', image: '/images/memories/wedding-02.webp', tags: ['family'], tone: 'cream', featured: true },
     /* OWNER-CONFIRMED identities. Until now both cats carried a neutral label
        because the curation could not tell a silver tabby from a silver tabby. */
     { id: 'm23', title: 'หนมถ้วย', date: 'AT HOME', caption: 'ตัวเล็กที่ชอบขึ้นที่สูง', image: '/images/memories/cat-01.webp', tags: ['daily'], tone: 'cream' },
@@ -393,19 +378,8 @@ export const anniversary = {
    * supplies or approves each one.
    */
   journey: {
-    /** Provinces travelled together — a verified count. */
-    provinces: [
-      'กรุงเทพมหานคร',
-      'นนทบุรี',
-      'นครนายก',
-      'เพชรบุรี',
-      'ชลบุรี',
-      'นครปฐม',
-      'ราชบุรี',
-      'นครสวรรค์',
-      'อุตรดิตถ์',
-      'สุโขทัย'
-    ],
+    /** Provinces travelled together — the canonical verified roster. */
+    provinces: CANONICAL_PROVINCES,
 
     /** A short photo essay of places with owner-confirmed images. */
     photoStories: [
@@ -420,40 +394,11 @@ export const anniversary = {
       { id: 'jr-turr', label: 'ร้าน TURR เกษตร', note: 'วันที่เราเริ่มเป็น “เรา” · 12 OCT 2025' }
     ] as RememberedPlace[],
 
-    /** The places that matter most, in the owner's own words. */
-    importantPlaces: [
-      { id: 'j-peak', label: 'ร้าน Peak', coordinatesPending: true },
-      { id: 'j-banpong', label: 'บ้านโป่ง', province: 'ราชบุรี', coordinatesPending: true },
-      { id: 'j-suanphueng', label: 'สวนผึ้ง', province: 'ราชบุรี', coordinatesPending: true },
-      { id: 'j-pattaya', label: 'พัทยา', province: 'ชลบุรี', coordinatesPending: true },
-      { id: 'j-wedding', label: 'งานแต่ง', coordinatesPending: true }
-    ] as JourneyPlace[],
+    /** Story emphasis only — never part of the canonical place count. */
+    storyPlaceHighlights: STORY_PLACE_HIGHLIGHTS,
 
-    /** Everywhere they have been together, as supplied. */
-    visitedPlaces: [
-      { id: 'v-banwin', label: 'บ้านวิน', coordinatesPending: true },
-      { id: 'v-kachad', label: 'งานกาชาด', coordinatesPending: true },
-      { id: 'v-ranlao', label: 'ร้านเหล้า', coordinatesPending: true },
-      { id: 'v-condo', label: 'คอนโดพี่โด', coordinatesPending: true },
-      { id: 'v-khuean', label: 'เขื่อน', coordinatesPending: true },
-      { id: 'v-camp', label: 'วันแคมป์', coordinatesPending: true },
-      { id: 'v-sarika', label: 'น้ำตกสาริกา', province: 'นครนายก', coordinatesPending: true },
-      { id: 'v-ganesha', label: 'อุทยานพระพิฆเนศ', coordinatesPending: true },
-      { id: 'v-chaam', label: 'ชะอำ', province: 'เพชรบุรี', coordinatesPending: true },
-      { id: 'v-pattaya', label: 'พัทยา', province: 'ชลบุรี', coordinatesPending: true },
-      { id: 'v-bangsaen', label: 'บางแสน', province: 'ชลบุรี', coordinatesPending: true },
-      { id: 'v-angsila', label: 'อ่างศิลา', province: 'ชลบุรี', coordinatesPending: true },
-      { id: 'v-kongpriao', label: 'บ้านกงเปรี้ยว', coordinatesPending: true },
-      { id: 'v-watdonkhanat', label: 'วัดดอนขนาท', coordinatesPending: true },
-      { id: 'v-banpriao', label: 'บ้านเปรี้ยว', coordinatesPending: true },
-      { id: 'v-watraitaengthong', label: 'วัดไร่แตงทอง', province: 'นครปฐม', coordinatesPending: true },
-      { id: 'v-wathupkrathing', label: 'วัดหุบกระทิง', province: 'ราชบุรี', coordinatesPending: true },
-      { id: 'v-railway', label: 'ทางรถไฟ', coordinatesPending: true },
-      /* Owner-confirmed 19th place, and the only one on this list with a date:
-         12 OCT 2025, the night it became official. It has no confirmed photo;
-         the two formerly assigned frames belong to Peak. */
-      { id: 'v-turr', label: 'ร้าน TURR เกษตร', coordinatesPending: true }
-    ] as JourneyPlace[]
+    /** The canonical visible roster. Status is removed; TURR is current #19. */
+    visitedPlaces: CANONICAL_VISITED_PLACES
   },
 
   // --------------------------------------------------------------- timeline --
@@ -470,7 +415,7 @@ export const anniversary = {
     { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่เขาชวนเธอมาเป็นแฟน', type: 'text', treatment: 'textOnly' },
     /* The archive proves the ceremony preceded the legal registration, but the
        exact ceremony date remains unasserted. */
-    { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp', '/images/memories/wedding-02.webp'] },
+    { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp'] },
     { id: 't8c', label: 'OUR WEDDING', title: 'วันแต่งงานของเรา', body: 'พิธีมงคลสมรส — ก่อนวันที่เราจดทะเบียนสมรส', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-ceremony-01.webp', images: ['/images/memories/wedding-ceremony-02.webp', '/images/memories/wedding-ceremony-03.webp', '/images/memories/wedding-actual-01.webp', '/images/memories/wedding-actual-02.webp', '/images/memories/wedding-actual-03.webp'] },
     { id: 't4', label: '10 DEC 2025', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก', image: '/images/memories/sarika-01.webp' },
     { id: 't7b', label: '20 DEC 2025', title: 'วันที่เราเลือกอนาคตเดียวกัน', body: 'วันที่เราตัดสินใจจดทะเบียนสมรสด้วยกัน', type: 'photo', treatment: 'split', image: '/images/memories/marriage-decision-01.webp' },
@@ -480,7 +425,7 @@ export const anniversary = {
        province rather than the place the owner actually confirmed. */
     { id: 't6', label: 'พัทยา', title: 'วันที่เราไปพัทยาด้วยกัน', body: 'ทะเลที่พัทยา ชลบุรี', type: 'photo', treatment: 'split', location: 'ชลบุรี', image: '/images/memories/pattaya-01.webp' },
     /* Latest owner-confirmed reference #5 replaces the former Ban Pong photo
-       beat. Ban Pong remains in the place roster, but this photograph is Cha-am. */
+       beat. Ban Pong remains a story highlight; this photograph is Cha-am. */
     { id: 't7', label: 'ชายหาด ชะอำ', title: 'วันที่เราไปทะเลด้วยกัน', body: 'ชะอำ · เพชรบุรี', type: 'photo', treatment: 'split', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
     { id: 't8', label: '28 JUL 2026', title: 'วันจดทะเบียนสมรส', body: 'คนละวันกับพิธีแต่งงาน และเป็นอีกหนึ่งคำสัญญาของเรา', type: 'photo', treatment: 'split', image: '/images/memories/marriage-registration-safe.webp', cropMode: 'contain' },
     /* Latest owner-confirmed reference #6: the present-day emotional close. */
@@ -494,8 +439,8 @@ export const anniversary = {
    */
   statistics: [
     { id: 'days', value: DAYS, label: 'วันที่อยู่ด้วยกัน', caption: 'นับสดจากวันที่ 12 ตุลาคม 2025' },
-    { id: 'provinces', value: 10, label: 'จังหวัดที่ไปด้วยกัน', caption: 'จากกรุงเทพถึงสุโขทัย' },
-    { id: 'places', value: 19, label: 'ที่ที่ไปด้วยกัน', caption: 'ที่จำได้และจดไว้' },
+    { id: 'provinces', value: CANONICAL_PROVINCE_COUNT, label: 'จังหวัดที่ไปด้วยกัน', caption: 'จากกรุงเทพถึงสุโขทัย' },
+    { id: 'places', value: CANONICAL_PLACE_COUNT, label: 'ที่ที่ไปด้วยกัน', caption: 'ที่จำได้และจดไว้' },
     { id: 'cats', value: 2, label: 'แมวของเรา', caption: 'ถ้วยฟู และ หนมถ้วย' }
   ] as StatItem[],
 
@@ -863,13 +808,6 @@ export function pendingImageSlots(): ImageSlot[] {
     ...anniversary.finalImages,
     ...anniversary.petImages
   ].filter((slot) => !slot.image);
-}
-
-/** Real places whose coordinates the owner has not supplied yet. */
-export function placesAwaitingCoordinates(): JourneyPlace[] {
-  return [...anniversary.journey.importantPlaces, ...anniversary.journey.visitedPlaces].filter(
-    (place) => place.coordinatesPending
-  );
 }
 
 /** Flattened final message, in reading order — for the redesign pass. */

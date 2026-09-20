@@ -52,7 +52,8 @@ Declared in `AssetCategory` in `frontend/src/data/anniversary.ts`.
 3. **Do not infer a date from a filename.** If the date is not known, leave
    `date` as the sequence label.
 4. **Do not derive coordinates from photo metadata** and place them on the map
-   without the owner approving each one. See `placesAwaitingCoordinates()`.
+   without the owner approving each one. The canonical roster intentionally
+   keeps `coordinatesPending: true`; story highlights are not coordinate data.
 5. Optimise before committing: long edge ≤ 2000px, WebP or optimised JPEG,
    target under ~300KB per file.
 6. `frontend/public/images/memories/*` is gitignored apart from `.gitkeep`.

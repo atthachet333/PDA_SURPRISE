@@ -102,7 +102,7 @@ export const pageMeta = {
  * One deliberately empty title for all of them, and `noindex, nofollow`.
  *
  * Nothing about the anniversary appears here: no names beyond the company, no
- * dates, no wedding date, no cats, no letter, no mention that there is anything
+ * dates, no relationship or registration date, no cats, no letter, no mention that there is anything
  * personal behind the route at all. This is what a link preview shows when one
  * of these URLs is pasted into a chat, so it has to give nothing away.
  */

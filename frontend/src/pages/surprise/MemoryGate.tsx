@@ -8,7 +8,7 @@ import { anniversary } from '@/data/anniversary';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import {
   formatMemoryDate,
-  isWeddingDateAnswer,
+  isRegistrationDateAnswer,
   parseMemoryDateInput,
   parseMemoryDateParts
 } from '@/lib/memoryGate';
@@ -124,7 +124,7 @@ export default function MemoryGate() {
     if (gateState === 'success') return;
 
     const parsed = parseMemoryDateParts(day, month, year);
-    if (!isWeddingDateAnswer(parsed, anniversary.relationship.registrationDate)) {
+    if (!isRegistrationDateAnswer(parsed, anniversary.relationship.registrationDate)) {
       setAttempts((current) => current + 1);
       setGateState('wrong');
       window.setTimeout(() => returnFocus(parsed), reduced ? 0 : 180);
