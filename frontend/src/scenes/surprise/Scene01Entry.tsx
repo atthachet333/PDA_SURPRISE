@@ -6,6 +6,7 @@ import { anniversary } from '@/data/anniversary';
 import { useAudio } from '@/app/audioContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { ArrivalWhisper } from '@/components/surprise/ArrivalWhisper';
+import { useMagnetic } from '@/hooks/useMagnetic';
 
 /**
  * Scene 01 — arrival.
@@ -24,6 +25,15 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
   const { play, triggerCue } = useAudio();
   const reduced = useReducedMotion();
   const [stage, setStage] = useState<Stage>(reduced ? 'ready' : 'flash');
+  /*
+   * A very light magnetic pull on the one call to action — 0.12, roughly a
+   * tenth of the pointer's offset, so the button leans toward the cursor rather
+   * than chasing it. It lives on a WRAPPER, not on the button: the button is a
+   * `motion.button` and framer already owns its transform, so two writers on
+   * the same property would fight every frame. The hook no-ops on touch and
+   * under reduced motion.
+   */
+  const magnet = useMagnetic<HTMLSpanElement>(0.12);
 
   useEffect(() => {
     if (reduced) return;
@@ -74,7 +84,10 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
           Atthachet &amp; Isariya
         </motion.p>
 
-        <ArrivalWhisper className="mt-5 min-h-6 font-thai text-sm tracking-[0.04em] text-sky-100/65" />
+        {/* The line that quietly changes its mind. Given a little more presence
+            than it had — it is the first sign the page is alive, and at /65 on a
+            dark sky it read as a caption someone forgot to remove. */}
+        <ArrivalWhisper className="mt-5 min-h-7 font-thai text-[0.9375rem] leading-7 tracking-[0.03em] text-sky-100/80" />
 
         <div className="mt-7 flex flex-col items-center px-2">
           {intro.title.map((line, index) => (
@@ -105,23 +118,31 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
 
         </div>
 
-        <motion.button
-          type="button"
-          initial={false}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
-          style={{ pointerEvents: 'auto' }}
-          onClick={() => {
-            play('airWhoosh');
-            onEnter();
-          }}
-          data-cursor="interactive"
-          className="ai-button-primary group mt-14 min-h-12 px-9"
-        >
-          <span className="absolute inset-0 -translate-x-full bg-[linear-gradient(90deg,transparent,rgba(220,239,255,0.28),transparent)] transition-transform duration-[1500ms] ease-smooth group-hover:translate-x-full" />
-          <span className="absolute inset-0 rounded-pill bg-sky-400/0 transition-colors duration-slow group-hover:bg-sky-400/10" />
-          <span className="relative flex items-center gap-3">{intro.cta}<span aria-hidden="true" className="transition-transform duration-base group-hover:translate-x-1">→</span></span>
-        </motion.button>
+        {/* Wrapper carries the magnetic transform; the button carries framer's. */}
+        <span ref={magnet} className="mt-14 inline-flex">
+          <motion.button
+            type="button"
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ pointerEvents: 'auto' }}
+            onClick={() => {
+              play('airWhoosh');
+              onEnter();
+            }}
+            data-cursor="interactive"
+            className="ai-button-primary group min-h-12 px-9"
+          >
+            <span className="absolute inset-0 -translate-x-full bg-[linear-gradient(90deg,transparent,rgba(220,239,255,0.28),transparent)] transition-transform duration-[1500ms] ease-smooth group-hover:translate-x-full" />
+            <span className="absolute inset-0 rounded-pill bg-sky-400/0 transition-colors duration-slow group-hover:bg-sky-400/10" />
+            <span className="relative flex items-center gap-3">
+              {intro.cta}
+              <span aria-hidden="true" className="transition-transform duration-base group-hover:translate-x-1">
+                →
+              </span>
+            </span>
+          </motion.button>
+        </span>
       </div>
 
       <motion.div

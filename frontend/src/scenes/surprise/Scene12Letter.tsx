@@ -51,7 +51,9 @@ export function Scene12Letter() {
             return (
               <motion.p
                 key={`${index}-${line}`}
-                initial={{ opacity: 0, y: 22 }}
+                /* The letter is the most important text in the experience; it
+                   must never be waiting on an entrance to become readable. */
+                initial={reduced ? false : { opacity: 0, y: 22 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '0px 0px -18% 0px' }}
                 transition={{ duration: 1.15, ease: [0.16, 1, 0.3, 1] }}
@@ -68,7 +70,7 @@ export function Scene12Letter() {
             );
           })}
         </div>
-        <motion.footer initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1.5 }} className="relative mt-28 text-center">
+        <motion.footer initial={reduced ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1.5 }} className="relative mt-28 text-center">
           <span className="mx-auto block h-16 w-px bg-gradient-to-b from-transparent via-sky-200/50 to-transparent" />
           <button
             type="button"

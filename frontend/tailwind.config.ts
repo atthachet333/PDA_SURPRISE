@@ -75,8 +75,13 @@ const config: Config = {
         // Thai-first: IBM Plex Sans Thai leads so Thai glyphs never fall back.
         sans: ['IBM Plex Sans Thai', 'Inter', 'system-ui', 'sans-serif'],
         thai: ['IBM Plex Sans Thai', 'Inter', 'sans-serif'],
-        thaiSoft: ['Anuphan', 'IBM Plex Sans Thai', 'Inter', 'sans-serif'],
-        thaiRomantic: ['Noto Serif Thai', 'Anuphan', 'serif'],
+        /*
+         * A&I only. These are aliases for the CSS variables declared on :root in
+         * `styles/global.css`, so the stack has exactly one definition — the
+         * utilities and the `.ai-private` rules can never drift apart.
+         */
+        thaiSoft: ['var(--font-ai-body)'],
+        thaiRomantic: ['var(--font-ai-display)'],
         display: ['Cormorant Garamond', 'Noto Serif Thai', 'Georgia', 'serif'],
         mono: ['IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
       },

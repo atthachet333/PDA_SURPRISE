@@ -7,7 +7,36 @@
     --page-bg: #ffffff;
     --page-fg: #0a0c0b;
     --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
-    --nav-height: 72px;
+    /*
+     * The real rendered height of the A&I bar, measured: the glass pill plus
+     * its top offset. It was 72px here while the bar rendered at 112px, and
+     * nothing read the variable at all — the scroll offsets were hard-coded
+     * Tailwind classes that happened to agree. Now there is one number, and
+     * `.ai-scene-anchor` is the only thing that consumes it.
+     */
+    --nav-height: 112px;
+
+    /*
+     * THE A&I TYPE SYSTEM.
+     *
+     * Declared on :root rather than on `body[data-theme='ai']`, which is where
+     * they were and which was the bug. `.ai-private` is the scope that opts a
+     * subtree into these faces, and the Memory Gate carries `.ai-private`
+     * WITHOUT ever setting `data-theme` — so on that page the variables
+     * resolved to nothing, `font-family:` was dropped as invalid, and the text
+     * silently inherited IBM Plex Sans Thai from `body`. A font stack is inert
+     * until something asks for it, so there is no reason to gate it on a theme.
+     *
+     *   body     Anuphan — a soft modern Thai sans, humanist rather than grotesk.
+     *   display  Noto Serif Thai — the emotional headings. Thai has no italic
+     *            and no lowercase, so a serif is the only way to change VOICE
+     *            rather than just size.
+     *   latin    Cormorant Garamond for Latin words, dates and numerals, which
+     *            is already the experience's signature and stays.
+     */
+    --font-ai-body: 'Anuphan', 'IBM Plex Sans Thai', Inter, sans-serif;
+    --font-ai-display: 'Noto Serif Thai', 'Anuphan', Georgia, serif;
+    --font-ai-latin: 'Cormorant Garamond', 'Noto Serif Thai', Georgia, serif;
   }
 
   * {
@@ -119,7 +148,8 @@
     overflow-wrap: break-word;
   }
 
-  .thai-display {
+  .thai-display,
+  .ai-scene-title {
     /*
      * Zero tracking, not negative. Negative letter-spacing is a Latin display
      * trick; in Thai it pushes tone marks and vowel signs into the consonants
@@ -133,12 +163,45 @@
     padding-block: 0.08em;
   }
 
+  /*
+   * `.ai-private` is the ONLY switch into the A&I faces. Corporate pages never
+   * carry it, so PDA BLISS typography is untouched by anything below.
+   */
+  .ai-private {
+    font-family: var(--font-ai-body);
+  }
+
+  .ai-private .font-thai,
+  .ai-private .font-sans {
+    font-family: var(--font-ai-body);
+    /* A hair of positive tracking. Anuphan's counters are open and Thai reads
+       better with air than with none; negative tracking is a Latin habit. */
+    letter-spacing: 0.008em;
+  }
+
+  /* Emotional headings change VOICE, not just size. */
+  .ai-private .thai-display,
+  .ai-private .ai-scene-title {
+    font-family: var(--font-ai-display);
+    font-weight: 300;
+    letter-spacing: 0.004em;
+    line-height: 1.34;
+  }
+
+  /* Latin words, dates and numerals inside the private flow. */
+  .ai-private .font-display,
+  .ai-private .ai-wordmark,
+  .ai-private .ai-handwritten {
+    font-family: var(--font-ai-latin);
+  }
+
   @media (max-width: 639px) {
     /* Long Thai card titles have no spaces; allow dictionary line breaking on
        narrow screens instead of hiding the final words beyond the viewport. */
     :lang(th),
     .font-thai,
-    .thai-display {
+    .thai-display,
+    .ai-scene-title {
       word-break: break-word;
       overflow-wrap: anywhere;
     }
@@ -296,9 +359,60 @@
     -webkit-backdrop-filter: blur(8px);
   }
 
+  /*
+   * Where a scene comes to rest when it is jumped to.
+   *
+   * The previous offset was exactly the height of the bar, so a scene title
+   * landed flush against it with nothing between them. A title needs to arrive
+   * inside the reading area, not level with the furniture, so the anchor clears
+   * the bar and then some.
+   */
+  .ai-scene-anchor {
+    scroll-margin-top: calc(var(--nav-height) + 1.5rem);
+  }
+
+  @media (min-width: 640px) {
+    .ai-scene-anchor {
+      scroll-margin-top: calc(var(--nav-height) + 2.5rem);
+    }
+  }
+
+  /*
+   * A scrim under the fixed bar.
+   *
+   * The sky brightens toward sunrise in the later scenes, and over the bright
+   * end of that range the bar's own glass was not enough separation. This is a
+   * gradient that fades to nothing well before the reading area, so it darkens
+   * the strip behind the controls without darkening the experience.
+   */
+  .ai-nav-scrim {
+    background: linear-gradient(
+      to bottom,
+      rgba(12, 27, 41, 0.55) 0%,
+      rgba(12, 27, 41, 0.28) 45%,
+      rgba(12, 27, 41, 0) 100%
+    );
+  }
+
   /* Keeps white type legible wherever the sky brightens behind it. */
-  .ai-legible {
+  .ai-legible,
+  .ai-scene-title {
     text-shadow: 0 1px 24px rgba(12, 27, 41, 0.55), 0 1px 3px rgba(12, 27, 41, 0.4);
+  }
+
+  /*
+   * The same protection for the SMALL type, which needs it more.
+   *
+   * Every technical label in the private flow is 9–10px mono at 55–60% alpha.
+   * That is a deliberate, quiet register and it reads beautifully over deep
+   * night — but the sky warms toward sunrise through Life, Convergence, the
+   * Letter and the Finale, and over the bright end of that range five of these
+   * labels fell below a comfortable contrast. A tight shadow restores the edge
+   * without touching the colour, so the register is unchanged and nothing in
+   * the experience gets darker.
+   */
+  .ai-private .font-mono {
+    text-shadow: 0 1px 10px rgba(12, 27, 41, 0.6), 0 1px 2px rgba(12, 27, 41, 0.45);
   }
 
   /* A&I type system: Anuphan softens body copy while Noto Serif Thai gives
@@ -321,32 +435,32 @@
    * practical weights per family, with Latin and numeric display copy still
    * led by Cormorant Garamond.
    */
-  .ai-private {
-    font-family: theme('fontFamily.thaiSoft');
-  }
-
-  .ai-private .font-thai {
-    font-family: theme('fontFamily.thaiSoft');
-    letter-spacing: 0.008em;
-  }
-
-  .ai-private .thai-display,
-  .ai-private .ai-scene-title {
-    font-family: theme('fontFamily.thaiRomantic');
-    font-weight: 300;
-    letter-spacing: 0.004em;
-    line-height: 1.34;
-  }
-
+  /*
+   * NEVER `@apply font-thai` / `font-display` / `font-sans` BELOW THIS LINE.
+   *
+   * `@apply <utility>` copies every declaration block that defines that
+   * utility — including the scoped `.ai-private .font-thai` rule in the base
+   * layer above. Tailwind re-emits that rule with the applying selector
+   * substituted, producing `.ai-private .ai-scene-title { font-family:
+   * var(--font-ai-body) }` at the component layer, i.e. LATER in the sheet and
+   * at identical specificity. The result was that every A&I heading silently
+   * rendered in the body face: the intended rule was present, correct, and
+   * simply outranked by a copy of itself.
+   *
+   * So the A&I component classes take their face from the variable directly.
+   * The variable is the single source of truth; the utility is for markup only.
+   */
   .ai-scene-title {
-    @apply thai-display ai-legible font-thai font-light text-ivory;
+    @apply font-light text-ivory;
+    font-family: var(--font-ai-display);
     font-size: clamp(1.75rem, 4.4vw, 3.5rem);
     line-height: 1.32;
     letter-spacing: 0.005em;
   }
 
   .ai-body {
-    @apply font-thai text-ivory/70;
+    @apply text-ivory/70;
+    font-family: var(--font-ai-body);
     font-size: clamp(1rem, 1.45vw, 1.1875rem);
     /* Thai tone marks sit above the line; 1.95 stops them crowding the row
        above in a multi-line emotional paragraph. */
@@ -355,7 +469,8 @@
   }
 
   .ai-caption {
-    @apply font-thai text-ivory/60;
+    @apply text-ivory/60;
+    font-family: var(--font-ai-body);
     font-size: clamp(0.8125rem, 1vw, 0.9375rem);
     line-height: 1.65;
   }
@@ -379,13 +494,57 @@
   }
 
   .ai-wordmark {
-    @apply font-display font-light uppercase text-gradient-ai;
+    @apply font-light uppercase;
+    font-family: var(--font-ai-latin);
     letter-spacing: 0.12em;
     text-shadow: 0 0 30px rgba(126, 200, 255, 0.2);
   }
 
+  /*
+   * MICRO-INTERACTIONS — restrained on purpose.
+   *
+   * `.ai-lift` is a photograph noticing the pointer: a two-pixel rise and a
+   * slightly warmer shadow, nothing that moves the layout. `.ai-sweep` passes
+   * one slow band of light across a frame on hover. Both are pointer-only, so
+   * a touch device never gets a hover state stuck on, and both are inert under
+   * reduced motion because the transition duration is clamped to nothing.
+   */
+  @media (hover: hover) and (pointer: fine) {
+    .ai-lift {
+      transition:
+        transform 620ms var(--ease-entrance),
+        box-shadow 620ms var(--ease-entrance);
+      will-change: transform;
+    }
+
+    .ai-lift:hover {
+      transform: translate3d(0, -2px, 0);
+      box-shadow: 0 34px 90px -40px rgba(7, 21, 35, 0.95), 0 0 54px -22px var(--ai-glow);
+    }
+
+    .ai-sweep::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      translate: -110% 0;
+      background: linear-gradient(
+        105deg,
+        transparent 38%,
+        rgba(220, 239, 255, 0.14) 50%,
+        transparent 62%
+      );
+      transition: translate 1400ms var(--ease-entrance);
+    }
+
+    .ai-sweep:hover::after {
+      translate: 110% 0;
+    }
+  }
+
   .ai-handwritten {
-    font-family: theme('fontFamily.display');
+    font-family: var(--font-ai-latin);
     font-style: italic;
     letter-spacing: 0.01em;
   }
@@ -566,7 +725,8 @@
   .ai-button-primary,
   .ai-button-secondary,
   .ai-button-text {
-    @apply relative inline-flex min-h-11 items-center justify-center overflow-hidden rounded-pill px-6 font-thai text-sm transition-all duration-slow;
+    @apply relative inline-flex min-h-11 items-center justify-center overflow-hidden rounded-pill px-6 text-sm transition-all duration-slow;
+    font-family: var(--font-ai-body);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
@@ -644,7 +804,8 @@
     color: transparent;
   }
 
-  .text-gradient-ai {
+  .text-gradient-ai,
+  .ai-wordmark {
     background: linear-gradient(120deg, #ffffff 0%, #7ec8ff 45%, #ebd9bc 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -1104,5 +1265,21 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /*
+   * The blanket rule above collapses durations, which is enough for a fade but
+   * NOT for a transform: a 0.01ms transition still lands on the hover state, so
+   * the lift and the sweep would simply snap. These opt out entirely — under
+   * reduced motion the frame does not move and no band of light crosses it.
+   * The shooting stars are handled the same way where they are defined.
+   */
+  .ai-lift:hover {
+    transform: none;
+  }
+
+  .ai-sweep::after,
+  .ai-sweep:hover::after {
+    display: none;
   }
 }

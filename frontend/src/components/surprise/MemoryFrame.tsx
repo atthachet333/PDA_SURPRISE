@@ -43,7 +43,14 @@ export function MemoryFrame({
   children
 }: MemoryFrameProps) {
   return (
-    <div className={cn('relative overflow-hidden', className)} style={frameStyle(photo, shape)}>
+    <div
+      /* `ai-sweep` and `ai-lift` are pointer-only and no-ops under reduced
+         motion; see the micro-interaction block in global.css. They are applied
+         here rather than per scene so every photograph answers the pointer the
+         same way. */
+      className={cn('ai-sweep ai-lift relative overflow-hidden', className)}
+      style={frameStyle(photo, shape)}
+    >
       <MemoryImage
         photo={photo}
         alt={alt}

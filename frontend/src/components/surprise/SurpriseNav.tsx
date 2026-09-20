@@ -242,6 +242,15 @@ export function SurpriseNav({ activeSection, dimmed = false, sceneNumber, sceneC
         transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
         style={{ pointerEvents: visible ? 'auto' : 'none' }}
       >
+        {/* A soft strip behind the bar. The later scenes warm the sky toward
+            sunrise, and over the bright end of that range the glass alone was
+            not enough separation for the small labels. It fades out above the
+            reading area, so nothing but the bar sits on a darker ground. */}
+        <span
+          aria-hidden="true"
+          className="ai-nav-scrim pointer-events-none absolute inset-x-0 top-0 -z-10 h-32"
+        />
+
         <div className="ai-glass mx-auto flex h-[3.25rem] max-w-5xl items-center justify-between gap-2 rounded-2xl py-2 pl-2 pr-2 sm:h-14 sm:pl-3 sm:pr-3">
           <button
             type="button"
@@ -270,7 +279,7 @@ export function SurpriseNav({ activeSection, dimmed = false, sceneNumber, sceneC
                   data-cursor="interactive"
                   className={cn(
                     'ai-pressable relative px-3.5 py-2 font-thai text-xs',
-                    active ? 'text-ivory' : 'text-ivory/45 hover:text-ivory/85'
+                    active ? 'text-ivory' : 'text-ivory/60 hover:text-ivory/90'
                   )}
                 >
                   {active ? (
@@ -295,7 +304,9 @@ export function SurpriseNav({ activeSection, dimmed = false, sceneNumber, sceneC
                 navigate('/');
               }}
               data-cursor="interactive"
-              className="ai-pressable ml-0.5 rounded-pill px-3 py-1.5 text-[0.5625rem] uppercase tracking-[0.18em] text-ivory/45 hover:bg-ivory/10 hover:text-ivory"
+              /* min-h-9 keeps this a real target on touch; it measured 26px
+                 tall, which is below anything comfortable with a thumb. */
+              className="ai-pressable ml-0.5 inline-flex min-h-9 items-center rounded-pill px-3 text-[0.5625rem] uppercase tracking-[0.18em] text-ivory/60 hover:bg-ivory/10 hover:text-ivory"
             >
               Exit
             </button>

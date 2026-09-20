@@ -37,7 +37,11 @@ export function Scene03Journey() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '0px 0px -18% 0px' }}
             transition={{ duration: 1.25, ease: EASE }}
-            className="order-2 lg:order-1"
+            /* Text leads on narrow screens. With the photograph first, jumping
+               to this scene on a phone landed on the image and pushed the
+               heading to y=807 on an 844px viewport — effectively below the
+               fold. The two-column order is unchanged from `lg` up. */
+            className="lg:order-1"
           >
             <SceneLabel>02 · จุดเริ่มต้น</SceneLabel>
             <h2 className="thai-display ai-legible mt-5 font-thai text-[clamp(1.9rem,4.4vw,3.4rem)] font-light text-ivory">
@@ -61,7 +65,7 @@ export function Scene03Journey() {
             whileInView={{ opacity: 1, y: 0, rotate: -1.5 }}
             viewport={{ once: true, margin: '0px 0px -18% 0px' }}
             transition={{ duration: 1.45, delay: 0.12, ease: EASE }}
-            className="ai-frame-cinematic ai-photo-spill relative order-1 mx-auto w-full max-w-md overflow-hidden shadow-glow-lg lg:order-2 lg:max-w-lg"
+            className="ai-frame-cinematic ai-photo-spill relative mx-auto w-full max-w-md overflow-hidden shadow-glow-lg lg:order-2 lg:max-w-lg"
           >
             {/* Portrait photograph, portrait frame: `MemoryFrame` takes the
                 aspect from the file rather than imposing one on it. */}
