@@ -19,6 +19,8 @@ import { portfolio } from '@/data/portfolio';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { SectionBackdrop } from '@/components/business/SectionBackdrop';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta } from '@/lib/seo';
 
 /**
  * HOME
@@ -41,6 +43,8 @@ import { SectionBackdrop } from '@/components/business/SectionBackdrop';
  * and footer are dark, so the dark green reads as emphasis rather than default.
  */
 export default function Home() {
+  usePageMeta(pageMeta.home);
+
   return (
     <>
       <Hero />

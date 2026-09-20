@@ -7,8 +7,12 @@ import { BusinessValueStrip } from '@/components/business/BusinessValueStrip';
 import { Container } from '@/components/shared/Layout';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta } from '@/lib/seo';
 
 export default function Solutions() {
+  usePageMeta(pageMeta.solutions);
+
   const reduced = useReducedMotion();
 
   return (

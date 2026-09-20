@@ -7,6 +7,8 @@ import { CorporateCursor } from '@/components/business/CorporateCursor';
 import { FloatingContact } from '@/components/business/FloatingContact';
 import { BackToTop } from '@/components/business/BackToTop';
 import { CookieConsentProvider } from '@/app/CookieConsent';
+import { ErrorBoundary } from '@/app/ErrorBoundary';
+import { OrganizationSchema } from '@/components/business/OrganizationSchema';
 import { AILoader } from '@/components/surprise/AILoader';
 import { MemoryGateGuard } from '@/components/surprise/MemoryGateGuard';
 import { useLenis } from '@/hooks/useLenis';
@@ -58,17 +60,32 @@ function BusinessLayout({ children }: { children: React.ReactNode }) {
   useLenis();
   return (
     <CookieConsentProvider>
+      <OrganizationSchema />
       <div className="corporate-shell flex min-h-screen flex-col">
         <CorporateBackground />
         <CorporateCursor />
         <Header />
-        <main id="main" className="flex-1">{children}</main>
+        <main id="main" className="flex-1">
+          {/* A thrown render error becomes a styled corporate panel rather than
+              a white page with no way back. */}
+          <ErrorBoundary variant="corporate">{children}</ErrorBoundary>
+        </main>
         <Footer />
         <BackToTop />
         <FloatingContact />
       </div>
     </CookieConsentProvider>
   );
+}
+
+/**
+ * Wraps a private, full-viewport route.
+ *
+ * The A&I variant is used for every route past the gateway so a failure stays
+ * inside that world: night sky, Thai copy, no corporate chrome leaking in.
+ */
+function PrivateRoute({ children }: { children: React.ReactNode }) {
+  return <ErrorBoundary variant="ai">{children}</ErrorBoundary>;
 }
 
 function RouteFallback() {
@@ -100,37 +117,48 @@ export default function App() {
         <Route
           path="/login"
           element={
-            <Suspense fallback={<FullScreenFallback />}>
-              <Login />
-            </Suspense>
+            <PrivateRoute>
+              <Suspense fallback={<FullScreenFallback />}>
+                <Login />
+              </Suspense>
+            </PrivateRoute>
           }
         />
         <Route
           path="/memory-gate"
           element={
-            <Suspense fallback={<FullScreenFallback />}>
-              <MemoryGate />
-            </Suspense>
+            <PrivateRoute>
+              <Suspense fallback={<FullScreenFallback />}>
+                <MemoryGate />
+              </Suspense>
+            </PrivateRoute>
           }
         />
         <Route
           path="/workspace"
           element={
-            <MemoryGateGuard>
-              <Suspense fallback={<FullScreenFallback />}>
-                <Workspace />
-              </Suspense>
-            </MemoryGateGuard>
+            <PrivateRoute>
+              <MemoryGateGuard>
+                <Suspense fallback={<FullScreenFallback />}>
+                  <Workspace />
+                </Suspense>
+              </MemoryGateGuard>
+            </PrivateRoute>
           }
         />
         <Route
           path="/us"
           element={
-            <MemoryGateGuard>
-              <Suspense fallback={<AILoader />}>
-                <Experience />
-              </Suspense>
-            </MemoryGateGuard>
+            <PrivateRoute>
+              <MemoryGateGuard>
+                {/* If the lazy three.js chunk fails to load, the boundary above
+                    catches it and the visitor gets the A&I fallback, not a
+                    blank screen or corporate UI. */}
+                <Suspense fallback={<AILoader />}>
+                  <Experience />
+                </Suspense>
+              </MemoryGateGuard>
+            </PrivateRoute>
           }
         />
 

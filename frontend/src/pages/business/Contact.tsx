@@ -3,6 +3,8 @@ import { ContactForm } from '@/components/business/ContactForm';
 import { Container } from '@/components/shared/Layout';
 import { company } from '@/data/company';
 import { cn } from '@/lib/cn';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta } from '@/lib/seo';
 
 /**
  * /contact — the form is the page. Everything else is a quiet reference column.
@@ -10,6 +12,8 @@ import { cn } from '@/lib/cn';
  * Every contact detail comes from `data/company.ts`. Nothing is literal here.
  */
 export default function Contact() {
+  usePageMeta(pageMeta.contact);
+
   return (
     <>
       <PageHeader

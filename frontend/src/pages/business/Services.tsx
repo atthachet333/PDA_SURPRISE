@@ -5,6 +5,8 @@ import { ProcessPath } from '@/components/business/ProcessPath';
 import { SystemShowreel } from '@/components/business/SystemShowreel';
 import { BigCTA } from '@/components/business/BigCTA';
 import { services, primaryServices } from '@/data/services';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta } from '@/lib/seo';
 
 /**
  * /services — the seven primary services as the main explorer, then the
@@ -13,6 +15,8 @@ import { services, primaryServices } from '@/data/services';
 const SUPPORTING = services.filter((service) => !service.primary);
 
 export default function Services() {
+  usePageMeta(pageMeta.services);
+
   return (
     <>
       <PageHeader

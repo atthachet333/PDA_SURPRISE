@@ -314,15 +314,23 @@ npm run build
 
 Outputs `frontend/dist` (static) and `backend/dist` (Node).
 
-**Frontend** — serve `frontend/dist` from any static host or CDN. It is a SPA,
-so rewrite all unknown paths to `index.html`, and proxy `/api` to the backend
-(or set `VITE_API_BASE_URL` to the API origin at build time and allow that
-origin in `CORS_ORIGIN`).
+**Topology** — one process. With `SERVE_FRONTEND=true` the backend serves both
+`frontend/dist` and `/api` on a single port, so the site and its API share an
+origin: no CORS in production, no second public port, and one target for
+Cloudflare Tunnel. Port 1368 is development only.
 
-**Backend** — `node dist/server.js` behind a reverse proxy that terminates TLS.
-Set `NODE_ENV=production`, a real `CORS_ORIGIN`, and put the process under a
-supervisor. `trustProxy` is already on so rate limiting sees real client IPs.
-Point `/api/health` at your platform health check.
+```powershell
+pm2 start ecosystem.config.cjs
+pm2 save
+```
+
+**The private music file is gitignored and will NOT arrive via `git pull`.** It
+has to be copied onto the server by hand before the build. If it is missing the
+experience still runs, silently.
+
+> **Full runbook: [DEPLOYMENT.md](DEPLOYMENT.md)** — prerequisites, environment,
+> private audio placement, PM2, Cloudflare origin, health checks, the smoke-test
+> checklist, caching and rollback.
 
 **Before going live — owner input required**
 

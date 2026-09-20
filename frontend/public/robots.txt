@@ -1,0 +1,19 @@
+# PDA BLISS — crawler guidance
+#
+# NOTE: robots.txt is a request to well-behaved crawlers. It is NOT access
+# control and provides no protection whatsoever. The private routes below are
+# listed so search engines do not index them; anyone with the URL can still
+# open them.
+
+User-agent: *
+Allow: /
+
+# Private client/workspace routes — not for indexing.
+Disallow: /login
+Disallow: /memory-gate
+Disallow: /workspace
+Disallow: /us
+Disallow: /dev/
+
+# OWNER INPUT: uncomment and set the real hostname once it is chosen.
+# Sitemap: https://example.com/sitemap.xml

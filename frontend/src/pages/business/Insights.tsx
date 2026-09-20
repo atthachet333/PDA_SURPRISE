@@ -2,8 +2,12 @@ import { PageHeader } from '@/components/business/PageHeader';
 import { InsightStrip } from '@/components/business/InsightStrip';
 import { BigCTA } from '@/components/business/BigCTA';
 import { insightsIntro } from '@/data/insights';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta } from '@/lib/seo';
 
 export default function Insights() {
+  usePageMeta(pageMeta.insights);
+
   return (
     <>
       <PageHeader

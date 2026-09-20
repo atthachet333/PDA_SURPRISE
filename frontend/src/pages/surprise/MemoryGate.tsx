@@ -13,6 +13,8 @@ import {
   parseMemoryDateParts
 } from '@/lib/memoryGate';
 import { isMemoryGateUnlocked, unlockMemoryGate } from '@/lib/memoryGateSession';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { privateMeta } from '@/lib/seo';
 
 type FieldName = 'day' | 'month' | 'year';
 type GateState = 'idle' | 'wrong' | 'success';
@@ -28,6 +30,8 @@ const STARS = [
 ] as const;
 
 export default function MemoryGate() {
+  usePageMeta(privateMeta);
+
   const [alreadyUnlocked] = useState(isMemoryGateUnlocked);
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');

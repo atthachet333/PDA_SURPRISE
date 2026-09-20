@@ -44,8 +44,16 @@ export const contactRequestSchema = z.object({
   budget: z.enum(budgetRanges),
   timeline: z.enum(timelines),
   message: trimmed(10, 4000),
-  /** Honeypot: real users never fill this. */
-  website: z.string().max(0).optional()
+  /*
+   * Honeypot: real users never fill this, bots that autofill every input do.
+   *
+   * It accepts ANY string on purpose. It was previously `.max(0)`, which made a
+   * filled honeypot fail validation with a 400 naming the `website` field -
+   * telling the bot exactly which input to leave alone next time, and making
+   * the silent-accept branch in the route unreachable. Accepting it here lets
+   * the route swallow the submission quietly instead.
+   */
+  website: z.string().max(200).optional()
 });
 
 export type ContactRequest = z.infer<typeof contactRequestSchema>;

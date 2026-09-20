@@ -4,18 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#063B2A" />
+
+    <!--
+      DEFAULT METADATA — the corporate site.
+
+      Per-route titles, descriptions, canonical and robots tags are applied at
+      runtime by `usePageMeta`. These defaults are what a crawler that does not
+      execute JavaScript sees, so they are a complete and honest description of
+      the company rather than a placeholder.
+
+      Nothing here references the private routes or anything personal.
+    -->
     <title>PDA BLISS — พัฒนาซอฟต์แวร์และระบบธุรกิจ</title>
     <meta
       name="description"
       content="PDA BLISS COMPANY LIMITED รับพัฒนาซอฟต์แวร์ ระบบธุรกิจ เว็บแอปพลิเคชัน ระบบภายในองค์กร และ Automation ที่ออกแบบจากกระบวนการทำงานจริง"
     />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="PDA BLISS COMPANY LIMITED" />
+
+    <meta property="og:site_name" content="PDA BLISS" />
     <meta property="og:title" content="PDA BLISS — พัฒนาซอฟต์แวร์และระบบธุรกิจ" />
     <meta
       property="og:description"
-      content="เปลี่ยนไอเดียของคุณให้กลายเป็นซอฟต์แวร์ที่ใช้งานได้จริง" 
+      content="เปลี่ยนไอเดียของคุณให้กลายเป็นซอฟต์แวร์ที่ใช้งานได้จริง"
     />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="th_TH" />
+    <!--
+      OWNER INPUT: og:image and og:url.
+
+      No og:image is declared because no real branded share asset exists yet —
+      a tag pointing at a missing file produces a broken preview, which is worse
+      than no image at all. og:url is set per route at runtime once
+      VITE_PUBLIC_ORIGIN is configured. See DEPLOYMENT.md.
+    -->
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="PDA BLISS — พัฒนาซอฟต์แวร์และระบบธุรกิจ" />
+    <meta
+      name="twitter:description"
+      content="เปลี่ยนไอเดียของคุณให้กลายเป็นซอฟต์แวร์ที่ใช้งานได้จริง"
+    />
+
     <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
+    <link rel="apple-touch-icon" href="/brand/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

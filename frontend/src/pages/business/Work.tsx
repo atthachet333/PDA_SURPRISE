@@ -4,6 +4,8 @@ import { SystemShowreel } from '@/components/business/SystemShowreel';
 import { ApproachExamples } from '@/components/business/ApproachExamples';
 import { BigCTA } from '@/components/business/BigCTA';
 import { portfolio } from '@/data/portfolio';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta } from '@/lib/seo';
 
 /**
  * /work — the REAL systems first (from data/portfolio.ts, no outcome figures),
@@ -11,6 +13,8 @@ import { portfolio } from '@/data/portfolio';
  * separated and labelled so the two can never be read as the same thing.
  */
 export default function Work() {
+  usePageMeta(pageMeta.work);
+
   return (
     <>
       <PageHeader

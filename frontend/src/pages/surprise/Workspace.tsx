@@ -9,6 +9,8 @@ import { useAudio } from '@/app/audioContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 import { formatMemoryDate } from '@/lib/memoryGate';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { privateMeta } from '@/lib/seo';
 
 type Phase = 'checking' | 'listing' | 'project' | 'leaving';
 
@@ -19,6 +21,8 @@ const CHECKS = [
 ];
 
 export default function Workspace() {
+  usePageMeta(privateMeta);
+
   const location = useLocation();
   const [receivedMemoryGate] = useState(
     () => Boolean((location.state as { memoryGateReveal?: boolean } | null)?.memoryGateReveal)

@@ -9,6 +9,8 @@ import { aboutIntro, aftercare, philosophy, standards, statement, whoWeAre } fro
 import { company, targetMarket } from '@/data/company';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { RevealLines } from '@/components/shared/RevealLines';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta } from '@/lib/seo';
 
 /**
  * /about — editorial, not a company bio block.
@@ -19,6 +21,8 @@ import { RevealLines } from '@/components/shared/RevealLines';
  * on this page are the statement and the one visual.
  */
 export default function About() {
+  usePageMeta(pageMeta.about);
+
   const reduced = useReducedMotion();
 
   return (

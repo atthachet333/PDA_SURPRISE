@@ -21,6 +21,8 @@ import { useLenis } from '@/hooks/useLenis';
 import { useAudio } from '@/app/audioContext';
 import { anniversary, featuredMemories } from '@/data/anniversary';
 import { preloadImages, whenIdle } from '@/lib/preload';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { privateMeta } from '@/lib/seo';
 
 /**
  * The A&I experience — one continuous scroll over a single persistent backdrop.
@@ -68,6 +70,8 @@ const SECTION_IDS = Object.keys(DIRECTION);
 const DEFAULT_DIRECTION: SceneDirection = { nav: 'story', mood: 0.35, camera: 'glide' };
 
 export default function Experience() {
+  usePageMeta(privateMeta);
+
   const [current, setCurrent] = useState('entry');
   const { unlock, start, musicEnabled, status, setSceneMix } = useAudio();
 

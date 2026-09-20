@@ -15,7 +15,9 @@
     "start": "concurrently -n backend,frontend -c green,cyan \"npm --workspace backend run start\" \"npm --workspace frontend run preview\"",
     "typecheck": "npm --workspace backend run typecheck && npm --workspace frontend run typecheck",
     "lint": "npm --workspace frontend run lint",
-    "clean": "rimraf frontend/dist backend/dist"
+    "clean": "rimraf frontend/dist backend/dist",
+    "validate:prod": "npm run typecheck && npm run lint && npm run build",
+    "start:prod": "npm --workspace backend run start"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",

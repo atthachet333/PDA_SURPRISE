@@ -5,6 +5,8 @@ import { Button } from '@/components/shared/Button';
 import { Logo } from '@/components/business/Logo';
 import { cn } from '@/lib/cn';
 import { useAudio } from '@/app/audioContext';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { privateMeta } from '@/lib/seo';
 
 /**
  * Client portal sign-in.
@@ -15,6 +17,8 @@ import { useAudio } from '@/app/audioContext';
  * local workspace route.
  */
 export default function Login() {
+  usePageMeta(privateMeta);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(true);

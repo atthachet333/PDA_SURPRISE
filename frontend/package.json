@@ -5,18 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "build": "tsc -p tsconfig.json --noEmit && vite build && node scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:memory-gate": "node --test --experimental-strip-types tests/memoryGate.test.mjs",
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@react-three/drei": "^9.121.4",
     "@react-three/fiber": "^8.17.14",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
-    "gsap": "^3.12.7",
     "howler": "^2.2.4",
     "lenis": "^1.1.20",
     "react": "^18.3.1",

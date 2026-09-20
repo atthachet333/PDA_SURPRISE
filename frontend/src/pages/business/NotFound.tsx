@@ -1,7 +1,11 @@
 import { ButtonLink } from '@/components/shared/Button';
 import { Container } from '@/components/shared/Layout';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta } from '@/lib/seo';
 
 export default function NotFound() {
+  usePageMeta(pageMeta.notFound);
+
   return (
     <section className="flex min-h-[70vh] items-center pt-24">
       <Container>
