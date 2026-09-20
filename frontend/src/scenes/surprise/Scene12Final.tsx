@@ -197,7 +197,7 @@ export function Scene12Final() {
       translate: on ? '0 0' : `0 ${lift}px`,
       transition:
         reduced || locked
-          ? undefined
+          ? 'none'
           : `opacity 1600ms var(--ease-entrance) ${delayMs}ms, translate 1600ms var(--ease-entrance) ${delayMs}ms`
     } as const;
   };
@@ -208,7 +208,7 @@ export function Scene12Final() {
     return {
       opacity: showing ? 0.5 : 0,
       translate: showing ? '0 0' : '0 10px',
-      transition: reduced || locked ? undefined : `opacity 1100ms ease ${index * 220}ms, translate 1100ms ease ${index * 220}ms`
+      transition: reduced || locked ? 'none' : `opacity 1100ms ease ${index * 220}ms, translate 1100ms ease ${index * 220}ms`
     } as const;
   };
 
@@ -283,7 +283,7 @@ export function Scene12Final() {
           opacity: at(BEAT.LINES) ? 1 : 0.3,
           scale: at(BEAT.LINES) ? '1 1' : '1 0.65',
           transformOrigin: 'bottom',
-          transition: reduced || locked ? undefined : 'opacity 3600ms var(--ease-entrance), scale 3600ms var(--ease-entrance)'
+          transition: reduced || locked ? 'none' : 'opacity 3600ms var(--ease-entrance), scale 3600ms var(--ease-entrance)'
         }}
       />
 
@@ -345,7 +345,7 @@ export function Scene12Final() {
               scale: at(BEAT.PATH) ? '1 1' : '0 1',
               opacity: at(BEAT.PATH) ? 1 : 0,
               transition:
-                reduced || locked ? undefined : 'scale 2600ms var(--ease-entrance), opacity 1400ms ease'
+                reduced || locked ? 'none' : 'scale 2600ms var(--ease-entrance), opacity 1400ms ease'
             }}
           />
           {/* One unresolved point, out along the path. It never arrives. */}
@@ -355,7 +355,7 @@ export function Scene12Final() {
             style={{
               left: at(BEAT.PATH) ? '118%' : '0%',
               opacity: at(BEAT.PATH) ? 0.9 : 0,
-              transition: reduced || locked ? undefined : 'left 3200ms var(--ease-entrance), opacity 1200ms ease'
+              transition: reduced || locked ? 'none' : 'left 3200ms var(--ease-entrance), opacity 1200ms ease'
             }}
           />
 
@@ -440,7 +440,7 @@ export function Scene12Final() {
           <div
             style={{
               opacity: 1,
-              transition: reduced || locked ? undefined : 'opacity 1600ms ease'
+              transition: reduced || locked ? 'none' : 'opacity 1600ms ease'
             }}
             className="mt-14 flex flex-wrap items-center justify-center gap-3"
           >

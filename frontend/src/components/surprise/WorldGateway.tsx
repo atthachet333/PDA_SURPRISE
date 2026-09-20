@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import {
+  GATEWAY_CUES as CUE_AT,
+  GATEWAY_SETTLE_MS as SETTLE_MS,
+  GATEWAY_STATUS as STATUS,
+  GATEWAY_STEP as STEP,
+} from "@/lib/gatewayTiming";
 
 /**
  * PDA WORLD → OUR WORLD → A&I WORLD.
@@ -33,38 +39,6 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
  * arrive all at once. `settled` then strips the transitions entirely so later
  * renders are static markup.
  */
-
-/** Semantic route nodes. No percentages, no fake loading. */
-const STEP = {
-  /** PDA WORLD is on screen, calm. */
-  ORIGIN: 0,
-  /** The first route opens and the signal crosses. */
-  LINK_A: 1,
-  /** OUR WORLD comes up. */
-  CORE: 2,
-  /** The second route opens. */
-  LINK_B: 3,
-  /** A&I WORLD is live and the button becomes the point of the screen. */
-  READY: 4,
-} as const;
-
-const CUE_AT: [step: number, ms: number][] = [
-  [STEP.LINK_A, 700],
-  [STEP.CORE, 1900],
-  [STEP.LINK_B, 2900],
-  [STEP.READY, 4200],
-];
-
-/** Everything is static from here, whatever happened to the timers above. */
-const SETTLE_MS = 6000;
-
-const STATUS: Record<number, string> = {
-  [STEP.ORIGIN]: "MEMORY GATE VERIFIED",
-  [STEP.LINK_A]: "LINKING WORLDS",
-  [STEP.CORE]: "PRIVATE LINK ESTABLISHED",
-  [STEP.LINK_B]: "LINKING WORLDS",
-  [STEP.READY]: "A&I READY",
-};
 
 interface WorldGatewayProps {
   /** The one action. Runs inside the click, so audio may start from it. */
@@ -130,12 +104,10 @@ export function WorldGateway({
   const at = (mark: number) => reduced || settled || step >= mark;
   /** Accent only — never opacity on anything that carries meaning. */
   const ease = (ms: number, prop = "all") =>
-    reduced || settled
-      ? undefined
-      : `${prop} ${ms}ms cubic-bezier(0.16, 1, 0.3, 1)`;
+    reduced || settled ? "none" : `${prop} ${ms}ms cubic-bezier(0.16, 1, 0.3, 1)`;
 
   return (
-    <div className="relative flex min-h-[100svh] w-full flex-col items-center justify-center px-6 py-16 sm:px-8">
+    <div className="relative flex min-h-[100svh] w-full flex-col items-center justify-center px-6 py-10 sm:px-8 sm:py-16">
       {/*
         The whole screen said out loud, once. The composition below carries the
         meaning visually, but a screen reader needs the sentence — and it needs
@@ -147,7 +119,7 @@ export function WorldGateway({
       </h1>
 
       {/* ── STATUS ──────────────────────────────────────────────────────────── */}
-      <div className="mb-10 flex flex-col items-center gap-2 text-center sm:mb-14">
+      <div className="mb-6 flex flex-col items-center gap-1.5 text-center sm:mb-14 sm:gap-2">
         {/* Deliberately NOT a live region: this is decorative progress, and
             announcing every route step would be exactly the narration §23 asks
             us not to produce. */}
@@ -204,7 +176,7 @@ export function WorldGateway({
       </div>
 
       {/* ── THE ONE ACTION ──────────────────────────────────────────────────── */}
-      <div className="mt-14 flex flex-col items-center sm:mt-20">
+      <div className="mt-10 flex flex-col items-center sm:mt-20">
         <button
           type="button"
           onClick={onEnter}
@@ -273,19 +245,25 @@ function World({
    * the most open one, so the route reads as going somewhere rather than as
    * three equal stops. Equal cards would be a dashboard.
    */
+  /*
+   * The progression is preserved at every width; only the absolute scale drops
+   * on a phone. Measured at 390x844 the untrimmed composition ran to 1160px —
+   * 1.37 viewports — which put the call to action below the fold on the one
+   * screen whose entire job is to offer it.
+   */
   const size =
     kind === "pda"
-      ? "h-24 w-24 sm:h-28 sm:w-28"
+      ? "h-16 w-16 sm:h-28 sm:w-28"
       : kind === "core"
-        ? "h-28 w-28 sm:h-32 sm:w-32"
-        : "h-36 w-36 sm:h-44 sm:w-44";
+        ? "h-20 w-20 sm:h-32 sm:w-32"
+        : "h-24 w-24 sm:h-44 sm:w-44";
 
   const art =
     kind === "ai"
-      ? "h-20 w-20 sm:h-24 sm:w-24"
+      ? "h-14 w-14 sm:h-24 sm:w-24"
       : kind === "core"
-        ? "h-14 w-14"
-        : "h-12 w-12";
+        ? "h-10 w-10 sm:h-14 sm:w-14"
+        : "h-8 w-8 sm:h-12 sm:w-12";
 
   const accent =
     kind === "pda"
@@ -311,7 +289,7 @@ function World({
       {/* A fixed band as tall as the largest world, with each shape centred in
           it. The sizes differ on purpose; their CENTRES must not, or the route
           joining them stops looking like one line. */}
-      <div className="flex h-36 items-center justify-center sm:h-44">
+      <div className="flex h-24 items-center justify-center sm:h-44">
         <div
           className={cn(
             "relative flex items-center justify-center",
@@ -328,7 +306,7 @@ function World({
             background: active
               ? `radial-gradient(circle at 50% 50%, ${accent.dim}, transparent 70%)`
               : "transparent",
-            transition: settledStyle ? undefined : ease(1200),
+            transition: settledStyle ? "none" : ease(1200),
           }}
         >
           <WorldArt kind={kind} active={active} className={art} />
@@ -338,7 +316,7 @@ function World({
       {/* Never animated: this is what the screen is telling you. */}
       <p
         className={cn(
-          "mt-5 font-mono text-[0.5rem] uppercase tracking-[0.3em]",
+          "mt-3 font-mono text-[0.5rem] uppercase tracking-[0.3em] sm:mt-5",
           accent.text,
           "opacity-70",
         )}
@@ -475,7 +453,7 @@ function Route({
   return (
     <div
       aria-hidden="true"
-      className="relative my-4 h-12 w-px shrink-0 md:my-0 md:h-px md:w-auto md:flex-1 md:self-center"
+      className="relative my-3 h-8 w-px shrink-0 sm:my-4 sm:h-12 md:my-0 md:h-px md:w-auto md:flex-1 md:self-center"
     >
       {/* The unlit track. The shape of the route is legible before it opens —
           and still legible if it never does. */}

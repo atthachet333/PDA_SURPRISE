@@ -88,8 +88,19 @@ export default function Workspace() {
     setLeaving(true);
   }, [leaving, play, start, unlock]);
 
+  /**
+   * Tell the story HOW the visitor arrived.
+   *
+   * Someone who came through the gateway has just watched a four-second
+   * crossing and a three-and-a-half-second portal. Replaying the arrival's full
+   * staged intro on top of that makes the ceremony land three times in a row —
+   * measured, it put the first actionable moment in /us nine seconds after this
+   * button was pressed. Scene01 uses this flag to arrive already underway.
+   *
+   * Someone who opens /us directly gets the full arrival, unchanged.
+   */
   const onTransitionComplete = useCallback(() => {
-    navigate('/us', { replace: true });
+    navigate('/us', { replace: true, state: { fromGateway: true } });
   }, [navigate]);
 
   return (

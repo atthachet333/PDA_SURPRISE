@@ -7,6 +7,14 @@ import { useAudio } from '@/app/audioContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { ArrivalWhisper } from '@/components/surprise/ArrivalWhisper';
 import { useMagnetic } from '@/hooks/useMagnetic';
+import {
+  ARRIVAL_CUES as CUE_AT,
+  ARRIVAL_CUES_FROM_GATEWAY as CUE_AT_FROM_GATEWAY,
+  ARRIVAL_ENTRY_FROM_GATEWAY,
+  ARRIVAL_SETTLE_FROM_GATEWAY_MS,
+  ARRIVAL_SETTLE_MS,
+  ARRIVAL_STEP as STEP
+} from '@/lib/gatewayTiming';
 
 /**
  * Scene 01 — arrival.
@@ -17,42 +25,18 @@ import { useMagnetic } from '@/hooks/useMagnetic';
  * single call to action appears last.
  */
 
-/**
- * THE ARRIVAL SEQUENCE.
- *
- * A numbered step rather than named stages, because the only thing that
- * matters is "how far in are we" and every element compares against one
- * number. The sky is already there when the flash clears; this is the order
- * the rest of it arrives in.
- *
- * Wall-clock, not frame-driven, so a throttled tab still gets there. And the
- * last entry is the whole sequence: whatever happens to the timers in between,
- * `READY` is scheduled independently, so no element can be stranded invisible.
- */
-const STEP = {
-  MARK: 0,
-  ORBIT: 1,
-  WORDMARK: 2,
-  WHISPER: 3,
-  TITLE: 4,
-  READY: 5
-} as const;
-
-/** Milliseconds from mount to each step. */
-const CUE_AT: [step: number, ms: number][] = [
-  [STEP.ORBIT, 500],
-  [STEP.WORDMARK, 1400],
-  [STEP.WHISPER, 2200],
-  [STEP.TITLE, 2900],
-  [STEP.READY, 3700]
-];
-
 const { intro } = anniversary;
 
 export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
   const { play, triggerCue } = useAudio();
   const reduced = useReducedMotion();
-  const [step, setStep] = useState<number>(reduced ? STEP.READY : STEP.MARK);
+  /* Read once. A later state change must not restart the arrival. */
+  const [fromGateway] = useState(
+    () => Boolean((window.history.state as { usr?: { fromGateway?: boolean } } | null)?.usr?.fromGateway)
+  );
+  const [step, setStep] = useState<number>(
+    reduced ? STEP.READY : fromGateway ? ARRIVAL_ENTRY_FROM_GATEWAY : STEP.MARK
+  );
   /*
    * Set once the sequence is over AND its longest transition has had time to
    * finish. From then on the reveal styles carry no `transition` at all, so the
@@ -79,7 +63,7 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
     // `Math.max` so a skip can never be undone by a timer that was already in
     // flight — the sequence only ever moves forward.
     const advance = (to: number) => setStep((current) => Math.max(current, to));
-    const timers = CUE_AT.map(([to, ms]) =>
+    const timers = (fromGateway ? CUE_AT_FROM_GATEWAY : CUE_AT).map(([to, ms]) =>
       window.setTimeout(() => {
         advance(to);
         if (to === STEP.READY) triggerCue('entry');
@@ -115,7 +99,7 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
       timers.forEach((timer) => window.clearTimeout(timer));
       detach();
     };
-  }, [reduced, triggerCue]);
+  }, [fromGateway, reduced, triggerCue]);
 
   /*
    * A single wall-clock guarantee, independent of every timer above and of the
@@ -124,12 +108,15 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
    */
   useEffect(() => {
     if (reduced) return;
-    const done = window.setTimeout(() => {
-      setStep((current) => Math.max(current, STEP.READY));
-      setSettled(true);
-    }, 5600);
+    const done = window.setTimeout(
+      () => {
+        setStep((current) => Math.max(current, STEP.READY));
+        setSettled(true);
+      },
+      fromGateway ? ARRIVAL_SETTLE_FROM_GATEWAY_MS : ARRIVAL_SETTLE_MS
+    );
     return () => window.clearTimeout(done);
-  }, [reduced]);
+  }, [fromGateway, reduced]);
 
   /*
    * THE REVEAL IS A CSS TRANSITION, NOT AN ANIMATION LIBRARY CALL.
@@ -149,9 +136,10 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
     return {
       opacity: on ? 1 : 0,
       translate: on ? '0 0' : '0 14px',
+      /* See the note below on why this is 'none' rather than undefined. */
       transition:
         reduced || settled
-          ? undefined
+          ? 'none'
           : `opacity 1400ms var(--ease-entrance) ${delay}ms, translate 1400ms var(--ease-entrance) ${delay}ms`
     } as const;
   };

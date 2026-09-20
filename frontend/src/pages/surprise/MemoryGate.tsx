@@ -182,6 +182,15 @@ export default function MemoryGate() {
           stroke="rgba(163,214,255,0.34)"
           strokeWidth="0.7"
           strokeDasharray="603"
+          /*
+           * `initial` is required here, not optional. framer reads the starting
+           * value from `style`, and `opacity` / `strokeDashoffset` on an SVG
+           * element are PRESENTATION ATTRIBUTES rather than style — so without
+           * this it animates from `undefined` and warns twice on every visit to
+           * the gate. Decorative ring only; nothing about the gate's logic,
+           * validation or session behaviour is involved.
+           */
+          initial={{ opacity: 0, strokeDashoffset: 603 }}
           animate={{
             opacity: completed >= 2 || gateState === 'success' ? 1 : 0,
             strokeDashoffset: gateState === 'success' ? 0 : 603 - 603 * Math.max(0.08, atmosphere * 0.72),
