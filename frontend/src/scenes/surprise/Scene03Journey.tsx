@@ -7,6 +7,8 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 /** The beginning — one real date, two people, and room for the first photos. */
 export function Scene03Journey() {
   const reduced = useReducedMotion();
+  /* The first real photograph in the experience, so it loads eagerly rather
+     than waiting for an observer. */
   const hero = anniversary.heroImages[0];
 
   return (

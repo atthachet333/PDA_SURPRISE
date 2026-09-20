@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 import { SceneSection } from '@/components/surprise/SceneSection';
 import { AIMark } from '@/components/surprise/AIMark';
-import { MemoryImage } from '@/components/surprise/MemoryImage';
+import { MemoryVideo } from '@/components/surprise/MemoryVideo';
 import { anniversary } from '@/data/anniversary';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -145,8 +145,6 @@ export function Scene12Final() {
     document.getElementById('memories')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [play]);
 
-  const finalImage = anniversary.finalImages[0];
-
   return (
     <SceneSection id="final" ref={ref} label="The close" className="overflow-hidden">
       {/* Horizon opens as the sequence resolves */}
@@ -247,13 +245,14 @@ export function Scene12Final() {
           transition={{ duration: 1.8, delay: 0.5 }}
           className="ai-frame-memory ai-photo-spill relative mx-auto mt-10 aspect-[4/5] w-40 overflow-hidden shadow-glow sm:w-48"
         >
-          <MemoryImage
-            photo={finalImage?.image}
-            alt="ภาพปิดของ A และ I"
-            tone="champagne"
-            label="YEAR 02"
-            objectPosition={finalImage?.objectPosition}
-            cropMode={finalImage?.cropMode}
+          {/* The clip is the closing image: two shadows drawing a heart. It
+              carries the ending far better than a still, and MemoryVideo falls
+              back to its own poster frame under reduced motion or a load
+              failure, so this never becomes an empty box. */}
+          <MemoryVideo
+            src={anniversary.memoryVideos.finale.src}
+            poster={anniversary.memoryVideos.finale.poster}
+            alt={anniversary.memoryVideos.finale.alt}
           />
         </motion.figure>
 

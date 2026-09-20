@@ -170,7 +170,7 @@ export async function buildApp(): Promise<FastifyInstance> {
           reply.header('Cache-Control', 'public, max-age=31536000, immutable');
           return;
         }
-        if (/\.(png|jpe?g|webp|avif|gif|svg|ico|woff2?|mp3)$/i.test(url)) {
+        if (/\.(png|jpe?g|webp|avif|gif|svg|ico|woff2?|mp3|mp4|webm)$/i.test(url)) {
           /* Unversioned public assets: cached, but revalidated daily. */
           reply.header('Cache-Control', 'public, max-age=86400');
           return;

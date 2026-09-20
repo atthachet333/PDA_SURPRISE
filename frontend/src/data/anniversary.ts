@@ -294,9 +294,9 @@ export const anniversary = {
     { id: 'm04', title: 'คอนโดพี่โด', date: 'MEMORY 04', caption: 'ที่ที่ไปกันบ่อย', tags: ['daily'], tone: 'navy' },
     { id: 'm05', title: 'เขื่อน', date: 'MEMORY 05', caption: 'วิวน้ำกว้าง ๆ', tags: ['travel'], tone: 'sky' },
     { id: 'm06', title: 'วันแคมป์', date: 'MEMORY 06', caption: 'กางเต็นท์ นอนดูดาว', tags: ['travel'], tone: 'navy', featured: true },
-    { id: 'm07', title: 'น้ำตกสาริกา', date: 'MEMORY 07', caption: 'น้ำตกที่นครนายก', location: 'นครนายก', tags: ['travel'], tone: 'sky', featured: true },
+    { id: 'm07', title: 'น้ำตกสาริกา', date: '10 DEC 2025', caption: 'น้ำตกที่นครนายก', location: 'นครนายก', image: '/images/memories/sarika-01.webp', tags: ['travel'], tone: 'sky', featured: true },
     { id: 'm08', title: 'อุทยานพระพิฆเนศ', date: 'MEMORY 08', caption: 'ไปไหว้ขอพรด้วยกัน', tags: ['travel'], tone: 'champagne' },
-    { id: 'm09', title: 'ชะอำ', date: 'MEMORY 09', caption: 'ทะเลเพชรบุรี', location: 'เพชรบุรี', tags: ['travel'], tone: 'sky' },
+    { id: 'm09', title: 'ชะอำ', date: '16 OCT 2025', caption: 'ทะเลเพชรบุรี', location: 'เพชรบุรี', image: '/images/memories/chaam-01.webp', tags: ['travel'], tone: 'sky', featured: true },
     { id: 'm10', title: 'พัทยา', date: 'MEMORY 10', caption: 'ทริปชลบุรี', location: 'ชลบุรี', tags: ['travel'], tone: 'sky', featured: true },
     { id: 'm11', title: 'บางแสน', date: 'MEMORY 11', caption: 'ทะเลใกล้ ๆ ที่ไปได้ไม่ยาก', location: 'ชลบุรี', tags: ['travel'], tone: 'sky' },
     { id: 'm12', title: 'อ่างศิลา', date: 'MEMORY 12', caption: 'อีกที่หนึ่งของชลบุรี', location: 'ชลบุรี', tags: ['travel'], tone: 'cream' },
@@ -305,7 +305,26 @@ export const anniversary = {
     { id: 'm15', title: 'บ้านเปรี้ยว', date: 'MEMORY 15', caption: 'บ้านที่คุ้นเคย', tags: ['family'], tone: 'cream' },
     { id: 'm16', title: 'วัดไร่แตงทอง', date: 'MEMORY 16', caption: 'วัดที่นครปฐม', location: 'นครปฐม', tags: ['family'], tone: 'champagne' },
     { id: 'm17', title: 'วัดหุบกระทิง', date: 'MEMORY 17', caption: 'วัดที่ราชบุรี', location: 'ราชบุรี', tags: ['family'], tone: 'cream' },
-    { id: 'm18', title: 'ทางรถไฟ', date: 'MEMORY 18', caption: 'เดินเล่นริมทางรถไฟ', tags: ['daily'], tone: 'navy', featured: true }
+    { id: 'm18', title: 'ทางรถไฟ', date: 'MEMORY 18', caption: 'เดินเล่นริมทางรถไฟ', tags: ['daily'], tone: 'navy', featured: true },
+    /* The 19th place. Deliberately without an image: the curation pass found no
+       photograph that can be tied to this venue, and a stand-in bar photo would
+       be a lie about where the story started. */
+    { id: 'm19', title: 'ร้าน TURR เกษตร', date: 'MEMORY 19', caption: 'ที่ที่เราเริ่มต้นกัน', tags: ['daily'], tone: 'champagne' },
+
+    /* ── MOMENTS, NOT PLACES ──────────────────────────────────────────────────
+       Everything above is somewhere they went. These are things that happened,
+       each backed by a photograph whose event is unambiguous in the frame.
+       Dates come from the camera's own EXIF, except the wedding, which comes
+       from owner truth (`WEDDING_DATE`) because the certificate's date is
+       obscured by the registrar's seal in every shot. ───────────────────────── */
+    { id: 'm20', title: 'ทะเลชลบุรี', date: '11 JAN 2026', caption: 'วันที่ไปเดินริมทะเลกัน', location: 'ชลบุรี', image: '/images/memories/chonburi-sea-01.webp', tags: ['travel'], tone: 'sky', featured: true },
+    { id: 'm21', title: 'วันรับปริญญา', date: '16 NOV 2025', caption: 'วันสำคัญที่ไปด้วยกัน', image: '/images/memories/graduation-01.webp', tags: ['family'], tone: 'champagne', featured: true },
+    { id: 'm22', title: 'วันแต่งงาน', date: '28 JUL 2026', caption: 'วันที่เราเลือกกันต่อหน้าทุกคน', image: '/images/memories/wedding-02.webp', tags: ['family'], tone: 'cream', featured: true },
+    { id: 'm23', title: 'แมวของเรา', date: 'AT HOME', caption: 'สองตัวที่ทำให้บ้านไม่เงียบ', image: '/images/memories/cat-01.webp', tags: ['daily'], tone: 'cream' },
+    { id: 'm24', title: 'วันธรรมดา', date: '20 DEC 2025', caption: 'วันที่ไม่มีอะไรพิเศษ แต่จำได้', image: '/images/memories/daily-01.webp', tags: ['daily'], tone: 'navy', featured: true },
+    { id: 'm25', title: 'ทริปมอเตอร์ไซค์', date: '26 DEC 2025', caption: 'ถนนยาว ๆ กับคนข้างหลัง', image: '/images/memories/roadtrip-01.webp', tags: ['travel'], tone: 'navy' },
+    { id: 'm26', title: 'คริสต์มาส', date: '25 DEC 2025', caption: 'ต้นคริสต์มาสกับคนที่ชอบถ่ายรูป', image: '/images/memories/daily-02.webp', tags: ['daily'], tone: 'champagne' },
+    { id: 'm27', title: 'เงาบนหาด', date: '16 OCT 2025', caption: 'เงาสองคนบนทรายเปียก', location: 'เพชรบุรี', image: '/images/memories/chaam-shadows.webp', tags: ['travel'], tone: 'sky' }
   ] as Memory[],
 
   // ----------------------------------------------------------------- places --
@@ -367,7 +386,10 @@ export const anniversary = {
       { id: 'v-banpriao', label: 'บ้านเปรี้ยว', coordinatesPending: true },
       { id: 'v-watraitaengthong', label: 'วัดไร่แตงทอง', province: 'นครปฐม', coordinatesPending: true },
       { id: 'v-wathupkrathing', label: 'วัดหุบกระทิง', province: 'ราชบุรี', coordinatesPending: true },
-      { id: 'v-railway', label: 'ทางรถไฟ', coordinatesPending: true }
+      { id: 'v-railway', label: 'ทางรถไฟ', coordinatesPending: true },
+      /* Owner-confirmed 19th place. No photograph in the pool is tied to it —
+         see docs/A&I_MEDIA_CURATION.md — so it stays text-driven. */
+      { id: 'v-turr', label: 'ร้าน TURR เกษตร', coordinatesPending: true }
     ] as JourneyPlace[]
   },
 
@@ -381,11 +403,11 @@ export const anniversary = {
     { id: 't1', label: '12 OCT 2025', title: 'จุดเริ่มต้น', body: 'วันที่เราเริ่มนับเป็นวันแรกของเรา', type: 'highlight', treatment: 'fullbleed' },
     { id: 't2', label: 'MOMENT 02', title: 'ร้าน Peak', body: 'ร้านที่กลายเป็นร้านของเรา', type: 'photo', treatment: 'polaroid' },
     { id: 't3', label: 'MOMENT 03', title: 'ร้าน Status', body: 'อีกร้านที่เราไปกันบ่อย', type: 'photo', treatment: 'split' },
-    { id: 't4', label: 'MOMENT 04', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก' },
+    { id: 't4', label: '10 DEC 2025', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก', image: '/images/memories/sarika-01.webp' },
     { id: 't5', label: 'MOMENT 05', title: 'สวนผึ้ง', body: 'ขึ้นไปราชบุรีด้วยกัน', type: 'location', treatment: 'stack', location: 'ราชบุรี' },
     { id: 't6', label: 'MOMENT 06', title: 'พัทยา', body: 'ทะเลที่ชลบุรี', type: 'photo', treatment: 'blurFocus', location: 'ชลบุรี' },
     { id: 't7', label: 'MOMENT 07', title: 'บ้านโป่ง', body: 'ที่ที่กลับไปหากันเสมอ', type: 'photo', treatment: 'polaroid', location: 'ราชบุรี' },
-    { id: 't8', label: 'MOMENT 08', title: 'งานแต่ง', body: 'วันที่เราตัดสินใจเดินไปด้วยกันจริง ๆ', type: 'highlight', treatment: 'date' },
+    { id: 't8', label: '28 JUL 2026', title: 'งานแต่ง', body: 'วันที่เราตัดสินใจเดินไปด้วยกันจริง ๆ', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-02.webp', images: ['/images/memories/wedding-01.webp', '/images/memories/wedding-03.webp'] },
     { id: 't9', label: 'วันนี้', title: 'ยังอยู่ด้วยกัน', body: 'และยังเลือกกันอยู่ทุกวัน', type: 'highlight', treatment: 'fullbleed' }
   ] as TimelineMoment[],
 
@@ -397,7 +419,7 @@ export const anniversary = {
   statistics: [
     { id: 'days', value: DAYS, label: 'วันที่อยู่ด้วยกัน', caption: 'นับสดจากวันที่ 12 ตุลาคม 2025' },
     { id: 'provinces', value: 10, label: 'จังหวัดที่ไปด้วยกัน', caption: 'จากกรุงเทพถึงสุโขทัย' },
-    { id: 'places', value: 18, label: 'ที่ที่ไปด้วยกัน', caption: 'ที่จำได้และจดไว้' },
+    { id: 'places', value: 19, label: 'ที่ที่ไปด้วยกัน', caption: 'ที่จำได้และจดไว้' },
     { id: 'cats', value: 2, label: 'แมวของเรา', caption: 'ถ้วยฟู และ หนมถ้วย' }
   ] as StatItem[],
 
@@ -474,7 +496,7 @@ export const anniversary = {
    * before. See `docs/IMAGE_INGESTION.md` for the Drive → manifest workflow.
    */
   heroImages: [
-    { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — ภาพที่ดีที่สุดของสองคน' },
+    { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — ภาพที่ดีที่สุดของสองคน', image: '/images/memories/hero-01.webp', caption: 'ริมทะเลด้วยกัน', objectPosition: '50% 38%' },
     { id: 'hero-02', category: 'hero', intent: 'ภาพเปิดสำรอง — แนวตั้งสำหรับมือถือ' },
     { id: 'hero-03', category: 'hero', intent: 'ภาพพื้นหลังกว้าง สำหรับฉากแรก' }
   ] as ImageSlot[],
@@ -488,34 +510,59 @@ export const anniversary = {
   ] as ImageSlot[],
 
   dailyMemories: [
-    { id: 'daily-01', category: 'daily', intent: 'ชีวิตประจำวัน — ภาพแนวนอน' },
-    { id: 'daily-02', category: 'daily', intent: 'ชีวิตประจำวัน — ภาพแนวตั้ง' },
+    { id: 'daily-01', category: 'daily', intent: 'ชีวิตประจำวัน — ภาพแนวนอน', image: '/images/memories/daily-01.webp', caption: 'วันธรรมดาที่บ้าน' },
+    { id: 'daily-02', category: 'daily', intent: 'ชีวิตประจำวัน — ภาพแนวตั้ง', image: '/images/memories/daily-02.webp', caption: 'คริสต์มาสด้วยกัน' },
     { id: 'daily-03', category: 'funny', intent: 'โมเมนต์ขำ ๆ ของสองคน' }
   ] as ImageSlot[],
 
   travelMemories: [
-    { id: 'travel-01', category: 'travel', intent: 'ทริปด้วยกัน — ภาพกว้าง' },
-    { id: 'travel-02', category: 'travel', intent: 'ทริปด้วยกัน — ภาพสถานที่' },
+    { id: 'travel-01', category: 'travel', intent: 'ทริปด้วยกัน — ภาพกว้าง', image: '/images/memories/roadtrip-01.webp', caption: 'ถนนยาว ๆ' },
+    { id: 'travel-02', category: 'travel', intent: 'ทริปด้วยกัน — ภาพสถานที่', image: '/images/memories/sarika-01.webp', caption: 'น้ำตกสาริกา นครนายก' },
     { id: 'travel-03', category: 'travel', intent: 'ทริปด้วยกัน — ภาพของสองคน' }
   ] as ImageSlot[],
 
   familyMemories: [
-    { id: 'family-01', category: 'family', intent: 'ภาพครอบครัว' },
-    { id: 'family-02', category: 'pets', intent: 'ภาพถ้วยฟู' },
-    { id: 'family-03', category: 'pets', intent: 'ภาพหนมถ้วย' }
+    { id: 'family-01', category: 'family', intent: 'ภาพครอบครัว', image: '/images/memories/family-01.webp', caption: 'ที่บ้าน' },
+    /* NOT named. The curation pass could not tell the two cats apart from the
+       photographs, and guessing which is ถ้วยฟู and which is หนมถ้วย would be
+       inventing a fact about them. Neutral captions until the owner says. */
+    { id: 'family-02', category: 'pets', intent: 'ภาพแมว (ยังไม่ระบุตัว)', image: '/images/memories/cat-01.webp', caption: 'แมวของเรา' },
+    { id: 'family-03', category: 'pets', intent: 'ภาพแมว (ยังไม่ระบุตัว)', image: '/images/memories/cat-02.webp', caption: 'แมวของเรา' }
   ] as ImageSlot[],
 
   finalImages: [
-    { id: 'final-01', category: 'finale', intent: 'ภาพปิด — ภาพล่าสุดของสองคน' },
+    /* Two shadows on wet sand: the quietest frame in the pool and the easiest
+       to lay text over. */
+    { id: 'final-01', category: 'finale', intent: 'ภาพปิด — ภาพล่าสุดของสองคน', image: '/images/memories/chaam-shadows.webp', caption: 'เงาสองคนบนหาด', objectPosition: '50% 55%' },
     { id: 'final-02', category: 'finale', intent: 'ภาพจากงานแต่ง' },
-    { id: 'final-03', category: 'finale', intent: 'ภาพครอบครัว รวมปอร์เช่' }
+    { id: 'final-03', category: 'finale', intent: 'ภาพครอบครัว', image: '/images/memories/wedding-01.webp', caption: 'วันแต่งงาน' }
   ] as ImageSlot[],
 
   /** Pet photos, if the owner wants a pets beat in the redesign. */
+  /* Same rule as familyMemories: real cat photographs, no name attached to
+     either frame until the owner identifies them. */
   petImages: [
-    { id: 'pet-01', category: 'pets', intent: 'ถ้วยฟู' },
-    { id: 'pet-02', category: 'pets', intent: 'หนมถ้วย' }
+    { id: 'pet-01', category: 'pets', intent: 'แมวตัวที่หนึ่ง (ยังไม่ระบุตัว)', image: '/images/memories/cat-01.webp', caption: 'แมวของเรา' },
+    { id: 'pet-02', category: 'pets', intent: 'แมวตัวที่สอง (ยังไม่ระบุตัว)', image: '/images/memories/cat-02.webp', caption: 'แมวของเรา' }
   ] as ImageSlot[],
+
+  // ----------------------------------------------------------------- video --
+  /**
+   * The two clips worth showing, already transcoded to web MP4 with the audio
+   * track REMOVED. The experience has exactly one voice — the main track — and
+   * a second audio stream must never be able to compete with it.
+   */
+  memoryVideos: {
+    /** The couple's shadows forming a heart. 4K source, down-scaled to 1080p. */
+    finale: {
+      src: '/videos/memories/finale-shadow-heart.mp4',
+      poster: '/images/memories/finale-shadow-heart-poster.webp',
+      alt: 'เงาของสองคนบนพื้น'
+    },
+    /* There is deliberately no letter clip. The letter scene is carried by its
+       words, and moving image behind them competes with the one thing that
+       scene exists for. The candidate clip stays in the curation manifest. */
+  },
 
   // ---------------------------------------------------------------- secrets --
   /**

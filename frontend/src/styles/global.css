@@ -120,12 +120,17 @@
   }
 
   .thai-display {
-    letter-spacing: -0.01em;
+    /*
+     * Zero tracking, not negative. Negative letter-spacing is a Latin display
+     * trick; in Thai it pushes tone marks and vowel signs into the consonants
+     * they belong to, which is a large part of why the type read as hard.
+     */
+    letter-spacing: 0;
     word-break: keep-all;
     line-break: normal;
     /* Thai ascenders and tone marks need vertical room the Latin scale omits. */
-    line-height: 1.12;
-    padding-block: 0.06em;
+    line-height: 1.22;
+    padding-block: 0.08em;
   }
 
   @media (max-width: 639px) {
@@ -299,16 +304,37 @@
   /* A&I type system: Thai is calm and highly readable; Latin display copy
      carries the cinematic identity. Handwritten treatment is deliberately
      only an italic accent so no additional font payload is introduced. */
+  /*
+   * SOFTER, ON PURPOSE.
+   *
+   * The owner's note was that the emotional Thai type read as rigid. Thai has
+   * no lowercase and no italic, so the only levers are weight, leading and
+   * tracking — and the previous settings pushed all three toward "poster":
+   * tight 1.16 leading with the -0.01em tracking inherited from .thai-display,
+   * at up to 4rem.
+   *
+   * This loosens the line, releases the negative tracking, and caps the size a
+   * little lower. It matters more now than it did: nine of the nineteen places
+   * have no photograph, so those scenes are carried entirely by this type.
+   *
+   * NO NEW FONT. A softer Thai serif is a real improvement but it is a payload
+   * decision and a whole-system change, so it belongs to the typography pass,
+   * not to a media pass.
+   */
   .ai-scene-title {
     @apply thai-display ai-legible font-thai font-light text-ivory;
-    font-size: clamp(1.875rem, 5vw, 4rem);
-    line-height: 1.16;
+    font-size: clamp(1.75rem, 4.4vw, 3.5rem);
+    line-height: 1.32;
+    letter-spacing: 0.005em;
   }
 
   .ai-body {
     @apply font-thai text-ivory/70;
     font-size: clamp(1rem, 1.45vw, 1.1875rem);
-    line-height: 1.85;
+    /* Thai tone marks sit above the line; 1.95 stops them crowding the row
+       above in a multi-line emotional paragraph. */
+    line-height: 1.95;
+    letter-spacing: 0.005em;
   }
 
   .ai-caption {
@@ -317,10 +343,15 @@
     line-height: 1.65;
   }
 
+  /*
+   * The monospaced scene label. Still technical — that contrast is part of the
+   * identity — but dimmer and slightly smaller, so it frames the emotional copy
+   * instead of competing with it.
+   */
   .ai-micro {
-    @apply font-mono uppercase text-sky-100/60;
-    font-size: clamp(0.6875rem, 0.75vw, 0.8125rem);
-    letter-spacing: 0.2em;
+    @apply font-mono uppercase text-sky-100/45;
+    font-size: clamp(0.625rem, 0.7vw, 0.75rem);
+    letter-spacing: 0.22em;
   }
 
   .ai-wordmark {

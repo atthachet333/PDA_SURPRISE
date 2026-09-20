@@ -8,10 +8,31 @@ dist/
 .vite/
 coverage/
 backend/data/*.jsonl
+# A&I memory media.
+#
+# The OPTIMIZED web assets are committed: the private experience cannot render
+# without them, and a gitignored asset does not arrive on the server from a
+# git pull (which is exactly why main-track.mp3 needs a manual copy step).
+#
+# NOTE: this means the repository contains the owner's personal photographs.
+# The remote must stay private.
+#
+# Raw originals (HEIC/JPG/PNG straight from the camera or Drive) stay OUT —
+# only the converted .webp belongs here.
 frontend/public/images/memories/*
 !frontend/public/images/memories/.gitkeep
+!frontend/public/images/memories/*.webp
+
+# Optimized memory video only; never a source MOV.
+frontend/public/videos/memories/*
+!frontend/public/videos/memories/*.mp4
 frontend/public/audio/*
 !frontend/public/audio/sfx/
 frontend/public/audio/sfx/*
 !frontend/public/audio/sfx/.gitkeep
 !frontend/public/audio/README.md
+
+# Local media review sheets from the A&I curation pass. These are contact
+# sheets built from the owner's private photographs — they are for review on
+# this machine only and must never enter the repository.
+review-local/
