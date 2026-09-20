@@ -1,12 +1,36 @@
 # A&I — media curation
 
-**Curation only. Nothing is wired into the runtime yet.**
+**Current runtime curation record.** Historical notes below preserve the evidence
+available at each pass; the newest owner-confirmed amendment takes precedence.
 
 Source: the owner's Google Drive folder *A&I Anniversary 2026*, treated as read-only.
 Nothing in Drive was renamed, moved, deleted or modified.
 
 Machine-readable manifest: [`tools/anniversary-media-curation.json`](../tools/anniversary-media-curation.json)
 Review images: `review-local/` (gitignored — never commit)
+
+## Current amendment — 132-file refresh (2026-09-20)
+
+Drive was refreshed from 116 to **132 files**. The 16 additions include
+`24.jpg` and the outdoor photographer set from the actual wedding. Privacy QA
+excluded certificate/document frames and retained only photographs without
+legible private documents or license plates.
+
+Owner-confirmed mappings now used by the runtime:
+
+| story fact | source / treatment | runtime asset |
+|---|---|---|
+| ร้าน Peak = จุดเริ่มต้น | no verified photo; text only | none |
+| ร้าน TURR เกษตร = วันที่ขอคบ, 2025-10-12 | owner-confirmed bar photographs | `turr-01.webp`, `turr-02.webp` |
+| สวนผึ้ง | Christmas-tree photograph | `suanphueng-01.webp` |
+| ร้าน Status | no real photo; text only | none |
+| หนมถ้วย | confirmed kitten image | `cat-01.webp` |
+| ถ้วยฟู | confirmed sleeping-cat image | `cat-02.webp` |
+| actual wedding, 2026-07-28 | `24.jpg` plus safe outdoor wedding set | `wedding-actual-01.webp` through `-03.webp` |
+| pre-wedding | studio / staged portrait set | `wedding-01.webp` through `-03.webp` |
+
+The production runtime references only local optimized WebP assets. It makes no
+Google Drive requests and ships no HEIC originals.
 
 ---
 
@@ -15,7 +39,8 @@ Review images: `review-local/` (gitignored — never commit)
 Access worked. Every file was downloaded, opened, and read for EXIF, GPS and
 content. Videos were decoded and sampled at three points each.
 
-**The folder holds 116 files, not 100.**
+**This initial snapshot held 116 files, not 100.** It is superseded by the
+132-file amendment above but remains here as the audit trail for the first pass.
 
 | | stated | found |
 |---|---|---|
@@ -262,10 +287,10 @@ at position 2, which the brief states outright.
 
 | ref | meaning | source file | status |
 |---|---|---|---|
-| 1 | จุดเริ่มต้น | `IMG_3416.HEIC` | integrated as `beginning-01.webp` (hero) |
+| 1 | จุดเริ่มต้น | `IMG_3416.HEIC` | superseded: this is TURR context, not Peak; renamed `turr-02.webp` |
 | 2 | **ร้าน TURR เกษตร** | `IMG_3479.PNG` | integrated as `turr-01.webp` — stated explicitly in the brief |
 | 3 | **หนมถ้วย** | `IMG_2536.JPG` | integrated as `cat-01.webp` |
-| 4 | งานแต่งจริง | `24.jpg` | **not in the 116-file folder — cannot be integrated** |
+| 4 | งานแต่งจริง | `24.jpg` | arrived in the 132-file refresh; integrated as `wedding-actual-01.webp` |
 | 5 | **ถ้วยฟู** | `IMG_6158.JPG` | integrated as `cat-02.webp` |
 
 ### TURR is resolved
@@ -290,14 +315,10 @@ set = pre-wedding.** Applied to the six wedding frames:
 | `IMG_5397` | PRE-WEDDING | grey seamless studio, Thai dress, prop pedestal |
 | `IMG_5398` | **UNCERTAIN → labelled pre-wedding** | Thai dress in a *real* room — carved doors, brass vessels — not a studio sweep. The one frame the rule does not settle. **Q19.** |
 
-**Consequence: every wedding image in the pool is pre-wedding.** The canonical
-date 2026-07-28 has therefore been *removed* from all of them. The wedding
-milestone stays a date beat with no photograph, and a separate pre-wedding beat
-carries the studio work. Dating a studio shoot as the wedding is precisely what
-the owner's rule exists to prevent.
-
-The actual wedding photograph (`24.jpg`) is not in the Drive folder — it needs
-to be added there, or supplied directly, before it can be used.
+**Historical 116-file conclusion:** every wedding image in that original pool
+was pre-wedding. The 132-file refresh supersedes the missing-media conclusion:
+`24.jpg` and the safe outdoor set now carry the actual wedding, while the studio
+set remains explicitly pre-wedding.
 
 ---
 

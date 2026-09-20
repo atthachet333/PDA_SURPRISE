@@ -4,6 +4,7 @@ import { SurpriseNav } from '@/components/surprise/SurpriseNav';
 import { AICursor } from '@/components/surprise/AICursor';
 import { FullscreenHint, MusicUnlockPrompt, SoundPrompt } from '@/components/surprise/SoundPrompt';
 import { SecretStar } from '@/components/surprise/SecretStar';
+import { ShootingStars } from '@/components/surprise/ShootingStars';
 import { Scene01Entry } from '@/scenes/surprise/Scene01Entry';
 import { Scene02Days } from '@/scenes/surprise/Scene02Days';
 import { Scene03Journey } from '@/scenes/surprise/Scene03Journey';
@@ -189,7 +190,7 @@ export default function Experience() {
   }, [current, setSceneMix]);
 
   return (
-    <div className="relative min-h-screen bg-navy-800 text-ivory">
+    <div className="relative min-h-screen overflow-x-clip bg-navy-800 text-ivory">
       <CelestialBackground
         mood={direction.mood}
         camera={direction.camera}
@@ -209,6 +210,7 @@ export default function Experience() {
       {/* Belongs to the sky rather than to any scene, so it stays put while the
           story scrolls past it. */}
       <SecretStar />
+      <ShootingStars />
 
       <main id="main" className="relative z-10">
         <Scene01Entry onEnter={onEnter} />

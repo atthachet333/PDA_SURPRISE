@@ -5,6 +5,7 @@ import { AIMark } from '@/components/surprise/AIMark';
 import { anniversary } from '@/data/anniversary';
 import { useAudio } from '@/app/audioContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { ArrivalWhisper } from '@/components/surprise/ArrivalWhisper';
 
 /**
  * Scene 01 — arrival.
@@ -72,6 +73,8 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
         >
           Atthachet &amp; Isariya
         </motion.p>
+
+        <ArrivalWhisper className="mt-5 min-h-6 font-thai text-sm tracking-[0.04em] text-sky-100/65" />
 
         <div className="mt-7 flex flex-col items-center px-2">
           {intro.title.map((line, index) => (

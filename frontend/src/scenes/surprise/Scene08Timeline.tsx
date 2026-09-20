@@ -2,6 +2,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/SceneSection';
 import { MemoryImage } from '@/components/surprise/MemoryImage';
+import { MemoryBleed, MemoryFrame } from '@/components/surprise/MemoryFrame';
+import { frameStyle } from '@/lib/mediaAspect';
 import { anniversary, type TimelineMoment } from '@/data/anniversary';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
@@ -94,7 +96,13 @@ function Label({ moment, className }: { moment: TimelineMoment; className?: stri
   );
 }
 
-/** 1. Full-bleed reveal — the frame opens to the whole width. */
+/**
+ * 1. Full-bleed reveal — the frame opens to the whole width.
+ *
+ * It used to open to a 21/9 band, which removed about two thirds of a portrait
+ * photograph. `MemoryBleed` keeps the full-width moment but shows the
+ * photograph whole; see `components/surprise/MemoryFrame`.
+ */
 function FullBleed({ moment, index }: { moment: TimelineMoment; index: number }) {
   const reduced = useReducedMotion();
   return (
@@ -106,20 +114,19 @@ function FullBleed({ moment, index }: { moment: TimelineMoment; index: number })
       className="relative"
     >
       <figure className="ai-frame-cinematic ai-photo-spill relative overflow-hidden shadow-glow">
-        <span className="block aspect-[16/9] sm:aspect-[21/9]">
-          <MemoryImage
-            photo={moment.image}
-            alt={moment.title}
-            tone="champagne"
-            label={moment.label}
-            index={index}
-            objectPosition={moment.objectPosition}
-            cropMode={moment.cropMode}
-          />
-        </span>
+        <MemoryBleed
+          photo={moment.image}
+          alt={moment.title}
+          tone="champagne"
+          label={moment.label}
+          index={index}
+          objectPosition={moment.objectPosition}
+        />
+        {/* The caption sits over the lower third, so the gradient only needs to
+            reach that far — it must not wash out the photograph above it. */}
         <span
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-navy-900/25 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-navy-900/95 via-navy-900/45 to-transparent"
         />
         <figcaption className="absolute inset-x-0 bottom-0 p-6 sm:p-10">
           <Label moment={moment} />
@@ -129,6 +136,29 @@ function FullBleed({ moment, index }: { moment: TimelineMoment; index: number })
           <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-ivory/75">{moment.body}</p>
         </figcaption>
       </figure>
+      {moment.images?.length ? (
+        <div className="mx-auto mt-6 grid max-w-4xl gap-5 sm:grid-cols-2 sm:gap-7">
+          {moment.images.map((image, supportIndex) => (
+            <motion.figure
+              key={image}
+              initial={reduced ? false : { opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+              transition={{ ...ENTER, delay: 0.12 + supportIndex * 0.1 }}
+              className={cn('ai-frame-memory overflow-hidden', supportIndex === 1 && 'sm:mt-12')}
+            >
+              <MemoryFrame
+                photo={image}
+                alt={`${moment.title} ${supportIndex + 2}`}
+                shape="editorial"
+                tone="cream"
+                index={index + supportIndex + 1}
+                loading="lazy"
+              />
+            </motion.figure>
+          ))}
+        </div>
+      ) : null}
     </motion.article>
   );
 }
@@ -147,7 +177,8 @@ function Split({ moment, index }: { moment: TimelineMoment; index: number }) {
         transition={ENTER}
         className={cn('ai-frame-cinematic overflow-hidden', flipped && 'lg:order-2')}
       >
-        <span className="block aspect-[5/4]">
+        {/* Aspect from the photograph, not from the grid. */}
+        <span className="block" style={frameStyle(moment.image, 'editorial')}>
           <MemoryImage
             photo={moment.image}
             alt={moment.title}
@@ -192,7 +223,9 @@ function Polaroid({ moment, index }: { moment: TimelineMoment; index: number }) 
         )}
         style={{ animationDuration: '11s' }}
       >
-        <span className="block aspect-square overflow-hidden">
+        {/* A print is nearly square by nature, so this shape crops a little —
+            but symmetrically, and only by a few percent. */}
+        <span className="block overflow-hidden" style={frameStyle(moment.image, 'square')}>
           <MemoryImage
             photo={moment.image}
             alt={moment.title}
@@ -244,21 +277,23 @@ function DateType({ moment, index }: { moment: TimelineMoment; index: number }) 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ ...ENTER, delay: 0.2 }}
-        className="relative -mt-[6vw] flex flex-col items-center"
+        className={cn('relative flex flex-col items-center', moment.image ? '-mt-[6vw]' : 'mt-8')}
       >
-        <figure className="ai-frame-memory w-[13rem] overflow-hidden shadow-glow sm:w-[16rem]">
-          <span className="block aspect-[4/5]">
-            <MemoryImage
-              photo={moment.image}
-              alt={moment.title}
-              tone="champagne"
-              label={moment.label}
-              index={index}
-              objectPosition={moment.objectPosition}
-              cropMode={moment.cropMode}
-            />
-          </span>
-        </figure>
+        {moment.image ? (
+          <figure className="ai-frame-memory w-[13rem] overflow-hidden shadow-glow sm:w-[16rem]">
+            <span className="block" style={frameStyle(moment.image, 'tall')}>
+              <MemoryImage
+                photo={moment.image}
+                alt={moment.title}
+                tone="champagne"
+                label={moment.label}
+                index={index}
+                objectPosition={moment.objectPosition}
+                cropMode={moment.cropMode}
+              />
+            </span>
+          </figure>
+        ) : null}
         <h3 className="ai-legible mt-8 max-w-md font-display text-[clamp(1.6rem,3.2vw,2.5rem)] font-light leading-tight text-ivory">
           {moment.title}
         </h3>
@@ -276,7 +311,12 @@ function Stack({ moment, index }: { moment: TimelineMoment; index: number }) {
 
   return (
     <article className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-      <div className="relative mx-auto h-[17rem] w-[13rem] sm:h-[21rem] sm:w-[16rem]">
+      {/* The pile takes its proportions from the photograph on top, so the two
+          behind it are not forced into a different shape than the one in front. */}
+      <div
+        className="relative mx-auto w-[13rem] sm:w-[16rem]"
+        style={frameStyle(moment.image, 'tall')}
+      >
         {images.slice(0, 3).map((image, stackIndex) => (
           <motion.figure
             key={stackIndex}
@@ -364,7 +404,7 @@ function BlurFocus({ moment, index }: { moment: TimelineMoment; index: number })
         className="relative z-10 flex flex-col items-center gap-7 px-6 py-14 text-center sm:flex-row sm:gap-9 sm:text-left"
       >
         <figure className="ai-frame-memory ai-photo-spill relative w-[11rem] shrink-0 overflow-hidden shadow-glow-lg sm:w-[13rem]">
-          <span className="block aspect-[4/5]">
+          <span className="block" style={frameStyle(moment.image, 'tall')}>
             <MemoryImage
               photo={moment.image}
               alt={moment.title}

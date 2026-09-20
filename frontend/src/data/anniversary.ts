@@ -99,6 +99,22 @@ export interface JourneyPlace {
   coordinatesPending: boolean;
 }
 
+export interface JourneyPhoto {
+  id: string;
+  label: string;
+  province?: string;
+  date?: string;
+  caption: string;
+  image: string;
+  objectPosition?: string;
+}
+
+export interface RememberedPlace {
+  id: string;
+  label: string;
+  note: string;
+}
+
 export interface Pet {
   id: string;
   name: string;
@@ -254,6 +270,16 @@ export const anniversary = {
   // ----------------------------------------------------------------- intro --
   intro: {
     mark: 'A&I',
+    /**
+     * The changing line under the names. It exists so the arrival is not
+     * perfectly still; the first entry is what a reduced-motion visitor sees,
+     * so it has to stand on its own.
+     */
+    whisper: [
+      'เรื่องนี้มีคนดูได้แค่สองคน',
+      'ถ้าเธอมาถึงตรงนี้แล้ว…',
+      'มีเรื่องหนึ่งอยากให้เธอเห็น'
+    ],
     title: ['พื้นที่เล็ก ๆ', 'สำหรับเรื่องราวของเรา'],
     subtitle: ['12.10.2025 — ∞'],
     cta: 'เริ่มเรื่องราวของเรา'
@@ -288,6 +314,12 @@ export const anniversary = {
    * ingestion pass adds those once the images are chosen.
    */
   memories: [
+    /* ── THE BEGINNING ──────────────────────────────────────────────────────
+       ร้าน Peak, owner-confirmed as จุดเริ่มต้น. No photograph of it exists in
+       the pool and none is substituted: it carries the story on its name alone.
+       No date either — the owner has not given one, and a plausible-looking
+       date is still an invented one. ────────────────────────────────────────── */
+    { id: 'm00', title: 'ร้าน Peak', date: 'จุดเริ่มต้น', caption: 'ร้านที่กลายเป็นร้านของเรา', tags: ['daily'], tone: 'champagne', featured: true },
     { id: 'm01', title: 'บ้านวิน', date: 'MEMORY 01', caption: 'ที่แรก ๆ ที่ไปด้วยกัน', tags: ['daily'], tone: 'cream', featured: true },
     { id: 'm02', title: 'งานกาชาด', date: 'MEMORY 02', caption: 'งานวัด งานกาชาด และคนเยอะ ๆ', tags: ['funny'], tone: 'champagne' },
     { id: 'm03', title: 'ร้านเหล้า', date: 'MEMORY 03', caption: 'คืนที่คุยกันยาวกว่าที่คิด', tags: ['daily'], tone: 'navy' },
@@ -306,12 +338,12 @@ export const anniversary = {
     { id: 'm16', title: 'วัดไร่แตงทอง', date: 'MEMORY 16', caption: 'วัดที่นครปฐม', location: 'นครปฐม', tags: ['family'], tone: 'champagne' },
     { id: 'm17', title: 'วัดหุบกระทิง', date: 'MEMORY 17', caption: 'วัดที่ราชบุรี', location: 'ราชบุรี', tags: ['family'], tone: 'cream' },
     { id: 'm18', title: 'ทางรถไฟ', date: 'MEMORY 18', caption: 'เดินเล่นริมทางรถไฟ', tags: ['daily'], tone: 'navy', featured: true },
-    /* The 19th place, and the one that matters most.
-       OWNER-CONFIRMED: this is ร้าน TURR เกษตร, the place he asked her to be his
-       partner. The curation pass could not prove it from metadata — the venue's
-       neon sign is blown out in every frame — so it stayed text-only until the
-       owner identified it directly. Owner confirmation outranks inference. */
-    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'ที่ที่เขาชวนเธอมาเป็นแฟน', image: '/images/memories/turr-01.webp', tags: ['daily'], tone: 'champagne', featured: true },
+    /* The 19th place, and the one that carries the date.
+       OWNER-CONFIRMED ร้าน TURR เกษตร — the night he asked her to be his partner,
+       so this is the RELATIONSHIP MILESTONE. It is deliberately NOT the story's
+       จุดเริ่มต้น: that is ร้าน Peak (m00). An earlier pass merged the two
+       meanings; the owner has separated them, and they stay separate. */
+    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/turr-01.webp', tags: ['daily'], tone: 'champagne', featured: true },
 
     /* ── MOMENTS, NOT PLACES ──────────────────────────────────────────────────
        Everything above is somewhere they went. These are things that happened,
@@ -321,6 +353,14 @@ export const anniversary = {
        obscured by the registrar's seal in every shot. ───────────────────────── */
     { id: 'm20', title: 'ทะเลชลบุรี', date: '11 JAN 2026', caption: 'วันที่ไปเดินริมทะเลกัน', location: 'ชลบุรี', image: '/images/memories/chonburi-sea-01.webp', tags: ['travel'], tone: 'sky', featured: true },
     { id: 'm21', title: 'วันรับปริญญา', date: '16 NOV 2025', caption: 'วันสำคัญที่ไปด้วยกัน', image: '/images/memories/graduation-01.webp', tags: ['family'], tone: 'champagne', featured: true },
+    /* ── THE ACTUAL WEDDING ─────────────────────────────────────────────────
+       OWNER-CONFIRMED: outdoor, real location, the day itself. Under the
+       owner's rule this — not the studio work below — is the wedding, so it is
+       the only memory that carries WEDDING_DATE. The ceremony banner in the
+       same set independently reads 28 กรกฎาคม 69. ──────────────────────────── */
+    { id: 'm29', title: 'วันแต่งงาน', date: '28 JUL 2026', caption: 'วันที่เรามาถึงจริง ๆ', image: '/images/memories/wedding-actual-01.webp', tags: ['family'], tone: 'cream', featured: true },
+    { id: 'm30', title: 'พิธีของเรา', date: '28 JUL 2026', caption: 'เช้าวันนั้น', image: '/images/memories/wedding-actual-03.webp', tags: ['family'], tone: 'champagne', featured: true },
+
     /* PRE-WEDDING, not the wedding day.
        Owner's rule: outdoor / real-location = the actual wedding; studio or
        staged set = pre-wedding. This frame is Thai traditional dress in a real
@@ -331,11 +371,14 @@ export const anniversary = {
     { id: 'm22', title: 'ชุดไทยก่อนวันงาน', date: 'PRE-WEDDING', caption: 'วันถ่ายภาพชุดไทย', image: '/images/memories/wedding-02.webp', tags: ['family'], tone: 'cream', featured: true },
     /* OWNER-CONFIRMED identities. Until now both cats carried a neutral label
        because the curation could not tell a silver tabby from a silver tabby. */
-    { id: 'm23', title: 'หนมถ้วย', date: 'AT HOME', caption: 'แมวของเรา', image: '/images/memories/cat-01.webp', tags: ['daily'], tone: 'cream' },
-    { id: 'm28', title: 'ถ้วยฟู', date: 'AT HOME', caption: 'แมวของเรา', image: '/images/memories/cat-02.webp', tags: ['daily'], tone: 'cream' },
+    { id: 'm23', title: 'หนมถ้วย', date: 'AT HOME', caption: 'ตัวเล็กที่ชอบขึ้นที่สูง', image: '/images/memories/cat-01.webp', tags: ['daily'], tone: 'cream' },
+    { id: 'm28', title: 'ถ้วยฟู', date: 'AT HOME', caption: 'ตัวที่นอนเก่งที่สุดในบ้าน', image: '/images/memories/cat-02.webp', tags: ['daily'], tone: 'cream' },
     { id: 'm24', title: 'วันธรรมดา', date: '20 DEC 2025', caption: 'วันที่ไม่มีอะไรพิเศษ แต่จำได้', image: '/images/memories/daily-01.webp', tags: ['daily'], tone: 'navy', featured: true },
     { id: 'm25', title: 'ทริปมอเตอร์ไซค์', date: '26 DEC 2025', caption: 'ถนนยาว ๆ กับคนข้างหลัง', image: '/images/memories/roadtrip-01.webp', tags: ['travel'], tone: 'navy' },
-    { id: 'm26', title: 'คริสต์มาส', date: '25 DEC 2025', caption: 'ต้นคริสต์มาสกับคนที่ชอบถ่ายรูป', image: '/images/memories/daily-02.webp', tags: ['daily'], tone: 'champagne' },
+    /* OWNER-CONFIRMED สวนผึ้ง. The Christmas tree in frame is why the curation
+       filed it as a daily moment; the owner has since placed it, which also
+       makes it the only photographic evidence of ราชบุรี in the pool. */
+    { id: 'm26', title: 'สวนผึ้ง', date: '25 DEC 2025', caption: 'ปลายปีที่ราชบุรี', location: 'ราชบุรี', image: '/images/memories/suanphueng-01.webp', tags: ['travel'], tone: 'champagne', featured: true },
     { id: 'm27', title: 'เงาบนหาด', date: '16 OCT 2025', caption: 'เงาสองคนบนทรายเปียก', location: 'เพชรบุรี', image: '/images/memories/chaam-shadows.webp', tags: ['travel'], tone: 'sky' }
   ] as Memory[],
 
@@ -369,6 +412,20 @@ export const anniversary = {
       'สุโขทัย'
     ],
 
+    /** A short photo essay of places with owner-confirmed images. */
+    photoStories: [
+      { id: 'jp-suanphueng', label: 'สวนผึ้ง', province: 'ราชบุรี', date: '25 DEC 2025', caption: 'ปลายปีที่ราชบุรี', image: '/images/memories/suanphueng-01.webp', objectPosition: '50% 42%' },
+      { id: 'jp-turr', label: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/turr-02.webp', objectPosition: '50% 42%' },
+      { id: 'jp-sarika', label: 'น้ำตกสาริกา', province: 'นครนายก', date: '10 DEC 2025', caption: 'ทริปที่นครนายก', image: '/images/memories/sarika-01.webp' },
+      { id: 'jp-chaam', label: 'ชะอำ', province: 'เพชรบุรี', date: '16 OCT 2025', caption: 'ทะเลเพชรบุรี', image: '/images/memories/chaam-01.webp' }
+    ] as JourneyPhoto[],
+
+    /** Important places that remain words because no real photograph exists. */
+    rememberedPlaces: [
+      { id: 'jr-peak', label: 'ร้าน Peak', note: 'จุดเริ่มต้นของเรื่องราว' },
+      { id: 'jr-status', label: 'ร้าน Status', note: 'บางคืนไม่มีรูป แต่เรายังจำได้' }
+    ] as RememberedPlace[],
+
     /** The places that matter most, in the owner's own words. */
     importantPlaces: [
       { id: 'j-peak', label: 'ร้าน Peak', coordinatesPending: true },
@@ -399,8 +456,9 @@ export const anniversary = {
       { id: 'v-watraitaengthong', label: 'วัดไร่แตงทอง', province: 'นครปฐม', coordinatesPending: true },
       { id: 'v-wathupkrathing', label: 'วัดหุบกระทิง', province: 'ราชบุรี', coordinatesPending: true },
       { id: 'v-railway', label: 'ทางรถไฟ', coordinatesPending: true },
-      /* Owner-confirmed 19th place. No photograph in the pool is tied to it —
-         see docs/A&I_MEDIA_CURATION.md — so it stays text-driven. */
+      /* Owner-confirmed 19th place, and the only one on this list with a date:
+         12 OCT 2025, the night it became official. Two photographs are now tied
+         to it (turr-01, turr-02) — see docs/A&I_MEDIA_CURATION.md. */
       { id: 'v-turr', label: 'ร้าน TURR เกษตร', coordinatesPending: true }
     ] as JourneyPlace[]
   },
@@ -412,21 +470,29 @@ export const anniversary = {
    * invented date. Bodies say only what is true.
    */
   timeline: [
-    { id: 't1', label: '12 OCT 2025', title: 'จุดเริ่มต้น', body: 'ร้าน TURR เกษตร — วันที่เขาชวนเธอมาเป็นแฟน', type: 'photo', treatment: 'fullbleed', image: '/images/memories/beginning-01.webp' },
-    { id: 't2', label: 'MOMENT 02', title: 'ร้าน Peak', body: 'ร้านที่กลายเป็นร้านของเรา', type: 'photo', treatment: 'polaroid' },
-    { id: 't3', label: 'MOMENT 03', title: 'ร้าน Status', body: 'อีกร้านที่เราไปกันบ่อย', type: 'photo', treatment: 'split' },
+    /* Peak opens the timeline because Peak is where the story starts. It is a
+       LABEL, not a date — no date was ever supplied for it — and a text beat,
+       because no photograph of it exists. */
+    { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้านที่กลายเป็นร้านของเรา', type: 'text', treatment: 'textOnly' },
+    /* Then the night it became official. Separate beat, separate meaning. */
+    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่เขาชวนเธอมาเป็นแฟน', type: 'photo', treatment: 'fullbleed', image: '/images/memories/turr-02.webp', objectPosition: '50% 42%' },
+    /* ร้าน Status has no photograph. It stays a text beat rather than borrow an
+       unrelated bar frame — the owner asked for exactly this. */
+    { id: 't3', label: 'MOMENT', title: 'ร้าน Status', body: 'อีกร้านที่เราไปกันบ่อย', type: 'text', treatment: 'textOnly' },
     { id: 't4', label: '10 DEC 2025', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก', image: '/images/memories/sarika-01.webp' },
-    { id: 't5', label: 'MOMENT 05', title: 'สวนผึ้ง', body: 'ขึ้นไปราชบุรีด้วยกัน', type: 'location', treatment: 'stack', location: 'ราชบุรี' },
+    { id: 't5', label: '25 DEC 2025', title: 'สวนผึ้ง', body: 'ปลายปีที่ราชบุรี', type: 'location', treatment: 'split', location: 'ราชบุรี', image: '/images/memories/suanphueng-01.webp' },
     { id: 't6', label: 'MOMENT 06', title: 'พัทยา', body: 'ทะเลที่ชลบุรี', type: 'photo', treatment: 'blurFocus', location: 'ชลบุรี' },
     { id: 't7', label: 'MOMENT 07', title: 'บ้านโป่ง', body: 'ที่ที่กลับไปหากันเสมอ', type: 'photo', treatment: 'polaroid', location: 'ราชบุรี' },
-    /* The wedding milestone keeps the canonical date and stays a DATE beat.
-       No photograph of the actual wedding day is in the pool — everything the
-       curation found is pre-wedding studio work, and the one outdoor/real
-       wedding image the owner referenced (24.jpg) is not in the Drive folder.
-       Attaching a studio portrait here would date a pre-wedding shoot as the
-       wedding, which is exactly what the owner's rule exists to prevent. */
-    { id: 't8', label: '28 JUL 2026', title: 'งานแต่ง', body: 'วันที่เราตัดสินใจเดินไปด้วยกันจริง ๆ', type: 'highlight', treatment: 'date' },
+    /* ── THE WEDDING, IN THREE BEATS ────────────────────────────────────────
+       The order is the payoff: the preparation, then the DATE alone with
+       nothing to look at, then the day itself. The date beat is what makes the
+       photograph that follows land — it is not a placeholder for a missing
+       image any more. 24.jpg has since arrived and is wired in below. ───────── */
     { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp', '/images/memories/wedding-02.webp'] },
+    { id: 't8', label: '28 JUL 2026', title: 'งานแต่ง', body: 'วันที่เราตัดสินใจเดินไปด้วยกันจริง ๆ', type: 'highlight', treatment: 'date' },
+    /* OWNER-CONFIRMED actual wedding. Portrait frame, so it is held rather than
+       cropped to a letterbox. */
+    { id: 't8c', label: 'วันนั้น', title: 'แล้วเราก็มาถึงวันนี้', body: 'พิธีมงคลสมรสของเรา', type: 'photo', treatment: 'fullbleed', image: '/images/memories/wedding-actual-01.webp', images: ['/images/memories/wedding-actual-02.webp', '/images/memories/wedding-actual-03.webp'], cropMode: 'contain' },
     { id: 't9', label: 'วันนี้', title: 'ยังอยู่ด้วยกัน', body: 'และยังเลือกกันอยู่ทุกวัน', type: 'highlight', treatment: 'fullbleed' }
   ] as TimelineMoment[],
 
@@ -515,10 +581,10 @@ export const anniversary = {
    * before. See `docs/IMAGE_INGESTION.md` for the Drive → manifest workflow.
    */
   heroImages: [
-    /* OWNER-CONFIRMED as จุดเริ่มต้น — the night at ร้าน TURR เกษตร. This
-       replaces the beach frame that stood here only because the beginning was
-       unresolved. */
-    { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — จุดเริ่มต้น (TURR เกษตร)', image: '/images/memories/beginning-01.webp', caption: 'คืนที่ทุกอย่างเริ่มต้น', objectPosition: '50% 42%' },
+    /* ร้าน TURR เกษตร — the 12 OCT 2025 milestone, not the story's beginning.
+       The file was named `beginning-01` while those two were conflated; it is
+       now `turr-02`, which is what it actually shows. */
+    { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — คืนที่ TURR เกษตร', image: '/images/memories/turr-02.webp', caption: 'คืนที่เราเริ่มเป็นเรา', objectPosition: '50% 42%' },
     { id: 'hero-02', category: 'hero', intent: 'ภาพเปิดสำรอง — แนวตั้งสำหรับมือถือ', image: '/images/memories/hero-01.webp', caption: 'ริมทะเลด้วยกัน', objectPosition: '50% 38%' },
     { id: 'hero-03', category: 'hero', intent: 'ภาพพื้นหลังกว้าง สำหรับฉากแรก' }
   ] as ImageSlot[],
@@ -533,7 +599,7 @@ export const anniversary = {
 
   dailyMemories: [
     { id: 'daily-01', category: 'daily', intent: 'ชีวิตประจำวัน — ภาพแนวนอน', image: '/images/memories/daily-01.webp', caption: 'วันธรรมดาที่บ้าน' },
-    { id: 'daily-02', category: 'daily', intent: 'ชีวิตประจำวัน — ภาพแนวตั้ง', image: '/images/memories/daily-02.webp', caption: 'คริสต์มาสด้วยกัน' },
+    { id: 'daily-02', category: 'travel', intent: 'สวนผึ้ง — ภาพแนวตั้ง', image: '/images/memories/suanphueng-01.webp', caption: 'ปลายปีที่ราชบุรี' },
     { id: 'daily-03', category: 'funny', intent: 'โมเมนต์ขำ ๆ ของสองคน' }
   ] as ImageSlot[],
 
@@ -554,8 +620,8 @@ export const anniversary = {
     /* Two shadows on wet sand: the quietest frame in the pool and the easiest
        to lay text over. */
     { id: 'final-01', category: 'finale', intent: 'ภาพปิด — ภาพล่าสุดของสองคน', image: '/images/memories/chaam-shadows.webp', caption: 'เงาสองคนบนหาด', objectPosition: '50% 55%' },
-    { id: 'final-02', category: 'finale', intent: 'ภาพจากงานแต่ง' },
-    { id: 'final-03', category: 'finale', intent: 'ภาพครอบครัว', image: '/images/memories/wedding-01.webp', caption: 'วันแต่งงาน' }
+    { id: 'final-02', category: 'finale', intent: 'ภาพจากงานแต่งจริง', image: '/images/memories/wedding-actual-02.webp', caption: 'วันแต่งงานของเรา', objectPosition: '50% 35%' },
+    { id: 'final-03', category: 'finale', intent: 'ภาพก่อนงานแต่ง', image: '/images/memories/wedding-01.webp', caption: 'ก่อนถึงวันนั้น' }
   ] as ImageSlot[],
 
   /** Pet photos, if the owner wants a pets beat in the redesign. */

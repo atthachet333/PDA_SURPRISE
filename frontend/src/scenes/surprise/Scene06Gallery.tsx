@@ -10,6 +10,7 @@ import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useAudio } from '@/app/audioContext';
 import { preloadImages } from '@/lib/preload';
 import { cn } from '@/lib/cn';
+import { frameStyle } from '@/lib/mediaAspect';
 
 /**
  * Scene 06 — the rotating gallery.
@@ -184,7 +185,7 @@ export function Scene06Gallery() {
                       isActive ? 'ai-photo-spill shadow-glow-lg ring-1 ring-sky-200/35' : ''
                     )}
                   >
-                    <span className="block aspect-[3/4]">
+                    <span className="block" style={frameStyle(memory.image, 'editorial')}>
                       <MemoryImage
                         photo={memory.image}
                         alt={memory.title}

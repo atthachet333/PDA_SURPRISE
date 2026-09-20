@@ -21,7 +21,7 @@ export const SceneSection = forwardRef<HTMLElement, SceneSectionProps>(function 
       ref={ref}
       aria-label={label}
       className={cn(
-        'relative flex w-full flex-col items-center justify-center px-6 py-24 sm:px-8',
+        'relative flex w-full scroll-mt-24 flex-col items-center justify-center px-6 py-24 sm:scroll-mt-28 sm:px-8',
         fullHeight && 'min-h-[100svh]',
         className
       )}

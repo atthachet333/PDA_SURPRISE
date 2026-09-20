@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/SceneSection';
 import { MemoryImage } from '@/components/surprise/MemoryImage';
+import { frameAspect, frameStyle } from '@/lib/mediaAspect';
 import { AIMark } from '@/components/surprise/AIMark';
 import { memoriesForScene, type Memory } from '@/data/anniversary';
 import { useDeviceProfile } from '@/hooks/useDeviceProfile';
@@ -288,8 +289,9 @@ export function Scene04Universe() {
                 >
                   <span className="ai-frame-orbit block w-[8rem] overflow-hidden shadow-glow transition-transform duration-slow ease-entrance group-hover:scale-[1.06] sm:w-[10.5rem]">
                     <span
-                      className={cn('block aspect-[4/5]', !reduced && 'animate-drift')}
+                      className={cn('block', !reduced && 'animate-drift')}
                       style={{
+                        ...frameStyle(memory.image, 'tall'),
                         animationDelay: `${memory.index * 0.6}s`,
                         animationDuration: `${9 + (memory.index % 5)}s`
                       }}
@@ -328,7 +330,13 @@ export function Scene04Universe() {
                 aria-label={selected.title}
               >
                 <div className="ai-glass ai-photo-spill relative flex w-full max-w-lg flex-col overflow-hidden rounded-panel sm:flex-row">
-                  <div className="aspect-[4/3] w-full shrink-0 sm:aspect-auto sm:w-1/2">
+                  {/* The opened photograph is the whole point of the dialog, so
+                      it gets its own proportions: 4/3 was cutting the top and
+                      bottom off every portrait in the pool. */}
+                  <div
+                    className="w-full shrink-0 sm:w-1/2"
+                    style={{ aspectRatio: String(frameAspect(selected.image, 'editorial')) }}
+                  >
                     <MemoryImage
                       photo={selected.image}
                       alt={selected.title}

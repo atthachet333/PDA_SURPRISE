@@ -9,6 +9,7 @@ import { useLongPress } from '@/hooks/useLongPress';
 import { useSecret } from '@/hooks/useSecret';
 import { SecretReveal } from '@/components/surprise/SecretReveal';
 import { pad } from '@/lib/format';
+import { LiveDuration } from '@/components/surprise/LiveDuration';
 
 /**
  * Scene 02 — DAY 001 to DAY 365. The signature beat.
@@ -268,7 +269,7 @@ export function Scene02Days() {
           animate={{ opacity: holding ? 0.35 : 0.6 }}
           className="font-mono text-[0.625rem] uppercase tracking-[0.44em] text-sky-100"
         >
-          01 · DAY
+          01 · DAYS
         </motion.p>
 
         <div className="relative mt-4 flex justify-center">
@@ -361,6 +362,7 @@ export function Scene02Days() {
                     {line}
                   </motion.p>
                 ))}
+                <LiveDuration showDays={false} className="mt-8" />
               </motion.div>
             ) : (
               <motion.p

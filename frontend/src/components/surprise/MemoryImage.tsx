@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { anniversary, type Memory } from '@/data/anniversary';
 import { isKnownBroken, preloadImage } from '@/lib/preload';
+import { intrinsicAttrs } from '@/lib/mediaAspect';
 
 type Tone = NonNullable<Memory['tone']>;
 
@@ -66,12 +67,17 @@ export function MemoryImage({
   }, [instant, photo]);
 
   if (photo && !failed) {
+    const { width, height } = intrinsicAttrs(photo);
     return (
       <img
         src={photo}
         alt={alt}
         loading={loading}
         decoding="async"
+        /* Layout comes from CSS; these only give the browser the ratio up front
+           so decoding a photograph never shifts the text beside it. */
+        width={width}
+        height={height}
         onLoad={() => setReady(true)}
         onError={() => setFailed(true)}
         style={{ objectPosition }}
