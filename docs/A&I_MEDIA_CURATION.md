@@ -20,8 +20,8 @@ Owner-confirmed mappings now used by the runtime:
 
 | story fact | source / treatment | runtime asset |
 |---|---|---|
-| ร้าน Peak = จุดเริ่มต้น | no verified photo; text only | none |
-| ร้าน TURR เกษตร = วันที่ขอคบ, 2025-10-12 | owner-confirmed bar photographs | `turr-01.webp`, `turr-02.webp` |
+| ร้าน Peak = จุดเริ่มต้น / ร้านที่เจอกันครั้งแรก | owner-confirmed reference images #1 and #2 | `peak-01.webp`, `peak-02.webp` |
+| ร้าน TURR เกษตร = วันที่ขอคบ, 2025-10-12 | no confirmed photo; text only | none |
 | สวนผึ้ง | Christmas-tree photograph | `suanphueng-01.webp` |
 | ร้าน Status | no real photo; text only | none |
 | หนมถ้วย | confirmed kitten image | `cat-01.webp` |
@@ -69,11 +69,10 @@ camera's own capture timestamp.
 
 ### ร้าน TURR เกษตร — **no confident candidate found**
 
-> **⚠️ SUPERSEDED 2026-09-20 — see §8b.** The owner has since confirmed
-> `IMG_3479.PNG` as ร้าน TURR เกษตร and `IMG_3416.HEIC` as จุดเริ่มต้น. The
-> analysis below remains accurate about the *evidence* — the sign really is
-> illegible and the GPS really is 4–5 km off — it was simply never going to be
-> resolvable from metadata. Owner confirmation outranks it.
+> **OWNER CORRECTION 2026-09-20 — see §8b.** The owner confirmed both
+> `IMG_3416.HEIC` and `IMG_3479.PNG` as ร้าน Peak, the place where the couple
+> first met. Neither image belongs to TURR. The evidence analysis below remains
+> useful, but the Peak mapping now follows owner truth.
 
 There is **no file that places the couple at TURR Kaset**, and I am not going to
 nominate one on atmosphere alone.
@@ -84,11 +83,11 @@ What actually exists around the canonical start date of **2025-10-12**:
 |---|---|---|---|
 | `EA66B9C8-…-F50BE37F56DD.JPG` | **2025-10-12 12:08** | the only file dated on the start date. An edited polaroid-in-polaroid selfie, indoors, domestic. **Not a bar.** | start date HIGH, TURR **NO** |
 | `dbe81e98…MOV` | 2025-10-12 (≈12:07 local) | 18s indoor video, same day, same domestic setting | start date MEDIUM, TURR **NO** |
-| `IMG_3416 / 3417 / 3423.HEIC` | **2025-10-10 21:32** | a real bar interior — neon, bottle shelves, mirror selfie. GPS 13.8852, 100.5518 | venue-is-a-bar HIGH, **TURR LOW** |
-| `IMG_3479.PNG` | 2025-10-13 | bar/club, overlay text reads *"ได้ของขวัญวันเกิดละน่ะ"* — a **birthday**, not a proposal | bar HIGH, **TURR LOW** |
+| `IMG_3416 / 3417 / 3423.HEIC` | **2025-10-10 21:32** | a real bar interior — neon, bottle shelves, mirror selfie. GPS 13.8852, 100.5518 | **Peak OWNER-CONFIRMED** for `IMG_3416`; same venue HIGH for adjacent frames; TURR **NO** |
+| `IMG_3479.PNG` | 2025-10-13 | bar/club, overlay text reads *"ได้ของขวัญวันเกิดละน่ะ"* | **Peak OWNER-CONFIRMED**, TURR **NO** |
 | `40f120df…MOV`, `6769b2a3…MOV` | undated | same venue and same overlay text as the PNG — one night, three files | — |
 
-Why the bar photos are only LOW:
+Why metadata alone did not identify the venue:
 
 - Their GPS sits roughly 4–5 km north-west of the Kaset intersection area. That
   is not a rounding error.
@@ -97,9 +96,10 @@ Why the bar photos are only LOW:
 - The nearest bar night is **two days before** the start date, and the next is a
   **birthday**, which is a different occasion.
 
-So: the day the relationship began is represented in this pool by a quiet photo
-at home, not by a bar. **Beginning should stay text-driven** until the owner
-says otherwise. Questions Q1–Q4 on the review sheet settle it in seconds.
+Those clues were correctly insufficient for a TURR assignment. The owner has
+now resolved both references as **ร้าน Peak**, the place where the couple first
+met. That owner truth overrides the inconclusive venue metadata; TURR remains
+text-driven.
 
 ### The wedding — **found, with strong evidence**
 
@@ -186,7 +186,7 @@ Four known provinces have **no photographic evidence at all**: ราชบุ�
 |---|---|---|---|
 | 1 | บ้านวิน | **TEXT-DRIVEN** | none |
 | 2 | งานกาชาด | **PHOTO POSSIBLE** | `IMG_2448` is a charity donation event — banner reads *การแบ่งปันของคุณ เปลี่ยนแปลงสังคมได้*, not กาชาด (Q5) |
-| 3 | ร้านเหล้า | **PHOTO VERIFIED** | `IMG_3416/3417/3423`, `IMG_3479` + 2 clips — now **owner-confirmed as ร้าน TURR เกษตร** (§8b) |
+| 3 | ร้านเหล้า | **PHOTO VERIFIED** | `IMG_3416/3417/3423`, `IMG_3479` + 2 clips — owner-confirmed as **ร้าน Peak**, the first-meeting venue (§8b) |
 | 4 | คอนโดพี่โด | **TEXT-DRIVEN** | none |
 | 5 | เขื่อน | **TEXT-DRIVEN** | none |
 | 6 | วันแคมป์ | **TEXT-DRIVEN** | none |
@@ -202,11 +202,11 @@ Four known provinces have **no photographic evidence at all**: ราชบุ�
 | 16 | วัดไร่แตงทอง | **TEXT-DRIVEN** | the Nakhon Pathom temple photo is ~35 km from วัดไร่แตงทอง, so it is probably a different temple (Q6) |
 | 17 | วัดหุบกระทิง | **TEXT-DRIVEN** | no Ratchaburi GPS at all |
 | 18 | ทางรถไฟ | **TEXT-DRIVEN** | no railway image |
-| 19 | **ร้าน TURR เกษตร** | **PHOTO VERIFIED** | **owner-confirmed** (§8b): `IMG_3479.PNG`, integrated as `turr-01.webp` |
+| 19 | **ร้าน TURR เกษตร** | **TEXT-DRIVEN** | no confirmed photograph; the two formerly assigned images are Peak (§8b) |
 
-**Photo verified 5 · possible 4 · text-driven 9 · node only 1.** (TURR moved to verified on owner confirmation, 2026-09-20.)
+**Photo verified 4 · possible 4 · text-driven 10 · node only 1.** (Peak is photo-backed outside this 19-place roster; TURR remains text-driven.)
 
-Which is a good result, not a poor one: **9 of 19 places becoming text is the
+Which is a good result, not a poor one: **10 of 19 places becoming text is the
 story, not a gap.** "บางที่มีรูป บางที่เหลือแค่ความทรงจำ" only works if it's true.
 
 ---
@@ -280,26 +280,24 @@ Recommendation: **two clips, three at most.**
 
 ## 8b. Owner confirmations received (2026-09-20)
 
-Five reference images were confirmed by the owner. **The screenshots themselves
-did not arrive with the message**; the mapping below was read from the filename
-list in the brief, whose order matched reference order — independently verified
-at position 2, which the brief states outright.
+Five reference images were confirmed by the owner. A later owner correction
+locks references 1 and 2 to **ร้าน Peak**, the place where the couple first met.
+This table reflects that corrected mapping.
 
 | ref | meaning | source file | status |
 |---|---|---|---|
-| 1 | จุดเริ่มต้น | `IMG_3416.HEIC` | superseded: this is TURR context, not Peak; renamed `turr-02.webp` |
-| 2 | **ร้าน TURR เกษตร** | `IMG_3479.PNG` | integrated as `turr-01.webp` — stated explicitly in the brief |
+| 1 | **ร้าน Peak — จุดเริ่มต้น** | `IMG_3416.HEIC` | owner-confirmed; integrated as `peak-01.webp` |
+| 2 | **ร้าน Peak — จุดเริ่มต้น** | `IMG_3479.PNG` | owner-confirmed; integrated as `peak-02.webp` |
 | 3 | **หนมถ้วย** | `IMG_2536.JPG` | integrated as `cat-01.webp` |
 | 4 | งานแต่งจริง | `24.jpg` | arrived in the 132-file refresh; integrated as `wedding-actual-01.webp` |
 | 5 | **ถ้วยฟู** | `IMG_6158.JPG` | integrated as `cat-02.webp` |
 
-### TURR is resolved
+### Peak is resolved; TURR has no confirmed photograph
 
-§2 of the curation said *no confident TURR candidate*. That stands as a
-statement about the **evidence** — the venue's neon sign is blown out in every
-frame and the GPS sits 4–5 km from Kaset. It is now resolved by something
-stronger than evidence: the owner said so. Confidence is recorded as
-`OWNER_CONFIRMED`, which outranks any metadata inference.
+The owner corrected the earlier mapping: reference images #1 and #2 are both
+ร้าน Peak, where the couple first met. Confidence for those two Peak mappings is
+recorded as `OWNER_CONFIRMED`. TURR must not use either image and remains a
+text-only relationship milestone until a separate photograph is confirmed.
 
 ### Wedding vs pre-wedding
 
@@ -324,7 +322,7 @@ set remains explicitly pre-wedding.
 
 ## 9. Owner review
 
-**Resolved 2026-09-20:** Q2/Q3/Q4 (TURR), Q10/Q11/Q12 (cat identities), and the
+**Resolved 2026-09-20:** Q1/Q2 (Peak), Q10/Q11/Q12 (cat identities), and the
 wedding/pre-wedding split. **Q19 is new:** is `IMG_5398` (Thai dress, real room)
 the actual ceremony or a pre-wedding shoot?
 
@@ -334,8 +332,8 @@ Still open: Q1, Q5, Q6, Q7, Q8, Q9, Q13, Q14, Q15, Q16, Q17, Q18, Q19.
 thumbnail. Answer in shorthand:
 
 ```
-Q1 = ไม่ใช่ TURR        Q7 = บางแสน        Q13 = crop
-Q2 = TURR               Q10 = ถ้วยฟู       Q17 = ไม่ใช้
+Q1 = Peak               Q7 = บางแสน        Q13 = crop
+Q2 = Peak               Q10 = ถ้วยฟู       Q17 = ไม่ใช้
 ```
 
 Also in `review-local/`: `sheet01`–`sheet06.jpg` (all 107 images, numbered
@@ -372,7 +370,7 @@ Target names (only after confirmation): `hero-01.webp`, `travel-chaam-01.webp`,
 ## 11. Typography note (observation only — no change made)
 
 The places that become text-driven are exactly the ones where the current
-display face will feel hardest: nine place names with no photograph behind them,
+display face will feel hardest: ten place names with no photograph behind them,
 carried entirely by type, plus the numeric beats (10 จังหวัด / 19 สถานที่). Those
 scenes — Places, Journey, Letter — are where a softer editorial Thai face would
 earn its keep. Flagged for the separate typography pass; nothing changed here.

@@ -315,11 +315,9 @@ export const anniversary = {
    */
   memories: [
     /* ── THE BEGINNING ──────────────────────────────────────────────────────
-       ร้าน Peak, owner-confirmed as จุดเริ่มต้น. No photograph of it exists in
-       the pool and none is substituted: it carries the story on its name alone.
-       No date either — the owner has not given one, and a plausible-looking
-       date is still an invented one. ────────────────────────────────────────── */
-    { id: 'm00', title: 'ร้าน Peak', date: 'จุดเริ่มต้น', caption: 'ร้านที่กลายเป็นร้านของเรา', tags: ['daily'], tone: 'champagne', featured: true },
+       ร้าน Peak, owner-confirmed as both the place where they first met and the
+       venue shown in the two supplied references. No date has been supplied. */
+    { id: 'm00', title: 'ร้าน Peak', date: 'จุดเริ่มต้น', caption: 'ร้านที่เราเจอกันครั้งแรก', image: '/images/memories/peak-01.webp', tags: ['daily'], tone: 'champagne', featured: true },
     { id: 'm01', title: 'บ้านวิน', date: 'MEMORY 01', caption: 'ที่แรก ๆ ที่ไปด้วยกัน', tags: ['daily'], tone: 'cream', featured: true },
     { id: 'm02', title: 'งานกาชาด', date: 'MEMORY 02', caption: 'งานวัด งานกาชาด และคนเยอะ ๆ', tags: ['funny'], tone: 'champagne' },
     { id: 'm03', title: 'ร้านเหล้า', date: 'MEMORY 03', caption: 'คืนที่คุยกันยาวกว่าที่คิด', tags: ['daily'], tone: 'navy' },
@@ -342,8 +340,9 @@ export const anniversary = {
        OWNER-CONFIRMED ร้าน TURR เกษตร — the night he asked her to be his partner,
        so this is the RELATIONSHIP MILESTONE. It is deliberately NOT the story's
        จุดเริ่มต้น: that is ร้าน Peak (m00). An earlier pass merged the two
-       meanings; the owner has separated them, and they stay separate. */
-    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/turr-01.webp', tags: ['daily'], tone: 'champagne', featured: true },
+       meanings; the owner has separated them, and they stay separate. The two
+       formerly assigned photographs are Peak, so TURR remains text-only. */
+    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', tags: ['daily'], tone: 'champagne', featured: true },
 
     /* ── MOMENTS, NOT PLACES ──────────────────────────────────────────────────
        Everything above is somewhere they went. These are things that happened,
@@ -415,14 +414,14 @@ export const anniversary = {
     /** A short photo essay of places with owner-confirmed images. */
     photoStories: [
       { id: 'jp-suanphueng', label: 'สวนผึ้ง', province: 'ราชบุรี', date: '25 DEC 2025', caption: 'ปลายปีที่ราชบุรี', image: '/images/memories/suanphueng-01.webp', objectPosition: '50% 42%' },
-      { id: 'jp-turr', label: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/turr-02.webp', objectPosition: '50% 42%' },
+      { id: 'jp-peak', label: 'ร้าน Peak', date: 'จุดเริ่มต้น', caption: 'ร้านที่เราเจอกันครั้งแรก', image: '/images/memories/peak-01.webp', objectPosition: '50% 42%' },
       { id: 'jp-sarika', label: 'น้ำตกสาริกา', province: 'นครนายก', date: '10 DEC 2025', caption: 'ทริปที่นครนายก', image: '/images/memories/sarika-01.webp' },
       { id: 'jp-chaam', label: 'ชะอำ', province: 'เพชรบุรี', date: '16 OCT 2025', caption: 'ทะเลเพชรบุรี', image: '/images/memories/chaam-01.webp' }
     ] as JourneyPhoto[],
 
     /** Important places that remain words because no real photograph exists. */
     rememberedPlaces: [
-      { id: 'jr-peak', label: 'ร้าน Peak', note: 'จุดเริ่มต้นของเรื่องราว' },
+      { id: 'jr-turr', label: 'ร้าน TURR เกษตร', note: 'วันที่เราเริ่มเป็น “เรา” · 12 OCT 2025' },
       { id: 'jr-status', label: 'ร้าน Status', note: 'บางคืนไม่มีรูป แต่เรายังจำได้' }
     ] as RememberedPlace[],
 
@@ -457,8 +456,8 @@ export const anniversary = {
       { id: 'v-wathupkrathing', label: 'วัดหุบกระทิง', province: 'ราชบุรี', coordinatesPending: true },
       { id: 'v-railway', label: 'ทางรถไฟ', coordinatesPending: true },
       /* Owner-confirmed 19th place, and the only one on this list with a date:
-         12 OCT 2025, the night it became official. Two photographs are now tied
-         to it (turr-01, turr-02) — see docs/A&I_MEDIA_CURATION.md. */
+         12 OCT 2025, the night it became official. It has no confirmed photo;
+         the two formerly assigned frames belong to Peak. */
       { id: 'v-turr', label: 'ร้าน TURR เกษตร', coordinatesPending: true }
     ] as JourneyPlace[]
   },
@@ -470,12 +469,11 @@ export const anniversary = {
    * invented date. Bodies say only what is true.
    */
   timeline: [
-    /* Peak opens the timeline because Peak is where the story starts. It is a
-       LABEL, not a date — no date was ever supplied for it — and a text beat,
-       because no photograph of it exists. */
-    { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้านที่กลายเป็นร้านของเรา', type: 'text', treatment: 'textOnly' },
-    /* Then the night it became official. Separate beat, separate meaning. */
-    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่เขาชวนเธอมาเป็นแฟน', type: 'photo', treatment: 'fullbleed', image: '/images/memories/turr-02.webp', objectPosition: '50% 42%' },
+    /* Peak opens the timeline because Peak is where the story starts. The label
+       is not a date; both supplied references are owner-confirmed Peak photos. */
+    { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'fullbleed', image: '/images/memories/peak-01.webp', images: ['/images/memories/peak-02.webp'], objectPosition: '50% 42%' },
+    /* Then the night it became official. Separate, text-only beat. */
+    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่เขาชวนเธอมาเป็นแฟน', type: 'text', treatment: 'textOnly' },
     /* ร้าน Status has no photograph. It stays a text beat rather than borrow an
        unrelated bar frame — the owner asked for exactly this. */
     { id: 't3', label: 'MOMENT', title: 'ร้าน Status', body: 'อีกร้านที่เราไปกันบ่อย', type: 'text', treatment: 'textOnly' },
@@ -581,10 +579,9 @@ export const anniversary = {
    * before. See `docs/IMAGE_INGESTION.md` for the Drive → manifest workflow.
    */
   heroImages: [
-    /* ร้าน TURR เกษตร — the 12 OCT 2025 milestone, not the story's beginning.
-       The file was named `beginning-01` while those two were conflated; it is
-       now `turr-02`, which is what it actually shows. */
-    { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — คืนที่ TURR เกษตร', image: '/images/memories/turr-02.webp', caption: 'คืนที่เราเริ่มเป็นเรา', objectPosition: '50% 42%' },
+    /* ร้าน Peak — owner-confirmed as the first-meeting venue and the place
+       shown in both supplied references. */
+    { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — ร้าน Peak', image: '/images/memories/peak-01.webp', caption: 'ร้านที่เราเจอกันครั้งแรก', objectPosition: '50% 42%' },
     { id: 'hero-02', category: 'hero', intent: 'ภาพเปิดสำรอง — แนวตั้งสำหรับมือถือ', image: '/images/memories/hero-01.webp', caption: 'ริมทะเลด้วยกัน', objectPosition: '50% 38%' },
     { id: 'hero-03', category: 'hero', intent: 'ภาพพื้นหลังกว้าง สำหรับฉากแรก' }
   ] as ImageSlot[],

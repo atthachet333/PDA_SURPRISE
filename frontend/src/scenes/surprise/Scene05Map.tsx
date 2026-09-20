@@ -13,8 +13,8 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
  * A photograph is evidence, not a required card field. Four verified places
- * become a small asymmetric photo essay; Peak and Status are carried by words
- * because no real photograph exists. The complete owner-supplied roster stays
+ * become a small asymmetric photo essay; TURR and Status are carried by words
+ * because no confirmed photograph exists. The complete owner-supplied roster stays
  * visible as one quiet index: 10 provinces, 19 recorded places, without
  * manufacturing 19 identical tiles.
  */
@@ -55,7 +55,7 @@ export function Scene05Map() {
               transition={{ duration: 1, delay: index * 0.12, ease: EASE }}
               className={cn('px-5 py-9 text-center sm:px-10 sm:py-11', index === 1 && 'border-t border-sky-200/15 sm:border-l sm:border-t-0')}
             >
-              <span className="font-mono text-[0.5rem] uppercase tracking-[0.28em] text-sky-100/45">ไม่มีรูปของที่นี่</span>
+              <span className="font-mono text-[0.5rem] uppercase tracking-[0.28em] text-sky-100/45">ความทรงจำที่ไม่มีภาพยืนยัน</span>
               <h3 className="mt-4 font-thai text-2xl font-light text-ivory">{place.label}</h3>
               <p className="mt-3 font-thai text-sm leading-7 text-ivory/55">{place.note}</p>
             </motion.article>
