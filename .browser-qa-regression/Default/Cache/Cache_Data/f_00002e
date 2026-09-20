@@ -1,0 +1,155 @@
+export const insightCategories = [
+  "ERP & Business Systems",
+  "Automation",
+  "Web & Application",
+  "HR & Payroll",
+  "Data & Integration",
+  "Technology Strategy"
+];
+export const insightsIntro = {
+  eyebrow: "INSIGHTS",
+  title: ["บทความและมุมมอง", "เรื่องระบบธุรกิจที่ใช้งานได้จริง"],
+  lead: "แนวคิดสำหรับคนที่กำลังตัดสินใจเรื่องระบบธุรกิจ เนื้อหาฉบับเต็มจะเผยแพร่เมื่อเรียบเรียงและตรวจสอบครบแล้ว"
+};
+export const isInsightPublished = (insight) => insight.published === true && Boolean(insight.body?.length);
+export const insights = [
+  {
+    id: "insight-erp-101",
+    slug: "what-is-erp",
+    titleTh: "ERP คืออะไร และธุรกิจแบบไหนควรเริ่มใช้",
+    category: "ERP & Business Systems",
+    excerpt: "สัญญาณที่บอกว่าข้อมูลและขั้นตอนของธุรกิจเริ่มต้องการระบบกลาง มากกว่าการเพิ่มไฟล์หรือเพิ่มคนประสานงาน",
+    published: false,
+    image: "diagram:erp"
+  },
+  {
+    id: "insight-custom-software",
+    slug: "custom-software-vs-off-the-shelf",
+    titleTh: "Custom Software ต่างจากโปรแกรมสำเร็จรูปอย่างไร",
+    category: "Technology Strategy",
+    excerpt: "เปรียบเทียบความยืดหยุ่น ต้นทุนระยะยาว และภาระการเปลี่ยนวิธีทำงานให้เข้ากับซอฟต์แวร์แต่ละแบบ",
+    published: false,
+    image: "diagram:build-or-buy"
+  },
+  {
+    id: "insight-spreadsheet",
+    slug: "reduce-spreadsheet-dependency",
+    titleTh: "ทำไมธุรกิจควรลดการพึ่ง Spreadsheet",
+    category: "ERP & Business Systems",
+    excerpt: "จุดเปลี่ยนจากไฟล์ที่คล่องตัว ไปสู่ความเสี่ยงจากหลายเวอร์ชัน หลายผู้แก้ และข้อมูลที่ตรวจสอบยาก",
+    published: false,
+    image: "diagram:spreadsheet"
+  },
+  {
+    id: "insight-automation",
+    slug: "automation-reduces-repetitive-work",
+    titleTh: "Automation ช่วยลดงานซ้ำในองค์กรได้อย่างไร",
+    category: "Automation",
+    excerpt: "แนวทางเลือกงานที่ทำซ้ำตามกฎชัดเจนให้ระบบรับช่วง โดยยังคงจุดตรวจสอบที่คนต้องตัดสินใจไว้",
+    published: false,
+    image: "diagram:automation"
+  },
+  {
+    id: "insight-payroll",
+    slug: "what-good-payroll-needs",
+    titleTh: "ระบบ Payroll ที่ดีควรมีอะไรบ้าง",
+    category: "HR & Payroll",
+    excerpt: "มากกว่าการคำนวณเงินเดือน คือกฎที่แก้ได้ การตรวจย้อนหลัง และคำอธิบายตัวเลขที่ฝ่ายบุคคลตอบได้ทันที",
+    published: false,
+    image: "diagram:payroll"
+  },
+  {
+    id: "insight-web-app",
+    slug: "who-needs-a-web-application",
+    titleTh: "Web Application เหมาะกับธุรกิจแบบไหน",
+    category: "Web & Application",
+    excerpt: "เมื่อเว็บไซต์ธรรมดาไม่พอ และทีมต้องใช้ข้อมูล ทำรายการ หรือทำงานร่วมกันผ่านเบราว์เซอร์",
+    published: false,
+    image: "device:web-app"
+  },
+  {
+    id: "insight-mobile-app",
+    slug: "does-every-business-need-a-mobile-app",
+    titleTh: "Mobile Application จำเป็นกับทุกธุรกิจหรือไม่",
+    category: "Web & Application",
+    excerpt: "เกณฑ์ตัดสินใจจากพฤติกรรมผู้ใช้ ฟังก์ชันอุปกรณ์ และความถี่ในการใช้งาน ก่อนลงทุนทำแอป",
+    published: false,
+    image: "device:mobile"
+  },
+  {
+    id: "insight-documents",
+    slug: "document-system-reduces-risk",
+    titleTh: "ระบบจัดเก็บเอกสารช่วยลดความเสี่ยงอย่างไร",
+    category: "ERP & Business Systems",
+    excerpt: "สิทธิ์ เวอร์ชัน ประวัติ และการค้นหา ช่วยลดความเสี่ยงที่เอกสารสำคัญจะหายหรือถูกใช้งานผิดฉบับ",
+    published: false,
+    image: "diagram:documents"
+  },
+  {
+    id: "insight-api",
+    slug: "what-is-api-integration",
+    titleTh: "API Integration คืออะไร และช่วยเชื่อมระบบอย่างไร",
+    category: "Data & Integration",
+    excerpt: "อธิบายการส่งข้อมูลระหว่างระบบ และสิ่งที่ต้องวางแผนเรื่องสิทธิ์ ความผิดพลาด และการตรวจสอบย้อนหลัง",
+    published: false,
+    image: "diagram:api"
+  },
+  {
+    id: "insight-internal-system",
+    slug: "internal-systems-help-teams-move-faster",
+    titleTh: "ทำไม Internal System ถึงช่วยให้ทีมทำงานเร็วขึ้น",
+    category: "Technology Strategy",
+    excerpt: "ลดการส่งต่องานผ่านแชตและไฟล์ ด้วยสถานะ สิทธิ์ และข้อมูลที่ทุกฝ่ายเห็นร่วมกันในบริบทเดียว",
+    published: false,
+    image: "diagram:internal-tools"
+  },
+  {
+    id: "insight-erp-crm",
+    slug: "erp-vs-crm",
+    titleTh: "ERP กับ CRM ต่างกันอย่างไร",
+    category: "ERP & Business Systems",
+    excerpt: "แยกบทบาทของระบบหลังบ้านและระบบความสัมพันธ์ลูกค้า พร้อมจุดที่ข้อมูลของทั้งสองระบบควรเชื่อมกัน",
+    published: false,
+    image: "diagram:erp-crm"
+  },
+  {
+    id: "insight-build-or-saas",
+    slug: "build-software-or-use-saas",
+    titleTh: "ควรทำ Software เองหรือใช้ SaaS สำเร็จรูป",
+    category: "Technology Strategy",
+    excerpt: "กรอบคิดจากความแตกต่างของ Workflow งบประมาณ เวลา และความสำคัญเชิงกลยุทธ์ของระบบนั้นต่อธุรกิจ",
+    published: false,
+    image: "diagram:saas"
+  },
+  {
+    id: "insight-workflow-first",
+    slug: "design-workflow-before-code",
+    titleTh: "การออกแบบ Workflow ก่อนเขียนโปรแกรมสำคัญอย่างไร",
+    category: "Automation",
+    excerpt: "การเห็นจุดตัดสินใจ ผู้รับผิดชอบ และข้อยกเว้นก่อนเริ่มพัฒนา ช่วยลดการแก้ระบบจากความเข้าใจไม่ตรงกัน",
+    published: false,
+    image: "diagram:workflow"
+  },
+  {
+    id: "insight-line-hr",
+    slug: "who-needs-hr-through-line",
+    titleTh: "ระบบ HR ผ่าน LINE เหมาะกับองค์กรแบบไหน",
+    category: "HR & Payroll",
+    excerpt: "เหมาะเมื่อพนักงานต้องทำรายการสั้น ๆ บ่อยครั้ง และองค์กรต้องการลดแรงต้านจากการติดตั้งหรือเรียนรู้แอปใหม่",
+    published: false,
+    image: "device:line-hr"
+  },
+  {
+    id: "insight-dashboard",
+    slug: "what-a-good-dashboard-shows",
+    titleTh: "Dashboard ที่ดีควรแสดงข้อมูลอะไร",
+    category: "Data & Integration",
+    excerpt: "เริ่มจากคำถามที่ต้องตัดสินใจ ไม่ใช่จำนวนกราฟ พร้อมแนวคิดเรื่องนิยามตัวเลขและการเจาะกลับไปยังข้อมูลต้นทาง",
+    published: false,
+    image: "diagram:dashboard"
+  }
+];
+export const publishedInsights = insights.filter(isInsightPublished);
+export const getInsight = (slug) => insights.find((insight) => insight.slug === slug);
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluc2lnaHRzLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjb25zdCBpbnNpZ2h0Q2F0ZWdvcmllcyA9IFtcbiAgJ0VSUCAmIEJ1c2luZXNzIFN5c3RlbXMnLFxuICAnQXV0b21hdGlvbicsXG4gICdXZWIgJiBBcHBsaWNhdGlvbicsXG4gICdIUiAmIFBheXJvbGwnLFxuICAnRGF0YSAmIEludGVncmF0aW9uJyxcbiAgJ1RlY2hub2xvZ3kgU3RyYXRlZ3knXG5dIGFzIGNvbnN0O1xuXG5leHBvcnQgdHlwZSBJbnNpZ2h0Q2F0ZWdvcnkgPSAodHlwZW9mIGluc2lnaHRDYXRlZ29yaWVzKVtudW1iZXJdO1xuXG5leHBvcnQgaW50ZXJmYWNlIEluc2lnaHQge1xuICBpZDogc3RyaW5nO1xuICBzbHVnOiBzdHJpbmc7XG4gIHRpdGxlVGg6IHN0cmluZztcbiAgdGl0bGVFbj86IHN0cmluZztcbiAgY2F0ZWdvcnk6IEluc2lnaHRDYXRlZ29yeTtcbiAgZXhjZXJwdDogc3RyaW5nO1xuICBib2R5Pzogc3RyaW5nW107XG4gIHB1Ymxpc2hlZDogYm9vbGVhbjtcbiAgLyoqIEJyYW5kZWQgaWxsdXN0cmF0aW9uIGtleSBvciBhIGZ1dHVyZSBhcHByb3ZlZCBpbWFnZSBwYXRoLiAqL1xuICBpbWFnZTogc3RyaW5nO1xuICByZWFkaW5nVGltZT86IG51bWJlcjtcbiAgYXV0aG9yPzogc3RyaW5nO1xuICBkYXRlPzogc3RyaW5nO1xufVxuXG5leHBvcnQgY29uc3QgaW5zaWdodHNJbnRybyA9IHtcbiAgZXllYnJvdzogJ0lOU0lHSFRTJyxcbiAgdGl0bGU6IFsn4Lia4LiX4LiE4Lin4Liy4Lih4LmB4Lil4Liw4Lih4Li44Lih4Lih4Lit4LiHJywgJ+C5gOC4o+C4t+C5iOC4reC4h+C4o+C4sOC4muC4muC4mOC4uOC4o+C4geC4tOC4iOC4l+C4teC5iOC5g+C4iuC5ieC4h+C4suC4meC5hOC4lOC5ieC4iOC4o+C4tOC4hyddLFxuICBsZWFkOiAn4LmB4LiZ4Lin4LiE4Li04LiU4Liq4Liz4Lir4Lij4Lix4Lia4LiE4LiZ4LiX4Li14LmI4LiB4Liz4Lil4Lix4LiH4LiV4Lix4LiU4Liq4Li04LiZ4LmD4LiI4LmA4Lij4Li34LmI4Lit4LiH4Lij4Liw4Lia4Lia4LiY4Li44Lij4LiB4Li04LiIIOC5gOC4meC4t+C5ieC4reC4q+C4suC4ieC4muC4seC4muC5gOC4leC5h+C4oeC4iOC4sOC5gOC4nOC4ouC5geC4nuC4o+C5iOC5gOC4oeC4t+C5iOC4reC5gOC4o+C4teC4ouC4muC5gOC4o+C4teC4ouC4h+C5geC4peC4sOC4leC4o+C4p+C4iOC4quC4reC4muC4hOC4o+C4muC5geC4peC5ieC4pydcbn0gYXMgY29uc3Q7XG5cbi8qKiBBIGNhcmQgb25seSBiZWNvbWVzIGludGVyYWN0aXZlIGFmdGVyIHJlYWwgYm9keSBjb3B5IGlzIHByZXNlbnQuICovXG5leHBvcnQgY29uc3QgaXNJbnNpZ2h0UHVibGlzaGVkID0gKGluc2lnaHQ6IEluc2lnaHQpOiBib29sZWFuID0+XG4gIGluc2lnaHQucHVibGlzaGVkID09PSB0cnVlICYmIEJvb2xlYW4oaW5zaWdodC5ib2R5Py5sZW5ndGgpO1xuXG5leHBvcnQgY29uc3QgaW5zaWdodHM6IEluc2lnaHRbXSA9IFtcbiAge1xuICAgIGlkOiAnaW5zaWdodC1lcnAtMTAxJywgc2x1ZzogJ3doYXQtaXMtZXJwJywgdGl0bGVUaDogJ0VSUCDguITguLfguK3guK3guLDguYTguKMg4LmB4Lil4Liw4LiY4Li44Lij4LiB4Li04LiI4LmB4Lia4Lia4LmE4Lir4LiZ4LiE4Lin4Lij4LmA4Lij4Li04LmI4Lih4LmD4LiK4LmJJyxcbiAgICBjYXRlZ29yeTogJ0VSUCAmIEJ1c2luZXNzIFN5c3RlbXMnLCBleGNlcnB0OiAn4Liq4Lix4LiN4LiN4Liy4LiT4LiX4Li14LmI4Lia4Lit4LiB4Lin4LmI4Liy4LiC4LmJ4Lit4Lih4Li54Lil4LmB4Lil4Liw4LiC4Lix4LmJ4LiZ4LiV4Lit4LiZ4LiC4Lit4LiH4LiY4Li44Lij4LiB4Li04LiI4LmA4Lij4Li04LmI4Lih4LiV4LmJ4Lit4LiH4LiB4Liy4Lij4Lij4Liw4Lia4Lia4LiB4Lil4Liy4LiHIOC4oeC4suC4geC4geC4p+C5iOC4suC4geC4suC4o+C5gOC4nuC4tOC5iOC4oeC5hOC4n+C4peC5jOC4q+C4o+C4t+C4reC5gOC4nuC4tOC5iOC4oeC4hOC4meC4m+C4o+C4sOC4quC4suC4meC4h+C4suC4mScsXG4gICAgcHVibGlzaGVkOiBmYWxzZSwgaW1hZ2U6ICdkaWFncmFtOmVycCdcbiAgfSxcbiAge1xuICAgIGlkOiAnaW5zaWdodC1jdXN0b20tc29mdHdhcmUnLCBzbHVnOiAnY3VzdG9tLXNvZnR3YXJlLXZzLW9mZi10aGUtc2hlbGYnLCB0aXRsZVRoOiAnQ3VzdG9tIFNvZnR3YXJlIOC4leC5iOC4suC4h+C4iOC4suC4geC5guC4m+C4o+C5geC4geC4o+C4oeC4quC4s+C5gOC4o+C5h+C4iOC4o+C4ueC4m+C4reC4ouC5iOC4suC4h+C5hOC4oycsXG4gICAgY2F0ZWdvcnk6ICdUZWNobm9sb2d5IFN0cmF0ZWd5JywgZXhjZXJwdDogJ+C5gOC4m+C4o+C4teC4ouC4muC5gOC4l+C4teC4ouC4muC4hOC4p+C4suC4oeC4ouC4t+C4lOC4q+C4ouC4uOC5iOC4mSDguJXguYnguJnguJfguLjguJnguKPguLDguKLguLDguKLguLLguKcg4LmB4Lil4Liw4Lig4Liy4Lij4Liw4LiB4Liy4Lij4LmA4Lib4Lil4Li14LmI4Lii4LiZ4Lin4Li04LiY4Li14LiX4Liz4LiH4Liy4LiZ4LmD4Lir4LmJ4LmA4LiC4LmJ4Liy4LiB4Lix4Lia4LiL4Lit4Lif4LiV4LmM4LmB4Lin4Lij4LmM4LmB4LiV4LmI4Lil4Liw4LmB4Lia4LiaJyxcbiAgICBwdWJsaXNoZWQ6IGZhbHNlLCBpbWFnZTogJ2RpYWdyYW06YnVpbGQtb3ItYnV5J1xuICB9LFxuICB7XG4gICAgaWQ6ICdpbnNpZ2h0LXNwcmVhZHNoZWV0Jywgc2x1ZzogJ3JlZHVjZS1zcHJlYWRzaGVldC1kZXBlbmRlbmN5JywgdGl0bGVUaDogJ+C4l+C4s+C5hOC4oeC4mOC4uOC4o+C4geC4tOC4iOC4hOC4p+C4o+C4peC4lOC4geC4suC4o+C4nuC4tuC5iOC4hyBTcHJlYWRzaGVldCcsXG4gICAgY2F0ZWdvcnk6ICdFUlAgJiBCdXNpbmVzcyBTeXN0ZW1zJywgZXhjZXJwdDogJ+C4iOC4uOC4lOC5gOC4m+C4peC4teC5iOC4ouC4meC4iOC4suC4geC5hOC4n+C4peC5jOC4l+C4teC5iOC4hOC4peC5iOC4reC4h+C4leC4seC4pyDguYTguJvguKrguLnguYjguITguKfguLLguKHguYDguKrguLXguYjguKLguIfguIjguLLguIHguKvguKXguLLguKLguYDguKfguK3guKPguYzguIrguLHguJkg4Lir4Lil4Liy4Lii4Lic4Li54LmJ4LmB4LiB4LmJIOC5geC4peC4sOC4guC5ieC4reC4oeC4ueC4peC4l+C4teC5iOC4leC4o+C4p+C4iOC4quC4reC4muC4ouC4suC4gScsXG4gICAgcHVibGlzaGVkOiBmYWxzZSwgaW1hZ2U6ICdkaWFncmFtOnNwcmVhZHNoZWV0J1xuICB9LFxuICB7XG4gICAgaWQ6ICdpbnNpZ2h0LWF1dG9tYXRpb24nLCBzbHVnOiAnYXV0b21hdGlvbi1yZWR1Y2VzLXJlcGV0aXRpdmUtd29yaycsIHRpdGxlVGg6ICdBdXRvbWF0aW9uIOC4iuC5iOC4p+C4ouC4peC4lOC4h+C4suC4meC4i+C5ieC4s+C5g+C4meC4reC4h+C4hOC5jOC4geC4o+C5hOC4lOC5ieC4reC4ouC5iOC4suC4h+C5hOC4oycsXG4gICAgY2F0ZWdvcnk6ICdBdXRvbWF0aW9uJywgZXhjZXJwdDogJ+C5geC4meC4p+C4l+C4suC4h+C5gOC4peC4t+C4reC4geC4h+C4suC4meC4l+C4teC5iOC4l+C4s+C4i+C5ieC4s+C4leC4suC4oeC4geC4juC4iuC4seC4lOC5gOC4iOC4meC5g+C4q+C5ieC4o+C4sOC4muC4muC4o+C4seC4muC4iuC5iOC4p+C4hyDguYLguJTguKLguKLguLHguIfguITguIfguIjguLjguJTguJXguKPguKfguIjguKrguK3guJrguJfguLXguYjguITguJnguJXguYnguK3guIfguJXguLHguJTguKrguLTguJnguYPguIjguYTguKfguYknLFxuICAgIHB1Ymxpc2hlZDogZmFsc2UsIGltYWdlOiAnZGlhZ3JhbTphdXRvbWF0aW9uJ1xuICB9LFxuICB7XG4gICAgaWQ6ICdpbnNpZ2h0LXBheXJvbGwnLCBzbHVnOiAnd2hhdC1nb29kLXBheXJvbGwtbmVlZHMnLCB0aXRsZVRoOiAn4Lij4Liw4Lia4LiaIFBheXJvbGwg4LiX4Li14LmI4LiU4Li14LiE4Lin4Lij4Lih4Li14Lit4Liw4LmE4Lij4Lia4LmJ4Liy4LiHJyxcbiAgICBjYXRlZ29yeTogJ0hSICYgUGF5cm9sbCcsIGV4Y2VycHQ6ICfguKHguLLguIHguIHguKfguYjguLLguIHguLLguKPguITguLPguJnguKfguJPguYDguIfguLTguJnguYDguJTguLfguK3guJkg4LiE4Li34Lit4LiB4LiO4LiX4Li14LmI4LmB4LiB4LmJ4LmE4LiU4LmJIOC4geC4suC4o+C4leC4o+C4p+C4iOC4ouC5ieC4reC4meC4q+C4peC4seC4hyDguYHguKXguLDguITguLPguK3guJjguLTguJrguLLguKLguJXguLHguKfguYDguKXguILguJfguLXguYjguJ3guYjguLLguKLguJrguLjguITguITguKXguJXguK3guJrguYTguJTguYnguJfguLHguJnguJfguLUnLFxuICAgIHB1Ymxpc2hlZDogZmFsc2UsIGltYWdlOiAnZGlhZ3JhbTpwYXlyb2xsJ1xuICB9LFxuICB7XG4gICAgaWQ6ICdpbnNpZ2h0LXdlYi1hcHAnLCBzbHVnOiAnd2hvLW5lZWRzLWEtd2ViLWFwcGxpY2F0aW9uJywgdGl0bGVUaDogJ1dlYiBBcHBsaWNhdGlvbiDguYDguKvguKHguLLguLDguIHguLHguJrguJjguLjguKPguIHguLTguIjguYHguJrguJrguYTguKvguJknLFxuICAgIGNhdGVnb3J5OiAnV2ViICYgQXBwbGljYXRpb24nLCBleGNlcnB0OiAn4LmA4Lih4Li34LmI4Lit4LmA4Lin4LmH4Lia4LmE4LiL4LiV4LmM4LiY4Lij4Lij4Lih4LiU4Liy4LmE4Lih4LmI4Lie4LitIOC5geC4peC4sOC4l+C4teC4oeC4leC5ieC4reC4h+C5g+C4iuC5ieC4guC5ieC4reC4oeC4ueC4pSDguJfguLPguKPguLLguKLguIHguLLguKMg4Lir4Lij4Li34Lit4LiX4Liz4LiH4Liy4LiZ4Lij4LmI4Lin4Lih4LiB4Lix4LiZ4Lic4LmI4Liy4LiZ4LmA4Lia4Lij4Liy4Lin4LmM4LmA4LiL4Lit4Lij4LmMJyxcbiAgICBwdWJsaXNoZWQ6IGZhbHNlLCBpbWFnZTogJ2RldmljZTp3ZWItYXBwJ1xuICB9LFxuICB7XG4gICAgaWQ6ICdpbnNpZ2h0LW1vYmlsZS1hcHAnLCBzbHVnOiAnZG9lcy1ldmVyeS1idXNpbmVzcy1uZWVkLWEtbW9iaWxlLWFwcCcsIHRpdGxlVGg6ICdNb2JpbGUgQXBwbGljYXRpb24g4LiI4Liz4LmA4Lib4LmH4LiZ4LiB4Lix4Lia4LiX4Li44LiB4LiY4Li44Lij4LiB4Li04LiI4Lir4Lij4Li34Lit4LmE4Lih4LmIJyxcbiAgICBjYXRlZ29yeTogJ1dlYiAmIEFwcGxpY2F0aW9uJywgZXhjZXJwdDogJ+C5gOC4geC4k+C4keC5jOC4leC4seC4lOC4quC4tOC4meC5g+C4iOC4iOC4suC4geC4nuC4pOC4leC4tOC4geC4o+C4o+C4oeC4nOC4ueC5ieC5g+C4iuC5iSDguJ/guLHguIfguIHguYzguIrguLHguJnguK3guLjguJvguIHguKPguJPguYwg4LmB4Lil4Liw4LiE4Lin4Liy4Lih4LiW4Li14LmI4LmD4LiZ4LiB4Liy4Lij4LmD4LiK4LmJ4LiH4Liy4LiZIOC4geC5iOC4reC4meC4peC4h+C4l+C4uOC4meC4l+C4s+C5geC4reC4mycsXG4gICAgcHVibGlzaGVkOiBmYWxzZSwgaW1hZ2U6ICdkZXZpY2U6bW9iaWxlJ1xuICB9LFxuICB7XG4gICAgaWQ6ICdpbnNpZ2h0LWRvY3VtZW50cycsIHNsdWc6ICdkb2N1bWVudC1zeXN0ZW0tcmVkdWNlcy1yaXNrJywgdGl0bGVUaDogJ+C4o+C4sOC4muC4muC4iOC4seC4lOC5gOC4geC5h+C4muC5gOC4reC4geC4quC4suC4o+C4iuC5iOC4p+C4ouC4peC4lOC4hOC4p+C4suC4oeC5gOC4quC4teC5iOC4ouC4h+C4reC4ouC5iOC4suC4h+C5hOC4oycsXG4gICAgY2F0ZWdvcnk6ICdFUlAgJiBCdXNpbmVzcyBTeXN0ZW1zJywgZXhjZXJwdDogJ+C4quC4tOC4l+C4mOC4tOC5jCDguYDguKfguK3guKPguYzguIrguLHguJkg4Lib4Lij4Liw4Lin4Lix4LiV4Li0IOC5geC4peC4sOC4geC4suC4o+C4hOC5ieC4meC4q+C4siDguIrguYjguKfguKLguKXguJTguITguKfguLLguKHguYDguKrguLXguYjguKLguIfguJfguLXguYjguYDguK3guIHguKrguLLguKPguKrguLPguITguLHguI3guIjguLDguKvguLLguKLguKvguKPguLfguK3guJbguLnguIHguYPguIrguYnguIfguLLguJnguJzguLTguJTguInguJrguLHguJonLFxuICAgIHB1Ymxpc2hlZDogZmFsc2UsIGltYWdlOiAnZGlhZ3JhbTpkb2N1bWVudHMnXG4gIH0sXG4gIHtcbiAgICBpZDogJ2luc2lnaHQtYXBpJywgc2x1ZzogJ3doYXQtaXMtYXBpLWludGVncmF0aW9uJywgdGl0bGVUaDogJ0FQSSBJbnRlZ3JhdGlvbiDguITguLfguK3guK3guLDguYTguKMg4LmB4Lil4Liw4LiK4LmI4Lin4Lii4LmA4LiK4Li34LmI4Lit4Lih4Lij4Liw4Lia4Lia4Lit4Lii4LmI4Liy4LiH4LmE4LijJyxcbiAgICBjYXRlZ29yeTogJ0RhdGEgJiBJbnRlZ3JhdGlvbicsIGV4Y2VycHQ6ICfguK3guJjguLTguJrguLLguKLguIHguLLguKPguKrguYjguIfguILguYnguK3guKHguLnguKXguKPguLDguKvguKfguYjguLLguIfguKPguLDguJrguJog4LmB4Lil4Liw4Liq4Li04LmI4LiH4LiX4Li14LmI4LiV4LmJ4Lit4LiH4Lin4Liy4LiH4LmB4Lic4LiZ4LmA4Lij4Li34LmI4Lit4LiH4Liq4Li04LiX4LiY4Li04LmMIOC4hOC4p+C4suC4oeC4nOC4tOC4lOC4nuC4peC4suC4lCDguYHguKXguLDguIHguLLguKPguJXguKPguKfguIjguKrguK3guJrguKLguYnguK3guJnguKvguKXguLHguIcnLFxuICAgIHB1Ymxpc2hlZDogZmFsc2UsIGltYWdlOiAnZGlhZ3JhbTphcGknXG4gIH0sXG4gIHtcbiAgICBpZDogJ2luc2lnaHQtaW50ZXJuYWwtc3lzdGVtJywgc2x1ZzogJ2ludGVybmFsLXN5c3RlbXMtaGVscC10ZWFtcy1tb3ZlLWZhc3RlcicsIHRpdGxlVGg6ICfguJfguLPguYTguKEgSW50ZXJuYWwgU3lzdGVtIOC4luC4tuC4h+C4iuC5iOC4p+C4ouC5g+C4q+C5ieC4l+C4teC4oeC4l+C4s+C4h+C4suC4meC5gOC4o+C5h+C4p+C4guC4tuC5ieC4mScsXG4gICAgY2F0ZWdvcnk6ICdUZWNobm9sb2d5IFN0cmF0ZWd5JywgZXhjZXJwdDogJ+C4peC4lOC4geC4suC4o+C4quC5iOC4h+C4leC5iOC4reC4h+C4suC4meC4nOC5iOC4suC4meC5geC4iuC4leC5geC4peC4sOC5hOC4n+C4peC5jCDguJTguYnguKfguKLguKrguJbguLLguJnguLAg4Liq4Li04LiX4LiY4Li04LmMIOC5geC4peC4sOC4guC5ieC4reC4oeC4ueC4peC4l+C4teC5iOC4l+C4uOC4geC4neC5iOC4suC4ouC5gOC4q+C5h+C4meC4o+C5iOC4p+C4oeC4geC4seC4meC5g+C4meC4muC4o+C4tOC4muC4l+C5gOC4lOC4teC4ouC4pycsXG4gICAgcHVibGlzaGVkOiBmYWxzZSwgaW1hZ2U6ICdkaWFncmFtOmludGVybmFsLXRvb2xzJ1xuICB9LFxuICB7XG4gICAgaWQ6ICdpbnNpZ2h0LWVycC1jcm0nLCBzbHVnOiAnZXJwLXZzLWNybScsIHRpdGxlVGg6ICdFUlAg4LiB4Lix4LiaIENSTSDguJXguYjguLLguIfguIHguLHguJnguK3guKLguYjguLLguIfguYTguKMnLFxuICAgIGNhdGVnb3J5OiAnRVJQICYgQnVzaW5lc3MgU3lzdGVtcycsIGV4Y2VycHQ6ICfguYHguKLguIHguJrguJfguJrguLLguJfguILguK3guIfguKPguLDguJrguJrguKvguKXguLHguIfguJrguYnguLLguJnguYHguKXguLDguKPguLDguJrguJrguITguKfguLLguKHguKrguLHguKHguJ7guLHguJnguJjguYzguKXguLnguIHguITguYnguLIg4Lie4Lij4LmJ4Lit4Lih4LiI4Li44LiU4LiX4Li14LmI4LiC4LmJ4Lit4Lih4Li54Lil4LiC4Lit4LiH4LiX4Lix4LmJ4LiH4Liq4Lit4LiH4Lij4Liw4Lia4Lia4LiE4Lin4Lij4LmA4LiK4Li34LmI4Lit4Lih4LiB4Lix4LiZJyxcbiAgICBwdWJsaXNoZWQ6IGZhbHNlLCBpbWFnZTogJ2RpYWdyYW06ZXJwLWNybSdcbiAgfSxcbiAge1xuICAgIGlkOiAnaW5zaWdodC1idWlsZC1vci1zYWFzJywgc2x1ZzogJ2J1aWxkLXNvZnR3YXJlLW9yLXVzZS1zYWFzJywgdGl0bGVUaDogJ+C4hOC4p+C4o+C4l+C4syBTb2Z0d2FyZSDguYDguK3guIfguKvguKPguLfguK3guYPguIrguYkgU2FhUyDguKrguLPguYDguKPguYfguIjguKPguLnguJsnLFxuICAgIGNhdGVnb3J5OiAnVGVjaG5vbG9neSBTdHJhdGVneScsIGV4Y2VycHQ6ICfguIHguKPguK3guJrguITguLTguJTguIjguLLguIHguITguKfguLLguKHguYHguJXguIHguJXguYjguLLguIfguILguK3guIcgV29ya2Zsb3cg4LiH4Lia4Lib4Lij4Liw4Lih4Liy4LiTIOC5gOC4p+C4peC4siDguYHguKXguLDguITguKfguLLguKHguKrguLPguITguLHguI3guYDguIrguLTguIfguIHguKXguKLguLjguJfguJjguYzguILguK3guIfguKPguLDguJrguJrguJnguLHguYnguJnguJXguYjguK3guJjguLjguKPguIHguLTguIgnLFxuICAgIHB1Ymxpc2hlZDogZmFsc2UsIGltYWdlOiAnZGlhZ3JhbTpzYWFzJ1xuICB9LFxuICB7XG4gICAgaWQ6ICdpbnNpZ2h0LXdvcmtmbG93LWZpcnN0Jywgc2x1ZzogJ2Rlc2lnbi13b3JrZmxvdy1iZWZvcmUtY29kZScsIHRpdGxlVGg6ICfguIHguLLguKPguK3guK3guIHguYHguJrguJogV29ya2Zsb3cg4LiB4LmI4Lit4LiZ4LmA4LiC4Li14Lii4LiZ4LmC4Lib4Lij4LmB4LiB4Lij4Lih4Liq4Liz4LiE4Lix4LiN4Lit4Lii4LmI4Liy4LiH4LmE4LijJyxcbiAgICBjYXRlZ29yeTogJ0F1dG9tYXRpb24nLCBleGNlcnB0OiAn4LiB4Liy4Lij4LmA4Lir4LmH4LiZ4LiI4Li44LiU4LiV4Lix4LiU4Liq4Li04LiZ4LmD4LiIIOC4nOC4ueC5ieC4o+C4seC4muC4nOC4tOC4lOC4iuC4reC4miDguYHguKXguLDguILguYnguK3guKLguIHguYDguKfguYnguJnguIHguYjguK3guJnguYDguKPguLTguYjguKHguJ7guLHguJLguJnguLIg4LiK4LmI4Lin4Lii4Lil4LiU4LiB4Liy4Lij4LmB4LiB4LmJ4Lij4Liw4Lia4Lia4LiI4Liy4LiB4LiE4Lin4Liy4Lih4LmA4LiC4LmJ4Liy4LmD4LiI4LmE4Lih4LmI4LiV4Lij4LiH4LiB4Lix4LiZJyxcbiAgICBwdWJsaXNoZWQ6IGZhbHNlLCBpbWFnZTogJ2RpYWdyYW06d29ya2Zsb3cnXG4gIH0sXG4gIHtcbiAgICBpZDogJ2luc2lnaHQtbGluZS1ocicsIHNsdWc6ICd3aG8tbmVlZHMtaHItdGhyb3VnaC1saW5lJywgdGl0bGVUaDogJ+C4o+C4sOC4muC4miBIUiDguJzguYjguLLguJkgTElORSDguYDguKvguKHguLLguLDguIHguLHguJrguK3guIfguITguYzguIHguKPguYHguJrguJrguYTguKvguJknLFxuICAgIGNhdGVnb3J5OiAnSFIgJiBQYXlyb2xsJywgZXhjZXJwdDogJ+C5gOC4q+C4oeC4suC4sOC5gOC4oeC4t+C5iOC4reC4nuC4meC4seC4geC4h+C4suC4meC4leC5ieC4reC4h+C4l+C4s+C4o+C4suC4ouC4geC4suC4o+C4quC4seC5ieC4mSDguYYg4Lia4LmI4Lit4Lii4LiE4Lij4Lix4LmJ4LiHIOC5geC4peC4sOC4reC4h+C4hOC5jOC4geC4o+C4leC5ieC4reC4h+C4geC4suC4o+C4peC4lOC5geC4o+C4h+C4leC5ieC4suC4meC4iOC4suC4geC4geC4suC4o+C4leC4tOC4lOC4leC4seC5ieC4h+C4q+C4o+C4t+C4reC5gOC4o+C4teC4ouC4meC4o+C4ueC5ieC5geC4reC4m+C5g+C4q+C4oeC5iCcsXG4gICAgcHVibGlzaGVkOiBmYWxzZSwgaW1hZ2U6ICdkZXZpY2U6bGluZS1ocidcbiAgfSxcbiAge1xuICAgIGlkOiAnaW5zaWdodC1kYXNoYm9hcmQnLCBzbHVnOiAnd2hhdC1hLWdvb2QtZGFzaGJvYXJkLXNob3dzJywgdGl0bGVUaDogJ0Rhc2hib2FyZCDguJfguLXguYjguJTguLXguITguKfguKPguYHguKrguJTguIfguILguYnguK3guKHguLnguKXguK3guLDguYTguKMnLFxuICAgIGNhdGVnb3J5OiAnRGF0YSAmIEludGVncmF0aW9uJywgZXhjZXJwdDogJ+C5gOC4o+C4tOC5iOC4oeC4iOC4suC4geC4hOC4s+C4luC4suC4oeC4l+C4teC5iOC4leC5ieC4reC4h+C4leC4seC4lOC4quC4tOC4meC5g+C4iCDguYTguKHguYjguYPguIrguYjguIjguLPguJnguKfguJnguIHguKPguLLguJ8g4Lie4Lij4LmJ4Lit4Lih4LmB4LiZ4Lin4LiE4Li04LiU4LmA4Lij4Li34LmI4Lit4LiH4LiZ4Li04Lii4Liy4Lih4LiV4Lix4Lin4LmA4Lil4LiC4LmB4Lil4Liw4LiB4Liy4Lij4LmA4LiI4Liy4Liw4LiB4Lil4Lix4Lia4LmE4Lib4Lii4Lix4LiH4LiC4LmJ4Lit4Lih4Li54Lil4LiV4LmJ4LiZ4LiX4Liy4LiHJyxcbiAgICBwdWJsaXNoZWQ6IGZhbHNlLCBpbWFnZTogJ2RpYWdyYW06ZGFzaGJvYXJkJ1xuICB9XG5dO1xuXG5leHBvcnQgY29uc3QgcHVibGlzaGVkSW5zaWdodHMgPSBpbnNpZ2h0cy5maWx0ZXIoaXNJbnNpZ2h0UHVibGlzaGVkKTtcbmV4cG9ydCBjb25zdCBnZXRJbnNpZ2h0ID0gKHNsdWc6IHN0cmluZykgPT4gaW5zaWdodHMuZmluZCgoaW5zaWdodCkgPT4gaW5zaWdodC5zbHVnID09PSBzbHVnKTtcbiJdLCJtYXBwaW5ncyI6IkFBQU8sYUFBTSxvQkFBb0I7QUFBQSxFQUMvQjtBQUFBLEVBQ0E7QUFBQSxFQUNBO0FBQUEsRUFDQTtBQUFBLEVBQ0E7QUFBQSxFQUNBO0FBQ0Y7QUFvQk8sYUFBTSxnQkFBZ0I7QUFBQSxFQUMzQixTQUFTO0FBQUEsRUFDVCxPQUFPLENBQUMsbUJBQW1CLGtDQUFrQztBQUFBLEVBQzdELE1BQU07QUFDUjtBQUdPLGFBQU0scUJBQXFCLENBQUMsWUFDakMsUUFBUSxjQUFjLFFBQVEsUUFBUSxRQUFRLE1BQU0sTUFBTTtBQUVyRCxhQUFNLFdBQXNCO0FBQUEsRUFDakM7QUFBQSxJQUNFLElBQUk7QUFBQSxJQUFtQixNQUFNO0FBQUEsSUFBZSxTQUFTO0FBQUEsSUFDckQsVUFBVTtBQUFBLElBQTBCLFNBQVM7QUFBQSxJQUM3QyxXQUFXO0FBQUEsSUFBTyxPQUFPO0FBQUEsRUFDM0I7QUFBQSxFQUNBO0FBQUEsSUFDRSxJQUFJO0FBQUEsSUFBMkIsTUFBTTtBQUFBLElBQW9DLFNBQVM7QUFBQSxJQUNsRixVQUFVO0FBQUEsSUFBdUIsU0FBUztBQUFBLElBQzFDLFdBQVc7QUFBQSxJQUFPLE9BQU87QUFBQSxFQUMzQjtBQUFBLEVBQ0E7QUFBQSxJQUNFLElBQUk7QUFBQSxJQUF1QixNQUFNO0FBQUEsSUFBaUMsU0FBUztBQUFBLElBQzNFLFVBQVU7QUFBQSxJQUEwQixTQUFTO0FBQUEsSUFDN0MsV0FBVztBQUFBLElBQU8sT0FBTztBQUFBLEVBQzNCO0FBQUEsRUFDQTtBQUFBLElBQ0UsSUFBSTtBQUFBLElBQXNCLE1BQU07QUFBQSxJQUFzQyxTQUFTO0FBQUEsSUFDL0UsVUFBVTtBQUFBLElBQWMsU0FBUztBQUFBLElBQ2pDLFdBQVc7QUFBQSxJQUFPLE9BQU87QUFBQSxFQUMzQjtBQUFBLEVBQ0E7QUFBQSxJQUNFLElBQUk7QUFBQSxJQUFtQixNQUFN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
