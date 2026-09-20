@@ -171,6 +171,20 @@ export default function Experience() {
 
   const direction = useMemo(() => DIRECTION[current] ?? DEFAULT_DIRECTION, [current]);
 
+  /*
+   * THE ONE MEANINGFUL SHOOTING STAR.
+   *
+   * The letter is where the experience stops showing and starts saying, and it
+   * is the only threshold in the story that is purely emotional — every other
+   * one is carried by a photograph or a date. So it gets the star, and it is
+   * the only scene that does.
+   *
+   * `herald` is a value, not an event: `ShootingStars` fires once when it
+   * changes and ignores it thereafter, so scrolling back out of the letter and
+   * in again does not repeat it. Missing it entirely costs nothing.
+   */
+  const herald = current === 'letter' ? 'letter' : undefined;
+
   /**
    * SCENE-AWARE MIXING — the director's only channel into the music.
    *
@@ -210,7 +224,7 @@ export default function Experience() {
       {/* Belongs to the sky rather than to any scene, so it stays put while the
           story scrolls past it. */}
       <SecretStar />
-      <ShootingStars />
+      <ShootingStars herald={herald} />
 
       <main id="main" className="relative z-10">
         <Scene01Entry onEnter={onEnter} />

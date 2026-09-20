@@ -17,14 +17,52 @@ import { useMagnetic } from '@/hooks/useMagnetic';
  * single call to action appears last.
  */
 
-type Stage = 'flash' | 'mark' | 'copy' | 'ready';
+/**
+ * THE ARRIVAL SEQUENCE.
+ *
+ * A numbered step rather than named stages, because the only thing that
+ * matters is "how far in are we" and every element compares against one
+ * number. The sky is already there when the flash clears; this is the order
+ * the rest of it arrives in.
+ *
+ * Wall-clock, not frame-driven, so a throttled tab still gets there. And the
+ * last entry is the whole sequence: whatever happens to the timers in between,
+ * `READY` is scheduled independently, so no element can be stranded invisible.
+ */
+const STEP = {
+  MARK: 0,
+  ORBIT: 1,
+  WORDMARK: 2,
+  WHISPER: 3,
+  TITLE: 4,
+  READY: 5
+} as const;
+
+/** Milliseconds from mount to each step. */
+const CUE_AT: [step: number, ms: number][] = [
+  [STEP.ORBIT, 500],
+  [STEP.WORDMARK, 1400],
+  [STEP.WHISPER, 2200],
+  [STEP.TITLE, 2900],
+  [STEP.READY, 3700]
+];
 
 const { intro } = anniversary;
 
 export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
   const { play, triggerCue } = useAudio();
   const reduced = useReducedMotion();
-  const [stage, setStage] = useState<Stage>(reduced ? 'ready' : 'flash');
+  const [step, setStep] = useState<number>(reduced ? STEP.READY : STEP.MARK);
+  /*
+   * Set once the sequence is over AND its longest transition has had time to
+   * finish. From then on the reveal styles carry no `transition` at all, so the
+   * arrival is plain static markup: any later re-render, any engine that has
+   * stopped its animation clock, any repaint — all land on the final value
+   * immediately. The choreography exists for the first few seconds of the first
+   * visit and then gets out of the way entirely.
+   */
+  const [settled, setSettled] = useState(reduced);
+  const stage = step >= STEP.READY ? 'ready' : 'entering';
   /*
    * A very light magnetic pull on the one call to action — 0.12, roughly a
    * tenth of the pointer's offset, so the button leans toward the cursor rather
@@ -37,23 +75,92 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
 
   useEffect(() => {
     if (reduced) return;
-    // Wall-clock staging, so a throttled tab still arrives at 'ready'.
-    const timers = [
-      window.setTimeout(() => setStage('mark'), 700),
-      window.setTimeout(() => setStage('copy'), 2600),
+
+    // `Math.max` so a skip can never be undone by a timer that was already in
+    // flight — the sequence only ever moves forward.
+    const advance = (to: number) => setStep((current) => Math.max(current, to));
+    const timers = CUE_AT.map(([to, ms]) =>
       window.setTimeout(() => {
-        setStage('ready');
-        triggerCue('entry');
-      }, 4200)
-    ];
-    return () => timers.forEach((timer) => window.clearTimeout(timer));
+        advance(to);
+        if (to === STEP.READY) triggerCue('entry');
+      }, ms)
+    );
+
+    /*
+     * THE SEQUENCE IS AN OFFER, NOT A GATE.
+     *
+     * Anyone who touches anything — pointer, key, wheel, scroll — has told us
+     * they are here and do not want to watch a title sequence. That skips
+     * straight to the end rather than pausing or replaying, so nobody is ever
+     * waiting on choreography to reach the button. The listeners detach as
+     * soon as they have done their job.
+     */
+    const skip = () => {
+      advance(STEP.READY);
+      triggerCue('entry');
+      detach();
+    };
+    const detach = () => {
+      window.removeEventListener('pointerdown', skip);
+      window.removeEventListener('keydown', skip);
+      window.removeEventListener('wheel', skip);
+      window.removeEventListener('touchstart', skip);
+    };
+    window.addEventListener('pointerdown', skip, { passive: true });
+    window.addEventListener('keydown', skip);
+    window.addEventListener('wheel', skip, { passive: true });
+    window.addEventListener('touchstart', skip, { passive: true });
+
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+      detach();
+    };
   }, [reduced, triggerCue]);
+
+  /*
+   * A single wall-clock guarantee, independent of every timer above and of the
+   * skip handler. Whatever happens to the sequence, the arrival is fully
+   * visible and transition-free by this point.
+   */
+  useEffect(() => {
+    if (reduced) return;
+    const done = window.setTimeout(() => {
+      setStep((current) => Math.max(current, STEP.READY));
+      setSettled(true);
+    }, 5600);
+    return () => window.clearTimeout(done);
+  }, [reduced]);
+
+  /*
+   * THE REVEAL IS A CSS TRANSITION, NOT AN ANIMATION LIBRARY CALL.
+   *
+   * This matters more than it looks. A framer `animate` target is reached by
+   * interpolating on requestAnimationFrame — if those frames never come (a
+   * background tab during load, a stalled first paint, a throttled renderer),
+   * the element is left at the value it started from, which here is invisible.
+   * The arrival would strand at opacity 0 with no way back.
+   *
+   * With a declarative style the TARGET is always in the DOM and the transition
+   * only decides how it is reached. Drop every frame and the text simply
+   * appears, which is exactly the failure mode we want.
+   */
+  const cue = (at: number, delay = 0) => {
+    const on = reduced || settled || step >= at;
+    return {
+      opacity: on ? 1 : 0,
+      translate: on ? '0 0' : '0 14px',
+      transition:
+        reduced || settled
+          ? undefined
+          : `opacity 1400ms var(--ease-entrance) ${delay}ms, translate 1400ms var(--ease-entrance) ${delay}ms`
+    } as const;
+  };
 
   return (
     <SceneSection id="entry" label="00 · Arrival" className="text-center">
       {/* The portal hands over on white; it opens into sky here. */}
       <AnimatePresence>
-        {stage === 'flash' ? (
+        {step < STEP.ORBIT && !reduced ? (
           <motion.span
             key="flash"
             aria-hidden="true"
@@ -75,37 +182,30 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
           <AIMark size="hero" />
         </motion.div>
 
-        <motion.p
-          initial={false}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.25 }}
-          className="ai-wordmark mt-7 text-[clamp(1rem,2vw,1.35rem)]"
-        >
+        <p style={cue(STEP.WORDMARK)} className="ai-wordmark mt-7 text-[clamp(1rem,2vw,1.35rem)]">
           Atthachet &amp; Isariya
-        </motion.p>
+        </p>
 
         {/* The line that quietly changes its mind. Given a little more presence
             than it had — it is the first sign the page is alive, and at /65 on a
             dark sky it read as a caption someone forgot to remove. */}
-        <ArrivalWhisper className="mt-5 min-h-7 font-thai text-[0.9375rem] leading-7 tracking-[0.03em] text-sky-100/80" />
+        <div style={cue(STEP.WHISPER)}>
+          <ArrivalWhisper className="mt-5 block min-h-7 font-thai text-[0.9375rem] leading-7 tracking-[0.03em] text-sky-100/80" />
+        </div>
 
         <div className="mt-7 flex flex-col items-center px-2">
           {intro.title.map((line, index) => (
-            <motion.p
+            <p
               key={line}
-              initial={false}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 1.6, delay: index * 0.35, ease: [0.16, 1, 0.3, 1] }}
+              style={cue(STEP.TITLE, index * 280)}
               className="thai-display ai-legible font-thai text-[clamp(1.75rem,4.2vw,2.75rem)] font-light text-ivory"
             >
               {line}
-            </motion.p>
+            </p>
           ))}
 
-          <motion.p
-            initial={false}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.6, delay: 0.9 }}
+          <p
+            style={cue(STEP.READY)}
             className="mt-7 flex max-w-[18rem] flex-col items-center justify-center gap-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-sky-100/70 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-x-3 sm:gap-y-1 sm:text-[0.625rem] sm:tracking-[0.3em]"
           >
             {intro.subtitle.map((line, index) => (
@@ -114,23 +214,21 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
                 {line}
               </span>
             ))}
-          </motion.p>
-
+          </p>
         </div>
 
         {/* Wrapper carries the magnetic transform; the button carries framer's. */}
         <span ref={magnet} className="mt-14 inline-flex">
-          <motion.button
+          <button
             type="button"
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
-            style={{ pointerEvents: 'auto' }}
+            /* Clickable throughout, including while it is still fading in: the
+               reveal describes the arrival, it does not withhold it. */
+            style={{ ...cue(STEP.READY), pointerEvents: 'auto' }}
             onClick={() => {
               play('airWhoosh');
               onEnter();
             }}
-            data-cursor="interactive"
+            data-cursor="enter"
             className="ai-button-primary group min-h-12 px-9"
           >
             <span className="absolute inset-0 -translate-x-full bg-[linear-gradient(90deg,transparent,rgba(220,239,255,0.28),transparent)] transition-transform duration-[1500ms] ease-smooth group-hover:translate-x-full" />
@@ -141,7 +239,7 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
                 →
               </span>
             </span>
-          </motion.button>
+          </button>
         </span>
       </div>
 

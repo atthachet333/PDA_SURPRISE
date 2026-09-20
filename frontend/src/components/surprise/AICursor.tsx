@@ -2,15 +2,27 @@ import { useEffect, useRef, useState } from 'react';
 import { useDeviceProfile } from '@/hooks/useDeviceProfile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
-type CursorMode = 'default' | 'interactive' | 'open' | 'drag' | 'read';
+type CursorMode = 'default' | 'interactive' | 'open' | 'drag' | 'read' | 'enter';
 
+/*
+ * Only the states that say something the shape does not already say get a word.
+ * `interactive` stays silent because a button already looks like a button, and
+ * labelling every one of them would be decoration pretending to be signal.
+ *
+ * ENTER is reserved for a threshold — a control that moves you from one part of
+ * the experience into another, rather than one that acts in place. There is
+ * exactly one at present, and it should stay that way.
+ */
 const LABELS: Record<CursorMode, string> = {
   default: '',
   interactive: '',
   open: 'OPEN',
   drag: 'DRAG',
-  read: 'READ'
+  read: 'READ',
+  enter: 'ENTER'
 };
+
+const MODES = new Set<string>(['open', 'drag', 'read', 'interactive', 'enter']);
 
 /**
  * Desktop-only cursor for the A&I experience.
@@ -58,7 +70,7 @@ export function AICursor() {
       const tagged = target.closest('[data-cursor]');
       if (tagged) {
         const value = tagged.getAttribute('data-cursor');
-        if (value === 'open' || value === 'drag' || value === 'read' || value === 'interactive') return value;
+        if (value && MODES.has(value)) return value as CursorMode;
       }
       return target.closest('a, button, [role="button"], input, select, textarea') ? 'interactive' : 'default';
     };

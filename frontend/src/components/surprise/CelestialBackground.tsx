@@ -5,6 +5,7 @@ import { useDeviceProfile } from '@/hooks/useDeviceProfile';
 import { usePageVisible } from '@/hooks/usePageVisible';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useMousePosition } from '@/hooks/useMousePosition';
+import { useScrollEnergy, type ScrollEnergy } from '@/hooks/useScrollEnergy';
 
 /**
  * The single persistent backdrop for the whole A&I experience.
@@ -131,9 +132,30 @@ interface LayerProps {
   calm: number;
   camera: CameraLanguage;
   pointer: React.MutableRefObject<{ x: number; y: number }>;
+  /** Shared, clamped scroll velocity. See `useScrollEnergy`. */
+  energy: React.MutableRefObject<ScrollEnergy>;
 }
 
-function SkyDome({ mood, calm, camera, pointer, octaves }: LayerProps & { octaves: number }) {
+/**
+ * Ceilings on how much the scroll can move each layer.
+ *
+ * These are small on purpose. The intent is that the sky has WEIGHT — that it
+ * notices you moving through it — not that it rides the scrollbar. Anything
+ * large here reads as parallax jank on a trackpad and as motion sickness on a
+ * long scroll, so the numbers are chosen to be felt rather than seen.
+ */
+const SCROLL_GAIN = {
+  /** Extra star drift, as a fraction of the resting rotation. */
+  stars: 0.85,
+  /** Extra ring spin, same units. */
+  rings: 0.7,
+  /** Cloud drift multiplier added on top of the camera language. */
+  clouds: 0.45,
+  /** Vertical star nudge, in world units. */
+  lift: 0.06
+};
+
+function SkyDome({ mood, calm, camera, pointer, energy, octaves }: LayerProps & { octaves: number }) {
   const reduced = useReducedMotion();
   const uniforms = useMemo(
     () => ({
@@ -154,9 +176,19 @@ function SkyDome({ mood, calm, camera, pointer, octaves }: LayerProps & { octave
     // Everything eases rather than snapping, so scene changes feel directed.
     uniforms.uMood.value += (mood - uniforms.uMood.value) * 0.018;
     uniforms.uCalm.value += (calm - uniforms.uCalm.value) * 0.03;
-    uniforms.uDrift.value += (CAMERA[camera].drift - uniforms.uDrift.value) * 0.02;
-    uniforms.uPointer.value.x += (pointer.current.x - uniforms.uPointer.value.x) * 0.03;
-    uniforms.uPointer.value.y += (-pointer.current.y - uniforms.uPointer.value.y) * 0.03;
+
+    // Scrolling pushes the cloud banks along a little. `abs` because moving up
+    // the page should feel like the same weather, not like rewinding it.
+    const push = reduced ? 0 : Math.abs(energy.current.sample()) * SCROLL_GAIN.clouds;
+    const drift = CAMERA[camera].drift * (1 + push);
+    uniforms.uDrift.value += (drift - uniforms.uDrift.value) * 0.02;
+
+    // Pointer parallax is a POINTER effect; under reduced motion it eases back
+    // to centre rather than being left wherever the cursor last was.
+    const px = reduced ? 0 : pointer.current.x;
+    const py = reduced ? 0 : -pointer.current.y;
+    uniforms.uPointer.value.x += (px - uniforms.uPointer.value.x) * 0.03;
+    uniforms.uPointer.value.y += (py - uniforms.uPointer.value.y) * 0.03;
   });
 
   return (
@@ -173,7 +205,7 @@ function SkyDome({ mood, calm, camera, pointer, octaves }: LayerProps & { octave
   );
 }
 
-function Stars({ count, calm, camera, pointer }: LayerProps & { count: number }) {
+function Stars({ count, calm, camera, pointer, energy }: LayerProps & { count: number }) {
   const group = useRef<THREE.Group>(null);
   const reduced = useReducedMotion();
 
@@ -198,10 +230,21 @@ function Stars({ count, calm, camera, pointer }: LayerProps & { count: number })
   useFrame((state, delta) => {
     if (!group.current) return;
     const spin = CAMERA[camera].spin;
-    if (!reduced) group.current.rotation.z += delta * 0.005 * spin * calm;
+    const flow = reduced ? 0 : energy.current.sample();
 
-    group.current.position.x += (pointer.current.x * -0.24 - group.current.position.x) * 0.028;
-    group.current.position.y += (pointer.current.y * 0.17 - group.current.position.y) * 0.028;
+    // The field turns fractionally faster while you are moving through it, and
+    // settles back the moment you stop — the decay lives in `sample()`.
+    if (!reduced) {
+      group.current.rotation.z += delta * 0.005 * spin * calm * (1 + Math.abs(flow) * SCROLL_GAIN.stars);
+    }
+
+    // Pointer parallax, and a small signed lift from the scroll. Both are
+    // zeroed under reduced motion, so the field eases to rest rather than
+    // freezing wherever it happened to be.
+    const targetX = reduced ? 0 : pointer.current.x * -0.24;
+    const targetY = reduced ? 0 : pointer.current.y * 0.17 - flow * SCROLL_GAIN.lift;
+    group.current.position.x += (targetX - group.current.position.x) * 0.028;
+    group.current.position.y += (targetY - group.current.position.y) * 0.028;
 
     const points = group.current.children[0] as THREE.Points | undefined;
     if (points) {
@@ -227,7 +270,7 @@ function Stars({ count, calm, camera, pointer }: LayerProps & { count: number })
   );
 }
 
-function OrbitRings({ calm, camera, pointer }: LayerProps) {
+function OrbitRings({ calm, camera, pointer, energy }: LayerProps) {
   const group = useRef<THREE.Group>(null);
   const reduced = useReducedMotion();
 
@@ -235,13 +278,18 @@ function OrbitRings({ calm, camera, pointer }: LayerProps) {
     if (!group.current) return;
     const spin = CAMERA[camera].spin;
     if (!reduced) {
+      // Each ring answers the scroll by a different amount, which is what keeps
+      // them reading as three separate depths rather than one rigid armature.
+      const flow = 1 + Math.abs(energy.current.sample()) * SCROLL_GAIN.rings;
       const [a, b, c] = group.current.children;
-      if (a) a.rotation.z += delta * 0.026 * spin * calm;
-      if (b) b.rotation.z -= delta * 0.017 * spin * calm;
-      if (c) c.rotation.z += delta * 0.009 * spin * calm;
+      if (a) a.rotation.z += delta * 0.026 * spin * calm * flow;
+      if (b) b.rotation.z -= delta * 0.017 * spin * calm * flow;
+      if (c) c.rotation.z += delta * 0.009 * spin * calm * flow;
     }
-    group.current.rotation.x += (pointer.current.y * 0.09 + 0.26 - group.current.rotation.x) * 0.028;
-    group.current.rotation.y += (pointer.current.x * 0.13 - group.current.rotation.y) * 0.028;
+    const tiltX = reduced ? 0.26 : pointer.current.y * 0.09 + 0.26;
+    const tiltY = reduced ? 0 : pointer.current.x * 0.13;
+    group.current.rotation.x += (tiltX - group.current.rotation.x) * 0.028;
+    group.current.rotation.y += (tiltY - group.current.rotation.y) * 0.028;
     // Rings recede as the camera pulls back at the finale.
     const target = -2 - (CAMERA[camera].z - 3.9) * 0.9;
     group.current.position.z += (target - group.current.position.z) * 0.02;
@@ -288,11 +336,38 @@ export function CelestialBackground({
 }: CelestialBackgroundProps) {
   const device = useDeviceProfile();
   const visible = usePageVisible();
-  const pointer = useMousePosition();
   const reduced = useReducedMotion();
 
-  const calm = alive ? 1 : 0.18;
-  const layer = { mood, calm, camera, pointer };
+  /*
+   * THE POINTER FIELD is a desktop, full-quality luxury.
+   *
+   * It is off on touch (there is no hovering pointer to answer, and the
+   * listener would fire on every drag), off at the LOW tier, and off under
+   * reduced motion. `useMousePosition` still mounts — hooks cannot be
+   * conditional — but a disabled field is held at centre, so the layers read a
+   * constant zero and ease to rest instead of tracking anything.
+   */
+  const pointerEnabled = !reduced && !device.isTouch && device.tier !== 'low';
+  const rawPointer = useMousePosition();
+  const centre = useRef({ x: 0, y: 0 });
+  const pointer = pointerEnabled ? rawPointer : centre;
+
+  /*
+   * Scroll energy is cheaper than the pointer field — one passive listener and
+   * no loop of its own — so it survives at MEDIUM and LOW, and stops only for
+   * reduced motion.
+   */
+  const energy = useScrollEnergy(!reduced);
+
+  /*
+   * The pause is supposed to feel like the sky holding its breath, so `calm`
+   * goes lower than a simple slow-down: at 0.12 the clouds are almost still,
+   * the rings barely turn, and the star field drops to roughly half brightness
+   * through the `0.45 + calm * 0.55` term in `Stars`. It is not frozen — a
+   * frozen sky reads as a broken canvas rather than a quiet one.
+   */
+  const calm = alive ? 1 : 0.12;
+  const layer = { mood, calm, camera, pointer, energy };
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">

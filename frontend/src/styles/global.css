@@ -541,6 +541,40 @@
     .ai-sweep:hover::after {
       translate: 110% 0;
     }
+
+    /*
+     * MEMORY FOCUS.
+     *
+     * A photograph you are pointing at should become slightly more ITSELF —
+     * its edge catches a little more light and its caption resolves — without
+     * growing, without a lightbox, and without anything around it moving. The
+     * lift already supplies the depth; this supplies the attention.
+     *
+     * Scoped to the frame classes rather than to a new marker class, because
+     * every scene already wraps its photographs in one of them, and a caption
+     * is always a `figcaption` inside that frame.
+     */
+    .ai-frame-memory,
+    .ai-frame-cinematic,
+    .ai-frame-polaroid {
+      transition: border-color 620ms var(--ease-entrance);
+    }
+
+    .ai-frame-memory:hover,
+    .ai-frame-cinematic:hover {
+      border-color: rgba(220, 239, 255, 0.34);
+    }
+
+    .ai-frame-memory figcaption,
+    .ai-frame-cinematic figcaption {
+      transition: opacity 620ms var(--ease-entrance);
+      opacity: 0.86;
+    }
+
+    .ai-frame-memory:hover figcaption,
+    .ai-frame-cinematic:hover figcaption {
+      opacity: 1;
+    }
   }
 
   .ai-handwritten {
@@ -626,6 +660,77 @@
     animation-name: shooting-star-run;
     animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
     animation-fill-mode: forwards;
+  }
+
+  /*
+   * THE SPECIAL ONE.
+   *
+   * Everything here is a small multiple of the ambient star, never a different
+   * effect: a touch thicker, a touch brighter, a slightly wider glow, and a
+   * slower easing curve so it crosses with weight instead of flicking past.
+   * If it read as a different KIND of thing it would look like a notification.
+   */
+  .shooting-star--special {
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(210, 234, 255, 0.45) 42%,
+      rgba(255, 255, 255, 1) 90%,
+      rgba(255, 255, 255, 1) 100%
+    );
+    box-shadow: 0 0 12px rgba(210, 234, 255, 0.8), 0 0 28px rgba(126, 200, 255, 0.35);
+    animation-name: shooting-star-run-slow;
+    animation-timing-function: cubic-bezier(0.22, 0.4, 0.2, 1);
+  }
+
+  /*
+   * What it leaves behind: one faint point of light at the end of the path.
+   *
+   * It fades UP and stays. That is the entire idea — an ambient star is a
+   * moment that passes, and this one is a moment that stayed. It is small
+   * enough to be mistaken for part of the star field, which is the point.
+   */
+  .shooting-star-remnant {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 0 8px rgba(210, 234, 255, 0.85), 0 0 18px rgba(126, 200, 255, 0.4);
+    opacity: 0;
+    animation: shooting-star-settle 2.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes shooting-star-settle {
+    0% {
+      opacity: 0;
+      scale: 2.4;
+    }
+    100% {
+      opacity: 0.72;
+      scale: 1;
+    }
+  }
+
+  /* Same path as the ambient star, held longer at full brightness. */
+  @keyframes shooting-star-run-slow {
+    0% {
+      opacity: 0;
+      translate: -8vw -3vw;
+      scale: 0.4 1;
+    }
+    10% {
+      opacity: 1;
+    }
+    78% {
+      opacity: 0.9;
+    }
+    100% {
+      opacity: 0;
+      translate: 38vw 14vw;
+      scale: 1 1;
+    }
   }
 
   @keyframes shooting-star-run {
@@ -1074,11 +1179,13 @@
   /* Shooting stars are never scheduled under reduced motion; this is a belt on
      top of that, so a stray element can never animate. */
   .shooting-star,
+  .shooting-star-remnant,
   .animate-pulse-slow {
     animation: none;
   }
 
-  .shooting-star {
+  .shooting-star,
+  .shooting-star-remnant {
     display: none;
   }
 
