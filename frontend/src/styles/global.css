@@ -577,6 +577,66 @@
     }
   }
 
+  /*
+   * THE GATEWAY ROUTE.
+   *
+   * One line joining three worlds. It runs vertically on a phone and
+   * horizontally from `md`, which is also where the gateway layout turns, so
+   * the fill has to scale on whichever axis the line actually occupies —
+   * `scaleY(0)` on a horizontal line collapses nothing visible.
+   *
+   * `--route-fill` is set inline by the component; the axis is chosen here.
+   * Default 0 so an unlit route is unlit, with the dim track behind it still
+   * showing the shape.
+   */
+  .ai-route-fill {
+    transform: scaleY(var(--route-fill, 0));
+    transform-origin: top center;
+  }
+
+  /* The travelling signal. Decorative: the lit route already carries the
+     meaning, so losing this to a stalled clock costs nothing. */
+  .ai-route-pulse {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    height: 0.375rem;
+    width: 0.375rem;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(220, 239, 255, 0.9);
+    translate: -50% 0;
+    animation: ai-route-pulse-y 1100ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+
+  @keyframes ai-route-pulse-y {
+    0% { opacity: 0; offset-distance: 0%; translate: -50% 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; translate: -50% 3rem; }
+  }
+
+  @media (min-width: 768px) {
+    .ai-route-fill {
+      transform: scaleX(var(--route-fill, 0));
+      transform-origin: left center;
+    }
+
+    .ai-route-pulse {
+      left: 0;
+      top: 50%;
+      translate: 0 -50%;
+      animation-name: ai-route-pulse-x;
+    }
+  }
+
+  @keyframes ai-route-pulse-x {
+    0% { opacity: 0; translate: 0 -50%; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; translate: var(--route-span, 12rem) -50%; }
+  }
+
   .ai-handwritten {
     font-family: var(--font-ai-latin);
     font-style: italic;
