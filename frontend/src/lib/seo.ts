@@ -45,9 +45,9 @@ export const pageMeta = {
     path: '/services'
   },
   solutions: {
-    title: `โซลูชัน${TITLE_SUFFIX}`,
+    title: `ระบบของเรา${TITLE_SUFFIX}`,
     description:
-      'โซลูชันซอฟต์แวร์สำหรับธุรกิจไทย ตั้งแต่ระบบภายในองค์กร ระบบเอกสาร ไปจนถึงเว็บแอปพลิเคชันที่เชื่อมกับการทำงานเดิมของคุณ',
+      'สำรวจระบบของ PDA BLISS ตั้งแต่ ERP, Payroll, HR LINE BOT, ระบบเอกสารและไฟล์ ไปจนถึงเว็บและโมบายแอปที่ออกแบบให้ทำงานร่วมกันได้',
     path: '/solutions'
   },
   work: {

@@ -88,7 +88,7 @@ export const activeSocials = company.socials.filter((social) => social.href.leng
 export const navigation = [
   { label: 'หน้าแรก', to: '/' },
   { label: 'บริการของเรา', to: '/services' },
-  { label: 'โซลูชัน', to: '/solutions' },
+  { label: 'ระบบของเรา', to: '/solutions' },
   { label: 'ผลงาน', to: '/work' },
   { label: 'เกี่ยวกับเรา', to: '/about' },
   { label: 'บทความ', to: '/insights' },

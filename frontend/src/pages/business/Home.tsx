@@ -4,7 +4,7 @@ import { Container } from '@/components/shared/Layout';
 import { HeroSystem } from '@/components/business/HeroSystem';
 import { KineticMarquee } from '@/components/business/KineticMarquee';
 import { SystemShowreel } from '@/components/business/SystemShowreel';
-import { SystemUniverse } from '@/components/business/SystemUniverse';
+import { SystemUniversePreview } from '@/components/business/SystemUniversePreview';
 import { ServiceExplorer } from '@/components/business/ServiceExplorer';
 import { SolutionShowcase } from '@/components/business/SolutionShowcase';
 import { WorkShowcase } from '@/components/business/WorkShowcase';
@@ -50,7 +50,7 @@ export default function Home() {
       <Hero />
       <KineticMarquee />
       <SystemShowreel code="02 / SYSTEMS" />
-      <SystemUniverse code="03 / CONNECTED" />
+      <SystemUniversePreview code="03 / CONNECTED" />
       <ServiceExplorer code="04 / SERVICES" showAllLink />
       <SolutionShowcase code="05 / SOLUTIONS" />
       <WorkShowcase code="06 / WORK" items={portfolio.slice(0, 3)} showAllLink />
