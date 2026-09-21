@@ -1,579 +1,137 @@
-import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { ArrowIcon } from '@/components/shared/Button';
-import { Container } from '@/components/shared/Layout';
 import { BigCTA } from '@/components/business/BigCTA';
-import { ProductPanel } from '@/components/business/ProductPanel';
-import { MiniChart, MiniFlow, MiniKanban, MiniTable } from '@/components/business/UIPreview';
-import { getPortfolioItem, portfolio, type PortfolioItem } from '@/data/portfolio';
-import { visualForPortfolioItem } from '@/data/visuals';
-import { LiveProjectCta, NoLiveLinkNotice, VisibilityBadge } from '@/components/business/LiveLink';
+import { CaseStudyFlow } from '@/components/business/CaseStudyFlow';
+import { CaseStudyVisual } from '@/components/business/CaseStudyVisual';
+import { SectionBackdrop } from '@/components/business/SectionBackdrop';
+import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
+import { Container } from '@/components/shared/Layout';
 import {
   caseStudies,
-  caseStudiesVerified,
+  caseStudyCategories,
+  caseStudyStatusLabels,
   getCaseStudy,
-  unverifiedResultLabel,
   type CaseStudy
-} from '@/data/work';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { cn } from '@/lib/cn';
-
-/**
- * /work/:slug — editorial case study.
- *
- * Resolves against BOTH sources, in order:
- *   1. `data/portfolio.ts`  a REAL system (matched on `id`)
- *   2. `data/work.ts`       an ILLUSTRATIVE approach example (matched on `slug`)
- *
- * They render as the same editorial structure but say different things, and the
- * page never blurs the two: a real system carries no outcome figures because
- * none were measured, and an approach example carries a badge saying it is not a
- * named client project.
- *
- * Numbered sections, oversized numerals, full-bleed visual moments, sticky
- * metadata. Screenshots appear only when a reviewed, public-safe one exists;
- * otherwise the system mock stands in (see docs/SCREENSHOT_PRIVACY.md).
- */
-
-const SCREEN_PREVIEW = {
-  dashboard: MiniChart,
-  table: MiniTable,
-  flow: MiniFlow,
-  mobile: MiniKanban
-} as const;
+} from '@/data/caseStudies';
+import { getSystemById } from '@/data/systemUniverse';
+import type { PageMeta } from '@/lib/seo';
+import { pageMeta } from '@/lib/seo';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 export default function WorkDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const item = slug ? getPortfolioItem(slug) : undefined;
-  const study = !item && slug ? getCaseStudy(slug) : undefined;
+  const study = slug ? getCaseStudy(slug) : undefined;
+  const meta = useMemo<PageMeta>(() => study ? {
+    title: `${study.title} — PDA BLISS`,
+    description: `${study.subtitle} อ่านปัญหา แนวทางออกแบบ Workflow และผลลัพธ์เชิงการทำงานของระบบ`,
+    path: `/work/${study.slug}`
+  } : pageMeta.work, [study]);
+  usePageMeta(meta);
 
-  if (item) return <RealSystem item={item} />;
-  if (study) return <ApproachExample study={study} />;
-  return <Navigate to="/work" replace />;
+  if (!study) return <Navigate to="/work" replace />;
+  return <CaseStudyDetail study={study} />;
 }
 
-/* ------------------------------------------------------------- real system -- */
-
-function RealSystem({ item }: { item: PortfolioItem }) {
-  const reduced = useReducedMotion();
-  const index = portfolio.findIndex((entry) => entry.id === item.id);
-  const next = portfolio[(index + 1) % portfolio.length];
-  const reviewed = item.publicSafe ? item.screenshots.filter((shot) => shot.reviewed) : [];
-  const visual = visualForPortfolioItem(item);
+function CaseStudyDetail({ study }: { study: CaseStudy }) {
+  const currentIndex = caseStudies.findIndex((entry) => entry.id === study.id);
+  const next = caseStudies[(currentIndex + 1) % caseStudies.length];
+  const category = caseStudyCategories.find((entry) => entry.id === study.category)?.label;
+  const relatedSystems = study.relatedSystems.map(getSystemById).filter((system) => system !== undefined);
+  const reviewedScreens = study.screens.filter((screen) => screen.reviewed);
 
   return (
     <>
-      {/* ---------------------------------------------------- 01 ภาพรวม -- */}
-      <section className="sect sect--deep relative overflow-hidden pb-16 pt-32 text-white sm:pt-40">
-        <div
-          className="sect-layer opacity-40"
-          aria-hidden="true"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(53,201,111,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(53,201,111,0.07) 1px, transparent 1px)',
-            backgroundSize: '72px 72px'
-          }}
-        />
-        <Container className="relative">
-          <BackLink dark />
-
-          <div className="mt-10 flex flex-wrap items-center gap-2.5">
-            <span className="rounded-pill border border-brand-400/30 px-3 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-300">
-              {item.titleEn}
-            </span>
-            <span className="font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-400/70">
-              {item.category}
-            </span>
-            <VisibilityBadge item={item} />
-          </div>
-
-          <motion.h1
-            initial={reduced ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="thai-display mt-7 max-w-4xl text-mega font-bold"
-          >
-            {item.titleTh}
-          </motion.h1>
-
-          <p className="mt-8 max-w-2xl text-lead text-brand-100/75">{item.summary}</p>
-
-          {/*
-            The real-world action. `LiveProjectCta` renders nothing unless the
-            item is public, privacy-reviewed AND has a confirmed URL, so this is
-            never a dead button — when there is no link, the panel below says
-            plainly why.
-          */}
-          <div className="mt-8">
-            <LiveProjectCta item={item} />
-          </div>
-        </Container>
-      </section>
-
-      {/*
-        Full-bleed product moment. This is the page's main piece of evidence, so
-        it shows the interface itself rather than a branded abstract plate.
-      */}
-      <div className="relative bg-[#052f22] py-8 sm:py-12">
-        <Container>
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-panel shadow-lift-lg ring-1 ring-brand-400/20">
-            <div className="aspect-[16/9]">
-              <ProductPanel slot={visual} className="h-full" frame="none" showMockNotice />
+      <section className="sect sect--deep relative overflow-hidden pb-16 pt-32 text-white sm:pb-20 sm:pt-40">
+        <SectionBackdrop variant="mesh-dark" pointer />
+        <Container wide className="relative">
+          <Link to="/work" className="group inline-flex min-h-11 items-center gap-2 text-sm text-brand-100/60 transition-colors hover:text-white"><ArrowIcon className="rotate-180 transition-transform group-hover:-translate-x-1" />กลับไปหน้า Case Studies</Link>
+          <div className="mt-8 grid items-end gap-10 lg:grid-cols-[minmax(0,.9fr)_minmax(22rem,.7fr)] lg:gap-16">
+            <div>
+              <div className="flex flex-wrap items-center gap-2"><span className="rounded-pill border border-brand-400/30 px-3 py-1 font-mono text-[.58rem] tracking-[.14em] text-brand-300">{caseStudyStatusLabels[study.status]}</span><span className="text-xs text-brand-100/50">{category}</span></div>
+              <h1 className="thai-display mt-6 max-w-4xl text-mega font-bold">{study.title}</h1>
+              <p className="mt-6 max-w-2xl text-lead text-brand-100/75">{study.subtitle}</p>
+              <p className="mt-5 max-w-2xl text-sm leading-relaxed text-brand-100/55">ระบบนี้แก้โจทย์อะไร: {study.problem}</p>
+            </div>
+            <div className="overflow-hidden rounded-panel border border-brand-400/20 bg-white shadow-lift-lg">
+              <div className="aspect-[16/10]"><CaseStudyVisual kind={study.visual} /></div>
             </div>
           </div>
-        </Container>
-      </div>
-
-      <section className="sect sect--bright relative py-section">
-        <Container className="relative">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.32fr)_minmax(0,1fr)] lg:gap-16">
-            {/* ------------------------------------------ sticky metadata -- */}
-            <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
-              <dl className="space-y-5 border-t border-steel-200 pt-6">
-                <MetaRow label="ประเภทระบบ" value={item.titleEn} />
-                <MetaRow label="หมวด" value={item.category} />
-                <MetaRow label="สถานะ" value="ส่งมอบแล้ว" />
-                <div>
-                  <dt className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-steel-400">
-                    การเข้าถึง
-                  </dt>
-                  <dd className="mt-2.5 space-y-2">
-                    <VisibilityBadge item={item} tone="light" />
-                    <NoLiveLinkNotice item={item} />
-                  </dd>
-                </div>
-                <div>
-                  <dt className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-steel-400">
-                    เทคโนโลยี
-                  </dt>
-                  <dd className="mt-3 flex flex-wrap gap-1.5">
-                    {item.stack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="rounded-pill border border-steel-200 px-2.5 py-1 font-mono text-[0.5rem] uppercase tracking-[0.1em] text-steel-600"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </dd>
-                </div>
-              </dl>
-            </aside>
-
-            <div className="min-w-0 space-y-16">
-              {/* Problem and solution are only published for items whose
-                  description the owner has confirmed. */}
-              {item.verified ? (
-                <>
-                  <EditorialBlock code="02" heading="ปัญหาของระบบเดิม" body={item.problem} />
-                  <EditorialBlock code="03" heading="แนวทางแก้ไข" body={item.solution} />
-                </>
-              ) : (
-                <EditorialBlock
-                  code="02"
-                  heading="ภาพรวมระบบ"
-                  body={`${item.summary} รายละเอียดโจทย์และแนวทางการพัฒนาของระบบนี้อยู่ระหว่างการเรียบเรียงร่วมกับเจ้าของระบบ ก่อนเผยแพร่ต่อสาธารณะ`}
-                />
-              )}
-
-              {/* 04 Workflow */}
-              <div>
-                <SectionNumber code="04" heading="Workflow" />
-                {/* min-w-0 above lets this actually scroll instead of widening the page. */}
-                <div className="mt-8 max-w-full overflow-x-auto">
-                  <WorkflowDiagram features={item.features} />
-                </div>
-              </div>
-
-              {/* 05 Features */}
-              <div>
-                <SectionNumber code="05" heading="ฟีเจอร์หลัก" />
-                <ul className="mt-8 grid gap-px overflow-hidden border border-steel-200 bg-steel-200 sm:grid-cols-2">
-                  {item.features.map((feature, featureIndex) => (
-                    <motion.li
-                      key={feature}
-                      initial={reduced ? false : { opacity: 0, y: 12 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.45, delay: (featureIndex % 2) * 0.06 }}
-                      className="flex items-start gap-4 bg-white p-6"
-                    >
-                      <span className="font-mono text-[0.625rem] tabular-nums text-brand-500">
-                        {String(featureIndex + 1).padStart(2, '0')}
-                      </span>
-                      <span className="text-sm leading-relaxed text-steel-600">{feature}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* 06 Technology */}
-              <div>
-                <SectionNumber code="06" heading="เทคโนโลยี" />
-                <ul className="mt-8 flex flex-wrap gap-2">
-                  {item.stack.map((tech) => (
-                    <li
-                      key={tech}
-                      className="rounded-pill border border-steel-200 px-4 py-2 font-mono text-[0.625rem] uppercase tracking-[0.1em] text-steel-600"
-                    >
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* 07 Screenshots */}
-              <div>
-                <SectionNumber code="07" heading="ภาพหน้าจอ" />
-                {reviewed.length > 0 ? (
-                  <div className="mt-8 grid gap-5 sm:grid-cols-2">
-                    {reviewed.map((shot) => (
-                      <figure
-                        key={shot.src}
-                        className="overflow-hidden rounded-panel border border-steel-200 bg-white"
-                      >
-                        <img
-                          src={shot.src}
-                          alt={shot.caption}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full"
-                        />
-                        <figcaption className="border-t border-steel-100 px-5 py-4 text-xs leading-relaxed text-steel-500">
-                          {shot.caption}
-                        </figcaption>
-                      </figure>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="mt-8">
-                    <div className="aspect-[16/9] overflow-hidden rounded-panel border border-steel-200 shadow-soft">
-                      <ProductPanel slot={visual} className="h-full" frame="none" showMockNotice />
-                    </div>
-                    <p className="mt-5 max-w-xl text-sm leading-relaxed text-steel-500">
-                      ภาพหน้าจอจริงของระบบนี้ยังไม่เผยแพร่ เพราะมีข้อมูลของลูกค้าและพนักงานอยู่ในหน้าจอ
-                      เราจะเผยแพร่เมื่อปิดข้อมูลส่วนบุคคลเรียบร้อยและได้รับอนุญาตแล้ว
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* 08 Summary — description only. No outcome figures exist. */}
-              <div>
-                <SectionNumber code="08" heading="สรุป" />
-                <p className="mt-8 max-w-2xl text-lead text-steel-600">{item.summary}</p>
-                <p className="mt-5 max-w-2xl text-sm leading-relaxed text-steel-500">
-                  เราไม่แสดงตัวเลขผลลัพธ์ของระบบนี้ เพราะยังไม่มีการวัดผลร่วมกับลูกค้าอย่างเป็นทางการ
-                  ถ้าคุณอยากรู้ว่าระบบลักษณะนี้เหมาะกับธุรกิจของคุณหรือไม่ คุยกับเราได้โดยตรง
-                </p>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {next && next.id !== item.id ? <NextProject to={`/work/${next.id}`} title={next.titleTh} /> : null}
-      <BigCTA code="09 / START" />
-    </>
-  );
-}
-
-/* -------------------------------------------------------- approach example -- */
-
-function ApproachExample({ study }: { study: CaseStudy }) {
-  const reduced = useReducedMotion();
-  const index = caseStudies.findIndex((entry) => entry.slug === study.slug);
-  const next = caseStudies[(index + 1) % caseStudies.length];
-
-  return (
-    <>
-      <section className="sect sect--hero relative overflow-hidden pb-16 pt-32 sm:pt-40">
-        <div
-          className="sect-layer opacity-50"
-          aria-hidden="true"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(6,59,42,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.045) 1px, transparent 1px)',
-            backgroundSize: '84px 84px'
-          }}
-        />
-        <Container className="relative">
-          <BackLink />
-
-          <div className="mt-10 flex flex-wrap items-center gap-3 text-xs text-steel-400">
-            <span className="rounded-pill border border-steel-200 bg-white px-3 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-steel-600">
-              {study.projectType}
-            </span>
-            <span>{study.industry}</span>
-            <span className="h-3 w-px bg-steel-300" />
-            <span className="font-mono">{study.year}</span>
-          </div>
-
-          <motion.h1
-            initial={reduced ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="thai-display mt-7 max-w-4xl text-mega font-bold text-ink"
-          >
-            {study.title}
-          </motion.h1>
-
-          <p className="mt-8 max-w-2xl text-lead text-steel-600">{study.summary}</p>
-
-          {/* The badge is the point: this is not a named client project. */}
-          {caseStudiesVerified ? (
-            <dl className="mt-12 grid max-w-3xl gap-px overflow-hidden border border-steel-200 bg-steel-200 sm:grid-cols-3">
-              {study.results.map((result) => (
-                <div key={result.label} className="bg-white p-6">
-                  <dt className="text-xs text-steel-500">{result.label}</dt>
-                  <dd className="mt-2 text-2xl font-semibold tabular-nums text-ink">
-                    {result.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          ) : (
-            <div className="mt-11 inline-flex max-w-xl items-start gap-3 rounded-panel border border-steel-300 bg-white px-5 py-4">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-steel-400" />
-              <p className="text-xs leading-relaxed text-steel-500">
-                <span className="font-semibold text-steel-600">{unverifiedResultLabel}</span> —
-                หน้านี้อธิบายรูปแบบของงานที่เราออกแบบ ไม่ใช่โปรเจกต์ที่ระบุชื่อลูกค้าได้
-                และไม่มีการแสดงตัวเลขผลลัพธ์
-              </p>
-            </div>
-          )}
         </Container>
       </section>
 
       <section className="sect sect--bright relative py-section">
-        <Container className="relative">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.32fr)_minmax(0,1fr)] lg:gap-16">
-            <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
-              <dl className="space-y-5 border-t border-steel-200 pt-6">
-                <MetaRow label="ประเภทงาน" value={study.projectType} />
-                <MetaRow label="อุตสาหกรรม" value={study.industry} />
-                <MetaRow label="ปี" value={String(study.year)} />
-                <MetaRow label="ลูกค้า" value={study.client} />
-              </dl>
+        <Container wide>
+          <div className="grid gap-12 lg:grid-cols-[minmax(15rem,.38fr)_minmax(0,1fr)] lg:gap-20">
+            <aside className="lg:sticky lg:top-28 lg:self-start">
+              <p className="section-code">01 / PROBLEM</p>
+              <h2 className="thai-display mt-4 text-statement font-bold text-ink">เริ่มจากปัญหา<br /><span className="text-brand-700">ไม่ใช่หน้าจอ</span></h2>
             </aside>
-
-            <div className="min-w-0 space-y-16">
-              <EditorialBlock code="02" heading="ปัญหาของระบบเดิม" body={study.problem} />
-              <EditorialBlock code="03" heading="แนวทางแก้ไข" body={study.solution} />
-
-              <div>
-                <SectionNumber code="04" heading="Workflow" />
-                <ol className="mt-8 grid gap-px overflow-hidden border border-steel-200 bg-steel-200 sm:grid-cols-2">
-                  {study.approach.map((step, stepIndex) => (
-                    <li key={step.step} className="bg-white p-6">
-                      <span className="font-mono text-[0.625rem] tabular-nums text-brand-500">
-                        {String(stepIndex + 1).padStart(2, '0')}
-                      </span>
-                      <h4 className="thai-display mt-4 text-base font-bold text-ink">{step.step}</h4>
-                      <p className="mt-2 text-sm leading-relaxed text-steel-500">{step.body}</p>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <div>
-                <SectionNumber code="05" heading="ฟีเจอร์หลัก" />
-                <ul className="mt-8 grid gap-px overflow-hidden border border-steel-200 bg-steel-200 sm:grid-cols-2">
-                  {study.features.map((feature, featureIndex) => (
-                    <li key={feature} className="flex items-start gap-4 bg-white p-6">
-                      <span className="font-mono text-[0.625rem] tabular-nums text-brand-500">
-                        {String(featureIndex + 1).padStart(2, '0')}
-                      </span>
-                      <span className="text-sm leading-relaxed text-steel-600">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <SectionNumber code="06" heading="เทคโนโลยี" />
-                <ul className="mt-8 flex flex-wrap gap-2">
-                  {study.technology.map((tech) => (
-                    <li
-                      key={tech}
-                      className="rounded-pill border border-steel-200 px-4 py-2 font-mono text-[0.625rem] uppercase tracking-[0.1em] text-steel-600"
-                    >
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <SectionNumber code="07" heading="ภาพจำลองระบบ" />
-                <p className="mt-5 max-w-xl text-sm leading-relaxed text-steel-500">
-                  ภาพด้านล่างเป็นแบบจำลองเพื่อสื่อสารแนวทางเท่านั้น ไม่ใช่ข้อมูล Production ของลูกค้า
-                </p>
-                <div className="mt-8 grid gap-5 md:grid-cols-3">
-                  {study.screens.map((screen, screenIndex) => {
-                    const Preview = SCREEN_PREVIEW[screen.kind];
-                    return (
-                      <motion.figure
-                        key={screen.title}
-                        initial={reduced ? false : { opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: screenIndex * 0.08 }}
-                        className="overflow-hidden rounded-panel border border-steel-200 bg-white"
-                      >
-                        <div className="flex items-center gap-1.5 border-b border-steel-100 bg-steel-50/70 px-4 py-2.5">
-                          <span className="h-1.5 w-1.5 rounded-full bg-steel-300" />
-                          <span className="h-1.5 w-1.5 rounded-full bg-steel-300" />
-                          <span className="ml-2 truncate font-mono text-[0.5rem] uppercase tracking-[0.14em] text-steel-400">
-                            {screen.title}
-                          </span>
-                        </div>
-                        <div className="h-36 p-5">
-                          <Preview className="h-full" />
-                        </div>
-                        <figcaption className="border-t border-steel-100 px-5 py-4 text-xs leading-relaxed text-steel-500">
-                          {screen.caption}
-                        </figcaption>
-                      </motion.figure>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <SectionNumber code="08" heading="สรุป" />
-                <p className="mt-8 max-w-2xl text-lead text-steel-600">{study.summary}</p>
-              </div>
+            <div>
+              <p className="text-lead font-medium text-ink">{study.problem}</p>
+              <p className="mt-6 text-base leading-relaxed text-steel-600">{study.context}</p>
             </div>
           </div>
         </Container>
       </section>
 
-      {next && next.slug !== study.slug ? (
-        <NextProject to={`/work/${next.slug}`} title={next.title} />
-      ) : null}
-      <BigCTA code="09 / START" />
+      <section className="sect sect--paper relative py-section">
+        <Container wide>
+          <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+            <div><p className="section-code">02 / SOLUTION</p><h2 className="thai-display mt-4 text-statement font-bold text-ink">ออกแบบ Workflow<br /><span className="text-brand-700">ให้ข้อมูลไปต่อได้</span></h2><p className="mt-6 text-base leading-relaxed text-steel-600">{study.solution}</p></div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Comparison title="BEFORE" items={study.before} tone="neutral" />
+              <Comparison title="AFTER" items={study.after} tone="brand" />
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="sect sect--field relative overflow-hidden py-section">
+        <Container wide>
+          <p className="section-code">03 / HOW IT WORKS</p>
+          <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between"><h2 className="thai-display text-statement font-bold text-ink">เลือกแต่ละขั้น<br /><span className="text-brand-700">เพื่อดูสิ่งที่เกิดขึ้น</span></h2><p className="max-w-md text-sm leading-relaxed text-steel-600">ทุกขั้นระบุผู้ดำเนินการ สิ่งที่ระบบทำ และ Output ที่ส่งต่อไปยังขั้นถัดไป</p></div>
+          <div className="mt-10"><CaseStudyFlow steps={study.flow} /></div>
+        </Container>
+      </section>
+
+      <section className="sect sect--bright relative py-section">
+        <Container wide>
+          <p className="section-code">04 / KEY FEATURES</p>
+          <h2 className="thai-display mt-4 text-statement font-bold text-ink">ฟีเจอร์ที่จัดตาม<br /><span className="text-brand-700">หน้าที่ของระบบ</span></h2>
+          <div className="mt-9 grid gap-px overflow-hidden rounded-panel border border-steel-200 bg-steel-200 sm:grid-cols-2 lg:grid-cols-4">
+            {study.features.map((group) => <section key={group.title} className="bg-white p-5 sm:p-6"><h3 className="font-mono text-[.62rem] tracking-[.16em] text-brand-600">{group.title}</h3><ul className="mt-5 space-y-3">{group.items.map((item) => <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-steel-600"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-500" />{item}</li>)}</ul></section>)}
+          </div>
+        </Container>
+      </section>
+
+      <section className="sect sect--deep relative overflow-hidden py-section text-white">
+        <SectionBackdrop variant="mesh-dark" />
+        <Container wide className="relative">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)] lg:gap-16">
+            <div>
+              <p className="section-code text-brand-300">05 / SYSTEM VIEW</p>
+              {reviewedScreens.length ? <div className="mt-7 grid gap-4 sm:grid-cols-2">{reviewedScreens.map((screen) => <figure key={screen.src} className="overflow-hidden rounded-panel border border-brand-400/20 bg-brand-900"><img src={screen.src} alt={screen.alt} loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover object-top" /><figcaption className="p-4 text-xs leading-relaxed text-brand-100/60">{screen.caption}</figcaption></figure>)}</div> : <div className="mt-7 aspect-[16/9] max-w-4xl overflow-hidden rounded-panel border border-brand-400/20 bg-white shadow-lift-lg"><CaseStudyVisual kind={study.visual} /></div>}
+            </div>
+            <div><p className="font-mono text-[.62rem] tracking-[.16em] text-brand-300">MEDIA POLICY</p><h2 className="thai-display mt-4 text-2xl font-bold">หน้าจอจริงจะเผยแพร่<br />เมื่อผ่าน Privacy review</h2><p className="mt-4 text-sm leading-relaxed text-brand-100/65">ขณะนี้ใช้ภาพจำลองจากโครงสร้าง UI ที่ตรวจสอบได้ เพราะหน้าจอจริงอาจมีข้อมูลพนักงาน ลูกค้า การเงิน หรือชื่อไฟล์ภายใน</p></div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="sect sect--paper relative py-section">
+        <Container wide>
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+            <div><p className="section-code">06 / OUTCOME</p><h2 className="thai-display mt-4 text-statement font-bold text-ink">ผลลัพธ์เชิง<br /><span className="text-brand-700">การทำงาน</span></h2><p className="mt-5 text-sm leading-relaxed text-steel-500">ไม่มีการแสดงเปอร์เซ็นต์ ROI หรือจำนวนผู้ใช้ เพราะยังไม่มีข้อมูลการวัดผลที่ยืนยันสำหรับเผยแพร่</p><ul className="mt-7 space-y-3">{study.outcomes.map((outcome) => <li key={outcome} className="flex items-start gap-3 rounded-card border border-brand-100 bg-white p-4 text-sm leading-relaxed text-steel-700"><span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" />{outcome}</li>)}</ul></div>
+            <div><p className="section-code">07 / RELATED SYSTEMS</p><h2 className="thai-display mt-4 text-2xl font-bold text-ink">ระบบที่เกี่ยวข้อง</h2><div className="mt-6 grid gap-3 sm:grid-cols-2">{relatedSystems.map((system) => <Link key={system.id} to="/solutions" className="group rounded-card border border-steel-200 bg-white p-4 transition-colors hover:border-brand-300"><p className="font-mono text-[.58rem] tracking-[.13em] text-brand-600">{system.nameEn}</p><p className="thai-display mt-2 text-sm font-semibold text-ink">{system.nameTh}</p><span className="mt-3 inline-flex items-center gap-1 text-xs text-steel-500 group-hover:text-brand-700">ดูใน System Universe <ArrowIcon /></span></Link>)}</div><details className="mt-5 rounded-card border border-steel-200 bg-white p-5"><summary className="cursor-pointer text-sm font-semibold text-ink">Technical Notes</summary><ul className="mt-4 space-y-2 border-t border-steel-100 pt-4">{study.technicalNotes.map((note) => <li key={note} className="text-sm leading-relaxed text-steel-600">— {note}</li>)}</ul></details><ButtonLink to={study.serviceRoute} variant="secondary" className="mt-5">ดูบริการที่เกี่ยวข้อง <ArrowIcon /></ButtonLink></div>
+          </div>
+        </Container>
+      </section>
+
+      {next && next.id !== study.id ? <section className="sect sect--field py-14"><Container><Link to={`/work/${next.slug}`} className="group flex flex-wrap items-end justify-between gap-5 border-t border-steel-300 pt-7"><div><p className="section-code">NEXT CASE</p><p className="thai-display mt-3 text-2xl font-bold text-ink group-hover:text-brand-700">{next.title}</p></div><span className="flex h-12 w-12 items-center justify-center rounded-full border border-steel-300 group-hover:border-brand-400"><ArrowIcon /></span></Link></Container></section> : null}
+      <BigCTA code="08 / NEXT STEP" />
     </>
   );
 }
 
-/* ------------------------------------------------------------------ pieces -- */
-
-function BackLink({ dark = false }: { dark?: boolean }) {
-  return (
-    <Link
-      to="/work"
-      className={cn(
-        'group inline-flex items-center gap-2 text-sm transition-colors',
-        dark ? 'text-brand-100/60 hover:text-white' : 'text-steel-500 hover:text-ink'
-      )}
-    >
-      <ArrowIcon className="rotate-180 transition-transform duration-base group-hover:-translate-x-1" />
-      กลับไปหน้าผลงาน
-    </Link>
-  );
-}
-
-function SectionNumber({ code, heading }: { code: string; heading: string }) {
-  return (
-    <div className="flex items-baseline gap-5 border-t border-steel-200 pt-7">
-      <span className="font-mono text-numeral font-medium leading-none text-steel-200">{code}</span>
-      <h2 className="thai-display text-statement font-bold text-ink">{heading}</h2>
-    </div>
-  );
-}
-
-function EditorialBlock({
-  code,
-  heading,
-  body
-}: {
-  code: string;
-  heading: string;
-  body: string;
-}) {
-  return (
-    <div>
-      <SectionNumber code={code} heading={heading} />
-      <p className="mt-8 max-w-2xl text-lead text-steel-600">{body}</p>
-    </div>
-  );
-}
-
-function MetaRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-steel-400">
-        {label}
-      </dt>
-      <dd className="thai-display mt-2 text-sm font-medium text-ink">{value}</dd>
-    </div>
-  );
-}
-
-/** A minimal workflow diagram derived from the item's own feature list. */
-function WorkflowDiagram({ features }: { features: string[] }) {
-  const steps = features.slice(0, 4);
-  return (
-    <ol className="flex min-w-[36rem] items-stretch gap-3">
-      {steps.map((step, index) => (
-        <li key={step} className="flex flex-1 items-center gap-3">
-          <div
-            className={cn(
-              'flex min-h-[7rem] flex-1 flex-col justify-between rounded-card border p-4',
-              index === steps.length - 1
-                ? 'border-brand-300 bg-brand-50'
-                : 'border-steel-200 bg-white'
-            )}
-          >
-            <span
-              className={cn(
-                'font-mono text-[0.5625rem] tabular-nums',
-                index === steps.length - 1 ? 'text-brand-600' : 'text-steel-400'
-              )}
-            >
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <span className="mt-3 text-xs leading-relaxed text-steel-600">{step}</span>
-          </div>
-          {index < steps.length - 1 ? (
-            <span aria-hidden="true" className="shrink-0 text-steel-300">
-              <svg viewBox="0 0 16 8" className="h-2 w-4" fill="none">
-                <path
-                  d="M0 4h12M10 1l3 3-3 3"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-          ) : null}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function NextProject({ to, title }: { to: string; title: string }) {
-  return (
-    <section className="sect sect--field relative overflow-hidden py-16">
-      <Container className="relative">
-        <Link
-          to={to}
-          data-cursor="project"
-          className="group flex flex-wrap items-end justify-between gap-6 border-t border-steel-300/70 pt-8"
-        >
-          <div>
-            <p className="section-code">next</p>
-            <p className="thai-display mt-3 text-statement font-bold text-ink transition-colors duration-base group-hover:text-brand-600">
-              {title}
-            </p>
-          </div>
-          <span className="flex h-14 w-14 items-center justify-center rounded-full border border-steel-300 text-ink transition-all duration-base group-hover:border-brand-300 group-hover:bg-brand-50 group-hover:text-brand-600">
-            <ArrowIcon className="h-5 w-5" />
-          </span>
-        </Link>
-      </Container>
-    </section>
-  );
+function Comparison({ title, items, tone }: { title: string; items: readonly string[]; tone: 'neutral' | 'brand' }) {
+  return <div className={tone === 'brand' ? 'rounded-panel border border-brand-200 bg-brand-50 p-5 sm:p-6' : 'rounded-panel border border-steel-200 bg-white p-5 sm:p-6'}><p className={tone === 'brand' ? 'font-mono text-[.62rem] tracking-[.16em] text-brand-700' : 'font-mono text-[.62rem] tracking-[.16em] text-steel-400'}>{title}</p><ul className="mt-5 space-y-3">{items.map((item) => <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-steel-600"><span className={tone === 'brand' ? 'mt-2 h-1 w-3 shrink-0 bg-brand-500' : 'mt-2 h-px w-3 shrink-0 bg-steel-300'} />{item}</li>)}</ul></div>;
 }

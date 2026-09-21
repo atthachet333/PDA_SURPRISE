@@ -31,11 +31,11 @@ import type { PortfolioItem } from '@/data/portfolio';
 export interface VisualSlot {
   id: string;
   /**
-   * Portfolio item this visual belongs to, when it represents real work.
+   * Case-study slug this visual belongs to, when it represents real work.
    * Lets a showreel card link to the right case study instead of a generic
    * "see all work" destination.
    */
-  portfolioId?: string;
+  caseStudySlug?: string;
   /** Mock drawn while no reviewed screenshot exists. */
   mock: MockKind;
   /** Short caption / frame label. Describes the SCREEN, not an outcome. */
@@ -76,32 +76,31 @@ export const showreelVisuals: VisualSlot[] = [
     mock: 'payroll',
     label: 'payroll',
     titleTh: 'ระบบเงินเดือน',
-    portfolioId: 'payroll-management-system'
+    caseStudySlug: 'payroll-monthly-control'
   },
   {
     id: 'reel-erp',
     mock: 'erp',
     label: 'erp',
     titleTh: 'ระบบ ERP / การผลิต',
-    portfolioId: 'production-inventory-costing-erp'
+    caseStudySlug: 'erp-inventory-costing'
   },
   {
     id: 'reel-nas',
     mock: 'nas',
     label: 'nas',
     titleTh: 'พื้นที่จัดเก็บเอกสาร',
-    portfolioId: 's2-nas-document-storage'
+    caseStudySlug: 'document-file-workflow'
   },
   {
     id: 'reel-website',
     mock: 'website',
     label: 'website',
     titleTh: 'เว็บไซต์องค์กร',
-    portfolioId: 's2-accounting-consultant-website'
+    caseStudySlug: 'corporate-website-system'
   },
-  // No portfolio entry yet — these two are capability demonstrations, so they
-  // link to the services that describe them rather than to a case study.
-  { id: 'reel-hr', mock: 'hrLine', label: 'HR · LINE', titleTh: 'HR ผ่าน LINE' },
+  { id: 'reel-hr', mock: 'hrLine', label: 'HR · LINE', titleTh: 'HR ผ่าน LINE', caseStudySlug: 'hr-line-leave-approval' },
+  // This remains a capability demonstration and links to its service.
   { id: 'reel-workflow', mock: 'workflow', label: 'workflow', titleTh: 'เส้นทางอนุมัติเอกสาร' }
 ];
 

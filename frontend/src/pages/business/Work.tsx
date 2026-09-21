@@ -1,17 +1,10 @@
 import { PageHeader } from '@/components/business/PageHeader';
 import { WorkShowcase } from '@/components/business/WorkShowcase';
-import { SystemShowreel } from '@/components/business/SystemShowreel';
-import { ApproachExamples } from '@/components/business/ApproachExamples';
 import { BigCTA } from '@/components/business/BigCTA';
-import { portfolio } from '@/data/portfolio';
+import { caseStudies } from '@/data/caseStudies';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { pageMeta } from '@/lib/seo';
 
-/**
- * /work — the REAL systems first (from data/portfolio.ts, no outcome figures),
- * then the illustrative development approaches from data/work.ts, clearly
- * separated and labelled so the two can never be read as the same thing.
- */
 export default function Work() {
   usePageMeta(pageMeta.work);
 
@@ -20,14 +13,12 @@ export default function Work() {
       <PageHeader
         eyebrow="01 / WORK"
         tone="dark"
-        title={<>ผลงานของเรา</>}
-        lead={`ระบบที่พัฒนาและส่งมอบแล้ว ${portfolio.length} ระบบ ภาพหน้าจอบางส่วนยังไม่เผยแพร่เพราะมีข้อมูลของลูกค้าและพนักงานอยู่`}
+        title={<>ระบบที่เรา<br />อธิบายได้ทุกขั้น</>}
+        lead={`Case Study ${caseStudies.length} ระบบที่เล่าจากปัญหา Workflow และวิธีออกแบบจริง โดยไม่เปิดเผยชื่อลูกค้าหรือตัวเลขผลลัพธ์ที่ยังไม่ได้วัด`}
       />
 
-      <WorkShowcase code="02 / PROJECTS" />
-      <SystemShowreel code="03 / INTERFACES" />
-      <ApproachExamples />
-      <BigCTA code="05 / START" />
+      <WorkShowcase showFilters />
+      <BigCTA code="03 / START" />
     </>
   );
 }

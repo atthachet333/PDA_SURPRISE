@@ -51,9 +51,9 @@ export const pageMeta = {
     path: '/solutions'
   },
   work: {
-    title: `ผลงาน${TITLE_SUFFIX}`,
+    title: `Case Studies${TITLE_SUFFIX}`,
     description:
-      'ตัวอย่างระบบและเว็บไซต์ที่ PDA BLISS พัฒนา พร้อมแนวทางการออกแบบและเทคโนโลยีที่เลือกใช้ในแต่ละโปรเจกต์',
+      'Case Study ระบบ ERP, Payroll, HR ผ่าน LINE, เอกสาร และเว็บไซต์ของ PDA BLISS พร้อมปัญหา แนวทางออกแบบ และ Workflow ที่ระบบรองรับ',
     path: '/work'
   },
   insights: {
@@ -119,6 +119,11 @@ export const indexablePaths: string[] = [
   '/services',
   '/solutions',
   '/work',
+  '/work/erp-inventory-costing',
+  '/work/payroll-monthly-control',
+  '/work/hr-line-leave-approval',
+  '/work/document-file-workflow',
+  '/work/corporate-website-system',
   '/about',
   '/contact',
   '/insights',

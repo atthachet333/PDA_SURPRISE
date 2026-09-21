@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Container } from '@/components/shared/Layout';
 import { Icon } from '@/components/shared/Icon';
 import { ArrowIcon } from '@/components/shared/Button';
@@ -52,6 +52,7 @@ export function ServiceExplorer({
   showAllLink = false
 }: ServiceExplorerProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const { hash } = useLocation();
   const reduced = useReducedMotion();
   const active = items[activeIndex] ?? items[0];
 
@@ -59,6 +60,14 @@ export function ServiceExplorer({
   useEffect(() => {
     setActiveIndex((current) => (current < items.length ? current : 0));
   }, [items.length]);
+
+  // Service links can address a specific catalogue entry without introducing
+  // another detail route. The hash also makes the selected service shareable.
+  useEffect(() => {
+    const serviceId = hash.slice(1);
+    const index = items.findIndex((item) => item.id === serviceId);
+    if (index >= 0) setActiveIndex(index);
+  }, [hash, items]);
 
   const select = useCallback((index: number) => setActiveIndex(index), []);
 
@@ -72,6 +81,9 @@ export function ServiceExplorer({
       <SectionBackdrop variant="light-grid" pointer />
 
       <Container wide className="relative">
+        <div aria-hidden="true" className="absolute -top-24">
+          {items.map((service) => <span key={service.id} id={service.id} />)}
+        </div>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>

@@ -8,12 +8,13 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build && node scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "npm run test:memory-gate && npm run test:canonical-truth && npm run test:gateway-timing && npm run test:system-universe",
+    "test": "npm run test:memory-gate && npm run test:canonical-truth && npm run test:gateway-timing && npm run test:system-universe && npm run test:case-studies",
     "test:canonical-truth": "node --test --experimental-strip-types tests/canonicalTruth.test.mjs",
     "test:memory-gate": "node --test --experimental-strip-types tests/memoryGate.test.mjs",
     "lint": "eslint . --max-warnings 0",
     "test:gateway-timing": "node --test --experimental-strip-types tests/gatewayTiming.test.mjs",
-    "test:system-universe": "node --test --experimental-strip-types tests/systemUniverse.test.mjs"
+    "test:system-universe": "node --test --experimental-strip-types tests/systemUniverse.test.mjs",
+    "test:case-studies": "node --test --experimental-strip-types tests/caseStudies.test.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^8.17.14",

@@ -13,6 +13,7 @@ import {
   type SystemIcon
 } from '@/data/systemUniverse';
 import { cn } from '@/lib/cn';
+import { getCaseStudyForSystem } from '@/data/caseStudies';
 import { SectionBackdrop } from './SectionBackdrop';
 
 const ICON_PATHS: Record<SystemIcon, React.ReactNode> = {
@@ -85,13 +86,17 @@ export function SystemUniverse() {
 }
 
 function SystemDetail({ system, edges }: { system: BusinessSystem; edges: { label: string; system: BusinessSystem }[] }) {
+  const caseStudy = getCaseStudyForSystem(system.id);
   return (
     <aside key={system.id} aria-live="polite" className="rounded-panel border border-brand-400/25 bg-brand-900 p-5 sm:p-7">
       <div className="flex items-start justify-between gap-4"><span className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-400/30 bg-brand-800 text-brand-300"><UniverseIcon name={system.icon} className="h-6 w-6" /></span><span className="rounded-pill border border-brand-400/25 px-2.5 py-1 font-mono text-[.55rem] tracking-[.12em] text-brand-300">{systemStatusLabels[system.status]}</span></div>
       <p className="mt-6 font-mono text-[.65rem] tracking-[.16em] text-brand-300">{system.nameEn}</p><h3 className="thai-display mt-2 text-2xl font-bold">{system.nameTh}</h3><p className="mt-3 text-sm leading-relaxed text-brand-100/75">{system.shortDescription}</p>
       <div className="mt-6 border-t border-brand-400/15 pt-5"><p className="font-mono text-[.58rem] tracking-[.16em] text-brand-300">CAPABILITIES</p><ul className="mt-3 grid grid-cols-2 gap-2">{system.capabilities.map((capability) => <li key={capability} className="flex items-start gap-2 text-xs leading-relaxed text-brand-100/80"><span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-brand-400" />{capability}</li>)}</ul></div>
       <div className="mt-6 border-t border-brand-400/15 pt-5"><p className="font-mono text-[.58rem] tracking-[.16em] text-brand-300">CAN CONNECT</p>{edges.length ? <ul className="mt-3 space-y-3">{edges.map(({ system: peer, label }) => <li key={peer.id} className="rounded-card border border-brand-400/15 bg-brand-800/55 p-3"><span className="text-xs font-bold text-white">{peer.nameEn}</span><span className="mt-1 block text-[.7rem] leading-relaxed text-brand-100/60">{label}</span></li>)}</ul> : <p className="mt-3 text-xs leading-relaxed text-brand-100/60">ทำงานเป็นช่องทางเฉพาะ และสามารถออกแบบการเชื่อมต่อเพิ่มเติมตาม Workflow จริงของโครงการ</p>}</div>
-      <Link to={system.route} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-pill bg-white px-5 py-2.5 text-sm font-semibold text-brand-800 transition-colors hover:bg-brand-50">ดูระบบนี้ <ArrowIcon /></Link>
+      <div className="mt-6 flex flex-wrap gap-2">
+        {caseStudy ? <Link to={`/work/${caseStudy.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-pill bg-white px-5 py-2.5 text-sm font-semibold text-brand-800 transition-colors hover:bg-brand-50">ดูตัวอย่างระบบ <ArrowIcon /></Link> : null}
+        <Link to={system.route} className="inline-flex min-h-11 items-center gap-2 rounded-pill border border-brand-300/30 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/5">ดูบริการ</Link>
+      </div>
     </aside>
   );
 }

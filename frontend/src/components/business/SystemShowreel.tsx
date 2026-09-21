@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Container } from "@/components/shared/Layout";
 import { ArrowIcon } from "@/components/shared/Button";
-import { ProductPanel } from "./ProductPanel";
+import { CaseStudyVisual } from "./CaseStudyVisual";
 import {
   showreelVisuals,
   showreelDestination,
@@ -13,6 +13,7 @@ import { SectionBackdrop } from "./SectionBackdrop";
 import { useDeviceProfile } from "@/hooks/useDeviceProfile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/cn";
+import type { CaseStudyVisual as CaseVisualKind } from "@/data/caseStudies";
 
 /**
  * SYSTEM SHOWREEL — product evidence, high on the page.
@@ -132,8 +133,8 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
         >
           {showreelVisuals.map((slot) => {
             /* The rail is the mobile/touch path, so its cards must be links too. */
-            const to = slot.portfolioId
-              ? `/work/${slot.portfolioId}`
+            const to = slot.caseStudySlug
+              ? `/work/${slot.caseStudySlug}`
               : (showreelDestination[slot.id] ?? "/work");
             return (
               <Link
@@ -149,14 +150,14 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
                       : "aspect-[16/10]",
                   )}
                 >
-                  <ProductPanel slot={slot} className="h-full" />
+                  <CaseStudyVisual kind={showreelVisualKind(slot)} className="h-full" />
                 </div>
                 <p className="mt-3 flex flex-wrap items-center gap-x-2">
                   <span className="thai-display text-sm font-semibold text-ink">
                     {slot.titleTh ?? slot.label}
                   </span>
                   <span className="font-mono text-[0.5rem] uppercase tracking-[0.12em] text-brand-600">
-                    {slot.portfolioId ? "ดูระบบ" : "ดูบริการ"} →
+                    {slot.caseStudySlug ? "ดู Case Study" : "ดูบริการ"} →
                   </span>
                 </p>
               </Link>
@@ -209,13 +210,13 @@ function ShowreelCard({
 
   /*
     Every card has a real destination: its case study when the slot maps to a
-    portfolio item, otherwise the service that describes the capability. No card
+    case study, otherwise the service that describes the capability. No card
     is a decorative dead end.
   */
-  const destination = slot.portfolioId
-    ? `/work/${slot.portfolioId}`
+  const destination = slot.caseStudySlug
+    ? `/work/${slot.caseStudySlug}`
     : (showreelDestination[slot.id] ?? "/work");
-  const actionLabel = slot.portfolioId ? "ดูระบบ" : "ดูบริการ";
+  const actionLabel = slot.caseStudySlug ? "ดู Case Study" : "ดูบริการ";
 
   return (
     /*
@@ -274,7 +275,7 @@ function ShowreelCard({
                   : "shadow-lift ring-black/5",
               )}
             >
-              <ProductPanel slot={slot} className="h-full" />
+              <CaseStudyVisual kind={showreelVisualKind(slot)} className="h-full" />
             </div>
 
             {/* Caption rides with the card so the raised one names itself. */}
@@ -295,4 +296,12 @@ function ShowreelCard({
       </motion.div>
     </div>
   );
+}
+
+function showreelVisualKind(slot: VisualSlot): CaseVisualKind {
+  if (slot.mock === 'payroll') return 'payroll';
+  if (slot.mock === 'erp') return 'erp';
+  if (slot.mock === 'hrLine') return 'hrLine';
+  if (slot.mock === 'website') return 'website';
+  return 'documents';
 }

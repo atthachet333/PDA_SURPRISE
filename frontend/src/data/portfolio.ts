@@ -3,7 +3,7 @@
  * PDA BLISS — portfolio manifest (real systems)
  * ============================================================================
  * This file is the record of work that ACTUALLY EXISTS, kept separate from the
- * illustrative case studies in `work.ts`. Nothing here is rendered publicly
+ * case-study records in `caseStudies.ts`. Nothing here is rendered publicly
  * yet: the redesign pass owns the Work showcase, and each item must clear two
  * gates first.
  *
