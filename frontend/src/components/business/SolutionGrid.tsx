@@ -8,6 +8,7 @@ import { visualForSolution } from '@/data/visuals';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 import { ProductPanel } from './ProductPanel';
+import { contactHref, solutionToContactService, solutionToSourceSystem } from '@/data/contactRouting';
 
 const categorySurface: Record<SolutionCategory, string> = {
   operations: 'border-brand-200 bg-[linear-gradient(145deg,#fff,#f2faf5)]',
@@ -32,6 +33,11 @@ export function SolutionGrid({ code = '03 / INDEX' }: { code?: string } = {}) {
     [activeCategory]
   );
   const selected = solutions.find((item) => item.id === selectedId) ?? visible[0];
+  const selectedContactService = selected ? solutionToContactService[selected.id] : undefined;
+  const selectedSourceSystem = selected ? solutionToSourceSystem[selected.id] : undefined;
+  const selectedContactHref = selectedContactService && selectedSourceSystem
+    ? contactHref(selectedContactService, `solutions:${selectedSourceSystem}`)
+    : '/contact';
 
   const selectSolution = (id: string) => {
     setSelectedId(id);
@@ -145,7 +151,7 @@ export function SolutionGrid({ code = '03 / INDEX' }: { code?: string } = {}) {
                   <ul className="mt-6 space-y-2">
                     {selected.highlights.map((highlight) => <li key={highlight} className="flex items-start gap-2.5 text-sm text-brand-100/75"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-400" />{highlight}</li>)}
                   </ul>
-                  <Link to="/contact" className="group mt-7 inline-flex items-center gap-2 text-sm font-semibold text-brand-200">ปรึกษาโซลูชันนี้<ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" /></Link>
+                  <Link to={selectedContactHref} className="group mt-7 inline-flex items-center gap-2 text-sm font-semibold text-brand-200">ปรึกษาโซลูชันนี้<ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" /></Link>
                 </div>
                 <div className="min-h-[22rem] bg-brand-800 p-5 sm:p-7">
                   <div className="h-full min-h-[20rem] overflow-hidden rounded-card shadow-lift-lg ring-1 ring-brand-300/20"><ProductPanel slot={visualForSolution(selected.id)} className="h-full" frame="none" showMockNotice /></div>

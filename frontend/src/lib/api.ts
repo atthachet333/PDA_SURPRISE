@@ -1,3 +1,5 @@
+import type { ContactPayload } from '@/data/contactFlow';
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
 export interface ApiFieldError {
@@ -77,20 +79,10 @@ export interface HealthResponse {
 export interface PublicConfig {
   company: { name: string; shortName: string; email: string; phone: string; location: string };
   features: Record<string, boolean>;
-  forms: { projectTypes: string[]; budgetRanges: string[]; timelines: string[] };
+  forms: { projectTypes: string[]; contactServiceIds: string[]; budgetRanges: string[]; timelines: string[] };
 }
 
-export interface ContactPayload {
-  name: string;
-  company?: string;
-  email: string;
-  phone?: string;
-  projectType: string;
-  budget: string;
-  timeline: string;
-  message: string;
-  website?: string;
-}
+export type { ContactPayload } from '@/data/contactFlow';
 
 export const api = {
   health: () => request<HealthResponse>('/health'),

@@ -23,8 +23,8 @@ export default function Contact() {
       />
 
       <section className="sect sect--bright relative overflow-hidden py-section">
-        <Container className="relative">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,0.75fr)] lg:gap-16">
+        <Container wide className="relative">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.55fr)_minmax(18rem,0.55fr)] lg:gap-14 xl:gap-20">
             <div>
               <p className="section-code">02 / BRIEF</p>
               <ContactForm />

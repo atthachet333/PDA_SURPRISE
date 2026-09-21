@@ -60,8 +60,11 @@ export async function createLead(
   const { website: _honeypot, ...payload } = input;
   const lead: StoredLead = {
     ...payload,
-    company: payload.company || undefined,
+    companyName: payload.companyName || undefined,
+    email: payload.email || undefined,
     phone: payload.phone || undefined,
+    lineId: payload.lineId || undefined,
+    sourceContext: payload.sourceContext || undefined,
     id: createId(),
     reference: createReference(),
     receivedAt: new Date().toISOString(),
@@ -71,7 +74,8 @@ export async function createLead(
 
   await repository.save(lead);
 
-  // Notification fan-out (email / LINE / CRM) plugs in here.
+  // Notification fan-out (email / LINE / CRM) plugs in here. The trusted,
+  // injection-safe formatter lives in contactNotification.ts.
   return { reference: lead.reference, receivedAt: lead.receivedAt };
 }
 

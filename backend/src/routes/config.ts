@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { env } from '../config/env.js';
-import { budgetRanges, projectTypes, timelines } from '../schemas/contact.js';
+import { budgetRanges, contactServiceIds, projectTypes, timelines } from '../schemas/contact.js';
 
 /**
  * Non-secret configuration the frontend is allowed to read at runtime.
@@ -22,6 +22,7 @@ export const configRoutes: FastifyPluginAsync = async (app) => {
     },
     forms: {
       projectTypes,
+      contactServiceIds,
       budgetRanges,
       timelines
     }

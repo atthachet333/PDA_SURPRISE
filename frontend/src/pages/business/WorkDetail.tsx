@@ -14,6 +14,7 @@ import {
   type CaseStudy
 } from '@/data/caseStudies';
 import { getSystemById } from '@/data/systemUniverse';
+import { contactHref, contactServiceFromRoute } from '@/data/contactRouting';
 import type { PageMeta } from '@/lib/seo';
 import { pageMeta } from '@/lib/seo';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -38,6 +39,7 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
   const category = caseStudyCategories.find((entry) => entry.id === study.category)?.label;
   const relatedSystems = study.relatedSystems.map(getSystemById).filter((system) => system !== undefined);
   const reviewedScreens = study.screens.filter((screen) => screen.reviewed);
+  const contactService = contactServiceFromRoute(study.serviceRoute);
 
   return (
     <>
@@ -121,7 +123,7 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
         <Container wide>
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div><p className="section-code">06 / OUTCOME</p><h2 className="thai-display mt-4 text-statement font-bold text-ink">ผลลัพธ์เชิง<br /><span className="text-brand-700">การทำงาน</span></h2><p className="mt-5 text-sm leading-relaxed text-steel-500">ไม่มีการแสดงเปอร์เซ็นต์ ROI หรือจำนวนผู้ใช้ เพราะยังไม่มีข้อมูลการวัดผลที่ยืนยันสำหรับเผยแพร่</p><ul className="mt-7 space-y-3">{study.outcomes.map((outcome) => <li key={outcome} className="flex items-start gap-3 rounded-card border border-brand-100 bg-white p-4 text-sm leading-relaxed text-steel-700"><span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" />{outcome}</li>)}</ul></div>
-            <div><p className="section-code">07 / RELATED SYSTEMS</p><h2 className="thai-display mt-4 text-2xl font-bold text-ink">ระบบที่เกี่ยวข้อง</h2><div className="mt-6 grid gap-3 sm:grid-cols-2">{relatedSystems.map((system) => <Link key={system.id} to="/solutions" className="group rounded-card border border-steel-200 bg-white p-4 transition-colors hover:border-brand-300"><p className="font-mono text-[.58rem] tracking-[.13em] text-brand-600">{system.nameEn}</p><p className="thai-display mt-2 text-sm font-semibold text-ink">{system.nameTh}</p><span className="mt-3 inline-flex items-center gap-1 text-xs text-steel-500 group-hover:text-brand-700">ดูใน System Universe <ArrowIcon /></span></Link>)}</div><details className="mt-5 rounded-card border border-steel-200 bg-white p-5"><summary className="cursor-pointer text-sm font-semibold text-ink">Technical Notes</summary><ul className="mt-4 space-y-2 border-t border-steel-100 pt-4">{study.technicalNotes.map((note) => <li key={note} className="text-sm leading-relaxed text-steel-600">— {note}</li>)}</ul></details><ButtonLink to={study.serviceRoute} variant="secondary" className="mt-5">ดูบริการที่เกี่ยวข้อง <ArrowIcon /></ButtonLink></div>
+            <div><p className="section-code">07 / RELATED SYSTEMS</p><h2 className="thai-display mt-4 text-2xl font-bold text-ink">ระบบที่เกี่ยวข้อง</h2><div className="mt-6 grid gap-3 sm:grid-cols-2">{relatedSystems.map((system) => <Link key={system.id} to="/solutions" className="group rounded-card border border-steel-200 bg-white p-4 transition-colors hover:border-brand-300"><p className="font-mono text-[.58rem] tracking-[.13em] text-brand-600">{system.nameEn}</p><p className="thai-display mt-2 text-sm font-semibold text-ink">{system.nameTh}</p><span className="mt-3 inline-flex items-center gap-1 text-xs text-steel-500 group-hover:text-brand-700">ดูใน System Universe <ArrowIcon /></span></Link>)}</div><details className="mt-5 rounded-card border border-steel-200 bg-white p-5"><summary className="cursor-pointer text-sm font-semibold text-ink">Technical Notes</summary><ul className="mt-4 space-y-2 border-t border-steel-100 pt-4">{study.technicalNotes.map((note) => <li key={note} className="text-sm leading-relaxed text-steel-600">— {note}</li>)}</ul></details><div className="mt-5 flex flex-wrap gap-3"><ButtonLink to={study.serviceRoute} variant="secondary">ดูบริการที่เกี่ยวข้อง <ArrowIcon /></ButtonLink>{contactService ? <ButtonLink to={contactHref(contactService, `case:${study.slug}`)}>ปรึกษาระบบลักษณะนี้ <ArrowIcon /></ButtonLink> : null}</div></div>
           </div>
         </Container>
       </section>

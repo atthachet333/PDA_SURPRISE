@@ -2,7 +2,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { env } from './config/env.js';
-import { registerErrorHandling } from './plugins/errorHandler.js';
+import { registerErrorHandling, setStandardErrorHandler } from './plugins/errorHandler.js';
 import { apiRoutes } from './routes/index.js';
 
 /**
@@ -99,6 +99,7 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   await app.register(
     async (api) => {
+      setStandardErrorHandler(api);
       await api.register(import('@fastify/cors'), {
         origin: (origin, callback) => {
           // No Origin header: a same-origin navigation, curl, or a server-side

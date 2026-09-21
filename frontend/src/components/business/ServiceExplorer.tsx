@@ -10,6 +10,7 @@ import { visualForService } from '@/data/visuals';
 import { SectionBackdrop } from './SectionBackdrop';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { contactHref, isContactServiceId } from '@/data/contactRouting';
 
 /**
  * SERVICES — a three-column explorer, not a card grid.
@@ -55,6 +56,7 @@ export function ServiceExplorer({
   const { hash } = useLocation();
   const reduced = useReducedMotion();
   const active = items[activeIndex] ?? items[0];
+  const activeContactIntent = active && isContactServiceId(active.id) ? active.id : undefined;
 
   // Keep the selection valid if the caller swaps the list.
   useEffect(() => {
@@ -219,7 +221,7 @@ export function ServiceExplorer({
                 </div>
 
                 <Link
-                  to="/contact"
+                  to={activeContactIntent ? contactHref(activeContactIntent, `service:${activeContactIntent}`) : '/contact'}
                   className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-600"
                 >
                   ปรึกษาเรื่องบริการนี้
@@ -338,6 +340,7 @@ export function ServiceExplorer({
                             </span>
                           ))}
                         </div>
+                        <Link to={isContactServiceId(service.id) ? contactHref(service.id, `service:${service.id}`) : '/contact'} className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-700">ปรึกษาเรื่องบริการนี้ <ArrowIcon /></Link>
                       </div>
                     </motion.div>
                   ) : null}

@@ -14,6 +14,7 @@ import {
 } from '@/data/systemUniverse';
 import { cn } from '@/lib/cn';
 import { getCaseStudyForSystem } from '@/data/caseStudies';
+import { contactHref, systemToContactService } from '@/data/contactRouting';
 import { SectionBackdrop } from './SectionBackdrop';
 
 const ICON_PATHS: Record<SystemIcon, React.ReactNode> = {
@@ -87,6 +88,8 @@ export function SystemUniverse() {
 
 function SystemDetail({ system, edges }: { system: BusinessSystem; edges: { label: string; system: BusinessSystem }[] }) {
   const caseStudy = getCaseStudyForSystem(system.id);
+  const contactService = systemToContactService[system.id];
+  const contactTo = contactService ? contactHref(contactService, `solutions:${system.id}`) : '/contact';
   return (
     <aside key={system.id} aria-live="polite" className="rounded-panel border border-brand-400/25 bg-brand-900 p-5 sm:p-7">
       <div className="flex items-start justify-between gap-4"><span className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-400/30 bg-brand-800 text-brand-300"><UniverseIcon name={system.icon} className="h-6 w-6" /></span><span className="rounded-pill border border-brand-400/25 px-2.5 py-1 font-mono text-[.55rem] tracking-[.12em] text-brand-300">{systemStatusLabels[system.status]}</span></div>
@@ -96,6 +99,7 @@ function SystemDetail({ system, edges }: { system: BusinessSystem; edges: { labe
       <div className="mt-6 flex flex-wrap gap-2">
         {caseStudy ? <Link to={`/work/${caseStudy.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-pill bg-white px-5 py-2.5 text-sm font-semibold text-brand-800 transition-colors hover:bg-brand-50">ดูตัวอย่างระบบ <ArrowIcon /></Link> : null}
         <Link to={system.route} className="inline-flex min-h-11 items-center gap-2 rounded-pill border border-brand-300/30 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/5">ดูบริการ</Link>
+        <Link to={contactTo} className="inline-flex min-h-11 items-center gap-2 rounded-pill border border-brand-300/30 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/5">ปรึกษาระบบนี้</Link>
       </div>
     </aside>
   );

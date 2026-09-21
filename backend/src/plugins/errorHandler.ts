@@ -32,6 +32,11 @@ export function registerErrorHandling(app: FastifyInstance, { spaFallback }: Opt
     });
   });
 
+  setStandardErrorHandler(app);
+}
+
+/** Register inside an encapsulated API scope so parser errors use our envelope. */
+export function setStandardErrorHandler(app: FastifyInstance): void {
   app.setErrorHandler(async (rawError, request, reply) => {
     const error = rawError as FastifyError;
     const status = error.statusCode && error.statusCode >= 400 ? error.statusCode : 500;
@@ -43,7 +48,7 @@ export function registerErrorHandling(app: FastifyInstance, { spaFallback }: Opt
     return reply.status(status).send({
       ok: false,
       error: {
-        code: error.code ?? (status >= 500 ? 'INTERNAL_ERROR' : 'REQUEST_ERROR'),
+        code: status === 429 ? 'RATE_LIMITED' : error.code ?? (status >= 500 ? 'INTERNAL_ERROR' : 'REQUEST_ERROR'),
         /*
          * A 5xx in production says nothing about why. `error.message` from a
          * crash routinely carries a filesystem path, a dependency's internals
@@ -52,7 +57,9 @@ export function registerErrorHandling(app: FastifyInstance, { spaFallback }: Opt
          * every response carries.
          */
         message:
-          status >= 500 && isProduction
+          status === 429
+            ? 'Too many enquiries from this address. Please try again shortly.'
+            : status >= 500 && isProduction
             ? 'Something went wrong on our side. Please try again.'
             : error.message
       },

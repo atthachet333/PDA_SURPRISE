@@ -20,13 +20,14 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
        *
        * `statusCode` stays at the top level because the plugin reads it.
        */
-      errorResponseBuilder: () => ({
+      errorResponseBuilder: (request) => ({
         statusCode: 429,
         ok: false,
         error: {
           code: 'RATE_LIMITED',
           message: 'Too many enquiries from this address. Please try again shortly.'
-        }
+        },
+        requestId: request.id
       })
     });
 
@@ -43,7 +44,8 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
               field: issue.path.join('.'),
               message: issue.message
             }))
-          }
+          },
+          requestId: request.id
         });
       }
 
@@ -61,7 +63,7 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
       }
 
       /* Lowercase the email so the same address is not stored three ways. */
-      const lead = { ...parsed.data, email: parsed.data.email.toLowerCase() };
+      const lead = { ...parsed.data, email: parsed.data.email?.toLowerCase() || '' };
 
       const result = await createLead(lead, {
         source: 'website-contact-form',
@@ -76,7 +78,7 @@ export const contactRoutes: FastifyPluginAsync = async (app) => {
        * find the record.
        */
       request.log.info(
-        { reference: result.reference, projectType: lead.projectType },
+        { reference: result.reference, contactType: lead.contactType, serviceId: lead.serviceId },
         'new lead captured'
       );
 
