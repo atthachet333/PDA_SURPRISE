@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/SceneSection';
 import { MemoryImage } from '@/components/surprise/MemoryImage';
 import {
@@ -15,12 +15,23 @@ import {
   type ArchiveMediaFilter,
   type MemoryVideo
 } from '@/data/memoryVideos';
+import {
+  ARCHIVE_PAGE_SIZE,
+  ARCHIVE_YEAR_EVENT,
+  resetArchiveView,
+  sanitizeArchiveFilters
+} from '@/data/archiveYears';
+import {
+  DEFAULT_ARCHIVE_YEAR_ID,
+  relationshipYears,
+  type RelationshipYearId
+} from '@/data/relationshipYears';
 import { useAudio } from '@/app/audioContext';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
-const PAGE_SIZE = 24;
+const PAGE_SIZE = ARCHIVE_PAGE_SIZE;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
@@ -36,8 +47,19 @@ export function Scene04Universe() {
   const [selected, setSelected] = useState<MemoryArchiveItem | null>(null);
   const [openClip, setOpenClip] = useState<MemoryVideo | null>(null);
   const [media, setMedia] = useState<ArchiveMediaFilter>('all');
+  const [yearId, setYearId] = useState<RelationshipYearId>(DEFAULT_ARCHIVE_YEAR_ID);
   const reduced = useReducedMotion();
   const { play, triggerCue } = useAudio();
+
+  const selectYear = useCallback((nextYearId: RelationshipYearId) => {
+    const next = resetArchiveView(nextYearId);
+    setYearId(next.yearId);
+    setMedia(next.media);
+    setGroup(next.group);
+    setVisibleCount(next.visibleCount);
+    setSelected(null);
+    setOpenClip(null);
+  }, []);
 
   useEffect(() => {
     if (inView) triggerCue('memoryUniverse');
@@ -45,7 +67,16 @@ export function Scene04Universe() {
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [group, media]);
+  }, [group, media, yearId]);
+
+  useEffect(() => {
+    const selectFromFinale = (event: Event) => {
+      const nextYear = (event as CustomEvent<{ yearId?: RelationshipYearId }>).detail?.yearId;
+      if (nextYear) selectYear(nextYear);
+    };
+    window.addEventListener(ARCHIVE_YEAR_EVENT, selectFromFinale);
+    return () => window.removeEventListener(ARCHIVE_YEAR_EVENT, selectFromFinale);
+  }, [selectYear]);
 
   useEffect(() => {
     if (!selected) return;
@@ -54,9 +85,12 @@ export function Scene04Universe() {
     return () => window.removeEventListener('keydown', close);
   }, [selected]);
 
+  const selectedYear = relationshipYears.find((year) => year.id === yearId) ?? relationshipYears[0]!;
+  const yearPhotos = useMemo(() => memoryArchive.filter((item) => item.yearId === yearId), [yearId]);
+  const yearVideos = useMemo(() => archiveVideos.filter((clip) => clip.yearId === yearId), [yearId]);
   const filtered = useMemo(
-    () => (group === 'all' ? memoryArchive : memoryArchive.filter((item) => item.group === group)),
-    [group]
+    () => (group === 'all' ? yearPhotos : yearPhotos.filter((item) => item.group === group)),
+    [group, yearPhotos]
   );
 
   /*
@@ -72,9 +106,9 @@ export function Scene04Universe() {
        selection is ignored rather than intersected — intersecting produced an
        empty field, which reads as "there are none" rather than "that filter
        does not apply here". */
-    if (media === 'video') return archiveVideos;
-    return group === 'all' ? archiveVideos : [];
-  }, [group, media]);
+    if (media === 'video') return yearVideos;
+    return group === 'all' ? yearVideos : [];
+  }, [group, media, yearVideos]);
   const photos = useMemo(() => (media === 'video' ? [] : filtered), [filtered, media]);
   const total = photos.length + clips.length;
 
@@ -83,8 +117,9 @@ export function Scene04Universe() {
   const visible = photos.slice(0, Math.max(0, visibleCount - visibleClips.length));
 
   const selectMedia = (nextMedia: ArchiveMediaFilter) => {
-    setMedia(nextMedia);
-    setGroup((currentGroup) => compatibleArchiveGroup(nextMedia, currentGroup));
+    const next = sanitizeArchiveFilters({ yearId, media: nextMedia, group });
+    setMedia(next.media);
+    setGroup(compatibleArchiveGroup(next.media, next.group));
   };
 
   return (
@@ -97,9 +132,48 @@ export function Scene04Universe() {
             จากวันธรรมดา ระหว่างทาง ไปจนถึงวันที่กลายเป็นครอบครัวเดียวกัน — ทุกภาพที่ปลอดภัยและมีความหมายถูกเก็บไว้ในสนามความทรงจำนี้
           </p>
           <p className="mt-4 font-mono text-[0.58rem] uppercase tracking-[0.24em] text-sky-100/50">
-            {memoryArchive.length} SAFE MEMORIES · {archiveVideos.length} IN MOTION · LOCAL &amp; PRIVATE
+            {selectedYear.releaseState === 'released'
+              ? `${yearPhotos.length} SAFE MEMORIES · ${yearVideos.length} IN MOTION · LOCAL & PRIVATE`
+              : 'บทต่อไป · LOCAL & PRIVATE'}
           </p>
         </div>
+
+        <div className="relative mx-auto mt-9 flex max-w-md items-center justify-center gap-3 sm:gap-5" aria-label="เลือกปีของความทรงจำ">
+          <span aria-hidden="true" className="absolute inset-x-10 top-1/2 h-px bg-gradient-to-r from-transparent via-sky-200/25 to-transparent" />
+          {relationshipYears.map((year) => {
+            const active = year.id === yearId;
+            return (
+              <button
+                key={year.id}
+                type="button"
+                aria-pressed={active}
+                aria-label={`${year.title} — ${year.subtitle}`}
+                onClick={() => selectYear(year.id)}
+                className={cn(
+                  'ai-pressable relative z-10 inline-flex min-h-11 min-w-[7.75rem] items-center justify-center gap-2 rounded-full border px-4 font-mono text-[0.56rem] tracking-[0.18em] focus-visible:outline-offset-4',
+                  active
+                    ? 'border-champagne/55 bg-navy-800 text-champagne shadow-[0_0_24px_rgba(235,217,188,0.12)]'
+                    : 'border-sky-200/18 bg-navy-900/80 text-sky-100/55 hover:border-sky-200/40 hover:text-ivory'
+                )}
+              >
+                <span aria-hidden="true" className={cn('h-1.5 w-1.5 rounded-full', active ? 'bg-champagne shadow-[0_0_10px_rgba(235,217,188,0.8)]' : 'bg-sky-200/35')} />
+                {year.title}
+              </button>
+            );
+          })}
+        </div>
+
+        {selectedYear.releaseState !== 'released' ? (
+          <div className="mx-auto mt-12 max-w-xl py-14 text-center sm:py-20" aria-live="polite">
+            <span aria-hidden="true" className="mx-auto block h-24 w-24 rounded-full border border-sky-200/15 bg-[radial-gradient(circle,rgba(126,200,255,0.12),transparent_68%)]" />
+            <p className="mt-7 font-display text-3xl text-ivory sm:text-4xl">{selectedYear.title}</p>
+            <p className="mt-4 font-thai text-lg text-champagne">{selectedYear.subtitle}</p>
+            <p className="mx-auto mt-4 max-w-md font-thai text-sm leading-7 text-ivory/58">
+              เรื่องราวต่อจากนี้ยังเปิดอยู่ เราจะค่อย ๆ เติมมันด้วยสิ่งที่เกิดขึ้นจริง
+            </p>
+          </div>
+        ) : (
+          <>
 
         {/* Three states, not a taxonomy: everything, the stills, the ones that
             still move. */}
@@ -242,6 +316,8 @@ export function Scene04Universe() {
             </button>
           </div>
         ) : null}
+          </>
+        )}
       </div>
 
       <AnimatePresence>

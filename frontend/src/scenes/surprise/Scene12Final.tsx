@@ -9,6 +9,13 @@ import { useAudio } from '@/app/audioContext';
 import { useSecret } from '@/hooks/useSecret';
 import { SecretReveal } from '@/components/surprise/SecretReveal';
 import { cn } from '@/lib/cn';
+import { ARCHIVE_YEAR_EVENT } from '@/data/archiveYears';
+import {
+  STORY_RELEASE_YEAR_ID,
+  finaleProgress,
+  releasedArchiveYear,
+  yearTwoPreview
+} from '@/data/relationshipYears';
 
 /**
  * Scene 12 — the close.
@@ -253,6 +260,7 @@ export function Scene12Final() {
    */
   const replay = useCallback(() => {
     play('softClick');
+    window.dispatchEvent(new CustomEvent(ARCHIVE_YEAR_EVENT, { detail: { yearId: STORY_RELEASE_YEAR_ID } }));
     setBeat(-1);
     setLocked(false);
     setReached(false);
@@ -268,8 +276,17 @@ export function Scene12Final() {
    */
   const toMemories = useCallback(() => {
     play('softClick');
+    window.dispatchEvent(new CustomEvent(ARCHIVE_YEAR_EVENT, { detail: { yearId: STORY_RELEASE_YEAR_ID } }));
     document.getElementById('memories')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [play]);
+
+  const toFutureArchive = useCallback(() => {
+    play('softClick');
+    window.dispatchEvent(new CustomEvent(ARCHIVE_YEAR_EVENT, { detail: { yearId: yearTwoPreview.id } }));
+    document.getElementById('memories')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [play]);
+
+  const yearTwoProgress = finaleProgress(yearTwoPreview, Date.now());
 
   return (
     <SceneSection id="final" ref={ref} label="The close" className="overflow-hidden">
@@ -289,13 +306,13 @@ export function Scene12Final() {
 
       <div className="relative w-full max-w-lg">
         <p className="mb-10 text-center font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/55">
-          12 · YEAR 02
+          12 · {yearTwoPreview.title}
         </p>
 
         {/* YEAR 01 — the bar's width is set declaratively to its final value on
             the first beat; the transition only decides how fast it gets there. */}
         <ProgressBlock
-          label={finalMessages.yearOneLabel}
+          label={releasedArchiveYear.title}
           percent={at(BEAT.YEAR_ONE) ? 100 : 0}
           animate={!reduced && !locked}
           durationMs={2600}
@@ -322,12 +339,12 @@ export function Scene12Final() {
         {/* YEAR 02 */}
         <div style={cue(BEAT.YEAR_TWO)} className="relative mt-6">
           <ProgressBlock
-            label={finalMessages.yearTwoLabel}
-            percent={at(BEAT.YEAR_TWO) ? finalMessages.yearTwoProgress : 0}
+            label={yearTwoPreview.title}
+            percent={at(BEAT.YEAR_TWO) ? yearTwoProgress : 0}
             animate={!reduced && !locked}
             durationMs={1500}
             loading
-            tag="INITIALIZING"
+            tag={yearTwoPreview.subtitle}
           />
 
           {/*
@@ -365,7 +382,7 @@ export function Scene12Final() {
             <button
               type="button"
               onClick={() => discoverFinale()}
-              aria-label={finalMessages.yearTwoLabel}
+              aria-label={yearTwoPreview.title}
               className="absolute inset-0 rounded-card transition-colors duration-300 hover:bg-sky-200/[0.06] active:bg-sky-200/[0.1] focus-visible:outline-none"
               style={{ touchAction: 'manipulation' }}
             />
@@ -445,6 +462,9 @@ export function Scene12Final() {
             className="mt-14 flex flex-wrap items-center justify-center gap-3"
           >
             <FinalButton onClick={toMemories}>{finalMessages.memoriesLabel}</FinalButton>
+            <FinalButton onClick={toFutureArchive} subtle>
+              {finalMessages.futureArchiveLabel}
+            </FinalButton>
             <FinalButton onClick={replay} subtle>
               {finalMessages.replayLabel}
             </FinalButton>

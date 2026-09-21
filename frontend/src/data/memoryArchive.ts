@@ -1,3 +1,5 @@
+import { STORY_RELEASE_YEAR_ID, type RelationshipYearId } from '@/data/relationshipYears';
+
 export type MemoryArchiveGroup = 'moments' | 'journey' | 'milestones' | 'prewedding' | 'wedding' | 'registration' | 'life';
 
 export interface MemoryArchiveItem {
@@ -11,13 +13,21 @@ export interface MemoryArchiveItem {
   dateLabel: string;
   special: boolean;
   privacy: string;
+  yearId: RelationshipYearId | 'unassigned';
+  yearSource: 'owner-override' | 'capture-date' | 'release-default';
 }
+
+type CuratedArchiveItem = Omit<MemoryArchiveItem, 'yearId' | 'yearSource'> & {
+  /** Owner truth wins over capture metadata when this is supplied. */
+  yearId?: RelationshipYearId | 'unassigned';
+  yearSource?: MemoryArchiveItem['yearSource'];
+};
 
 /**
  * Production-safe derivatives from the owner-provided Drive archive.
  * Source filenames, Drive IDs, EXIF and GPS remain in the dev-only manifest.
  */
-export const memoryArchive: MemoryArchiveItem[] = [
+const curatedMemoryArchive: CuratedArchiveItem[] = [
   {
     'id': 'memory-001',
     'image': '/images/memories/archive/memory-001.webp',
@@ -1435,6 +1445,17 @@ export const memoryArchive: MemoryArchiveItem[] = [
     'privacy': 'safe'
   }
 ];
+
+/**
+ * The established archive is the released Year 01 collection. Future pipeline
+ * output can set yearId/yearSource per item without changing any scene JSX.
+ */
+export const memoryArchive: MemoryArchiveItem[] = curatedMemoryArchive.map((item) => ({
+  ...item,
+  yearId: item.yearId ?? STORY_RELEASE_YEAR_ID,
+  yearSource: item.yearSource ?? 'release-default'
+}));
+
 export const memoryArchiveGroups: Array<{ id: MemoryArchiveGroup; label: string }> = [
   { id: 'moments', label: 'วันธรรมดาที่พิเศษ' },
   { id: 'journey', label: 'ระหว่างทาง' },

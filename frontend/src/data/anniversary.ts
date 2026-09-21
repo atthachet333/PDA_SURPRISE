@@ -30,7 +30,8 @@
  * ============================================================================
  */
 
-import { daysBetween } from '@/lib/format';
+import { RELATIONSHIP_START_DATE, relationshipDaysAt } from '@/data/relationshipYears';
+import { anniversaryAudio } from '@/data/anniversaryAudio';
 import {
   CANONICAL_PLACE_COUNT,
   CANONICAL_PROVINCE_COUNT,
@@ -208,14 +209,14 @@ export interface ImageSlot {
  * ── THE ONE VALUE THAT MATTERS ──
  * 12 October 2025. Every counter in the experience derives from this.
  */
-export const RELATIONSHIP_START_DATE = '2025-10-12';
+export { RELATIONSHIP_START_DATE } from '@/data/relationshipYears';
 
 /** Owner-confirmed legal registration date used by the private memory gate. */
 export const LEGAL_REGISTRATION_DATE = '2026-07-28';
 
 /** Days together, recomputed on every page load. */
-export function daysTogether(from: string = RELATIONSHIP_START_DATE): number {
-  return daysBetween(new Date(from));
+export function daysTogether(at: Date | number | string = Date.now()): number {
+  return relationshipDaysAt(at);
 }
 
 const DAYS = daysTogether();
@@ -471,14 +472,12 @@ export const anniversary = {
    * message for the redesign pass, which will pace it across several screens.
    */
   finalMessages: {
-    yearOneLabel: 'YEAR 01',
     archivedLabel: 'COMPLETE',
-    yearTwoLabel: 'YEAR 02',
-    yearTwoProgress: 10,
     lines: ['เรื่องที่เหลือ ยังไม่ได้เกิดขึ้น', 'เรามาช่วยกันเขียนมันต่อนะ'],
     signature: 'A&I',
     replayLabel: 'เริ่มเรื่องราวใหม่',
     memoriesLabel: 'ดูความทรงจำอีกครั้ง',
+    futureArchiveLabel: 'เรื่องราวต่อจากนี้',
 
     segments: {
       opening: 'มีเรื่องที่อยากบอก แต่พูดตรง ๆ ไม่เคยพูดได้ดีเท่าที่คิดไว้',
@@ -679,85 +678,7 @@ export const anniversary = {
   },
 
   // ------------------------------------------------------------------ audio --
-  audio: {
-    /**
-     * OWNER INPUT REQUIRED. The chosen track is "A Thousand Years".
-     * No audio file is committed to this repository: the recording is
-     * copyrighted, so the owner supplies a lawfully obtained private copy at
-     * this path. The whole experience runs correctly with no file present —
-     * every scene has its own trigger and nothing waits on the music.
-     */
-    musicSrc: '/audio/main-track.mp3',
-    /** Optional recorded effects; synthesised fallbacks are used when absent. */
-    sfxDir: '/audio/sfx',
-    /**
-     * Recorded effect files that actually exist under `sfxDir`, without
-     * extension. Empty means the synthesised palette is used for everything and
-     * NOTHING is fetched — so a bare sfx directory produces no 404s at all.
-     * Add a name here only once the file is really in place.
-     */
-    sfxFiles: [] as string[],
-    /**
-     * Baseline mix. Present, never blasting: the master sits under unity so the
-     * track has headroom, and effects sit well under the music so they colour a
-     * moment instead of interrupting it.
-     */
-    defaultMasterVolume: 0.75,
-    defaultMusicVolume: 0.62,
-    defaultSfxVolume: 0.32,
-    /**
-     * SCENE MIX MAP — multipliers on the configured music volume, keyed by
-     * scene id, with the ramp used to REACH each level.
-     *
-     * This is the only channel through which a scene may touch the music. No
-     * entry seeks, restarts or stops anything: the song is one continuous
-     * journey and the scenes only decide how present it is.
-     *
-     * The shape of the arc: the story opens held back, opens up through the
-     * Universe, settles for family, drops right down for Quiet, climbs hardest
-     * into Convergence, pulls back so the Letter stays readable, then opens
-     * warmly — not explosively — for Year 02.
-     *
-     * `ms` is the ramp INTO that level. Ordinary moves are ~1s; the emotional
-     * ones are long enough to be felt as a move rather than heard as a change.
-     */
-    sceneMix: {
-      entry: { level: 0.7, ms: 1800 },
-      days: { level: 0.78, ms: 1400 },
-      beginning: { level: 0.84, ms: 1600 },
-      'little-moments': { level: 0.88, ms: 1400 },
-      journey: { level: 0.92, ms: 1600 },
-      memories: { level: 0.95, ms: 1800 },
-      places: { level: 0.88, ms: 1400 },
-      life: { level: 0.78, ms: 1600 },
-      stats: { level: 0.83, ms: 1200 },
-      /** The world goes quiet. Slowest fade down in the whole story. */
-      quiet: { level: 0.42, ms: 3500 },
-      /** Progressive rise — the energy has to come back, not snap back. */
-      converge: { level: 0.98, ms: 3200 },
-      /** Soft but never absent: the visitor controls the reading speed. */
-      letter: { level: 0.56, ms: 2600 },
-      /** Opens back up, warm rather than loud. */
-      final: { level: 0.9, ms: 3000 }
-    } as Record<string, SceneMix>,
-    /**
-     * Optional beat map. Times only matter when a track is present; every
-     * scene also has its own trigger, so nothing depends on the music.
-     */
-    cues: [
-      { id: 'entry', time: 0 },
-      { id: 'dayStart', time: 18 },
-      { id: 'day365', time: 42 },
-      { id: 'memoryUniverse', time: 68 },
-      { id: 'journey', time: 104 },
-      { id: 'gallery', time: 138 },
-      { id: 'tunnel', time: 172 },
-      { id: 'timeline', time: 206 },
-      { id: 'quietScene', time: 236 },
-      { id: 'convergence', time: 262 },
-      { id: 'finale', time: 292 }
-    ] as AudioCue[]
-  }
+  audio: anniversaryAudio
 } as const;
 
 export type AnniversaryConfig = typeof anniversary;

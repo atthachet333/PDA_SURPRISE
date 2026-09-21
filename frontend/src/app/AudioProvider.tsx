@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AudioManager, type SoundEffect } from '@/lib/audio';
-import { anniversary } from '@/data/anniversary';
+import { anniversaryAudio as audio } from '@/data/anniversaryAudio';
 import { AudioCtx, type AudioContextValue, type AudioState } from './audioContext';
-
-const { audio } = anniversary;
 
 /**
  * The routes the anniversary music belongs to. `/login` is deliberately absent:

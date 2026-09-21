@@ -8,7 +8,7 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build && node scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "npm run test:memory-gate && npm run test:canonical-truth && npm run test:gateway-timing && npm run test:system-universe && npm run test:case-studies && npm run test:contact-flow && npm run test:memory-videos",
+    "test": "npm run test:memory-gate && npm run test:canonical-truth && npm run test:gateway-timing && npm run test:system-universe && npm run test:case-studies && npm run test:contact-flow && npm run test:memory-videos && npm run test:relationship-years && npm run test:archive-years",
     "test:canonical-truth": "node --test --experimental-strip-types tests/canonicalTruth.test.mjs",
     "test:memory-gate": "node --test --experimental-strip-types tests/memoryGate.test.mjs",
     "lint": "eslint . --max-warnings 0",
@@ -16,7 +16,9 @@
     "test:system-universe": "node --test --experimental-strip-types tests/systemUniverse.test.mjs",
     "test:case-studies": "node --test --experimental-strip-types tests/caseStudies.test.mjs",
     "test:contact-flow": "tsx --test tests/contactFlow.test.mjs",
-    "test:memory-videos": "tsx --test tests/memoryVideos.test.mjs"
+    "test:memory-videos": "tsx --test tests/memoryVideos.test.mjs",
+    "test:relationship-years": "tsx --test tests/relationshipYears.test.mjs",
+    "test:archive-years": "tsx --test tests/archiveYears.test.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^8.17.14",

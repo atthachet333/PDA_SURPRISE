@@ -1,3 +1,5 @@
+import { STORY_RELEASE_YEAR_ID, type RelationshipYearId } from '@/data/relationshipYears';
+
 /**
  * Memory clips that ship as production MP4s.
  *
@@ -31,9 +33,16 @@ export interface MemoryVideo {
   /** True when the production file carries an audio track at all. */
   hasAudio: boolean;
   placement?: MemoryVideoPlacement;
+  yearId: RelationshipYearId | 'unassigned';
+  yearSource: 'owner-override' | 'capture-date' | 'release-default';
 }
 
-export const memoryVideos: MemoryVideo[] = [
+type CuratedMemoryVideo = Omit<MemoryVideo, 'yearId' | 'yearSource'> & {
+  yearId?: RelationshipYearId | 'unassigned';
+  yearSource?: MemoryVideo['yearSource'];
+};
+
+const curatedMemoryVideos: CuratedMemoryVideo[] = [
   {
     id: 'film-2026',
     video: '/videos/memories/film-2026.mp4',
@@ -288,6 +297,13 @@ export const memoryVideos: MemoryVideo[] = [
     hasAudio: true
   }
 ];
+
+/** Current established clips belong to the released story unless overridden. */
+export const memoryVideos: MemoryVideo[] = curatedMemoryVideos.map((clip) => ({
+  ...clip,
+  yearId: clip.yearId ?? STORY_RELEASE_YEAR_ID,
+  yearSource: clip.yearSource ?? 'release-default'
+}));
 
 /** The one clip that earns a dedicated cinematic viewer entry. */
 export const featuredMemoryFilm = memoryVideos.find((clip) => clip.role === 'featured');

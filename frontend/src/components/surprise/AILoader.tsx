@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { AIMark } from './AIMark';
 
 const MESSAGES = ['กำลังเตรียมเรื่องราวของเรา...', 'กำลังรวบรวมความทรงจำ...', 'อีกนิดเดียว...'];
 
@@ -36,7 +35,11 @@ export function AILoader({ label }: { label?: string }) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
       >
-        <AIMark size="loader" />
+        {/* Keep the router fallback independent from private story data so the
+            corporate entry bundle never imports the A&I archive graph. */}
+        <span className="ai-wordmark text-3xl text-ivory" aria-label="A&I">
+          A<span className="mx-1.5 text-champagne">&amp;</span>I
+        </span>
       </motion.div>
 
       <div className="relative mt-10 h-5">

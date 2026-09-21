@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { bangkokStartOfDay } from '@/data/relationshipYears';
 
 export interface LiveDuration {
   days: number;
@@ -11,21 +12,7 @@ export interface LiveDuration {
  * Bangkok is UTC+7 with no daylight saving, ever. A fixed offset is therefore
  * exact here, and avoids pulling in a timezone database for one calculation.
  */
-const BANGKOK_OFFSET_MS = 7 * 60 * 60 * 1000;
-
-/**
- * The relationship began on 2025-10-12 — but nobody has said at what TIME, and
- * inventing one would put a fabricated number on screen down to the second.
- *
- * So the count runs from the START OF THAT DAY in Bangkok, 2025-10-12 00:00 ICT
- * (= 2025-10-11 17:00 UTC). That is a stated convention rather than a guess,
- * and it keeps the day figure identical to the one the rest of the experience
- * already derives from the date alone.
- */
-export function bangkokStartOfDay(isoDate: string): number {
-  const [y, m, d] = isoDate.split('-').map(Number);
-  return Date.UTC(y ?? 1970, (m ?? 1) - 1, d ?? 1) - BANGKOK_OFFSET_MS;
-}
+export { bangkokStartOfDay } from '@/data/relationshipYears';
 
 export function durationSince(startMs: number, nowMs: number): LiveDuration {
   const total = Math.max(0, nowMs - startMs);
