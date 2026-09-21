@@ -309,7 +309,7 @@ export const anniversary = {
        venue shown in the two supplied references. No date has been supplied. */
     { id: 'm00', title: 'ร้าน Peak', date: 'จุดเริ่มต้น', caption: 'ร้านที่เราเจอกันครั้งแรก', image: '/images/memories/peak-01.webp', tags: ['daily'], tone: 'champagne', featured: true },
     { id: 'm01', title: 'บ้านวิน', date: 'MEMORY 01', caption: 'ที่แรก ๆ ที่ไปด้วยกัน', tags: ['daily'], tone: 'cream', featured: true },
-    { id: 'm02', title: 'งานกาชาด', date: 'MEMORY 02', caption: 'งานวัด งานกาชาด และคนเยอะ ๆ', tags: ['funny'], tone: 'champagne' },
+    { id: 'm02', title: 'งานกาชาด', date: 'MEMORY 02', caption: 'งานวัด งานกาชาด และคนเยอะ ๆ', image: '/images/memories/fair-01.webp', tags: ['funny'], tone: 'champagne' },
     { id: 'm03', title: 'ร้านเหล้า', date: 'MEMORY 03', caption: 'คืนที่คุยกันยาวกว่าที่คิด', tags: ['daily'], tone: 'navy' },
     { id: 'm04', title: 'คอนโดพี่โด', date: 'MEMORY 04', caption: 'ที่ที่ไปกันบ่อย', tags: ['daily'], tone: 'navy' },
     { id: 'm05', title: 'เขื่อน', date: 'MEMORY 05', caption: 'วิวน้ำกว้าง ๆ', tags: ['travel'], tone: 'sky' },
@@ -526,27 +526,27 @@ export const anniversary = {
        shown in both supplied references. */
     { id: 'hero-01', category: 'hero', intent: 'ภาพเปิด — ร้าน Peak', image: '/images/memories/peak-01.webp', caption: 'ร้านที่เราเจอกันครั้งแรก', objectPosition: '50% 42%' },
     { id: 'hero-02', category: 'travel', intent: 'ชายหาด ชะอำ', image: '/images/memories/chaam-beach-02.webp', caption: 'วันที่เราไปทะเลด้วยกัน', objectPosition: '50% 38%' },
-    { id: 'hero-03', category: 'hero', intent: 'ภาพพื้นหลังกว้าง สำหรับฉากแรก' }
+    { id: 'hero-03', category: 'hero', intent: 'ภาพพื้นหลังกว้าง สำหรับฉากแรก', image: '/images/memories/seaside-matching-01.webp', caption: 'ทะเลที่เรามองไปทางเดียวกัน', objectPosition: '50% 45%' }
   ] as ImageSlot[],
 
   /** Stable slots for the editorial photo groups used across the experience. */
   featuredMemories: [
-    { id: 'featured-01', category: 'hero', intent: 'ภาพเด่นของเรื่อง — ภาพของสองคน', featured: true },
-    { id: 'featured-02', category: 'timeline', intent: 'ภาพเด่นจากช่วงเริ่มต้น', featured: true },
-    { id: 'featured-03', category: 'travel', intent: 'ภาพเด่นจากการเดินทาง', featured: true },
-    { id: 'featured-04', category: 'family', intent: 'ภาพเด่นของครอบครัว', featured: true }
+    { id: 'featured-01', category: 'hero', intent: 'ภาพเด่นของเรื่อง — ภาพของสองคน', image: '/images/memories/shore-hands-01.webp', caption: 'วันแดดดีริมทะเล', objectPosition: '50% 40%', featured: true },
+    { id: 'featured-02', category: 'timeline', intent: 'ภาพเด่นจากช่วงเริ่มต้น', image: '/images/memories/early-days-01.webp', caption: 'ช่วงแรก ๆ ของเรา', objectPosition: '50% 35%', featured: true },
+    { id: 'featured-03', category: 'travel', intent: 'ภาพเด่นจากการเดินทาง', image: '/images/memories/shore-embrace-01.webp', caption: 'ริมทะเลวันนั้น', objectPosition: '50% 40%', featured: true },
+    { id: 'featured-04', category: 'family', intent: 'ภาพเด่นของครอบครัว', image: '/images/memories/cat-together-01.webp', caption: 'วันว่างกับแมวของเรา', objectPosition: '50% 40%', featured: true }
   ] as ImageSlot[],
 
   dailyMemories: [
     { id: 'daily-01', category: 'family', intent: 'วันที่ตัดสินใจจดทะเบียนสมรส', image: '/images/memories/marriage-decision-01.webp', caption: 'วันที่เราเลือกอนาคตเดียวกัน' },
     { id: 'daily-02', category: 'travel', intent: 'สวนผึ้ง — ภาพแนวตั้ง', image: '/images/memories/suanphueng-01.webp', caption: 'ปลายปีที่ราชบุรี' },
-    { id: 'daily-03', category: 'funny', intent: 'โมเมนต์ขำ ๆ ของสองคน' }
+    { id: 'daily-03', category: 'funny', intent: 'โมเมนต์ขำ ๆ ของสองคน', image: '/images/memories/funny-faces-01.webp', caption: 'หน้าตาแบบที่ทำใส่กันทุกวัน', objectPosition: '50% 35%' }
   ] as ImageSlot[],
 
   travelMemories: [
     { id: 'travel-01', category: 'travel', intent: 'ทริปด้วยกัน — ภาพกว้าง', image: '/images/memories/roadtrip-01.webp', caption: 'ถนนยาว ๆ' },
     { id: 'travel-02', category: 'travel', intent: 'ทริปด้วยกัน — ภาพสถานที่', image: '/images/memories/sarika-01.webp', caption: 'น้ำตกสาริกา นครนายก' },
-    { id: 'travel-03', category: 'travel', intent: 'ทริปด้วยกัน — ภาพของสองคน' }
+    { id: 'travel-03', category: 'travel', intent: 'ทริปด้วยกัน — ภาพของสองคน', image: '/images/memories/seawall-01.webp', caption: 'ยืนรับลมด้วยกัน', objectPosition: '50% 40%' }
   ] as ImageSlot[],
 
   familyMemories: [

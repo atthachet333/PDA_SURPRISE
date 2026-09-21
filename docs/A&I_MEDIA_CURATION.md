@@ -552,3 +552,78 @@ beat's body names พัทยา rather than the province.
 
 The exact wedding-ceremony date remains unknown, and `IMG_5398` (Q19) remains
 a neutral memory until the owner classifies it.
+
+---
+
+## Pass 2 — "A&I Part 2" folder (2026-09-21)
+
+A second Drive folder (`1aqQRiPd7oWSHDiSrgsl2LoL3YerMEjm1`, "A&I Part 2") was
+supplied as additional source media. The original folder
+(`1xXDeJGp2OxDknOnsKZMHUmi5NqbTlada`, "A&I Anniversary 2026") was re-enumerated
+and is **unchanged** — 132 rows in Drive, 132 records in the manifest — so all
+new work in this pass comes from Part 2.
+
+### Inventory
+
+| | Part 2 |
+| --- | --- |
+| Files | 81 |
+| Images | 68 |
+| Videos | 13 |
+| Exact duplicates of folder 1 (sha256) | 7 |
+| New images | 61 |
+| Accepted into production | 46 |
+
+Deduplication is by sha256 for exact matches and perceptual hash for near
+matches, against the 132 records already in the manifest — filenames alone are
+never trusted. Only two new images were near-duplicates of already-integrated
+media; three internal burst clusters were reduced to their best frame each.
+
+### Exclusions
+
+Six images were excluded for privacy: four frames containing a child, one
+intimate/private moment, and one frame with identifiable third parties who have
+not consented. Nine were excluded as burst or near duplicates. Every exclusion
+carries a reason in `tools/anniversary-media-curation.json`.
+
+`IMG_7585.jpeg` carried a fully legible vehicle plate. It ships only as a
+pixel-redacted derivative — the plate region is downsampled and blurred so the
+characters are unrecoverable — following the same practice already used for the
+registration certificate. The raw frame never enters public assets.
+
+41 of the 68 source images carried GPS. **No production derivative carries any
+EXIF or GPS**: every output is repainted onto a fresh canvas before encoding,
+and this was verified across all 58 new files.
+
+### What the new media resolved
+
+`pendingImageSlots()` reported **7 empty slots** before this pass and reports
+**0** after: `hero-03`, `featured-01` through `featured-04`, `daily-03` and
+`travel-03`. Each was filled against the slot's own `intent` field rather than
+by convenience. `m02` (งานกาชาด) gained a content-grounded fairground image.
+
+The memory archive grew from **72 to 118** items.
+
+### Videos
+
+All 13 new videos are casual couple clips between 4 and 40 seconds. None is a
+produced film, and none contains documents, children or bystander-heavy framing.
+They are inventoried with a `futureRole` in the manifest and are **not wired
+into the runtime** — the shipping runtime video remains the existing curated
+finale clip. The 40-second `IMG_7588.mov` is the only plausible
+`FEATURED_MEMORY_FILM` candidate for the later dedicated video pass.
+
+### Still requiring owner confirmation
+
+**12 OCT 2025 / ร้าน TURR เกษตร has no photograph in either folder.** `m19` and
+timeline entry `t2` — the relationship-start beat the owner asked to weigh as
+heavily as the first meeting — remain imageless, while the Peak (first-meeting)
+beat carries imagery in both places. No image in either folder has a capture
+date of 2025-10-12, and assigning an unrelated photograph to a named, dated
+milestone would be inventing owner truth. This needs either a TURR photograph
+or a decision to carry the beat without one.
+
+Fifteen other memories (`m01`, `m03`–`m06`, `m08`, `m11`–`m18`) name specific
+places — บ้านวิน, ร้านเหล้า, เขื่อน, บางแสน, อ่างศิลา, วัดต่าง ๆ, ทางรถไฟ. The new media
+cannot be matched to those names from content or EXIF without guessing, so they
+were left imageless rather than mismapped.
