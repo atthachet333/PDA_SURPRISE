@@ -8,6 +8,13 @@ import {
   type MemoryArchiveGroup,
   type MemoryArchiveItem
 } from '@/data/memoryArchive';
+import { CinematicViewer } from '@/components/surprise/CinematicViewer';
+import {
+  archiveVideos,
+  compatibleArchiveGroup,
+  type ArchiveMediaFilter,
+  type MemoryVideo
+} from '@/data/memoryVideos';
 import { useAudio } from '@/app/audioContext';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -27,6 +34,8 @@ export function Scene04Universe() {
   const [group, setGroup] = useState<MemoryArchiveGroup | 'all'>('all');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState<MemoryArchiveItem | null>(null);
+  const [openClip, setOpenClip] = useState<MemoryVideo | null>(null);
+  const [media, setMedia] = useState<ArchiveMediaFilter>('all');
   const reduced = useReducedMotion();
   const { play, triggerCue } = useAudio();
 
@@ -36,7 +45,7 @@ export function Scene04Universe() {
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [group]);
+  }, [group, media]);
 
   useEffect(() => {
     if (!selected) return;
@@ -49,7 +58,34 @@ export function Scene04Universe() {
     () => (group === 'all' ? memoryArchive : memoryArchive.filter((item) => item.group === group)),
     [group]
   );
-  const visible = filtered.slice(0, visibleCount);
+
+  /*
+   * Clips live in their own list rather than inside `memoryArchive`, so the
+   * photo archive keeps its shape and its counts. They join the field only
+   * here, at display time, and only when the group filter is not narrowing to a
+   * photo-specific group — a clip has no wedding/prewedding grouping to claim,
+   * and inventing one would be inventing truth.
+   */
+  const clips = useMemo(() => {
+    if (media === 'photo') return [];
+    /* Asking for clips means the photo groups are not the question, so a group
+       selection is ignored rather than intersected — intersecting produced an
+       empty field, which reads as "there are none" rather than "that filter
+       does not apply here". */
+    if (media === 'video') return archiveVideos;
+    return group === 'all' ? archiveVideos : [];
+  }, [group, media]);
+  const photos = useMemo(() => (media === 'video' ? [] : filtered), [filtered, media]);
+  const total = photos.length + clips.length;
+
+  /* Clips lead the field so the moving memories are the first thing found. */
+  const visibleClips = clips.slice(0, visibleCount);
+  const visible = photos.slice(0, Math.max(0, visibleCount - visibleClips.length));
+
+  const selectMedia = (nextMedia: ArchiveMediaFilter) => {
+    setMedia(nextMedia);
+    setGroup((currentGroup) => compatibleArchiveGroup(nextMedia, currentGroup));
+  };
 
   return (
     <SceneSection id="memories" ref={sectionRef} label="คลังความทรงจำ" className="overflow-hidden" fullHeight={false}>
@@ -61,11 +97,31 @@ export function Scene04Universe() {
             จากวันธรรมดา ระหว่างทาง ไปจนถึงวันที่กลายเป็นครอบครัวเดียวกัน — ทุกภาพที่ปลอดภัยและมีความหมายถูกเก็บไว้ในสนามความทรงจำนี้
           </p>
           <p className="mt-4 font-mono text-[0.58rem] uppercase tracking-[0.24em] text-sky-100/50">
-            {memoryArchive.length} SAFE MEMORIES · LOCAL &amp; PRIVATE
+            {memoryArchive.length} SAFE MEMORIES · {archiveVideos.length} IN MOTION · LOCAL &amp; PRIVATE
           </p>
         </div>
 
-        <div className="no-scrollbar mx-auto mt-10 flex max-w-full gap-2 overflow-x-auto px-1 pb-2 sm:justify-center">
+        {/* Three states, not a taxonomy: everything, the stills, the ones that
+            still move. */}
+        <div className="mx-auto mt-8 flex justify-center gap-2">
+          <FilterButton active={media === 'all'} onClick={() => selectMedia('all')}>
+            ทั้งหมด
+          </FilterButton>
+          <FilterButton active={media === 'photo'} onClick={() => selectMedia('photo')}>
+            ภาพนิ่ง
+          </FilterButton>
+          <FilterButton active={media === 'video'} onClick={() => selectMedia('video')}>
+            ภาพเคลื่อนไหว
+          </FilterButton>
+        </div>
+
+        <div
+          className={cn(
+            'no-scrollbar mx-auto mt-4 max-w-full gap-2 overflow-x-auto px-1 pb-2 sm:justify-center',
+            media === 'video' ? 'hidden' : 'flex'
+          )}
+          aria-hidden={media === 'video' ? 'true' : undefined}
+        >
           <FilterButton active={group === 'all'} onClick={() => setGroup('all')}>
             ทั้งหมด
           </FilterButton>
@@ -80,6 +136,57 @@ export function Scene04Universe() {
           className="mt-12 grid auto-rows-[7.5rem] grid-cols-2 grid-flow-dense gap-2 sm:auto-rows-[10rem] sm:grid-cols-4 sm:gap-3 lg:auto-rows-[11rem] lg:grid-cols-6 lg:gap-4"
           aria-live="polite"
         >
+          {total === 0 ? (
+            <p className="col-span-full py-16 text-center font-thai text-sm text-ivory/60">
+              ยังไม่มีความทรงจำในตัวกรองนี้
+            </p>
+          ) : null}
+          {visibleClips.map((clip, index) => (
+            <motion.button
+              key={clip.id}
+              type="button"
+              initial={reduced ? false : { y: 18 }}
+              whileInView={{ y: 0 }}
+              viewport={{ once: true, margin: '0px 0px -6% 0px' }}
+              transition={{ duration: 0.75, delay: Math.min(index % 8, 4) * 0.035, ease: EASE }}
+              onClick={() => {
+                play('memoryFocus');
+                setOpenClip(clip);
+              }}
+              className={cn(
+                'group relative min-h-0 overflow-hidden bg-navy-700/20 text-left focus-visible:outline-offset-4',
+                clip.role === 'featured' ? 'row-span-2 sm:col-span-2' : 'row-span-2'
+              )}
+              aria-label={`เปิดความทรงจำที่ยังเคลื่อนไหว ${clip.label}`}
+              data-cursor="open"
+            >
+              {/* Poster only. A field of autoplaying thumbnails would be noise,
+                  and would pull every clip over the wire to make it. */}
+              <img
+                src={clip.poster}
+                alt={clip.label}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+              <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/80 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-95" />
+              <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3 sm:p-4">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="relative flex h-2 w-2 items-center justify-center">
+                    <span className="absolute h-2 w-2 rounded-full border border-champagne/60" />
+                    <span className={cn('h-0.5 w-0.5 rounded-full bg-champagne', reduced ? '' : 'animate-ping')} />
+                  </span>
+                  <span className="font-mono text-[0.46rem] uppercase tracking-[0.2em] text-champagne">
+                    {clip.role === 'featured' ? 'MEMORY FILM' : 'IN MOTION'}
+                  </span>
+                </span>
+                <span className="font-mono text-[0.5rem] tracking-[0.16em] text-ivory/80">
+                  {Math.round(clip.duration)}s
+                </span>
+              </span>
+            </motion.button>
+          ))}
+
           {visible.map((item, index) => {
             const landscape = item.width / item.height > 1.18;
             const featured = item.special || index % 13 === 0;
@@ -124,18 +231,22 @@ export function Scene04Universe() {
           })}
         </div>
 
-        {visibleCount < filtered.length ? (
+        {visibleCount < total ? (
           <div className="mt-12 text-center">
             <button
               type="button"
               onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
               className="ai-button-secondary ai-pressable rounded-full px-7 py-3 font-thai text-sm"
             >
-              เปิดความทรงจำเพิ่ม · {Math.min(PAGE_SIZE, filtered.length - visibleCount)} ภาพ
+              เปิดความทรงจำเพิ่ม · {Math.min(PAGE_SIZE, total - visibleCount)} ภาพ
             </button>
           </div>
         ) : null}
       </div>
+
+      <AnimatePresence>
+        {openClip ? <CinematicViewer clip={openClip} onClose={() => setOpenClip(null)} /> : null}
+      </AnimatePresence>
 
       <AnimatePresence>
         {selected ? (

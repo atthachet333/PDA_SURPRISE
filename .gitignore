@@ -27,6 +27,9 @@ frontend/public/images/memories/archive/*
 !frontend/public/images/memories/archive/*.webp
 !frontend/public/images/memories/archive/thumbs/
 !frontend/public/images/memories/archive/thumbs/*.webp
+!frontend/public/images/memories/video/
+frontend/public/images/memories/video/*
+!frontend/public/images/memories/video/*.jpg
 
 # Optimized memory video only; never a source MOV.
 frontend/public/videos/memories/*
@@ -41,3 +44,6 @@ frontend/public/audio/sfx/*
 # sheets built from the owner's private photographs — they are for review on
 # this machine only and must never enter the repository.
 review-local/
+
+# Disposable browser profiles created by local responsive QA.
+.browser-qa-regression/

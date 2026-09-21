@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { SceneLabel, SceneSection } from '@/components/surprise/SceneSection';
 import { MemoryFrame } from '@/components/surprise/MemoryFrame';
+import { LivingMemory } from '@/components/surprise/LivingMemory';
+import { livingMemoryFor } from '@/data/memoryVideos';
 import { SecretCats } from '@/components/surprise/SecretCats';
 import { anniversary } from '@/data/anniversary';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -75,6 +77,7 @@ function plates(): Plate[] {
 export function Scene07Life() {
   const reduced = useReducedMotion();
   const [lead, ...rest] = plates();
+  const lifeClip = livingMemoryFor('life');
 
   return (
     <SceneSection id="life" label="ชีวิตของเราด้วยกัน" fullHeight={false} className="overflow-hidden py-28 sm:py-36">
@@ -117,6 +120,25 @@ export function Scene07Life() {
             />
           ) : null}
         </div>
+
+        {/*
+          One plate in this block is not a photograph. It sits off-centre and
+          stays a still until someone asks it to move, so the composition above
+          keeps its rhythm and nothing starts playing on its own.
+        */}
+        {lifeClip ? (
+          <div className="mt-14 flex justify-end lg:mt-16">
+            <figure className="w-full max-w-xs sm:max-w-sm">
+              <LivingMemory
+                clip={lifeClip}
+                className="aspect-[3/4] w-full rounded-[1.5rem] border border-sky-200/12"
+              />
+              <figcaption className="mt-3 font-thai text-xs leading-6 text-ivory/55">
+                บางความทรงจำยังเคลื่อนไหวอยู่ — แตะเพื่อดู
+              </figcaption>
+            </figure>
+          </div>
+        ) : null}
 
         {/*
           Two faint paw marks. They read as part of the sky until someone touches

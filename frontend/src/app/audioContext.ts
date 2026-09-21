@@ -31,6 +31,8 @@ export interface AudioContextValue extends AudioState {
   setVolume: (value: number, bus?: 'master' | 'music' | 'sfx') => void;
   /** Scene-level music level, 0-1, always reached by a ramp. */
   setSceneMix: (level: number, duration?: number) => void;
+  /** Duck the music under a memory clip, 0-1. 1 clears the duck. */
+  setVideoDuck: (level: number, duration?: number) => void;
   /** Fade down and stop — for leaving the experience. */
   fadeOutAndStop: (duration?: number) => void;
   /** Fade out, return to the top, fade back in, resetting the story between. */

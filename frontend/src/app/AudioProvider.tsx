@@ -108,6 +108,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       setSfxEnabled: (enabled: boolean) => manager.setSfxEnabled(enabled),
       setVolume: (volume: number, bus?: 'master' | 'music' | 'sfx') => manager.setVolume(volume, bus),
       setSceneMix: (level: number, duration?: number) => manager.setSceneMix(level, duration),
+      setVideoDuck: (level: number, duration?: number) => manager.setVideoDuck(level, duration),
       fadeOutAndStop: (duration?: number) => manager.fadeOutAndStop(duration),
       restart: (onReset?: () => void) => manager.restart(onReset),
       play: (effect: SoundEffect) => manager.playSfx(effect),

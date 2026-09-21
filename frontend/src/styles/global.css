@@ -1450,3 +1450,39 @@
     display: none;
   }
 }
+
+/* Seek control for the cinematic viewer. Deliberately plain: a thin track and
+   a small handle, so the controls stay quiet under the picture rather than
+   importing a media player's chrome. The 44px hit area comes from the input's
+   own height, not from the visible track. */
+.ai-range::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 999px;
+  background: rgb(186 214 255 / 0.25);
+}
+.ai-range::-moz-range-track {
+  height: 2px;
+  border-radius: 999px;
+  background: rgb(186 214 255 / 0.25);
+}
+.ai-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -6px;
+  height: 14px;
+  width: 14px;
+  border-radius: 999px;
+  background: rgb(235 217 188);
+  box-shadow: 0 0 18px rgb(235 217 188 / 0.5);
+}
+.ai-range::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(235 217 188);
+}
+.ai-range:focus-visible {
+  outline: 2px solid rgb(186 214 255 / 0.75);
+  outline-offset: 4px;
+}

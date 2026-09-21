@@ -226,6 +226,8 @@ export class AudioManager {
 
   /** Scene-driven multiplier (0-1) layered on top of musicVolume. */
   private mix = 1;
+  /** Independent duck multiplier owned by the video layer, never by a scene. */
+  private videoDuck = 1;
   /** True from the first play until the intro curve has landed. */
   private intro = false;
   /** Set while the tab is hidden, so resume knows whether to restart audio. */
@@ -512,7 +514,7 @@ export class AudioManager {
 
   /** Where the music bus should sit right now, before any fade. */
   private targetVolume(): number {
-    return clamp01(this.prefs.musicVolume * this.prefs.volume * this.mix);
+    return clamp01(this.prefs.musicVolume * this.prefs.volume * this.mix * this.videoDuck);
   }
 
   private effectiveSfxVolume(): number {
@@ -555,6 +557,22 @@ export class AudioManager {
      */
     // While the intro curve is climbing, let it finish and settle on the new
     // target itself — two overlapping fades would fight each other.
+    if (!this.intro && this.status === 'playing') this.rampTo(this.targetVolume(), duration);
+  }
+
+  /**
+   * Ducks the music under a memory clip's own audio.
+   *
+   * This is a SEPARATE multiplier from `mix` on purpose. A scene owns `mix` and
+   * re-asserts it freely; if ducking wrote into that field, the next scene
+   * assertion would erase the duck, and restoring afterwards would mean
+   * remembering a number and writing it back — which is exactly how a restore
+   * ends up hardcoded and wrong. Composing instead means "stop ducking" is
+   * `setVideoDuck(1)`, and whatever level the scene currently wants is what the
+   * music returns to, with no bookkeeping.
+   */
+  setVideoDuck(level: number, duration = MIX_MS): void {
+    this.videoDuck = clamp01(level);
     if (!this.intro && this.status === 'playing') this.rampTo(this.targetVolume(), duration);
   }
 
