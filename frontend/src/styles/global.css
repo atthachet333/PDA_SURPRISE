@@ -1451,6 +1451,158 @@
   }
 }
 
+/* -------------------------------------------------------------------------
+ * THREE-SCENE EDITORIAL PROTOTYPE
+ * Scoped to Peak, TURR and the present-day payoff. The differing durations
+ * are intentional: Peak is most alive, TURR is symbolic, and today is heavy.
+ * ---------------------------------------------------------------------- */
+.ai-prototype-photo {
+  border: 1px solid rgb(235 217 188 / 0.15);
+  background: rgb(12 27 41 / 0.45);
+  box-shadow:
+    0 42px 100px -44px rgb(2 10 18 / 0.95),
+    0 0 54px -34px rgb(126 200 255 / 0.5);
+}
+
+.ai-peak-image {
+  animation: ai-peak-breathe 10s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.ai-peak-highlight {
+  background: linear-gradient(108deg, transparent 24%, rgb(247 241 232 / 0.13) 46%, transparent 66%);
+  translate: -125% 0;
+  animation: ai-peak-light-sweep 8.5s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.ai-peak-orbit {
+  animation: ai-peak-orbit-drift 14s ease-in-out infinite alternate;
+}
+
+.ai-prototype-turr {
+  background: linear-gradient(155deg, rgb(10 22 38 / 0.38), rgb(17 21 48 / 0.28));
+}
+
+.ai-turr-image {
+  animation: ai-turr-drift 17s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.ai-turr-trail {
+  stroke-dasharray: 12 10;
+  animation: ai-turr-path-flow 12s linear infinite;
+}
+
+.ai-turr-trail-two {
+  animation-direction: reverse;
+  animation-duration: 15s;
+}
+
+.ai-turr-convergence,
+.ai-turr-pulse {
+  transform-origin: center;
+  animation: ai-turr-pulse 4.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgb(235 217 188 / 0.72));
+}
+
+.ai-prototype-present {
+  background:
+    radial-gradient(75% 64% at 34% 48%, rgb(235 217 188 / 0.08), transparent 70%),
+    linear-gradient(180deg, rgb(12 27 41 / 0.08), rgb(7 20 34 / 0.28));
+}
+
+.ai-present-glow {
+  background: rgb(235 217 188 / 0.1);
+  filter: blur(90px);
+  animation: ai-present-glow 9s ease-in-out infinite alternate;
+}
+
+.ai-present-hero-image {
+  animation: ai-present-drift 24s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.ai-present-support {
+  border: 1px solid rgb(235 217 188 / 0.12);
+  box-shadow: 0 24px 60px -36px rgb(2 10 18 / 0.95);
+}
+
+.ai-present-support img {
+  animation: ai-present-support-drift 19s ease-in-out infinite alternate;
+  animation-delay: inherit;
+  will-change: transform;
+}
+
+.ai-present-close {
+  text-shadow: 0 0 28px rgb(235 217 188 / 0.13);
+}
+
+@keyframes ai-peak-breathe {
+  from { transform: scale(1.015) translate3d(-0.35%, -0.25%, 0); }
+  to { transform: scale(1.065) translate3d(0.65%, 0.45%, 0); }
+}
+
+@keyframes ai-peak-light-sweep {
+  0%, 18% { translate: -125% 0; opacity: 0; }
+  34% { opacity: 1; }
+  54%, 100% { translate: 125% 0; opacity: 0; }
+}
+
+@keyframes ai-peak-orbit-drift {
+  from { transform: translate3d(-1.5rem, -0.75rem, 0) rotate(-2deg); opacity: 0.42; }
+  to { transform: translate3d(1.75rem, 1rem, 0) rotate(2deg); opacity: 0.8; }
+}
+
+@keyframes ai-turr-drift {
+  from { transform: scale(1.02) translate3d(0, -0.45%, 0); }
+  to { transform: scale(1.065) translate3d(-0.7%, 0.55%, 0); }
+}
+
+@keyframes ai-turr-path-flow {
+  to { stroke-dashoffset: -176; }
+}
+
+@keyframes ai-turr-pulse {
+  0%, 100% { opacity: 0.52; transform: scale(0.82); }
+  50% { opacity: 1; transform: scale(1.35); }
+}
+
+@keyframes ai-present-glow {
+  from { opacity: 0.48; transform: translate(-50%, -50%) scale(0.94); }
+  to { opacity: 0.86; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+@keyframes ai-present-drift {
+  from { transform: scale(1.018) translate3d(-0.25%, -0.25%, 0); }
+  to { transform: scale(1.052) translate3d(0.4%, 0.5%, 0); }
+}
+
+@keyframes ai-present-support-drift {
+  from { transform: scale(1.015) translate3d(0, -0.25%, 0); }
+  to { transform: scale(1.04) translate3d(-0.4%, 0.35%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-peak-image,
+  .ai-peak-highlight,
+  .ai-peak-orbit,
+  .ai-turr-image,
+  .ai-turr-trail,
+  .ai-turr-convergence,
+  .ai-turr-pulse,
+  .ai-present-glow,
+  .ai-present-hero-image,
+  .ai-present-support img {
+    animation: none !important;
+    transform: none !important;
+    translate: none !important;
+  }
+
+  .ai-peak-highlight {
+    opacity: 0;
+  }
+}
+
 /* Seek control for the cinematic viewer. Deliberately plain: a thin track and
    a small handle, so the controls stay quiet under the picture rather than
    importing a media player's chrome. The 44px hit area comes from the input's

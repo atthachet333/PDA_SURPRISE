@@ -1,115 +1,154 @@
 import { motion } from 'framer-motion';
-import { SceneLabel, SceneSection } from '@/components/surprise/SceneSection';
-import { MemoryFrame } from '@/components/surprise/MemoryFrame';
-import { anniversary } from '@/data/anniversary';
+import { MemoryImage } from '@/components/surprise/MemoryImage';
+import { SceneSection } from '@/components/surprise/SceneSection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+const PEAK_PHOTO = '/images/memories/peak-01.webp';
+/* Owner-confirmed 2026-09-22: this purple venue photograph is the night the
+   relationship began at TURR Kaset. The historical filename is intentionally
+   left alone so this focused prototype does not churn the media archive. */
+const TURR_PHOTO = '/images/memories/peak-02.webp';
 
-/**
- * The beginning — and then the day it became official. Two beats, not one.
- *
- * THESE ARE DIFFERENT THINGS, and the owner has been explicit about it:
- *
- *   ร้าน Peak        — จุดเริ่มต้น. Where they first met. Both supplied photos
- *                      are owner-confirmed as this venue; no date was given.
- *   ร้าน TURR เกษตร  — 12 OCT 2025. The night he asked her to be his partner.
- *                      This remains a distinct, text-only milestone.
- *
- * An earlier pass collapsed the two, putting "จุดเริ่มต้น · 12 OCT 2025" over a
- * Peak photograph mislabelled as TURR. Keeping them apart is the point of this scene's shape: the
- * beginning carries the Peak image; TURR does not borrow it.
- */
+/** Two editorial scenes grouped under the existing "เรื่องของเรา" navigation. */
 export function Scene03Journey() {
   const reduced = useReducedMotion();
-  /* First real photograph in the experience, so it does not wait for an
-     observer. It is the owner-confirmed Peak frame — see the note above. */
-  const hero = anniversary.heroImages[0];
-  const beginning = anniversary.memories.find((memory) => memory.id === 'm00');
 
   return (
-    <SceneSection id="beginning" label="จุดเริ่มต้น" className="overflow-hidden">
-      <div className="flex w-full max-w-6xl flex-col gap-20 lg:gap-28">
-        {/* ── BEAT ONE: the photographed beginning at Peak. ───────────────── */}
-        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-          <motion.div
-            initial={reduced ? false : { opacity: 0, x: -36 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '0px 0px -18% 0px' }}
-            transition={{ duration: 1.25, ease: EASE }}
-            /* Text leads on narrow screens. With the photograph first, jumping
-               to this scene on a phone landed on the image and pushed the
-               heading to y=807 on an 844px viewport — effectively below the
-               fold. The two-column order is unchanged from `lg` up. */
-            className="lg:order-1"
-          >
-            <SceneLabel>02 · จุดเริ่มต้น</SceneLabel>
-            <h2 className="thai-display ai-legible mt-5 font-thai text-[clamp(1.9rem,4.4vw,3.4rem)] font-light text-ivory">
-              ครั้งแรกที่เราได้เจอกัน
-            </h2>
-            <p className="ai-one-line-desktop mt-6 font-thai text-[clamp(0.95rem,1.35vw,1.075rem)] leading-8 text-ivory/70">
-              {beginning?.title} — {beginning?.caption}
-            </p>
-            <div className="mt-10 flex items-center gap-5">
-              <span className="font-display text-4xl font-light text-ivory">{anniversary.couple.shortA}</span>
-              <span
-                aria-hidden="true"
-                className="h-px w-16 bg-gradient-to-r from-sky-200/20 via-sky-200/80 to-sky-200/20"
-              />
-              <span className="font-display text-4xl font-light text-ivory">{anniversary.couple.shortB}</span>
-            </div>
-          </motion.div>
+    <SceneSection
+      id="beginning"
+      label="จุดเริ่มต้น"
+      fullHeight={false}
+      className="overflow-hidden px-0 py-0 sm:px-0"
+    >
+      <PeakScene reduced={reduced} />
+      <TurrScene reduced={reduced} />
+    </SceneSection>
+  );
+}
 
-          <motion.figure
-            initial={reduced ? false : { opacity: 0, y: 44, rotate: 2 }}
-            whileInView={{ opacity: 1, y: 0, rotate: -1.5 }}
-            viewport={{ once: true, margin: '0px 0px -18% 0px' }}
-            transition={{ duration: 1.45, delay: 0.12, ease: EASE }}
-            className="ai-frame-cinematic ai-photo-spill relative mx-auto w-full max-w-md overflow-hidden shadow-glow-lg lg:order-2 lg:max-w-lg"
-          >
-            {/* Portrait photograph, portrait frame: `MemoryFrame` takes the
-                aspect from the file rather than imposing one on it. */}
-            <MemoryFrame
-              photo={hero?.image}
-              alt="ร้าน Peak — ร้านที่เราเจอกันครั้งแรก"
-              shape="editorial"
-              label="จุดเริ่มต้น"
-              tone="cream"
-              loading="eager"
-              objectPosition={hero?.objectPosition}
-            />
-            <figcaption className="flex items-center justify-between border-t border-sky-200/10 px-5 py-4 font-mono text-[0.5rem] uppercase tracking-[0.2em] text-ivory/50">
-              <span>{anniversary.couple.initials}</span>
-              <span>ร้าน Peak</span>
-            </figcaption>
-          </motion.figure>
-        </div>
+function PeakScene({ reduced }: { reduced: boolean }) {
+  return (
+    <article id="peak" className="ai-prototype-peak relative flex min-h-[100svh] w-full items-center overflow-hidden px-6 py-24 sm:px-8 lg:px-12">
+      <span aria-hidden="true" className="ai-peak-orbit absolute -left-48 top-[12%] h-[34rem] w-[34rem] rounded-full border border-sky-200/10" />
+      <span aria-hidden="true" className="absolute right-[8%] top-[16%] h-px w-28 bg-gradient-to-r from-transparent via-champagne/60 to-transparent" />
 
-        {/* ── BEAT TWO: the distinct, text-only TURR milestone. ───────────── */}
-        <motion.div
-          initial={reduced ? false : { opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '0px 0px -18% 0px' }}
-          transition={{ duration: 1.25, ease: EASE }}
-          className="relative mx-auto w-full max-w-5xl py-8 text-center sm:py-16"
+      <div className="relative mx-auto grid w-full max-w-[86rem] items-center gap-11 lg:grid-cols-[minmax(0,1.58fr)_minmax(20rem,0.92fr)] lg:gap-16 xl:gap-20">
+        <motion.figure
+          initial={reduced ? false : { opacity: 0, x: -48, scale: 1.035 }}
+          whileInView={{ opacity: 1, x: 0, scale: 1 }}
+          viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+          transition={{ duration: 1.45, ease: EASE }}
+          className="relative order-1 mx-auto w-full max-w-[46rem] lg:mx-0 lg:max-w-none"
         >
-          <span aria-hidden="true" className="absolute left-1/2 top-0 h-px w-[min(76vw,42rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-champagne/65 to-transparent" />
-          <p className="font-display text-[clamp(3.25rem,10vw,8.5rem)] font-light leading-none tracking-[-0.04em] text-champagne">
-            12 OCT
+          <div className="ai-prototype-photo ai-peak-photo relative aspect-[4/5] max-h-[74svh] overflow-hidden lg:aspect-[6/5] lg:max-h-[68svh]">
+            <MemoryImage
+              photo={PEAK_PHOTO}
+              alt="ร้าน Peak — ร้านที่เราเจอกันครั้งแรก"
+              tone="champagne"
+              loading="eager"
+              objectPosition="50% 43%"
+              className="ai-peak-image"
+            />
+            <span aria-hidden="true" className="ai-peak-highlight absolute inset-0" />
+            <span className="absolute bottom-5 left-5 font-mono text-[0.5rem] uppercase tracking-[0.28em] text-ivory/65 sm:bottom-7 sm:left-7">
+              A&amp;I · THE FIRST PAGE
+            </span>
+          </div>
+          <span aria-hidden="true" className="absolute -bottom-5 left-0 h-px w-[82%] bg-gradient-to-r from-champagne/80 via-champagne/25 to-transparent" />
+          <span aria-hidden="true" className="absolute -bottom-8 left-0 font-display text-[0.65rem] tracking-[0.28em] text-champagne/55">01 / PEAK</span>
+        </motion.figure>
+
+        <motion.div
+          initial={reduced ? false : { opacity: 0, x: 38 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+          transition={{ duration: 1.2, delay: 0.14, ease: EASE }}
+          className="order-2 pb-3 lg:pb-0"
+        >
+          <p className="font-mono text-[0.625rem] uppercase tracking-[0.34em] text-sky-100/70">FIRST MEETING · จุดเริ่มต้น</p>
+          <span aria-hidden="true" className="mt-5 block h-px w-20 bg-champagne/70" />
+          <h2 className="thai-display mt-7 font-thai text-[clamp(3.1rem,6.8vw,6.5rem)] font-light leading-[0.94] text-ivory">ร้าน Peak</h2>
+          <p className="mt-7 font-thai text-[clamp(1.05rem,1.45vw,1.25rem)] leading-8 text-champagne">ร้านที่เราเจอกันครั้งแรก</p>
+          <p className="mt-8 max-w-md whitespace-pre-line font-thai text-[clamp(1rem,1.25vw,1.125rem)] leading-9 text-ivory/72">
+            {'ตอนนั้นเรายังไม่รู้เลยว่า\nการเจอกันธรรมดาในวันนั้น\nจะพาเรามาไกลถึงขนาดนี้'}
           </p>
-          <p className="mt-2 font-display text-[clamp(2rem,6vw,5rem)] font-light leading-none text-ivory/85">2025</p>
-          <p className="mt-7 font-mono text-[0.625rem] uppercase tracking-[0.34em] text-sky-100/65">TURR · KASET</p>
-          <h3 className="thai-display ai-legible mt-6 font-thai text-[clamp(2.2rem,5.2vw,4.25rem)] font-light text-ivory">
-            วันที่เราเริ่มเป็น “เรา”
-          </h3>
-          <p className="mx-auto mt-7 max-w-2xl font-thai text-[clamp(1rem,1.6vw,1.2rem)] leading-9 text-ivory/72">
-            ร้าน TURR เกษตร — คืนที่เขาชวนเธอมาเป็นแฟน
-            <br />
-            และเป็นวันที่เรานับมาตลอดตั้งแต่นั้น
-          </p>
-          <span aria-hidden="true" className="mx-auto mt-10 block h-2 w-2 rounded-full bg-champagne shadow-[0_0_32px_rgba(235,217,188,0.85)]" />
+          <div aria-hidden="true" className="mt-10 flex items-center gap-3">
+            <span className="h-1.5 w-1.5 rounded-full bg-champagne shadow-[0_0_18px_rgba(235,217,188,0.8)]" />
+            <span className="font-display text-xs italic tracking-[0.18em] text-ivory/42">where everything quietly started</span>
+          </div>
         </motion.div>
       </div>
-    </SceneSection>
+    </article>
+  );
+}
+
+function TurrScene({ reduced }: { reduced: boolean }) {
+  return (
+    <article id="relationship-start" className="ai-prototype-turr relative flex min-h-[100svh] w-full items-center overflow-hidden border-y border-sky-200/10 px-6 py-24 sm:px-8 lg:px-12">
+      <span aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(circle_at_78%_48%,rgba(176,82,210,0.16),transparent_42%),radial-gradient(circle_at_20%_65%,rgba(126,200,255,0.08),transparent_40%)]" />
+      <ConvergingTrails />
+
+      <div className="relative mx-auto grid w-full max-w-[86rem] items-center gap-10 lg:grid-cols-[minmax(20rem,0.88fr)_minmax(0,1.12fr)] lg:gap-16">
+        <motion.div
+          initial={reduced ? false : { opacity: 0, x: -34 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+          transition={{ duration: 1.25, ease: EASE }}
+          className="order-2 relative z-10 lg:order-1"
+        >
+          <p className="font-mono text-[0.625rem] uppercase tracking-[0.32em] text-fuchsia-100/70">OUR BEGINNING · 12 OCT 2025</p>
+          <div className="mt-6 font-display font-light leading-[0.78] text-ivory" aria-label="12 October 2025">
+            <span className="block text-[clamp(5.25rem,11vw,10rem)] tracking-[-0.055em]">12 OCT</span>
+            <span className="ml-1 mt-4 block text-[clamp(2.75rem,6vw,5.5rem)] tracking-[0.04em] text-champagne">2025</span>
+          </div>
+          <span aria-hidden="true" className="mt-8 block h-px w-full max-w-sm bg-gradient-to-r from-champagne/75 via-fuchsia-200/35 to-transparent" />
+          <h2 className="thai-display mt-8 max-w-xl font-thai text-[clamp(2.25rem,4.5vw,4.4rem)] font-light leading-[1.12] text-ivory">วันที่เราเริ่มเป็น “เรา”</h2>
+          <p className="mt-6 font-thai text-[clamp(1rem,1.35vw,1.15rem)] leading-8 text-champagne">ร้าน TURR เกษตร · คืนที่ขอเธอเป็นแฟน</p>
+          <p className="mt-7 max-w-lg whitespace-pre-line font-thai text-[clamp(1rem,1.2vw,1.1rem)] leading-9 text-ivory/72">
+            {'จากคนสองคนในคืนนั้น\nกลายเป็นคำว่า “เรา”\nตั้งแต่วันนั้นเป็นต้นมา'}
+          </p>
+        </motion.div>
+
+        <motion.figure
+          initial={reduced ? false : { opacity: 0, x: 42, scale: 1.04 }}
+          whileInView={{ opacity: 1, x: 0, scale: 1 }}
+          viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+          transition={{ duration: 1.5, delay: 0.08, ease: EASE }}
+          className="order-1 relative mx-auto w-full max-w-[34rem] lg:order-2 lg:mr-0"
+        >
+          <div className="ai-prototype-photo ai-turr-photo relative aspect-[4/5] max-h-[76svh] overflow-hidden">
+            <MemoryImage
+              photo={TURR_PHOTO}
+              alt="คืนที่ขอเธอเป็นแฟนที่ร้าน TURR เกษตร 12 ตุลาคม 2025"
+              tone="navy"
+              loading="eager"
+              objectPosition="50% 45%"
+              className="ai-turr-image"
+            />
+            <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#0c1226]/70 via-transparent to-fuchsia-950/10" />
+            <figcaption className="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-5 sm:bottom-8 sm:left-8 sm:right-8">
+              <span className="font-mono text-[0.5rem] uppercase tracking-[0.26em] text-ivory/65">TURR · KASET</span>
+              <span className="font-display text-sm italic text-champagne/75">the night we became us</span>
+            </figcaption>
+          </div>
+          <span aria-hidden="true" className="ai-turr-pulse absolute -left-2 top-[61%] h-3 w-3 rounded-full bg-champagne" />
+        </motion.figure>
+      </div>
+    </article>
+  );
+}
+
+function ConvergingTrails() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 1440 900" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full opacity-70">
+      <defs>
+        <linearGradient id="turr-trail-a" x1="0" x2="1"><stop offset="0" stopColor="#7ec8ff" stopOpacity="0" /><stop offset="0.62" stopColor="#7ec8ff" stopOpacity="0.38" /><stop offset="1" stopColor="#ebd9bc" stopOpacity="0.78" /></linearGradient>
+        <linearGradient id="turr-trail-b" x1="0" x2="1"><stop offset="0" stopColor="#d99bea" stopOpacity="0" /><stop offset="0.62" stopColor="#d99bea" stopOpacity="0.35" /><stop offset="1" stopColor="#ebd9bc" stopOpacity="0.78" /></linearGradient>
+      </defs>
+      <path className="ai-turr-trail ai-turr-trail-one" d="M -80 155 C 285 170, 430 410, 790 530" fill="none" stroke="url(#turr-trail-a)" strokeWidth="1.2" />
+      <path className="ai-turr-trail ai-turr-trail-two" d="M -80 760 C 280 720, 480 600, 790 530" fill="none" stroke="url(#turr-trail-b)" strokeWidth="1.2" />
+      <circle className="ai-turr-convergence" cx="790" cy="530" r="5" fill="#ebd9bc" />
+    </svg>
   );
 }

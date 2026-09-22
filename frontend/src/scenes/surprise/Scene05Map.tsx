@@ -45,22 +45,24 @@ export function Scene05Map() {
           </p>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-2xl border-y border-sky-200/15">
-          {rememberedPlaces.map((place, index) => (
-            <motion.article
-              key={place.id}
-              initial={reduced ? false : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '0px 0px -15% 0px' }}
-              transition={{ duration: 1, delay: index * 0.12, ease: EASE }}
-              className="px-5 py-9 text-center sm:px-10 sm:py-11"
-            >
-              <span className="font-mono text-[0.5rem] uppercase tracking-[0.28em] text-sky-100/45">ความทรงจำที่ไม่มีภาพยืนยัน</span>
-              <h3 className="mt-4 font-thai text-2xl font-light text-ivory">{place.label}</h3>
-              <p className="mt-3 font-thai text-sm leading-7 text-ivory/55">{place.note}</p>
-            </motion.article>
-          ))}
-        </div>
+        {rememberedPlaces.length ? (
+          <div className="mx-auto mt-16 grid max-w-2xl border-y border-sky-200/15">
+            {rememberedPlaces.map((place, index) => (
+              <motion.article
+                key={place.id}
+                initial={reduced ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '0px 0px -15% 0px' }}
+                transition={{ duration: 1, delay: index * 0.12, ease: EASE }}
+                className="px-5 py-9 text-center sm:px-10 sm:py-11"
+              >
+                <span className="font-mono text-[0.5rem] uppercase tracking-[0.28em] text-sky-100/45">ความทรงจำที่ไม่มีภาพยืนยัน</span>
+                <h3 className="mt-4 font-thai text-2xl font-light text-ivory">{place.label}</h3>
+                <p className="mt-3 font-thai text-sm leading-7 text-ivory/55">{place.note}</p>
+              </motion.article>
+            ))}
+          </div>
+        ) : null}
 
         <div className="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           {photoStories.map((place, index) => (

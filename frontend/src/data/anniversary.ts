@@ -327,13 +327,10 @@ export const anniversary = {
     { id: 'm16', title: 'วัดไร่แตงทอง', date: 'MEMORY 16', caption: 'วัดที่นครปฐม', location: 'นครปฐม', tags: ['family'], tone: 'champagne' },
     { id: 'm17', title: 'วัดหุบกระทิง', date: 'MEMORY 17', caption: 'วัดที่ราชบุรี', location: 'ราชบุรี', tags: ['family'], tone: 'cream' },
     { id: 'm18', title: 'ทางรถไฟ', date: 'MEMORY 18', caption: 'เดินเล่นริมทางรถไฟ', tags: ['daily'], tone: 'navy', featured: true },
-    /* The 19th place, and the one that carries the date.
-       OWNER-CONFIRMED ร้าน TURR เกษตร — the night he asked her to be his partner,
-       so this is the RELATIONSHIP MILESTONE. It is deliberately NOT the story's
-       จุดเริ่มต้น: that is ร้าน Peak (m00). An earlier pass merged the two
-       meanings; the owner has separated them, and they stay separate. The two
-       formerly assigned photographs are Peak, so TURR remains text-only. */
-    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', tags: ['daily'], tone: 'champagne', featured: true },
+    /* The 19th place, and the one that carries the date. Owner-confirmed on
+       2026-09-22: the purple nightlife photograph is TURR Kaset, the night he
+       asked her to be his partner. Peak remains the distinct first meeting. */
+    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/peak-02.webp', tags: ['daily'], tone: 'champagne', featured: true },
 
     /* ── MOMENTS, NOT PLACES ──────────────────────────────────────────────────
        Everything above is somewhere they went. These are things that happened,
@@ -390,10 +387,8 @@ export const anniversary = {
       { id: 'jp-chaam', label: 'ชะอำ', province: 'เพชรบุรี', date: '16 OCT 2025', caption: 'ทะเลเพชรบุรี', image: '/images/memories/chaam-01.webp' }
     ] as JourneyPhoto[],
 
-    /** Important places that remain words because no confirmed photograph exists. */
-    rememberedPlaces: [
-      { id: 'jr-turr', label: 'ร้าน TURR เกษตร', note: 'วันที่เราเริ่มเป็น “เรา” · 12 OCT 2025' }
-    ] as RememberedPlace[],
+    /** No owner-confirmed place currently needs a text-only treatment. */
+    rememberedPlaces: [] as RememberedPlace[],
 
     /** Story emphasis only — never part of the canonical place count. */
     storyPlaceHighlights: STORY_PLACE_HIGHLIGHTS,
@@ -409,11 +404,10 @@ export const anniversary = {
    * invented date. Bodies say only what is true.
    */
   timeline: [
-    /* Peak opens the timeline because Peak is where the story starts. The label
-       is not a date; both supplied references are owner-confirmed Peak photos. */
-    { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'fullbleed', image: '/images/memories/peak-01.webp', images: ['/images/memories/peak-02.webp'], objectPosition: '50% 42%' },
-    /* Then the night it became official. Separate, text-only beat. */
-    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่เขาชวนเธอมาเป็นแฟน', type: 'text', treatment: 'textOnly' },
+    /* Peak opens the timeline because Peak is where the story starts. */
+    { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'fullbleed', image: '/images/memories/peak-01.webp', objectPosition: '50% 42%' },
+    /* Then the owner-confirmed photographed night it became official. */
+    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/peak-02.webp', objectPosition: '50% 45%' },
     /* The archive proves the ceremony preceded the legal registration, but the
        exact ceremony date remains unasserted. */
     { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp'] },
@@ -430,7 +424,7 @@ export const anniversary = {
     { id: 't7', label: 'ชายหาด ชะอำ', title: 'วันที่เราไปทะเลด้วยกัน', body: 'ชะอำ · เพชรบุรี', type: 'photo', treatment: 'split', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
     { id: 't8', label: '28 JUL 2026', title: 'วันจดทะเบียนสมรส', body: 'คนละวันกับพิธีแต่งงาน และเป็นอีกหนึ่งคำสัญญาของเรา', type: 'photo', treatment: 'split', image: '/images/memories/marriage-registration-safe.webp', cropMode: 'contain' },
     /* Latest owner-confirmed reference #6: the present-day emotional close. */
-    { id: 't9', label: 'วันนี้', title: 'เรายังอยู่ด้วยกัน', body: 'และยังเลือกกันอยู่ทุกวัน', type: 'highlight', treatment: 'fullbleed', image: '/images/memories/together-now-01.webp', objectPosition: '50% 38%' }
+    { id: 't9', label: 'วันนี้', title: 'เรายังอยู่ด้วยกัน', body: 'แต่สุดท้าย เราก็ยังเลือกที่จะอยู่ข้างกัน', type: 'highlight', treatment: 'fullbleed', image: '/images/memories/together-now-01.webp', objectPosition: '50% 38%' }
   ] as TimelineMoment[],
 
   // ------------------------------------------------------------- statistics --
