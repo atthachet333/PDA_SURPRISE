@@ -327,10 +327,12 @@ export const anniversary = {
     { id: 'm16', title: 'วัดไร่แตงทอง', date: 'MEMORY 16', caption: 'วัดที่นครปฐม', location: 'นครปฐม', tags: ['family'], tone: 'champagne' },
     { id: 'm17', title: 'วัดหุบกระทิง', date: 'MEMORY 17', caption: 'วัดที่ราชบุรี', location: 'ราชบุรี', tags: ['family'], tone: 'cream' },
     { id: 'm18', title: 'ทางรถไฟ', date: 'MEMORY 18', caption: 'เดินเล่นริมทางรถไฟ', tags: ['daily'], tone: 'navy', featured: true },
-    /* The 19th place, and the one that carries the date. Owner-confirmed on
-       2026-09-22: the purple nightlife photograph is TURR Kaset, the night he
-       asked her to be his partner. Peak remains the distinct first meeting. */
-    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/peak-02.webp', tags: ['daily'], tone: 'champagne', featured: true },
+    /* The 19th place, and the one that carries the date. The dedicated 12 OCT
+       hero owns the owner-confirmed TURR nightlife frame. Peak remains the
+       distinct first meeting.
+       This later archive/recap card uses a distinct early-days portrait so
+       the same source plate is not repeated when the story looks back. */
+    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/early-days-01.webp', tags: ['daily'], tone: 'champagne', featured: true },
 
     /* ── MOMENTS, NOT PLACES ──────────────────────────────────────────────────
        Everything above is somewhere they went. These are things that happened,
@@ -406,10 +408,9 @@ export const anniversary = {
   timeline: [
     /* Peak opens the timeline because Peak is where the story starts. */
     { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'fullbleed', image: '/images/memories/peak-01.webp', objectPosition: '50% 42%' },
-    /* The approved TURR photograph already leads the opening milestone. This
-       later recap deliberately uses a different, curated early-days portrait
-       so adjacent story beats never repeat the same plate. */
-    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/early-days-01.webp', objectPosition: '50% 35%' },
+    /* Owner-confirmed TURR nightlife photograph from the night the
+       relationship began. Keep this exact frame on the 12 OCT hero. */
+    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/peak-02.webp', objectPosition: '50% 35%' },
     /* The archive proves the ceremony preceded the legal registration, but the
        exact ceremony date remains unasserted. */
     { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp'] },
