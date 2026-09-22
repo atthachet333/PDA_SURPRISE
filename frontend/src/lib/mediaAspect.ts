@@ -33,6 +33,7 @@ const INTRINSIC: Record<string, number> = {
   '/images/memories/together-now-01.webp': 900 / 1600,
   '/images/memories/finale-shadow-heart-poster.webp': 900 / 1600,
   '/images/memories/graduation-01.webp': 1200 / 1600,
+  '/images/memories/early-days-01.webp': 900 / 1600,
   '/images/memories/chaam-beach-02.webp': 1800 / 2400,
   '/images/memories/roadtrip-01.webp': 1600 / 1000,
   '/images/memories/sarika-01.webp': 1200 / 1600,

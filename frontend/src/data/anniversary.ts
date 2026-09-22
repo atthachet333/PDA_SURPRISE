@@ -406,8 +406,10 @@ export const anniversary = {
   timeline: [
     /* Peak opens the timeline because Peak is where the story starts. */
     { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'fullbleed', image: '/images/memories/peak-01.webp', objectPosition: '50% 42%' },
-    /* Then the owner-confirmed photographed night it became official. */
-    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/peak-02.webp', objectPosition: '50% 45%' },
+    /* The approved TURR photograph already leads the opening milestone. This
+       later recap deliberately uses a different, curated early-days portrait
+       so adjacent story beats never repeat the same plate. */
+    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/early-days-01.webp', objectPosition: '50% 35%' },
     /* The archive proves the ceremony preceded the legal registration, but the
        exact ceremony date remains unasserted. */
     { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp'] },
