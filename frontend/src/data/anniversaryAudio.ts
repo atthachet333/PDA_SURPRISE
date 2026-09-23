@@ -14,6 +14,7 @@ export const anniversaryAudio = {
     journey: { level: 0.92, ms: 1600 },
     memories: { level: 0.95, ms: 1800 },
     places: { level: 0.88, ms: 1400 },
+    milestones: { level: 0.82, ms: 2400 },
     life: { level: 0.78, ms: 1600 },
     stats: { level: 0.83, ms: 1200 },
     quiet: { level: 0.42, ms: 3500 },

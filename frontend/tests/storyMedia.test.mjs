@@ -7,7 +7,9 @@ import {
   storyMediaSlots,
   PEAK_MEDIA,
   TURR_MEDIA,
-  STORY_MEDIA_EXCEPTIONS
+  STORY_MEDIA_EXCEPTIONS,
+  MILESTONE_IDS,
+  PORSCHE_MEDIA
 } from '../src/data/storyMedia.ts';
 import { anniversary } from '../src/data/anniversary.ts';
 import { livingMemoryFor } from '../src/data/memoryVideos.ts';
@@ -80,4 +82,23 @@ test('the 12 OCT recap never repeats the 12 OCT hero', () => {
   assert.equal(recap?.image, TURR_MEDIA.recap);
   assert.notEqual(recap?.image, TURR_MEDIA.still);
   assert.equal(anniversary.memories.find((memory) => memory.id === 'm19')?.image, TURR_MEDIA.recap);
+});
+
+test('milestones keep the established order: pre-wedding, wedding, 20 DEC, 28 JUL', () => {
+  const order = anniversary.timeline.map((moment) => moment.id).filter((id) => MILESTONE_IDS.includes(id));
+  assert.deepEqual(order, ['t8b', 't8c', 't7b', 't8']);
+  assert.equal(anniversary.timeline.find((moment) => moment.id === 't7b')?.label, '20 DEC 2025');
+  assert.equal(anniversary.timeline.find((moment) => moment.id === 't8')?.label, '28 JUL 2026');
+  /* The ceremony stays undated. */
+  assert.doesNotMatch(anniversary.timeline.find((moment) => moment.id === 't8c')?.label ?? '', /\d/);
+});
+
+test('Porsche media, when present, is only privacy-cleared local derivatives', () => {
+  const bySource = new Map(manifest.files.flatMap((file) => (file.productionAssets ?? []).map((path) => [path, file])));
+  for (const item of PORSCHE_MEDIA) {
+    assert.match(item.src, /^\/images\/memories\/.+\.webp$/);
+    const file = bySource.get(item.src);
+    assert.ok(file, `${item.src} has no manifest record`);
+    assert.equal(file.privacy, 'safe-after-crop', `${item.src} was not privacy-cropped`);
+  }
 });

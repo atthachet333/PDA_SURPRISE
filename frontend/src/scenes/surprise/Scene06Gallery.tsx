@@ -1,130 +1,104 @@
 import { motion } from 'framer-motion';
-import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/SceneSection';
+import { useEffect, useState } from 'react';
+import { SceneSection } from '@/components/surprise/SceneSection';
+import { ChapterMark } from '@/components/surprise/ChapterMark';
 import { MemoryImage } from '@/components/surprise/MemoryImage';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { frameStyle } from '@/lib/mediaAspect';
+import { usePageVisible } from '@/hooks/usePageVisible';
 import { LITTLE_MOMENTS_MEDIA } from '@/data/storyMedia';
+import { cn } from '@/lib/cn';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const STRIP_ALTS = ['วันธรรมดาที่พิเศษ', 'เราในอีกวันหนึ่ง', 'ทะเลและแสงแดด'];
 
 /**
- * An editorial opening spread for the real photo story.
- *
- * The former implementation was a rotating card carousel with faded neighbours
- * and a framed centre card. The owner explicitly rejected that language. This
- * spread replaces it with one new, visually distinct Drive photograph, then an
- * asymmetric pair and a film strip: photographs lead, interface chrome recedes.
+ * Little moments — light and playful. One lead frame, and a memory strip that
+ * drifts sideways on its own while one fragment at a time "lights up" with its
+ * caption, like flicking through a phone roll. Tap or hover picks a fragment.
+ * Reduced motion: no drift, no cycling, every caption visible.
  */
 export function Scene06Gallery() {
   const reduced = useReducedMotion();
+  const pageVisible = usePageVisible();
+  const { lead, reel } = LITTLE_MOMENTS_MEDIA;
+  const [active, setActive] = useState(0);
+  const [held, setHeld] = useState(false);
+
+  useEffect(() => {
+    if (reduced || held || !pageVisible) return;
+    const timer = window.setInterval(() => setActive((value) => (value + 1) % reel.length), 3600);
+    return () => window.clearInterval(timer);
+  }, [reduced, held, pageVisible, reel.length]);
 
   return (
-    <SceneSection id="little-moments" label="โมเมนต์เล็ก ๆ" className="overflow-hidden" fullHeight={false}>
-      <div className="w-full max-w-[90rem] py-12 sm:py-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <SceneLabel>03 · โมเมนต์เล็ก ๆ ของเรา</SceneLabel>
-          <SceneTitle className="thai-display mt-5 font-thai">เรื่องจริงของเรา<br />อยู่ในภาพพวกนี้</SceneTitle>
-          <p className="mx-auto mt-6 max-w-xl font-thai text-base leading-8 text-ivory/65">
-            ไม่ได้มีแค่วันสำคัญ บางครั้งความทรงจำที่ชัดที่สุดก็คือถนนหนึ่งเส้น ทะเลหนึ่งวัน และคนเดิมที่อยู่ข้างกัน
-          </p>
-        </div>
+    <SceneSection id="little-moments" label="โมเมนต์เล็ก ๆ" fullHeight={false} className="overflow-hidden px-0 py-0 sm:px-0">
+      <article className="ai-moments relative w-full overflow-hidden px-5 pb-20 pt-16 sm:px-8 lg:px-12 lg:pb-28 lg:pt-24">
+        <span aria-hidden="true" className="ai-moments-glow pointer-events-none absolute inset-0" />
+        <div className="relative mx-auto grid w-full max-w-[84rem] grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
+          <div className="min-w-0 lg:col-span-6 lg:pr-6">
+            <ChapterMark index="03" label="LITTLE MOMENTS · โมเมนต์เล็ก ๆ" />
+            <h2 className="thai-display mt-6 font-thai text-[clamp(2.5rem,5vw,4.6rem)] font-light leading-[1.12] text-ivory">
+              เรื่องจริงของเรา<br />อยู่ในภาพพวกนี้
+            </h2>
+            <p className="mt-6 max-w-lg font-thai text-[clamp(1rem,1.2vw,1.12rem)] leading-8 text-ivory/75">
+              ไม่ได้มีแค่วันสำคัญ บางครั้งความทรงจำที่ชัดที่สุดก็คือถนนหนึ่งเส้น ทะเลหนึ่งวัน และคนเดิมที่อยู่ข้างกัน
+            </p>
 
-        <motion.figure
-          initial={reduced ? false : { y: 32 }}
-          whileInView={{ y: 0 }}
-          viewport={{ once: true, margin: '0px 0px -12% 0px' }}
-          transition={{ duration: 1.25, ease: EASE }}
-          className="relative mt-14 overflow-hidden sm:mt-20"
-        >
-          <div className="aspect-[5/4] sm:aspect-[16/8] lg:aspect-[21/9]">
-            <MemoryImage
-              photo={LITTLE_MOMENTS_MEDIA.wide}
-              alt="การเดินทางด้วยกันบนถนนสายหนึ่ง"
-              tone="navy"
-              loading="eager"
-              cropMode="cover"
-              objectPosition="50% 52%"
-            />
+            {/* The strip. On phones it is a native swipe row; on larger screens
+                it drifts slowly by itself. Nothing here needs hover. */}
+            <div className="relative -mx-5 mt-10 overflow-x-auto px-5 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 lg:mt-14">
+              <div className={cn('flex w-max gap-3 sm:w-auto sm:gap-4', reduced ? '' : 'ai-moments-drift')}>
+                {reel.map((item, index) => (
+                  <button
+                    key={item.src}
+                    type="button"
+                    onClick={() => {
+                      setActive(index);
+                      setHeld(true);
+                    }}
+                    onMouseEnter={() => setActive(index)}
+                    aria-pressed={active === index}
+                    aria-label={item.caption}
+                    className={cn(
+                      'ai-moments-fragment group relative w-[9.5rem] shrink-0 text-left transition-[transform,opacity] duration-700 sm:w-[10.5rem] lg:w-[11rem]',
+                      reduced || active === index ? 'opacity-100' : 'opacity-60 hover:opacity-100',
+                      index % 2 ? 'sm:translate-y-6' : ''
+                    )}
+                  >
+                    <span className={cn('block aspect-[3/4] overflow-hidden transition-transform duration-700', active === index && !reduced ? 'scale-[1.04]' : '')}>
+                      <MemoryImage photo={item.src} alt={item.caption} tone="sky" loading="lazy" objectPosition="50% 35%" />
+                    </span>
+                    <span
+                      className={cn(
+                        'mt-3 block font-thai text-[0.82rem] leading-6 transition-colors duration-700',
+                        reduced || active === index ? 'text-ivory' : 'text-ivory/45'
+                      )}
+                    >
+                      {item.caption}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-          <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-900/85 via-navy-900/15 to-transparent px-6 pb-6 pt-24 sm:px-10 sm:pb-9">
-            <p className="font-thai text-lg text-ivory sm:text-xl">ถนนยาว ๆ กับคนข้างหลัง</p>
-            <p className="mt-1 font-mono text-[0.55rem] uppercase tracking-[0.26em] text-sky-100/65">ONE ROAD · TWO OF US</p>
-          </figcaption>
-        </motion.figure>
 
-        <div className="mt-5 grid gap-5 sm:grid-cols-12 sm:items-end lg:mt-8 lg:gap-8">
-          <EditorialPhoto
-            photo={LITTLE_MOMENTS_MEDIA.sarika}
-            alt="ทริปน้ำตกสาริกา"
-            caption="น้ำตกสาริกา"
-            className="sm:col-span-7"
-            index={1}
-          />
-          <EditorialPhoto
-            photo={LITTLE_MOMENTS_MEDIA.suanphueng}
-            alt="ความทรงจำที่สวนผึ้ง"
-            caption="ปลายปีที่สวนผึ้ง"
-            className="sm:col-span-5 sm:mb-10"
-            index={2}
-          />
+          <motion.figure
+            initial={reduced ? false : { opacity: 0, y: 40, rotate: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '0px 0px -10% 0px' }}
+            transition={{ duration: 1.5, ease: EASE }}
+            className="order-first lg:order-none lg:col-span-6"
+          >
+            <div className="ai-moments-lead relative mx-auto aspect-[4/5] w-full max-w-[34rem] overflow-hidden lg:aspect-[3/4] lg:h-[min(80svh,44rem)] lg:w-auto">
+              <MemoryImage photo={lead.src} alt={lead.caption} tone="sky" loading="lazy" objectPosition="50% 32%" className="ai-moments-lead-image" />
+              <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0b1522]/80 to-transparent" />
+              <figcaption className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                <p className="font-mono text-[0.52rem] uppercase tracking-[0.3em] text-champagne/90">EVERY DAY · ทุกวัน</p>
+                <p className="thai-display mt-2 font-thai text-[clamp(1.3rem,2vw,1.7rem)] font-light text-ivory">{lead.caption}</p>
+              </figcaption>
+            </div>
+          </motion.figure>
         </div>
-
-        <div className="mt-5 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-5">
-          {LITTLE_MOMENTS_MEDIA.strip.map((photo, index) => (
-            <motion.figure
-              key={photo}
-              initial={reduced ? false : { y: 18 }}
-              whileInView={{ y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, delay: index * 0.08, ease: EASE }}
-              className="aspect-[3/4] overflow-hidden even:translate-y-4 sm:even:translate-y-8"
-            >
-              <MemoryImage photo={photo} alt={STRIP_ALTS[index] ?? ''} tone="sky" loading="lazy" cropMode="cover" />
-            </motion.figure>
-          ))}
-        </div>
-      </div>
+      </article>
     </SceneSection>
-  );
-}
-/**
- * An editorial plate that takes its proportions from the photograph.
- *
- * It used to take a hand-written aspect, and the pair here were set to
- * `aspect-[4/5] sm:aspect-[4/3]` and `aspect-[4/5]`. Both photographs are
- * portrait, so the 4/3 box was showing 56% of น้ำตกสาริกา — a landscape frame
- * imposed on an upright picture, which is the exact problem `mediaAspect`
- * exists to prevent and which the rest of the experience already routes
- * through. The asymmetry of the pair still comes from the column spans and the
- * bottom offset, not from cropping one of them in half.
- */
-function EditorialPhoto({
-  photo,
-  alt,
-  caption,
-  className,
-  index
-}: {
-  photo: string;
-  alt: string;
-  caption: string;
-  className: string;
-  index: number;
-}) {
-  const reduced = useReducedMotion();
-  return (
-    <motion.figure
-      initial={reduced ? false : { y: 24 }}
-      whileInView={{ y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -12% 0px' }}
-      transition={{ duration: 1.05, delay: index * 0.08, ease: EASE }}
-      className={className}
-    >
-      <div className="overflow-hidden" style={frameStyle(photo, 'editorial')}>
-        <MemoryImage photo={photo} alt={alt} tone="cream" loading="lazy" cropMode="cover" />
-      </div>
-      <figcaption className="mt-3 font-thai text-sm text-ivory/65">{caption}</figcaption>
-    </motion.figure>
   );
 }

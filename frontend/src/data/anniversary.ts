@@ -409,31 +409,31 @@ export const anniversary = {
    * invented date. Bodies say only what is true.
    */
   timeline: [
-    /* Peak opens the timeline because Peak is where the story starts. The
-       Peak scene owns IMG_3416; this look-back uses IMG_3417, taken the same
-       minute at the same spot, so the hero is not repeated. */
+    /* ── JOURNEY (Scene08) ── the two openings as small look-backs, then the
+       confirmed travel frames in date order. */
+    /* The Peak scene owns IMG_3416; this look-back uses IMG_3417, taken the
+       same minute at the same spot, so the hero is not repeated. */
     { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'polaroid', image: '/images/memories/archive/memory-060.webp', objectPosition: '50% 45%' },
     /* The 12 OCT scene owns the TURR still and clip. This recap is a second
        moment from the same table that night — never the hero frame again. */
     { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/turr-night-recap.webp', objectPosition: '50% 45%' },
-    /* The archive proves the ceremony preceded the legal registration, but the
-       exact ceremony date remains unasserted. */
-    { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp'] },
-    { id: 't8c', label: 'OUR WEDDING', title: 'วันแต่งงานของเรา', body: 'พิธีมงคลสมรส — ก่อนวันที่เราจดทะเบียนสมรส', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-ceremony-01.webp', images: ['/images/memories/wedding-ceremony-02.webp', '/images/memories/wedding-ceremony-03.webp', '/images/memories/wedding-actual-01.webp', '/images/memories/wedding-actual-02.webp', '/images/memories/wedding-actual-03.webp'] },
+    /* OWNER_CONFIRMED ชะอำ (reference #5). */
+    { id: 't7', label: '16 OCT 2025', title: 'ชะอำ', body: 'วันที่เราไปทะเลด้วยกัน', type: 'location', treatment: 'split', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
     { id: 't4', label: '10 DEC 2025', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก', image: '/images/memories/sarika-01.webp' },
-    { id: 't7b', label: '20 DEC 2025', title: 'วันที่เราเลือกอนาคตเดียวกัน', body: 'วันที่เราตัดสินใจจดทะเบียนสมรสด้วยกัน', type: 'photo', treatment: 'split', image: '/images/memories/marriage-decision-01.webp' },
     { id: 't5', label: '25 DEC 2025', title: 'สวนผึ้ง', body: 'ปลายปีที่ราชบุรี', type: 'location', treatment: 'split', location: 'ราชบุรี', image: '/images/memories/suanphueng-01.webp' },
-    /* Latest owner-confirmed reference #3: Pattaya. */
-    /* OWNER_CONFIRMED พัทยา. The body used to read "ทะเลชลบุรี", which named the
-       province rather than the place the owner actually confirmed. */
-    { id: 't6', label: 'พัทยา', title: 'วันที่เราไปพัทยาด้วยกัน', body: 'ทะเลที่พัทยา ชลบุรี', type: 'photo', treatment: 'split', location: 'ชลบุรี', image: '/images/memories/pattaya-01.webp' },
-    /* Latest owner-confirmed reference #5 replaces the former Ban Pong photo
-       beat. Ban Pong remains a story highlight; this photograph is Cha-am. */
-    { id: 't7', label: 'ชายหาด ชะอำ', title: 'วันที่เราไปทะเลด้วยกัน', body: 'ชะอำ · เพชรบุรี', type: 'photo', treatment: 'split', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
-    { id: 't8', label: '28 JUL 2026', title: 'วันจดทะเบียนสมรส', body: 'คนละวันกับพิธีแต่งงาน และเป็นอีกหนึ่งคำสัญญาของเรา', type: 'photo', treatment: 'split', image: '/images/memories/marriage-registration-safe.webp', cropMode: 'contain' },
-    /* The present-day close. together-now-01 now leads the Life scene, so the
-       timeline ends on a 2026 frame (13 MAR 2026) instead of repeating it. */
-    { id: 't9', label: 'วันนี้', title: 'เรายังอยู่ด้วยกัน', body: 'แต่สุดท้าย เราก็ยังเลือกที่จะอยู่ข้างกัน', type: 'highlight', treatment: 'fullbleed', image: '/images/memories/archive/memory-139.webp', objectPosition: '50% 40%' }
+    /* SP121756_26-12-68 — the motorbike trip (m25), 26 DEC 2025. */
+    { id: 't5b', label: '26 DEC 2025', title: 'ทริปมอเตอร์ไซค์', body: 'ถนนยาว ๆ กับคนข้างหลัง', type: 'photo', treatment: 'split', image: '/images/memories/special-roadtrip-wide.webp', objectPosition: '50% 52%' },
+    /* OWNER_CONFIRMED พัทยา (reference #3). */
+    { id: 't6', label: '11 JAN 2026', title: 'พัทยา', body: 'ทะเลที่พัทยา ชลบุรี', type: 'location', treatment: 'split', location: 'ชลบุรี', image: '/images/memories/pattaya-01.webp' },
+
+    /* ── MILESTONES (Scene08Milestones) ── same relative order as before:
+       pre-wedding, the ceremony, the 20 DEC decision, then registration.
+       The ceremony preceded the legal registration; its date is unasserted. */
+    { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp', '/images/memories/archive/memory-110.webp'] },
+    { id: 't8c', label: 'OUR WEDDING', title: 'วันแต่งงานของเรา', body: 'พิธีมงคลสมรส — ก่อนวันที่เราจดทะเบียนสมรส', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-ceremony-03.webp', images: ['/images/memories/wedding-ceremony-01.webp', '/images/memories/wedding-actual-03.webp', '/images/memories/wedding-actual-01.webp'] },
+    /* Two frames from the same afternoon (both 20 DEC 2025, 14:52). */
+    { id: 't7b', label: '20 DEC 2025', title: 'วันที่เราเลือกอนาคตเดียวกัน', body: 'วันที่เราตัดสินใจจดทะเบียนสมรสด้วยกัน', type: 'photo', treatment: 'split', image: '/images/memories/marriage-decision-01.webp', images: ['/images/memories/early-days-01.webp'] },
+    { id: 't8', label: '28 JUL 2026', title: 'วันจดทะเบียนสมรส', body: 'คนละวันกับพิธีแต่งงาน และเป็นอีกหนึ่งคำสัญญาของเรา', type: 'photo', treatment: 'split', image: '/images/memories/marriage-registration-safe.webp', cropMode: 'contain' }
   ] as TimelineMoment[],
 
   // ------------------------------------------------------------- statistics --

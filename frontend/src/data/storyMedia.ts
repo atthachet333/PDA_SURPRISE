@@ -64,38 +64,60 @@ export const TURR_MEDIA = {
   recap: `${M}/turr-night-recap.webp`
 } as const;
 
-/** Scene 06 — little moments. Place plates are same-session alternates. */
+/**
+ * Scene 06 — little moments. Everyday frames only (places belong to Journey).
+ * Captions are lines that already exist in the story data, never new claims.
+ */
 export const LITTLE_MOMENTS_MEDIA = {
-  wide: `${M}/special-roadtrip-wide.webp`,
-  /** IMG_5883 — same minute and rocks as the owner-confirmed Sarika hero. */
-  sarika: `${M}/archive/memory-027.webp`,
-  /** IMG_1755 — the same Suan Phueng field, minutes before the hero frame. */
-  suanphueng: `${M}/archive/memory-145.webp`,
-  strip: [`${M}/archive/thumbs/memory-051.webp`, `${M}/archive/thumbs/memory-133.webp`, `${M}/archive/thumbs/memory-130.webp`]
+  lead: { src: `${M}/funny-faces-01.webp`, caption: 'หน้าตาแบบที่ทำใส่กันทุกวัน' },
+  reel: [
+    { src: `${M}/fair-01.webp`, caption: 'งานวัด งานกาชาด และคนเยอะ ๆ' },
+    { src: `${M}/archive/memory-100.webp`, caption: 'วันธรรมดาที่พิเศษ' },
+    { src: `${M}/archive/memory-130.webp`, caption: 'ทะเลและแสงแดด' },
+    { src: `${M}/archive/memory-133.webp`, caption: 'เราในอีกวันหนึ่ง' }
+  ]
 } as const;
 
-/** Scene 07 — the present-day payoff: one hero, three family details. */
-export const PRESENT_MEDIA = {
-  hero: `${M}/together-now-01.webp`,
-  family: `${M}/cat-together-01.webp`,
+/** Scene 07 — home: the household before the present-day close. */
+export const FAMILY_MEDIA = {
+  hero: `${M}/cat-together-01.webp`,
   kanomtuay: `${M}/cat-01.webp`,
   tuayfu: `${M}/cat-02.webp`
+} as const;
+
+/**
+ * Porsche (ปอร์เช่). The owner's folder holds prenatal scans whose frames carry
+ * clinic and patient text; derivatives are pending explicit owner approval, so
+ * no image ships yet and the family chapter carries Porsche in words only.
+ */
+export const PORSCHE_MEDIA: { src: string; alt: string }[] = [];
+
+/** Scene 07 — the present-day payoff: one hero, two recent 2026 frames. */
+export const PRESENT_MEDIA = {
+  hero: `${M}/together-now-01.webp`,
+  /* 13 MAR 2026 — at home. */
+  home: `${M}/archive/memory-139.webp`,
+  /* 28 JUN 2026 — an ordinary afternoon on the road. */
+  ordinary: `${M}/archive/memory-162.webp`
 } as const;
 
 /** Canonical event of each timeline beat, keyed by the beat id. */
 const TIMELINE_EVENTS: Record<string, StoryEvent> = {
   t1: 'peak',
   t2: 'turr',
+  t7: 'chaam',
+  t4: 'sarika',
+  t5: 'suanphueng',
+  t5b: 'roadtrip',
+  t6: 'pattaya',
   t8b: 'prewedding',
   t8c: 'wedding',
-  t4: 'sarika',
   t7b: 'decision',
-  t5: 'suanphueng',
-  t6: 'pattaya',
-  t7: 'chaam',
-  t8: 'registration',
-  t9: 'present'
+  t8: 'registration'
 };
+
+/** Timeline beats that render in the Milestones section rather than Journey. */
+export const MILESTONE_IDS = ['t8b', 't8c', 't7b', 't8'] as const;
 
 const JOURNEY_EVENTS: Record<string, StoryEvent> = {
   'jp-suanphueng': 'suanphueng',
@@ -110,28 +132,37 @@ export function storyMediaSlots(): StorySlot[] {
     { scene: 'peak', slot: 'hero', src: PEAK_MEDIA.hero, event: 'peak' },
     { scene: 'turr', slot: 'poster', src: TURR_MEDIA.still, event: 'turr' },
     { scene: 'turr', slot: 'video', src: TURR_MEDIA.video, event: 'turr' },
-    { scene: 'little-moments', slot: 'wide', src: LITTLE_MOMENTS_MEDIA.wide, event: 'roadtrip' },
-    { scene: 'little-moments', slot: 'pair-a', src: LITTLE_MOMENTS_MEDIA.sarika, event: 'sarika' },
-    { scene: 'little-moments', slot: 'pair-b', src: LITTLE_MOMENTS_MEDIA.suanphueng, event: 'suanphueng' },
-    ...LITTLE_MOMENTS_MEDIA.strip.map((src, index) => ({ scene: 'little-moments', slot: `strip-${index + 1}`, src, event: 'daily' as const }))
+    { scene: 'little-moments', slot: 'lead', src: LITTLE_MOMENTS_MEDIA.lead.src, event: 'daily' },
+    ...LITTLE_MOMENTS_MEDIA.reel.map((item, index) => ({ scene: 'little-moments', slot: `reel-${index + 1}`, src: item.src, event: 'daily' as const }))
   ];
 
-  for (const moment of anniversary.timeline) {
-    const event = TIMELINE_EVENTS[moment.id] ?? 'daily';
-    [moment.image, ...(moment.images ?? [])].forEach((src, index) => {
-      if (src) slots.push({ scene: 'journey', slot: index ? `${moment.id}.${index}` : moment.id, src, event });
-    });
-  }
+  const timelineSlots = (scene: string, keep: (id: string) => boolean) => {
+    for (const moment of anniversary.timeline) {
+      if (!keep(moment.id)) continue;
+      const event = TIMELINE_EVENTS[moment.id] ?? 'daily';
+      [moment.image, ...(moment.images ?? [])].forEach((src, index) => {
+        if (src) slots.push({ scene, slot: index ? `${moment.id}.${index}` : moment.id, src, event });
+      });
+    }
+  };
+  const milestone = (id: string) => (MILESTONE_IDS as readonly string[]).includes(id);
+
+  timelineSlots('journey', (id) => !milestone(id));
 
   for (const place of anniversary.journey.photoStories) {
-    slots.push({ scene: 'map', slot: place.id, src: place.image, event: JOURNEY_EVENTS[place.id] ?? 'daily' });
+    slots.push({ scene: 'places', slot: place.id, src: place.image, event: JOURNEY_EVENTS[place.id] ?? 'daily' });
   }
 
+  timelineSlots('milestones', milestone);
+
   slots.push(
-    { scene: 'life', slot: 'hero', src: PRESENT_MEDIA.hero, event: 'present' },
-    { scene: 'life', slot: 'family', src: PRESENT_MEDIA.family, event: 'family' },
-    { scene: 'life', slot: 'kanomtuay', src: PRESENT_MEDIA.kanomtuay, event: 'family' },
-    { scene: 'life', slot: 'tuayfu', src: PRESENT_MEDIA.tuayfu, event: 'family' }
+    { scene: 'family', slot: 'hero', src: FAMILY_MEDIA.hero, event: 'family' },
+    { scene: 'family', slot: 'kanomtuay', src: FAMILY_MEDIA.kanomtuay, event: 'family' },
+    { scene: 'family', slot: 'tuayfu', src: FAMILY_MEDIA.tuayfu, event: 'family' },
+    ...PORSCHE_MEDIA.map((item, index) => ({ scene: 'family', slot: `porsche-${index + 1}`, src: item.src, event: 'family' as const })),
+    { scene: 'present', slot: 'hero', src: PRESENT_MEDIA.hero, event: 'present' },
+    { scene: 'present', slot: 'home', src: PRESENT_MEDIA.home, event: 'present' },
+    { scene: 'present', slot: 'ordinary', src: PRESENT_MEDIA.ordinary, event: 'present' }
   );
   return slots;
 }

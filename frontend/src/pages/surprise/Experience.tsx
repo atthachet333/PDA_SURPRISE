@@ -13,6 +13,7 @@ import { Scene05Map } from '@/scenes/surprise/Scene05Map';
 import { Scene06Gallery } from '@/scenes/surprise/Scene06Gallery';
 import { Scene07Life } from '@/scenes/surprise/Scene07Life';
 import { Scene08Timeline } from '@/scenes/surprise/Scene08Timeline';
+import { Scene08Milestones } from '@/scenes/surprise/Scene08Milestones';
 import { Scene09Stats } from '@/scenes/surprise/Scene09Stats';
 import { Scene10Quiet } from '@/scenes/surprise/Scene10Quiet';
 import { Scene11Converge } from '@/scenes/surprise/Scene11Converge';
@@ -56,8 +57,9 @@ const DIRECTION: Record<string, SceneDirection> = {
   beginning: { nav: 'beginning', mood: 0.38, camera: 'still' },
   'little-moments': { nav: 'little-moments', mood: 0.5, camera: 'circle' },
   journey: { nav: 'journey', mood: 0.54, camera: 'glide' },
-  memories: { nav: 'little-moments', mood: 0.33, camera: 'orbit' },
   places: { nav: 'places', mood: 0.42, camera: 'glide' },
+  milestones: { nav: 'journey', mood: 0.66, camera: 'still' },
+  memories: { nav: 'little-moments', mood: 0.33, camera: 'orbit' },
   life: { nav: 'places', mood: 0.6, camera: 'still' },
   stats: { nav: 'places', mood: 0.5, camera: 'still' },
   quiet: { nav: 'letter', mood: 0.08, camera: 'still', alive: false, immersive: true },
@@ -232,8 +234,9 @@ export default function Experience() {
         <Scene03Journey />
         <Scene06Gallery />
         <Scene08Timeline />
-        <Scene04Universe />
         <Scene05Map />
+        <Scene08Milestones />
+        <Scene04Universe />
         <Scene07Life />
         <Scene09Stats />
         <Scene10Quiet />
