@@ -26,6 +26,10 @@ export function Scene10Quiet() {
 
   const { scrollYProgress } = useScroll({ target: container, offset: ['start start', 'end end'] });
   const washOpacity = useTransform(scrollYProgress, [0, 0.14, 0.88, 1], [0, 0.78, 0.78, 0]);
+  const counter = useTransform(scrollYProgress, (value) => {
+    const line = Math.min(lines.length, Math.max(1, Math.floor(value * lines.length) + 1));
+    return `${String(line).padStart(2, '0')} / ${String(lines.length).padStart(2, '0')}`;
+  });
 
   useEffect(() => {
     if (!inView) return;
@@ -47,7 +51,7 @@ export function Scene10Quiet() {
       <div ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[50vh]" />
 
       <div className="sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden px-7 sm:px-10">
-        <p className="pointer-events-none absolute left-7 top-24 z-20 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/45 sm:left-10 lg:left-[max(2.5rem,calc((100vw-56rem)/2))]">09 · ไม่ใช่ทุกวันที่ง่าย</p>
+        <p className="pointer-events-none absolute left-7 top-24 z-20 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/45 sm:left-10 lg:left-[max(2.5rem,calc((100vw-56rem)/2))]">14 · ไม่ใช่ทุกวันที่ง่าย</p>
         {/* Softening wash: the celestial layer recedes for this scene only */}
         <motion.span
           aria-hidden="true"
@@ -62,6 +66,13 @@ export function Scene10Quiet() {
           animate={reduced ? undefined : { opacity: [0.4, 0.75, 0.4], scale: [1, 1.08, 1] }}
           transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
         />
+
+        {/* Designed stillness: one horizon, one star, one quiet count. */}
+        <span aria-hidden="true" className="ai-quiet-horizon absolute inset-x-[8%] bottom-[22%] h-px" />
+        <span aria-hidden="true" className="ai-quiet-star absolute right-[18%] top-[26%] h-1 w-1 rounded-full bg-ivory" />
+        <motion.span aria-hidden="true" className="absolute bottom-10 right-7 font-display text-sm italic tracking-[0.18em] text-ivory/45 sm:right-10 lg:right-[max(2.5rem,calc((100vw-56rem)/2))]">
+          {counter}
+        </motion.span>
 
         <div className="relative w-full max-w-4xl text-left">
           {lines.map((line, index) => {

@@ -126,7 +126,7 @@ export function Scene04Universe() {
     <SceneSection id="memories" ref={sectionRef} label="คลังความทรงจำ" className="overflow-hidden" fullHeight={false}>
       <div className="w-full max-w-[92rem] py-16 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <SceneLabel>06 · MEMORY ARCHIVE</SceneLabel>
+          <SceneLabel>10 · MEMORY ARCHIVE</SceneLabel>
           <SceneTitle className="thai-display mt-5 font-thai">รูปของเรา<br />อยู่ที่นี่จริง ๆ</SceneTitle>
           <p className="mx-auto mt-6 max-w-2xl font-thai text-base leading-8 text-ivory/65">
             จากวันธรรมดา ระหว่างทาง ไปจนถึงวันที่กลายเป็นครอบครัวเดียวกัน — ทุกภาพที่ปลอดภัยและมีความหมายถูกเก็บไว้ในสนามความทรงจำนี้

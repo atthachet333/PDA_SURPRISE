@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
-import { SceneLabel, SceneSection } from '@/components/surprise/SceneSection';
+import { SceneSection } from '@/components/surprise/SceneSection';
+import { ChapterMark } from '@/components/surprise/ChapterMark';
 import { anniversary, finalMessageBeats } from '@/data/anniversary';
 import { useAudio } from '@/app/audioContext';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
@@ -43,8 +44,18 @@ export function Scene12Letter() {
     <SceneSection ref={ref} id="letter" label="จดหมายถึงเธอ" fullHeight={false} className="overflow-hidden py-32 sm:py-44">
       <span aria-hidden="true" className="ai-warm-wash pointer-events-none absolute inset-0 opacity-90" />
       <article className="relative mx-auto w-full max-w-3xl" data-cursor="read">
-        <div className="text-center"><SceneLabel>11 · จดหมายถึงเธอ</SceneLabel><h2 className="thai-display ai-legible mt-6 font-thai text-[clamp(2.3rem,5vw,4.3rem)] font-light text-ivory">มีเรื่องที่อยากบอก</h2></div>
-        <div className="mt-20 space-y-16 sm:space-y-20">
+        <ChapterMark index="16" label="A LETTER · จดหมายถึงเธอ" className="items-center" />
+        {/* The sheet: warm paper, navy ink, a barely-there float and one slow
+            band of light. Nothing moves the words themselves. */}
+        <div className="ai-letter-sheet relative mx-auto mt-10 px-6 py-14 sm:px-14 sm:py-20 lg:px-20">
+          <span aria-hidden="true" className="ai-letter-light pointer-events-none absolute inset-0" />
+          <p aria-hidden="true" className="flex justify-between font-mono text-[0.52rem] uppercase tracking-[0.3em] text-[#17324d]/50">
+            <span>A&amp;I</span>
+            <span>FOR YOU</span>
+          </p>
+          <h2 className="thai-display mt-10 text-center font-thai text-[clamp(2.1rem,4.6vw,3.8rem)] font-light text-[#17324d]">มีเรื่องที่อยากบอก</h2>
+          <span aria-hidden="true" className="mx-auto mt-8 block h-px w-20 bg-[#b8976a]/70" />
+        <div className="relative mt-14 space-y-12 sm:space-y-14">
           {beats.map((line, index) => {
             const finalBeat = index === beats.length - 1;
             const closingBeat = index >= beats.length - 2;
@@ -59,10 +70,10 @@ export function Scene12Letter() {
                 transition={{ duration: 1.15, ease: [0.16, 1, 0.3, 1] }}
                 className={
                   closingBeat
-                    ? `thai-display ai-legible mx-auto max-w-xl text-center font-thai text-[clamp(1.85rem,4vw,3.25rem)] font-light text-ivory ${finalBeat ? 'ai-handwritten text-champagne' : ''}`
+                    ? `thai-display mx-auto max-w-xl text-center font-thai text-[clamp(1.75rem,3.6vw,2.9rem)] font-light ${finalBeat ? 'ai-handwritten text-[#94703f]' : 'text-[#17324d]'}`
                     : index === 0
-                      ? 'ai-legible mx-auto max-w-xl text-center font-thai text-[clamp(1.25rem,2.2vw,1.65rem)] leading-[1.9] text-ivory/85'
-                      : 'ai-legible mx-auto max-w-2xl font-thai text-[clamp(1.125rem,1.8vw,1.4rem)] leading-[1.95] text-ivory/80'
+                      ? 'mx-auto max-w-xl text-center font-thai text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.9] text-[#17324d]/90'
+                      : 'mx-auto max-w-2xl font-thai text-[clamp(1.08rem,1.6vw,1.3rem)] leading-[1.95] text-[#17324d]/85'
                 }
               >
                 {line}
@@ -70,7 +81,8 @@ export function Scene12Letter() {
             );
           })}
         </div>
-        <motion.footer initial={reduced ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1.5 }} className="relative mt-28 text-center">
+        </div>
+        <motion.footer initial={reduced ? false : { opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1.5 }} className="relative mt-16 text-center">
           <span className="mx-auto block h-16 w-px bg-gradient-to-b from-transparent via-sky-200/50 to-transparent" />
           <button
             type="button"

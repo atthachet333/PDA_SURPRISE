@@ -131,7 +131,7 @@ export function Scene11Converge() {
     return (
       <section id="converge" aria-label="Everything at once" className="px-6 py-28 text-center">
         <div ref={ref} aria-hidden="true" className="h-px" />
-        <p className="mb-10 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/55">10 · ทุกอย่างที่เราเป็น</p>
+        <p className="mb-10 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/55">15 · ทุกอย่างที่เราเป็น</p>
         <div className="mx-auto grid max-w-2xl grid-cols-6 gap-1.5">
           {cards.slice(0, 30).map((card) => (
             <span key={card.key} className="ai-surface aspect-[3/4] overflow-hidden rounded-[4px]">
@@ -154,7 +154,7 @@ export function Scene11Converge() {
       <div ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[50vh]" />
 
       <div className="sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden">
-        <p className="pointer-events-none absolute top-24 z-30 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/55">10 · ทุกอย่างที่เราเป็น</p>
+        <p className="pointer-events-none absolute top-24 z-30 font-mono text-[0.5625rem] uppercase tracking-[0.3em] text-sky-100/55">15 · ทุกอย่างที่เราเป็น</p>
         {/* Light released as the glyph locks */}
         <motion.span
           aria-hidden="true"
