@@ -67,7 +67,7 @@ function PeakScene({ reduced }: { reduced: boolean }) {
         whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
         viewport={{ once: true, margin: '0px 0px -10% 0px' }}
         transition={{ duration: 1.6, ease: EASE }}
-        className="ai-peak-frame relative h-[74svh] min-h-[27rem] w-full overflow-hidden sm:h-[82svh] lg:h-[86svh] lg:min-h-0"
+        className="ai-peak-frame relative h-[74svh] min-h-[27rem] w-full overflow-hidden sm:h-[82svh] lg:left-[4vw] lg:h-[86svh] lg:min-h-0"
       >
         <motion.div style={{ y: drift }} className="absolute -inset-[4%]">
           <motion.div style={{ x: imageX, y: imageY }} className="h-full w-full">
@@ -103,7 +103,7 @@ function PeakScene({ reduced }: { reduced: boolean }) {
 
       <motion.div
         style={{ x: textX }}
-        className="relative z-10 flex flex-col justify-center px-5 pb-12 pt-7 sm:px-8 lg:-ml-[9vw] lg:py-24 lg:pl-0 lg:pr-12 xl:pr-20"
+        className="relative z-10 flex flex-col justify-center px-5 pb-12 pt-7 sm:px-8 lg:-ml-[3vw] lg:py-24 lg:pl-0 lg:pr-12 xl:pr-20"
       >
         <motion.div
           initial={reduced ? false : { opacity: 0, x: 40 }}
