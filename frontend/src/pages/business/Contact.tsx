@@ -73,7 +73,7 @@ export default function Contact() {
               </dl>
 
               {/* What happens next */}
-              <div className="mt-10 overflow-hidden rounded-panel border border-brand-400/20 bg-[linear-gradient(155deg,#063B2A,#04261B)] p-7 text-white">
+              <div className="on-dark mt-10 overflow-hidden rounded-panel border border-brand-400/20 bg-[linear-gradient(155deg,#063B2A,#04261B)] p-7 text-white">
                 <p className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-brand-300">
                   next steps
                 </p>

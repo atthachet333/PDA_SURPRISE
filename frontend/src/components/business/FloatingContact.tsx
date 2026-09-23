@@ -44,7 +44,7 @@ export function FloatingContact() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={reduced ? { opacity: 0 } : { opacity: 0, y: 12, scale: .97 }}
               transition={{ duration: reduced ? 0 : .38, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed inset-x-3 bottom-[calc(1rem+env(safe-area-inset-bottom))] max-h-[78dvh] overflow-y-auto rounded-panel border border-brand-300/20 bg-[linear-gradient(155deg,rgba(5,47,34,.98),rgba(3,22,16,.99))] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-lift-lg backdrop-blur-xl sm:absolute sm:inset-auto sm:bottom-full sm:right-0 sm:mb-3 sm:w-[22rem] sm:p-4"
+              className="fixed inset-x-3 bottom-[calc(1rem+env(safe-area-inset-bottom))] max-h-[78dvh] overflow-y-auto rounded-panel border border-brand-300/20 on-dark bg-[linear-gradient(155deg,rgba(5,47,34,.98),rgba(3,22,16,.99))] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-lift-lg backdrop-blur-xl sm:absolute sm:inset-auto sm:bottom-full sm:right-0 sm:mb-3 sm:w-[22rem] sm:p-4"
             >
               <span className="mx-auto mb-3 block h-1 w-10 rounded-pill bg-white/20 sm:hidden" />
               <div className="relative overflow-hidden rounded-card border border-brand-400/15 bg-white/[.04] p-4">
@@ -68,7 +68,7 @@ export function FloatingContact() {
           ) : null}
         </AnimatePresence>
 
-        <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? 'ปิดช่องทางติดต่อ' : 'เปิดช่องทางติดต่อ'} className="group ml-auto flex h-13 w-13 items-center justify-center gap-2.5 rounded-full border border-brand-400/35 bg-[linear-gradient(150deg,#063B2A,#031b13)] text-white shadow-lift transition-all duration-base hover:-translate-y-1 hover:border-brand-300/60 hover:shadow-brand-glow sm:h-14 sm:w-auto sm:rounded-pill sm:px-5">
+        <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? 'ปิดช่องทางติดต่อ' : 'เปิดช่องทางติดต่อ'} className="group ml-auto flex h-13 w-13 items-center justify-center gap-2.5 rounded-full border border-brand-400/35 on-dark bg-[linear-gradient(150deg,#063B2A,#031b13)] text-white shadow-lift transition-all duration-base hover:-translate-y-1 hover:border-brand-300/60 hover:shadow-brand-glow sm:h-14 sm:w-auto sm:rounded-pill sm:px-5">
           <motion.span animate={open && !reduced ? { rotate: 24 } : { rotate: 0 }} className="text-brand-300"><ContactIcon name="chat" className="h-5 w-5" /></motion.span>
           <span className={cn('hidden h-2 w-2 rounded-full bg-brand-400 shadow-brand-glow sm:block', !reduced && 'animate-status-blink')} />
           <span className="thai-display hidden text-sm font-semibold sm:inline">ติดต่อเรา</span>

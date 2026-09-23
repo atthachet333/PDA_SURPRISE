@@ -105,7 +105,7 @@ function PaperBackground() {
 function InsightVisual({ insight, compact = false }: { insight: Insight; compact?: boolean }) {
   const token = insight.image.split(':')[1]?.slice(0, 3).toUpperCase() ?? 'PDA';
   return (
-    <div className="relative h-full min-h-[11rem] overflow-hidden bg-[linear-gradient(145deg,#063B2A,#0B5137_55%,#04261B)]">
+    <div className="on-dark relative h-full min-h-[11rem] overflow-hidden bg-[linear-gradient(145deg,#063B2A,#0B5137_55%,#04261B)]">
       <span aria-hidden="true" className="absolute inset-0 opacity-60" style={{ backgroundImage: 'linear-gradient(rgba(53,201,111,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(53,201,111,.14) 1px,transparent 1px)', backgroundSize: compact ? '28px 28px' : '42px 42px' }} />
       <motion.span aria-hidden="true" className="absolute -right-12 -top-12 h-48 w-48 rounded-full border border-brand-300/25" animate={{ rotate: 360 }} transition={{ duration: 36, repeat: Infinity, ease: 'linear' }} />
       <div className="absolute inset-0 flex items-center justify-center">

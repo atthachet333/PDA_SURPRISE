@@ -10,11 +10,17 @@ import { cn } from '@/lib/cn';
 import { ProductPanel } from './ProductPanel';
 import { contactHref, solutionToContactService, solutionToSourceSystem } from '@/data/contactRouting';
 
+/*
+ * Card grounds are token gradients, not literals: a hardcoded `#fff` stays
+ * white in dark mode while the text on it turns light, which is the
+ * light-on-light half of the inversion bug. Each category keeps its tint by
+ * picking a different second stop.
+ */
 const categorySurface: Record<SolutionCategory, string> = {
-  operations: 'border-brand-200 bg-[linear-gradient(145deg,#fff,#f2faf5)]',
-  people: 'border-steel-300 bg-[linear-gradient(145deg,#fff,#f5f7f5)]',
-  revenue: 'border-brand-300/70 bg-[linear-gradient(145deg,#fff,#eef8f1)]',
-  insight: 'border-steel-300 bg-[linear-gradient(145deg,#fff,#f1f5f2)]'
+  operations: 'border-brand-200 bg-[linear-gradient(145deg,rgb(var(--c-white)),rgb(var(--c-brand-50)))]',
+  people: 'border-steel-300 bg-[linear-gradient(145deg,rgb(var(--c-white)),rgb(var(--c-steel-50)))]',
+  revenue: 'border-brand-300/70 bg-[linear-gradient(145deg,rgb(var(--c-white)),rgb(var(--c-brand-100)))]',
+  insight: 'border-steel-300 bg-[linear-gradient(145deg,rgb(var(--c-white)),rgb(var(--c-steel-100)))]'
 };
 
 function isDocumentSolution(solution: Solution) {
@@ -102,7 +108,7 @@ export function SolutionGrid({ code = '03 / INDEX' }: { code?: string } = {}) {
                   className={cn(
                     'group relative flex min-h-[31rem] flex-col overflow-hidden rounded-card border p-5 text-left shadow-soft transition duration-slow hover:-translate-y-1 hover:shadow-lift focus-visible:-translate-y-1 focus-visible:shadow-lift sm:p-6',
                     categorySurface[solution.category],
-                    isDocumentSolution(solution) && 'bg-[linear-gradient(145deg,#fff,#edf6f1)]',
+                    isDocumentSolution(solution) && 'bg-[linear-gradient(145deg,rgb(var(--c-white)),rgb(var(--c-brand-100)))]',
                     active && 'border-brand-500 ring-1 ring-brand-500/20'
                   )}
                 >

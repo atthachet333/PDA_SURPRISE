@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import {
   DEFAULT_THEME_MODE,
   THEME_MODES,
@@ -171,4 +171,72 @@ test('the Tailwind corporate scale resolves through the tokens, and A&I does not
   );
   /* A&I's palette must stay literal so the corporate theme cannot reach it. */
   assert.ok(config.includes("#7EC8FF"), 'the A&I sky primary should remain a literal');
+});
+
+/**
+ * THE REGRESSION THIS FILE EXISTS TO PREVENT
+ *
+ * A container that paints its own fixed dark colour and puts `text-white` on
+ * it is correct in light mode and broken in dark: the ground stays dark while
+ * the token behind `text-white` inverts to near-black. It is invisible in
+ * review because the light theme looks perfect.
+ *
+ * `.on-dark` pins the corporate tokens back to their light values for exactly
+ * this case. This test walks the corporate source and fails if a fixed-dark
+ * surface carrying light text forgets it.
+ */
+test('every fixed-dark surface with light text is marked on-dark', () => {
+  const roots = [
+    new URL('../src/components/business/', import.meta.url),
+    new URL('../src/pages/business/', import.meta.url)
+  ];
+  /* Dark greens and near-blacks the brand actually paints with. */
+  const DARK_LITERAL = /#0[0-9A-Fa-f]{5}|#(?:063B2A|0B5137|04261B|031b13|112538)\b|rgba?\(\s*[0-9]{1,2}\s*,\s*[0-9]{1,2}\s*,\s*[0-9]{1,2}\s*[,)]/i;
+  const offenders = [];
+  for (const dir of roots) {
+    for (const name of readdirSync(dir)) {
+      if (!name.endsWith('.tsx')) continue;
+      const file = new URL(name, dir);
+      const src = readFileSync(file, 'utf8');
+      /* Each arbitrary background value, with the class list around it. */
+      for (const m of src.matchAll(/className=\{?["'`]([^"'`]*bg-\[[^\]]*\][^"'`]*)["'`]/g)) {
+        const cls = m[1];
+        const bg = (cls.match(/bg-\[[^\]]*\]/) || [''])[0];
+        const fixedDark = DARK_LITERAL.test(bg);
+        const lightText = /\btext-white\b|\btext-brand-(100|200|300)\b/.test(cls);
+        /* A transparent accent glow is decoration, not a surface. */
+        const decorative = /transparent/.test(bg) && !/text-/.test(cls);
+        if (fixedDark && lightText && !decorative && !/\bon-dark\b/.test(cls)) {
+          offenders.push(`${name}: ${bg.slice(0, 60)}`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(offenders, [], `fixed-dark surfaces missing .on-dark:\n  ${offenders.join('\n  ')}`);
+});
+
+/**
+ * The mirror image: a hardcoded LIGHT background cannot follow the theme, so
+ * in dark mode it stays light while the text on it turns light too. Card and
+ * panel grounds must come from tokens.
+ */
+test('no corporate surface hardcodes a light background literal', () => {
+  const roots = [
+    new URL('../src/components/business/', import.meta.url),
+    new URL('../src/pages/business/', import.meta.url)
+  ];
+  const LIGHT_LITERAL = /#(?:fff|ffffff|f[0-9a-f]{5}|e[0-9a-f]{5})\b/i;
+  const offenders = [];
+  for (const dir of roots) {
+    for (const name of readdirSync(dir)) {
+      if (!name.endsWith('.tsx')) continue;
+      const src = readFileSync(new URL(name, dir), 'utf8');
+      for (const m of src.matchAll(/bg-\[[^\]]*\]/g)) {
+        /* Mocks draw miniature UI; their internals are artwork, not surfaces. */
+        if (name === 'SystemMock.tsx' || name === 'UIPreview.tsx') continue;
+        if (LIGHT_LITERAL.test(m[0])) offenders.push(`${name}: ${m[0].slice(0, 70)}`);
+      }
+    }
+  }
+  assert.deepEqual(offenders, [], `light backgrounds that cannot theme:\n  ${offenders.join('\n  ')}`);
 });

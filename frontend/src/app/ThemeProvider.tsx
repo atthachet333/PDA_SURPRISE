@@ -68,7 +68,54 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     writeStoredMode(next);
   }, []);
 
+  useStaleTokenWarning();
+
   const value = useMemo(() => ({ mode, resolved, setMode }), [mode, resolved, setMode]);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+}
+
+/**
+ * Dev-only: shout if the colour utilities are not resolving through the tokens.
+ *
+ * `tailwind.config.ts` is loaded through jiti and cached in the running dev
+ * server's module registry, so a server started before the config changed keeps
+ * emitting the OLD literal colours. The token stylesheet is plain CSS and
+ * reloads fine, which produces the nastiest possible symptom: the page
+ * background flips to dark correctly while every piece of text keeps its
+ * light-theme colour, and the site becomes unreadable with nothing in the
+ * console to explain it. Restarting vite is the fix, so the warning says so.
+ *
+ * `import.meta.env.DEV` is statically replaced with `false` in a production
+ * build, so this whole hook — probe included — is dead code and never ships.
+ */
+function useStaleTokenWarning(): void {
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    const probe = document.createElement('span');
+    probe.className = 'text-ink';
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = 'position:absolute;opacity:0;pointer-events:none';
+    document.body.appendChild(probe);
+    const painted = getComputedStyle(probe).color;
+    const token = getComputedStyle(document.body).getPropertyValue('--c-ink').trim();
+    probe.remove();
+
+    /* `--c-ink` is "r g b"; a themed utility paints exactly those channels. */
+    const expected = token.split(/\s+/).map(Number);
+    const actual = (painted.match(/\d+/g) ?? []).slice(0, 3).map(Number);
+    const agrees =
+      expected.length === 3 &&
+      actual.length === 3 &&
+      expected.every((c, i) => Math.abs(c - (actual[i] ?? NaN)) <= 1);
+
+    if (!agrees) {
+      console.error(
+        '[theme] Colour utilities are NOT resolving through the theme tokens.\n' +
+          `  --c-ink is "${token}" but .text-ink paints ${painted}.\n` +
+          '  This dev server cached an older tailwind.config.ts. Restart vite.\n' +
+          '  Until then dark mode will show light-theme text on a dark background.'
+      );
+    }
+  }, []);
 }

@@ -72,7 +72,7 @@ export default function About() {
 
             {/* The one strong visual on this page */}
             <div>
-              <blockquote className="relative overflow-hidden rounded-panel border border-brand-400/20 bg-[linear-gradient(155deg,#063B2A_0%,#0B5137_52%,#04261B_100%)] p-8 text-white sm:p-10">
+              <blockquote className="on-dark relative overflow-hidden rounded-panel border border-brand-400/20 bg-[linear-gradient(155deg,#063B2A_0%,#0B5137_52%,#04261B_100%)] p-8 text-white sm:p-10">
                 <span
                   aria-hidden="true"
                   className="absolute inset-0 opacity-50"
