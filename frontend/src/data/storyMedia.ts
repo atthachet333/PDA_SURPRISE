@@ -86,11 +86,13 @@ export const FAMILY_MEDIA = {
 } as const;
 
 /**
- * Porsche (ปอร์เช่). The owner's folder holds prenatal scans whose frames carry
- * clinic and patient text; derivatives are pending explicit owner approval, so
- * no image ships yet and the family chapter carries Porsche in words only.
+ * Porsche (ปอร์เช่). Owner-approved prenatal scans, pixel-cropped by
+ * tools/build_porsche_media.py so no clinic, name, patient id or date survives.
+ * One scan (IMG_6371, the clearest profile) leads; all four live in the archive.
  */
-export const PORSCHE_MEDIA: { src: string; alt: string }[] = [];
+export const PORSCHE_MEDIA: { src: string; alt: string }[] = [
+  { src: `${M}/archive/memory-182.webp`, alt: 'ปอร์เช่ เจ้าตัวเล็กของเรา' }
+];
 
 /** Scene 07 — the present-day payoff: one hero, two recent 2026 frames. */
 export const PRESENT_MEDIA = {

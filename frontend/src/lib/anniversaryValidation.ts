@@ -165,6 +165,20 @@ export function reportConfigInDev(): void {
   if (!import.meta.env.DEV || reported) return;
   reported = true;
 
+  /* The main track is gitignored (the owner supplies a private copy). Without
+     it the AudioManager correctly goes 'unavailable' and the story is silent,
+     which is easy to mistake for an audio regression — so say so, loudly, in
+     development only. */
+  const { musicSrc } = anniversary.audio;
+  void fetch(musicSrc, { method: 'HEAD' })
+    .then((response) => {
+      const type = response.headers.get('content-type') ?? '';
+      if (response.ok && type.startsWith('audio/')) return;
+      // eslint-disable-next-line no-console
+      console.warn(`[A&I audio] ${musicSrc} is missing — the main track will be silent. See frontend/public/audio/README.md.`);
+    })
+    .catch(() => undefined);
+
   const report = validateAnniversaryConfig();
   const blocking = report.issues.filter((issue) => issue.level !== 'info');
   if (blocking.length === 0) return;

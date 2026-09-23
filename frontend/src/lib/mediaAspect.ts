@@ -51,6 +51,7 @@ const INTRINSIC: Record<string, number> = {
   '/images/memories/archive/memory-139.webp': 900 / 1600,
   '/images/memories/archive/memory-141.webp': 900 / 1600,
   '/images/memories/archive/memory-145.webp': 900 / 1600,
+  '/images/memories/archive/memory-182.webp': 985 / 792,
   '/images/memories/funny-faces-01.webp': 900 / 1600,
   '/images/memories/fair-01.webp': 900 / 1600,
   '/images/memories/archive/memory-100.webp': 900 / 1600,

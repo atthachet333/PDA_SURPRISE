@@ -85,7 +85,7 @@ function FamilyChapter({ reduced }: { reduced: boolean }) {
             </motion.div>
           ) : null}
 
-          <PorscheLight reduced={reduced} photo={porsche} className="col-span-2 lg:col-span-3 lg:self-center" />
+          <PorscheLight reduced={reduced} photo={porsche} className="col-span-2 mt-4 lg:col-span-3 lg:mt-0 lg:self-end lg:px-2" />
         </div>
 
         <SecretCats className="mx-auto mt-10 h-12 w-full max-w-sm" />
@@ -131,32 +131,36 @@ function CatPortrait({
 }
 
 /**
- * Porsche. With owner-approved media it shows one frame inside a soft circle
- * of light; without it (the current state) it is a designed typographic beat,
- * never an empty box.
+ * Porsche. The privacy-cropped scan sits inside a circle of light, the same
+ * visual weight as the cat portraits; a soft cream/blue halo breathes behind
+ * it. Without media it falls back to the light alone, never an empty box.
  */
 function PorscheLight({ reduced, photo, className }: { reduced: boolean; photo?: { src: string; alt: string }; className?: string }) {
   return (
-    <motion.div
+    <motion.figure
       initial={reduced ? false : { opacity: 0, scale: 0.94 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: '0px 0px -8% 0px' }}
       transition={{ duration: 2, delay: 0.45, ease: EASE }}
-      className={cn('relative flex items-center gap-6 lg:flex-col lg:items-start lg:gap-5', className)}
+      className={cn('relative', className)}
     >
-      <div className="ai-porsche-orb relative aspect-square w-28 shrink-0 overflow-hidden rounded-full sm:w-32 lg:w-40">
-        {photo ? (
-          <MemoryImage photo={photo.src} alt={photo.alt} tone="navy" loading="lazy" />
-        ) : (
-          <span aria-hidden="true" className="ai-porsche-core absolute inset-0 rounded-full" />
-        )}
+      <div className="ai-porsche-float relative mx-auto w-full max-w-[19rem] lg:max-w-none">
+        <span aria-hidden="true" className="ai-porsche-halo pointer-events-none absolute -inset-[14%] rounded-full" />
+        <div className="ai-porsche-orb relative aspect-square w-full overflow-hidden rounded-full bg-black">
+          {photo ? (
+            <MemoryImage photo={photo.src} alt={photo.alt} tone="navy" loading="lazy" objectPosition="64% 48%" className="ai-porsche-scan" />
+          ) : (
+            <span aria-hidden="true" className="ai-porsche-core absolute inset-0 rounded-full" />
+          )}
+          <span aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0_0_40px_rgba(12,27,41,0.75)]" />
+        </div>
       </div>
-      <div>
+      <figcaption className="mt-6 text-center lg:text-left">
         <p className="font-mono text-[0.58rem] uppercase tracking-[0.3em] text-champagne/85">PORSCHE</p>
         <p className="thai-display mt-2 font-thai text-[clamp(1.5rem,2.3vw,2.1rem)] font-light leading-snug text-ivory">ปอร์เช่</p>
         <p className="mt-1 font-thai text-base text-champagne">เจ้าตัวเล็กของเรา</p>
-      </div>
-    </motion.div>
+      </figcaption>
+    </motion.figure>
   );
 }
 

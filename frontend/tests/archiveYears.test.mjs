@@ -12,7 +12,8 @@ import { archiveVideos, memoryVideos } from '../src/data/memoryVideos.ts';
 import { relationshipYears } from '../src/data/relationshipYears.ts';
 
 test('all established photo and video records resolve to released Year 01', () => {
-  assert.equal(memoryArchive.length, 118);
+  // 118 established photos + 4 privacy-cropped Porsche scans (memory-179..182).
+  assert.equal(memoryArchive.length, 122);
   assert.equal(archiveVideos.length, 17);
   assert.ok(memoryArchive.every((item) => item.yearId === 'year-01'));
   assert.ok(memoryVideos.every((item) => item.yearId === 'year-01'));

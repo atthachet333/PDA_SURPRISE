@@ -1874,8 +1874,19 @@
   animation: ai-float 9s ease-in-out infinite alternate;
 }
 .ai-porsche-orb {
-  box-shadow: 0 0 0 1px rgb(235 217 188 / 0.35), 0 0 60px -6px rgb(235 217 188 / 0.35);
-  animation: ai-soft-pulse 7s ease-in-out infinite alternate;
+  box-shadow: 0 0 0 1px rgb(235 217 188 / 0.4), 0 0 70px -10px rgb(235 217 188 / 0.45);
+}
+.ai-porsche-float {
+  animation: ai-float 10s ease-in-out infinite alternate;
+}
+.ai-porsche-halo {
+  background: radial-gradient(closest-side, rgb(247 241 232 / 0.32), rgb(126 200 255 / 0.14) 55%, transparent 78%);
+  filter: blur(18px);
+  animation: ai-porsche 9s ease-in-out infinite alternate;
+}
+.ai-porsche-scan {
+  filter: contrast(1.05) brightness(1.06);
+  animation: ai-breathe-slow 14s ease-in-out infinite alternate;
 }
 .ai-porsche-core {
   background: radial-gradient(circle at 50% 50%, rgb(255 250 240 / 0.95) 0 3%, rgb(235 217 188 / 0.55) 12%, rgb(126 200 255 / 0.12) 45%, transparent 70%);
@@ -2018,6 +2029,9 @@
   .ai-family-arch,
   .ai-porsche-orb,
   .ai-porsche-core,
+  .ai-porsche-float,
+  .ai-porsche-halo,
+  .ai-porsche-scan,
   .ai-present-rule,
   .ai-stats-spark,
   .ai-quiet-horizon,

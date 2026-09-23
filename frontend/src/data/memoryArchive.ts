@@ -1443,6 +1443,56 @@ const curatedMemoryArchive: CuratedArchiveItem[] = [
     'dateLabel': 'JOURNEY',
     'special': false,
     'privacy': 'safe'
+  },
+  /* Porsche (ปอร์เช่): privacy-cropped prenatal scans. The clinic, name,
+     patient id and every date were removed from the pixels before export. */
+  {
+    'id': 'memory-179',
+    'image': '/images/memories/archive/memory-179.webp',
+    'thumb': '/images/memories/archive/thumbs/memory-179.webp',
+    'width': 985,
+    'height': 792,
+    'group': 'life',
+    'groupLabel': 'เจ้าตัวเล็กของเรา',
+    'dateLabel': 'PORSCHE',
+    'special': false,
+    'privacy': 'safe-after-crop'
+  },
+  {
+    'id': 'memory-180',
+    'image': '/images/memories/archive/memory-180.webp',
+    'thumb': '/images/memories/archive/thumbs/memory-180.webp',
+    'width': 985,
+    'height': 792,
+    'group': 'life',
+    'groupLabel': 'เจ้าตัวเล็กของเรา',
+    'dateLabel': 'PORSCHE',
+    'special': false,
+    'privacy': 'safe-after-crop'
+  },
+  {
+    'id': 'memory-181',
+    'image': '/images/memories/archive/memory-181.webp',
+    'thumb': '/images/memories/archive/thumbs/memory-181.webp',
+    'width': 985,
+    'height': 792,
+    'group': 'life',
+    'groupLabel': 'เจ้าตัวเล็กของเรา',
+    'dateLabel': 'PORSCHE',
+    'special': false,
+    'privacy': 'safe-after-crop'
+  },
+  {
+    'id': 'memory-182',
+    'image': '/images/memories/archive/memory-182.webp',
+    'thumb': '/images/memories/archive/thumbs/memory-182.webp',
+    'width': 985,
+    'height': 792,
+    'group': 'life',
+    'groupLabel': 'เจ้าตัวเล็กของเรา',
+    'dateLabel': 'PORSCHE',
+    'special': false,
+    'privacy': 'safe-after-crop'
   }
 ];
 

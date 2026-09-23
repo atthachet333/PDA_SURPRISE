@@ -58,7 +58,7 @@ function PeakScene({ reduced }: { reduced: boolean }) {
       id="peak"
       ref={ref}
       onPointerMove={onPointerMove}
-      className="ai-peak relative w-full overflow-hidden lg:grid lg:min-h-[100svh] lg:grid-cols-[62fr_38fr]"
+      className="ai-peak relative w-full overflow-hidden lg:grid lg:min-h-[100svh] lg:grid-cols-[56fr_44fr]"
     >
       <span aria-hidden="true" className="ai-peak-depth pointer-events-none absolute inset-0" />
 

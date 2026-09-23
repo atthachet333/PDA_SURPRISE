@@ -3669,6 +3669,122 @@
    "runtimeLocation": "local",
    "productionStatus": "used",
    "excludedReason": null
+  },
+  {
+   "sourceFileId": null,
+   "sourceFilename": "IMG_6370.JPG",
+   "sourceFolder": "Porsche (ปอร์เช่)",
+   "mimeType": "image/jpeg",
+   "mediaType": "image",
+   "sourceBytes": 173424,
+   "dimensions": {
+    "width": 1232,
+    "height": 924
+   },
+   "captureDate": null,
+   "gpsInternal": null,
+   "sha256": "516dfed95a00ebb30d17c081592d8a44348f0da62944efe22ca3e448275d27b9",
+   "phash": null,
+   "event": "porsche-family",
+   "category": "B. STORY SUPPORT",
+   "duplicateGroup": null,
+   "privacy": "safe-after-crop",
+   "privacyNote": "prenatal scan; header/side text (clinic, name, patient id, dates) removed by pixel crop before export",
+   "ownerConfirmed": true,
+   "productionAssets": [
+    "/images/memories/archive/memory-179.webp"
+   ],
+   "thumb": "/images/memories/archive/thumbs/memory-179.webp",
+   "runtimeLocation": "local",
+   "productionStatus": "used",
+   "excludedReason": null
+  },
+  {
+   "sourceFileId": null,
+   "sourceFilename": "IMG_6369.JPG",
+   "sourceFolder": "Porsche (ปอร์เช่)",
+   "mimeType": "image/jpeg",
+   "mediaType": "image",
+   "sourceBytes": 176168,
+   "dimensions": {
+    "width": 1232,
+    "height": 924
+   },
+   "captureDate": null,
+   "gpsInternal": null,
+   "sha256": "8549a40d945bb5d3b868c237af13e45d2eeac4bc500420f5046ee205d1829e03",
+   "phash": null,
+   "event": "porsche-family",
+   "category": "B. STORY SUPPORT",
+   "duplicateGroup": null,
+   "privacy": "safe-after-crop",
+   "privacyNote": "prenatal scan; header/side text (clinic, name, patient id, dates) removed by pixel crop before export",
+   "ownerConfirmed": true,
+   "productionAssets": [
+    "/images/memories/archive/memory-180.webp"
+   ],
+   "thumb": "/images/memories/archive/thumbs/memory-180.webp",
+   "runtimeLocation": "local",
+   "productionStatus": "used",
+   "excludedReason": null
+  },
+  {
+   "sourceFileId": null,
+   "sourceFilename": "IMG_6368.JPG",
+   "sourceFolder": "Porsche (ปอร์เช่)",
+   "mimeType": "image/jpeg",
+   "mediaType": "image",
+   "sourceBytes": 171458,
+   "dimensions": {
+    "width": 1232,
+    "height": 924
+   },
+   "captureDate": null,
+   "gpsInternal": null,
+   "sha256": "94dbf1d26e2a05e829e82fc851a193af63f0c230fc4437dde89a273bd4f8d49f",
+   "phash": null,
+   "event": "porsche-family",
+   "category": "B. STORY SUPPORT",
+   "duplicateGroup": null,
+   "privacy": "safe-after-crop",
+   "privacyNote": "prenatal scan; header/side text (clinic, name, patient id, dates) removed by pixel crop before export",
+   "ownerConfirmed": true,
+   "productionAssets": [
+    "/images/memories/archive/memory-181.webp"
+   ],
+   "thumb": "/images/memories/archive/thumbs/memory-181.webp",
+   "runtimeLocation": "local",
+   "productionStatus": "used",
+   "excludedReason": null
+  },
+  {
+   "sourceFileId": null,
+   "sourceFilename": "IMG_6371.JPG",
+   "sourceFolder": "Porsche (ปอร์เช่)",
+   "mimeType": "image/jpeg",
+   "mediaType": "image",
+   "sourceBytes": 184542,
+   "dimensions": {
+    "width": 1232,
+    "height": 924
+   },
+   "captureDate": null,
+   "gpsInternal": null,
+   "sha256": "0aa363ceeae66433fb17e6a1b59d25d96f240073146110e33903589cf439b072",
+   "phash": null,
+   "event": "porsche-family",
+   "category": "B. STORY SUPPORT",
+   "duplicateGroup": null,
+   "privacy": "safe-after-crop",
+   "privacyNote": "prenatal scan; header/side text (clinic, name, patient id, dates) removed by pixel crop before export",
+   "ownerConfirmed": true,
+   "productionAssets": [
+    "/images/memories/archive/memory-182.webp"
+   ],
+   "thumb": "/images/memories/archive/thumbs/memory-182.webp",
+   "runtimeLocation": "local",
+   "productionStatus": "used",
+   "excludedReason": null
   }
  ],
  "archive": [
