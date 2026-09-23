@@ -13,7 +13,7 @@ export function FeaturedSolution({ code = '02 / FEATURED' }: { code?: string }) 
   if (!solution) return null;
 
   return (
-    <section className="sect relative overflow-hidden bg-[#f1f3ef] py-section">
+    <section className="sect sect--field relative overflow-hidden py-section">
       <span aria-hidden="true" className="sect-edge-top" />
       <Container wide className="relative">
         <div className="overflow-hidden rounded-panel border border-steel-200 bg-white shadow-lift">

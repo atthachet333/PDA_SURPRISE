@@ -1,0 +1,241 @@
+/**
+ * ============================================================================
+ * CORPORATE THEME TOKENS — one layer that flips the whole site
+ * ============================================================================
+ *
+ * WHY THE PALETTE ITSELF IS THE TOKEN LAYER
+ *   The corporate components already use the colour ramp semantically: low
+ *   `steel` numbers are surfaces, high ones are text, `white` is a card and
+ *   `ink` is body copy. There are ~560 such utilities across the site. Rather
+ *   than write a dark variant for each one, `tailwind.config.ts` points those
+ *   scale entries at the variables below and this file redefines them per
+ *   theme. Flipping `data-theme` on <html> repaints everything, and not one
+ *   component carries a `dark:` class.
+ *
+ *   Values are space-separated RGB channels, not hex, so Tailwind's
+ *   `<alpha-value>` slot keeps working: `bg-white/85` still means 85%.
+ *
+ * THE RAMP INVERTS, THE MEANING DOES NOT
+ *   In dark mode `steel-50` is the DARKEST surface and `steel-900` the
+ *   lightest text. `bg-steel-50` means "just off the page background" in both
+ *   themes and `text-steel-500` means "muted but readable" in both. That is
+ *   what makes the existing markup correct in dark without edits.
+ *
+ * SCOPING — WHY THE DARK SELECTOR IS SO SPECIFIC
+ *   `html[data-theme='dark'] body:not([data-theme='ai'])`
+ *
+ *   The `:not` is load-bearing. A&I sets `body[data-theme='ai']` and owns its
+ *   own palette; excluding it here means no corporate token can ever reach the
+ *   private experience, whatever the visitor picked on the corporate site.
+ *   Declaring dark on `body` rather than `:root` also keeps `--page-bg` out of
+ *   A&I's way — global.css still owns the light default and the A&I override.
+ *
+ * TWO ISLANDS THAT MUST NOT INVERT
+ *   1. `.sect--mesh/--deep/--immersive/--horizon`, and anything marked
+ *      `.on-dark` — surfaces that are dark green in BOTH themes by design.
+ *      Their content says `text-white` and `text-brand-100`, which has to stay
+ *      light on that green. They already read as dark mode inside the light
+ *      site. `.on-dark` is the escape hatch for a container that paints its own
+ *      fixed dark colour instead of using a `.sect--*` modifier.
+ *   2. Product screenshots. A dark theme is not a reason to invert or dim a
+ *      photograph of real software; the frame around a capture changes, the
+ *      capture does not.
+ * ============================================================================
+ */
+
+:root {
+  /* Surfaces — `white` is the card/elevated surface, not a literal colour. */
+  --c-white: 255 255 255;
+
+  /* steel: 50 = nearest the page background … 900 = strongest text */
+  --c-steel-50: 247 249 247;
+  --c-steel-100: 239 243 240;
+  --c-steel-200: 233 238 234;
+  --c-steel-300: 203 213 206;
+  /*
+   * 400–700 are TEXT weights, so every one of them clears AA on white:
+   * 4.66 / 5.67 / 7.0 / 9.9. The ramp used to start at #9AA89F (2.48:1),
+   * which put ~57 small labels below the threshold across the site. The steps
+   * stay far enough apart to keep four distinct levels of emphasis.
+   */
+  --c-steel-400: 103 121 109;
+  --c-steel-500: 90 107 96;
+  --c-steel-600: 78 92 83;
+  --c-steel-700: 56 68 60;
+  --c-steel-800: 35 44 39;
+  --c-steel-900: 20 26 22;
+
+  /* ink: primary text, and the fill of the primary (inverted) button */
+  --c-ink: 10 15 12;
+  --c-ink-soft: 18 26 21;
+  --c-ink-muted: 28 38 31;
+
+  /* brand: the green stays the green. 50–200 are tints, 400–600 are accents. */
+  --c-brand-50: 241 251 245;
+  --c-brand-100: 219 245 229;
+  --c-brand-200: 178 233 200;
+  --c-brand-300: 127 217 166;
+  --c-brand-400: 53 201 111;
+  --c-brand-500: 29 170 97;
+  --c-brand-600: 17 122 68;
+  --c-brand-700: 11 81 55;
+  --c-brand-800: 6 59 42;
+  --c-brand-900: 4 38 27;
+
+  /* Section grounds, so each `.sect--*` rule is one declaration per theme. */
+  --sect-hero:
+    radial-gradient(120% 90% at 78% 8%, rgba(29, 170, 97, 0.16) 0%, transparent 58%),
+    radial-gradient(90% 70% at 12% 96%, rgba(11, 81, 55, 0.1) 0%, transparent 62%),
+    linear-gradient(180deg, #f7f9f7 0%, #ffffff 46%, #f4f8f5 100%);
+  --sect-grid: #ffffff;
+  --sect-field: linear-gradient(180deg, #f7f9f7 0%, #eff3f0 50%, #f7f9f7 100%);
+  --sect-blueprint: linear-gradient(180deg, #ffffff 0%, #f7f9f7 100%);
+  --sect-bright: #ffffff;
+  --sect-cream:
+    radial-gradient(70% 60% at 18% 20%, rgba(53, 201, 111, 0.09) 0%, transparent 62%),
+    linear-gradient(170deg, #f6f4ec 0%, #f3f6f1 52%, #eef3ec 100%);
+  --sect-paper:
+    radial-gradient(60% 50% at 82% 18%, rgba(29, 170, 97, 0.07) 0%, transparent 62%),
+    linear-gradient(180deg, #f7f5ef 0%, #f4f4f0 100%);
+  --sect-technical:
+    radial-gradient(75% 60% at 70% 40%, rgba(29, 170, 97, 0.08) 0%, transparent 64%),
+    linear-gradient(160deg, #f4f8f6 0%, #eef4f3 55%, #f5f8f6 100%);
+
+  /* Decorative rule/grid ink, tinted to whatever the surface is. */
+  --line-ink: 6 59 42;
+  --line-strength: 0.05;
+  /* Shadows read as cast light; in dark they become depth instead. */
+  --shadow-color: 10 20 15;
+  --shadow-soft: 0 1px 2px rgb(var(--shadow-color) / 0.04), 0 8px 24px rgb(var(--shadow-color) / 0.06);
+  --shadow-lift: 0 2px 6px rgb(var(--shadow-color) / 0.05), 0 18px 48px rgb(var(--shadow-color) / 0.1);
+}
+
+/* `color-scheme` makes the browser paint scrollbars, form controls and the
+   canvas to match, which is what removes the white gap between paints. */
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/**
+ * DARK — graphite with a green cast, never pure black and never neon.
+ *
+ * Surfaces climb #0E1311 → #151B18 → #1D2622 so a card reads as lifted
+ * without a border doing all the work. Text tops out at #E9EFEB rather than
+ * pure white: full-contrast white on near-black vibrates at body sizes.
+ *
+ * The greens move UP the ramp rather than sideways. `brand-600` is a
+ * comfortable accent on white but only ~2.4:1 on #151B18, so in dark the
+ * 500–800 slots take the lighter greens, and the tints (50–300) become deep
+ * desaturated green-greys that still read as "brand-tinted panel".
+ */
+:root[data-theme='dark'] body:not([data-theme='ai']) {
+  --c-white: 21 27 24;
+
+  --c-steel-50: 18 23 21;
+  --c-steel-100: 29 38 34;
+  --c-steel-200: 42 52 48;
+  --c-steel-300: 62 76 69;
+  --c-steel-400: 130 147 138;
+  --c-steel-500: 160 176 167;
+  --c-steel-600: 186 199 191;
+  --c-steel-700: 208 218 212;
+  --c-steel-800: 226 233 229;
+  --c-steel-900: 238 244 240;
+
+  --c-ink: 233 239 235;
+  --c-ink-soft: 214 223 218;
+  --c-ink-muted: 190 202 195;
+
+  --c-brand-50: 17 34 26;
+  --c-brand-100: 23 50 37;
+  --c-brand-200: 30 70 50;
+  --c-brand-300: 42 102 72;
+  --c-brand-400: 60 206 118;
+  --c-brand-500: 82 216 134;
+  --c-brand-600: 116 228 158;
+  --c-brand-700: 158 238 187;
+  --c-brand-800: 202 246 217;
+  --c-brand-900: 230 251 238;
+
+  --page-bg: #0e1311;
+  --page-fg: #e9efeb;
+
+  --sect-hero:
+    radial-gradient(120% 90% at 78% 8%, rgba(53, 201, 111, 0.14) 0%, transparent 58%),
+    radial-gradient(90% 70% at 12% 96%, rgba(11, 81, 55, 0.22) 0%, transparent 62%),
+    linear-gradient(180deg, #101614 0%, #0e1311 46%, #121917 100%);
+  --sect-grid: #0e1311;
+  --sect-field: linear-gradient(180deg, #101614 0%, #141b18 50%, #101614 100%);
+  --sect-blueprint: linear-gradient(180deg, #0e1311 0%, #121917 100%);
+  --sect-bright: #0e1311;
+  --sect-cream:
+    radial-gradient(70% 60% at 18% 20%, rgba(53, 201, 111, 0.1) 0%, transparent 62%),
+    linear-gradient(170deg, #131917 0%, #121917 52%, #101614 100%);
+  --sect-paper:
+    radial-gradient(60% 50% at 82% 18%, rgba(29, 170, 97, 0.09) 0%, transparent 62%),
+    linear-gradient(180deg, #121917 0%, #101614 100%);
+  --sect-technical:
+    radial-gradient(75% 60% at 70% 40%, rgba(29, 170, 97, 0.1) 0%, transparent 64%),
+    linear-gradient(160deg, #101715 0%, #131b19 55%, #101614 100%);
+
+  /* Rules read as faint light on dark, not ink on paper. */
+  --line-ink: 168 208 188;
+  --line-strength: 0.08;
+  --shadow-color: 0 0 0;
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.36);
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.45), 0 18px 48px rgb(0 0 0 / 0.5);
+}
+
+/**
+ * ISLAND — surfaces that are dark green in BOTH themes.
+ *
+ * `.on-dark` marks a container that paints its own fixed dark colour (the
+ * footer's #031b13, the About stat panel's #04261B) rather than using a
+ * `.sect--*` modifier. Without it those keep their dark ground while the text
+ * on top inverts to dark — the one failure mode this whole file exists to make
+ * impossible.
+ *
+ * Listed twice on purpose. The first selector carries enough specificity to
+ * out-rank the dark block above (which is `html[attr] body:not([attr])`); the
+ * second covers light mode, where it only has to beat `:root`.
+ */
+:root[data-theme='dark']
+  body:not([data-theme='ai'])
+  :is(.sect--mesh, .sect--deep, .sect--immersive, .sect--horizon, .on-dark),
+:root :is(.sect--mesh, .sect--deep, .sect--immersive, .sect--horizon, .on-dark) {
+  /*
+   * EVERY corporate token, not a subset. Leaving one out is invisible until a
+   * component happens to use it: `--c-brand-900` was missing here at first, so
+   * a `bg-brand-900` panel inside `.sect--mesh` took the dark theme's
+   * near-white value and rendered white text on a white card.
+   */
+  --c-white: 255 255 255;
+  --c-ink: 10 15 12;
+  --c-ink-soft: 18 26 21;
+  --c-ink-muted: 28 38 31;
+  --c-steel-50: 247 249 247;
+  --c-steel-100: 239 243 240;
+  --c-steel-200: 233 238 234;
+  --c-steel-300: 203 213 206;
+  --c-steel-400: 154 168 159;
+  --c-steel-500: 104 120 110;
+  --c-steel-600: 78 92 83;
+  --c-steel-700: 56 68 60;
+  --c-steel-800: 35 44 39;
+  --c-steel-900: 20 26 22;
+  --c-brand-50: 241 251 245;
+  --c-brand-100: 219 245 229;
+  --c-brand-200: 178 233 200;
+  --c-brand-300: 127 217 166;
+  --c-brand-400: 53 201 111;
+  --c-brand-500: 29 170 97;
+  --c-brand-600: 17 122 68;
+  --c-brand-700: 11 81 55;
+  --c-brand-800: 6 59 42;
+  --c-brand-900: 4 38 27;
+  --line-ink: 168 208 188;
+}

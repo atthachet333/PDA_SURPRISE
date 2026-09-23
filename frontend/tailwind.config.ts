@@ -5,40 +5,52 @@ import type { Config } from 'tailwindcss';
  *  - `brand.*` / `ink.*` / `steel.*`  -> PDA BLISS corporate site
  *  - `sky.*` / `navy.*` / `ivory` ...  -> the private A&I experience
  * Nothing is shared except spacing, radii and easing so the two never bleed.
+ *
+ * THE CORPORATE SCALE IS THEMED, THE A&I SCALE IS NOT.
+ * `brand`, `ink`, `steel` and `white` resolve through CSS variables declared
+ * in `styles/theme-tokens.css`, which redefines them per `data-theme`. That is
+ * what makes dark mode a token change rather than ~560 component edits. The
+ * `<alpha-value>` slot is preserved, so `bg-white/85` and `text-ink/70` work
+ * exactly as before. A&I's palette stays literal and is pinned back to the
+ * light values inside `body[data-theme='ai']`.
  */
+/** Corporate scale entry: themed channels + working opacity modifier. */
+const themed = (name: string) => `rgb(var(--c-${name}) / <alpha-value>)`;
 const config: Config = {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
+        /* Themed — see styles/theme-tokens.css for the light and dark values. */
+        white: themed('white'),
         brand: {
-          50: '#F1FBF5',
-          100: '#DBF5E5',
-          200: '#B2E9C8',
-          300: '#7FD9A6',
-          400: '#35C96F',
-          500: '#1DAA61',
-          600: '#148A4D',
-          700: '#0B5137',
-          800: '#063B2A',
-          900: '#04261B'
+          50: themed('brand-50'),
+          100: themed('brand-100'),
+          200: themed('brand-200'),
+          300: themed('brand-300'),
+          400: themed('brand-400'),
+          500: themed('brand-500'),
+          600: themed('brand-600'),
+          700: themed('brand-700'),
+          800: themed('brand-800'),
+          900: themed('brand-900')
         },
         ink: {
-          DEFAULT: '#0A0F0C',
-          soft: '#121A15',
-          muted: '#1C261F'
+          DEFAULT: themed('ink'),
+          soft: themed('ink-soft'),
+          muted: themed('ink-muted')
         },
         steel: {
-          50: '#F7F9F7',
-          100: '#EFF3F0',
-          200: '#E9EEEA',
-          300: '#CBD5CE',
-          400: '#9AA89F',
-          500: '#6E7E73',
-          600: '#4E5C53',
-          700: '#38443C',
-          800: '#232C27',
-          900: '#141A16'
+          50: themed('steel-50'),
+          100: themed('steel-100'),
+          200: themed('steel-200'),
+          300: themed('steel-300'),
+          400: themed('steel-400'),
+          500: themed('steel-500'),
+          600: themed('steel-600'),
+          700: themed('steel-700'),
+          800: themed('steel-800'),
+          900: themed('steel-900')
         },
         /**
          * A&I palette. `sky.400` (#7EC8FF) is the primary and `sky.100`
@@ -129,10 +141,12 @@ const config: Config = {
         pill: '999px'
       },
       boxShadow: {
-        soft: '0 1px 2px rgba(6,59,42,0.05), 0 8px 24px -12px rgba(6,59,42,0.14)',
-        lift: '0 24px 60px -28px rgba(6,59,42,0.32)',
-        'lift-lg': '0 40px 90px -40px rgba(6,59,42,0.45)',
-        ring: '0 0 0 1px rgba(6,59,42,0.07)',
+        /* Themed: on a light page a shadow is cast light, on a dark one it is
+           depth. `--shadow-color` flips in styles/theme-tokens.css. */
+        soft: '0 1px 2px rgb(var(--shadow-color) / 0.05), 0 8px 24px -12px rgb(var(--shadow-color) / 0.14)',
+        lift: '0 24px 60px -28px rgb(var(--shadow-color) / 0.32)',
+        'lift-lg': '0 40px 90px -40px rgb(var(--shadow-color) / 0.45)',
+        ring: '0 0 0 1px rgb(var(--shadow-color) / 0.07)',
         'brand-glow': '0 0 48px -12px rgba(29,170,97,0.55)',
         'brand-inset': 'inset 0 1px 0 rgba(255,255,255,0.08)',
         // A&I glows, all built from the primary #7EC8FF.

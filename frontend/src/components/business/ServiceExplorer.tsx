@@ -117,7 +117,7 @@ export function ServiceExplorer({
                     <span
                       className={cn(
                         'font-mono text-[0.6875rem] tabular-nums transition-colors duration-base',
-                        isActive ? 'text-brand-500' : 'text-steel-300'
+                        isActive ? 'text-brand-600' : 'text-steel-400'
                       )}
                     >
                       {String(index + 1).padStart(2, '0')}
@@ -273,7 +273,7 @@ export function ServiceExplorer({
                   <span
                     className={cn(
                       'font-mono text-[0.6875rem] tabular-nums transition-colors',
-                      isOpen ? 'text-brand-500' : 'text-steel-300'
+                      isOpen ? 'text-brand-600' : 'text-steel-400'
                     )}
                   >
                     {String(index + 1).padStart(2, '0')}

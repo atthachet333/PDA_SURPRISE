@@ -57,6 +57,34 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500&family=Noto+Serif+Thai:wght@300;400;500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
     />
+    <!--
+      THEME BOOTSTRAP — runs before first paint, deliberately inline.
+
+      Reads the stored mode ('light' | 'dark' | 'system', default system) and
+      writes the resolved theme onto <html> so the very first paint is already
+      the right colour. An external module would arrive after the first frame,
+      which is exactly the white flash this exists to prevent.
+
+      Keep in step with `applyTheme` in src/lib/theme.ts — same key, same
+      attribute, same colorScheme.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('pdabliss.theme');
+          var mode = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+          var dark =
+            mode === 'dark' ||
+            (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var resolved = dark ? 'dark' : 'light';
+          document.documentElement.dataset.theme = resolved;
+          document.documentElement.style.colorScheme = resolved;
+        } catch (error) {
+          /* Blocked storage or no matchMedia: light is a safe, complete page. */
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

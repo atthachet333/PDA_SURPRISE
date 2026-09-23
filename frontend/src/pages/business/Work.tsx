@@ -252,7 +252,7 @@ function WorkCta() {
                   {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className={cn(
                     'inline-flex min-h-11 items-center gap-2 rounded-pill px-5 text-sm font-semibold transition-colors',
-                    action.primary ? 'bg-brand-500 text-white hover:bg-brand-400' : 'border border-white/25 text-white hover:border-brand-300 hover:bg-white/5'
+                    action.primary ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-white/25 text-white hover:border-brand-300 hover:bg-white/5'
                   )}
                 >
                   {action.label}

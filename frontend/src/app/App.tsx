@@ -7,6 +7,7 @@ import { CorporateCursor } from '@/components/business/CorporateCursor';
 import { FloatingContact } from '@/components/business/FloatingContact';
 import { BackToTop } from '@/components/business/BackToTop';
 import { CookieConsentProvider } from '@/app/CookieConsent';
+import { ThemeProvider } from '@/app/ThemeProvider';
 import { ErrorBoundary } from '@/app/ErrorBoundary';
 import { OrganizationSchema } from '@/components/business/OrganizationSchema';
 import { AILoader } from '@/components/surprise/AILoader';
@@ -63,9 +64,15 @@ function ScrollToTop() {
   return null;
 }
 
+/**
+ * The corporate shell. `ThemeProvider` wraps only this branch: the private
+ * routes render bare and A&I owns its own palette, so the Light/Dark/System
+ * preference is a corporate-site concept and never reaches them.
+ */
 function BusinessLayout({ children }: { children: React.ReactNode }) {
   useLenis();
   return (
+    <ThemeProvider>
     <CookieConsentProvider>
       <OrganizationSchema />
       <div className="corporate-shell flex min-h-screen flex-col">
@@ -82,6 +89,7 @@ function BusinessLayout({ children }: { children: React.ReactNode }) {
         <FloatingContact />
       </div>
     </CookieConsentProvider>
+    </ThemeProvider>
   );
 }
 

@@ -538,7 +538,7 @@ export function HrLineScreen() {
         </span>
       </div>
 
-      <div className="min-h-0 flex-1 space-y-1.5 overflow-hidden bg-[#E9EEEA] p-2">
+      <div className="min-h-0 flex-1 space-y-1.5 overflow-hidden bg-steel-200 p-2">
         <div className="w-[82%] rounded-[8px] rounded-tl-[2px] bg-white px-2 py-1.5">
           <span className="block text-[0.5rem] leading-snug text-steel-600">
             เลือกรายการที่ต้องการ

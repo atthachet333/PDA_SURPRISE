@@ -151,7 +151,7 @@ export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
                   <span
                     className={cn(
                       'font-mono text-[0.6875rem] tabular-nums transition-colors duration-base',
-                      isActive ? 'text-brand-600' : 'text-steel-300'
+                      isActive ? 'text-brand-600' : 'text-steel-400'
                     )}
                   >
                     {step.step}

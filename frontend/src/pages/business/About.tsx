@@ -125,7 +125,7 @@ export default function About() {
                 transition={{ duration: 0.6, delay: index * 0.06 }}
                 className="grid gap-4 border-b border-steel-300/60 py-9 lg:grid-cols-[4rem_minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-10"
               >
-                <span className="font-mono text-[0.6875rem] tabular-nums text-brand-500">
+                <span className="font-mono text-[0.6875rem] tabular-nums text-brand-600">
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <h3 className="thai-display text-lg font-bold text-ink sm:text-xl">
@@ -212,7 +212,7 @@ export default function About() {
             <p className="mt-5 max-w-3xl text-sm leading-7 text-brand-100/65">{aftercare.body}</p>
             <dl className="mt-10 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
               {aftercare.items.map((item) => (
-                <div key={item.label} className="bg-[#04261B] p-5">
+                <div key={item.label} className="on-dark bg-[#04261B] p-5">
                   <dt className="font-mono text-[0.5rem] uppercase tracking-[0.16em] text-brand-400">
                     {item.label}
                   </dt>

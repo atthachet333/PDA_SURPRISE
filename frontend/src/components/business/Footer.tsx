@@ -15,8 +15,13 @@ export function Footer() {
   const { scrollYProgress } = useScroll({ target: footerRef, offset: ['start end', 'end start'] });
   const wordmarkY = useTransform(scrollYProgress, [0, 1], [-14, 22]);
 
+  /*
+   * `on-dark`: the footer keeps its dark green ground in BOTH themes, so the
+   * corporate tokens stay pinned to their light values inside it. Without it
+   * the ground would stay dark while `text-white` inverted to dark.
+   */
   return (
-    <footer ref={footerRef} className="relative overflow-hidden text-white">
+    <footer ref={footerRef} className="on-dark relative overflow-hidden text-white">
       {/* A — final CTA: a distinct cinematic scene. */}
       <section className="sect sect--immersive relative overflow-hidden border-t border-brand-400/20 py-section">
         <FooterAtmosphere reduced={reduced} />

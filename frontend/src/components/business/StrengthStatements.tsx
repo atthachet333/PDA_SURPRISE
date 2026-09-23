@@ -121,7 +121,7 @@ export function StrengthStatements({ code = '08 / WHY US' }: { code?: string } =
                 >
                   {/* Wide enough that "ตรงเวลา" and "ดูแลต่อ" stay on one line. */}
                   <div className="flex items-baseline gap-3 sm:w-[12rem]">
-                    <span className="font-mono text-[0.625rem] tabular-nums text-brand-500">
+                    <span className="font-mono text-[0.625rem] tabular-nums text-brand-600">
                       {String(index + 1).padStart(2, '0')}
                     </span>
                     <span className="thai-display whitespace-nowrap text-[clamp(1.75rem,3vw,2.75rem)] font-bold leading-none text-ink">

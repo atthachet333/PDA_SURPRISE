@@ -7,6 +7,7 @@ import { ButtonLink } from '@/components/shared/Button';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useEntranceReveal } from '@/hooks/useEntranceReveal';
 import { Logo } from './Logo';
+import { ThemeToggle } from './ThemeToggle';
 
 /**
  * HEADER — transparent and open at the top, compact and frosted on scroll.
@@ -132,6 +133,9 @@ export function Header() {
 
           {/* ------------------------------------------------------ actions -- */}
           <div className="flex items-center gap-2">
+            {/* Icons only in the bar — the labels would crowd the nav. Each
+                button still carries its name for screen readers. */}
+            <ThemeToggle className="hidden lg:inline-flex" />
             <Link
               to="/login"
               className="hidden items-center gap-2 rounded-pill border border-steel-200 px-4 py-2 text-xs font-medium text-steel-600 transition-colors duration-base hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 xl:inline-flex"
@@ -202,7 +206,7 @@ export function Header() {
                 className="absolute inset-0 opacity-70"
                 style={{
                   backgroundImage:
-                    'linear-gradient(rgba(6,59,42,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.05) 1px, transparent 1px)',
+                    'linear-gradient(rgb(var(--line-ink) / var(--line-strength)) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--line-ink) / var(--line-strength)) 1px, transparent 1px)',
                   backgroundSize: '72px 72px'
                 }}
               />
@@ -237,7 +241,7 @@ export function Header() {
                           )
                         }
                       >
-                        <span className="font-mono text-[0.625rem] tabular-nums text-steel-300">
+                        <span className="font-mono text-[0.625rem] tabular-nums text-steel-400">
                           {String(index + 1).padStart(2, '0')}
                         </span>
                         <span className="thai-display text-[clamp(1.75rem,8vw,2.75rem)] font-bold">
@@ -255,6 +259,7 @@ export function Header() {
                 transition={{ duration: 0.6, delay: 0.55 }}
                 className="mt-9 flex flex-col gap-3"
               >
+                <ThemeToggle showLabels className="self-start" />
                 <ButtonLink to="/contact" size="lg">
                   {cta.primary.label}
                 </ButtonLink>

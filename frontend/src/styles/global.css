@@ -1,3 +1,8 @@
+/* The corporate light/dark token layer. `@import` has to lead the file for
+   postcss-import; it stays unlayered so its variables outrank the layered
+   defaults below, and its dark block excludes A&I by selector. */
+@import './theme-tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -1032,10 +1037,7 @@
 
   /* --- hero: deep green aurora + network ------------------------------- */
   .sect--hero {
-    background:
-      radial-gradient(120% 90% at 78% 8%, rgba(29, 170, 97, 0.16) 0%, transparent 58%),
-      radial-gradient(90% 70% at 12% 96%, rgba(11, 81, 55, 0.1) 0%, transparent 62%),
-      linear-gradient(180deg, #f7f9f7 0%, #ffffff 46%, #f4f8f5 100%);
+    background: var(--sect-hero);
   }
 
   /* --- system universe: technical mesh on near-black green ------------- */
@@ -1056,13 +1058,13 @@
 
   /* --- services: clean white grid -------------------------------------- */
   .sect--grid {
-    background: #ffffff;
+    background: var(--sect-grid);
   }
 
   .grid-lines {
     background-image:
-      linear-gradient(rgba(6, 59, 42, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(6, 59, 42, 0.05) 1px, transparent 1px);
+      linear-gradient(rgb(var(--line-ink) / var(--line-strength)) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--line-ink) / var(--line-strength)) 1px, transparent 1px);
     background-size: 96px 96px;
     mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
     -webkit-mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
@@ -1070,14 +1072,14 @@
 
   /* --- solutions: off-white moving line field -------------------------- */
   .sect--field {
-    background: linear-gradient(180deg, #f7f9f7 0%, #eff3f0 50%, #f7f9f7 100%);
+    background: var(--sect-field);
   }
 
   .field-lines {
     background-image: repeating-linear-gradient(
       100deg,
-      rgba(6, 59, 42, 0.055) 0px,
-      rgba(6, 59, 42, 0.055) 1px,
+      rgb(var(--line-ink) / var(--line-strength)) 0px,
+      rgb(var(--line-ink) / var(--line-strength)) 1px,
       transparent 1px,
       transparent 26px
     );
@@ -1094,40 +1096,34 @@
 
   /* --- process: architectural line system ------------------------------ */
   .sect--blueprint {
-    background: linear-gradient(180deg, #ffffff 0%, #f7f9f7 100%);
+    background: var(--sect-blueprint);
   }
 
   .blueprint-lines {
     background-image:
-      linear-gradient(rgba(6, 59, 42, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(6, 59, 42, 0.07) 1px, transparent 1px);
+      linear-gradient(rgb(var(--line-ink) / calc(var(--line-strength) * 0.8)) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--line-ink) / calc(var(--line-strength) * 1.4)) 1px, transparent 1px);
     background-size: 100% 48px, 25% 100%;
   }
 
   /* --- about: bright minimal ------------------------------------------- */
   .sect--bright {
-    background: #ffffff;
+    background: var(--sect-bright);
   }
 
   /* --- why us: cream with a green cast ---------------------------------- */
   .sect--cream {
-    background:
-      radial-gradient(70% 60% at 18% 20%, rgba(53, 201, 111, 0.09) 0%, transparent 62%),
-      linear-gradient(170deg, #f6f4ec 0%, #f3f6f1 52%, #eef3ec 100%);
+    background: var(--sect-cream);
   }
 
   /* --- insights: warm paper with a technical tint ----------------------- */
   .sect--paper {
-    background:
-      radial-gradient(60% 50% at 82% 18%, rgba(29, 170, 97, 0.07) 0%, transparent 62%),
-      linear-gradient(180deg, #f7f5ef 0%, #f4f4f0 100%);
+    background: var(--sect-paper);
   }
 
   /* --- tech stack: cool technical light --------------------------------- */
   .sect--technical {
-    background:
-      radial-gradient(75% 60% at 70% 40%, rgba(29, 170, 97, 0.08) 0%, transparent 64%),
-      linear-gradient(160deg, #f4f8f6 0%, #eef4f3 55%, #f5f8f6 100%);
+    background: var(--sect-technical);
   }
 
   /* --- CTA: immersive green -------------------------------------------- */
@@ -1379,8 +1375,14 @@
   }
 
   /* Oversized section code, e.g. 01 / 02 / 03. */
+  /*
+   * `brand-500` on white is 3.01:1 at this size — below AA for normal text,
+   * and these eyebrows are real content (section numbers and names), not
+   * decoration. `brand-600` carries the same green at 5.4:1. Dark sections
+   * still override it locally with `text-brand-300`.
+   */
   .section-code {
-    @apply font-mono text-[0.6875rem] tracking-[0.24em] text-brand-500;
+    @apply font-mono text-[0.6875rem] tracking-[0.24em] text-brand-600;
   }
 
   .floating-contact-position {
@@ -2069,8 +2071,8 @@
  * ---------------------------------------------------------------------- */
 .work-grid {
   background-image:
-    linear-gradient(rgb(23 50 77 / 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(23 50 77 / 0.05) 1px, transparent 1px);
+    linear-gradient(rgb(var(--line-ink) / var(--line-strength)) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--line-ink) / var(--line-strength)) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(80% 70% at 70% 30%, #000 30%, transparent 80%);
 }

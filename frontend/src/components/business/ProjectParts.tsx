@@ -127,7 +127,7 @@ export function ProjectLiveButton({ study, className }: { study: CaseStudy; clas
       href={live.href}
       target="_blank"
       rel="noopener noreferrer"
-      className={cn('inline-flex min-h-12 items-center gap-2.5 rounded-pill bg-brand-500 px-6 text-sm font-semibold text-white transition-colors hover:bg-brand-400', className)}
+      className={cn('inline-flex min-h-12 items-center gap-2.5 rounded-pill bg-brand-600 px-6 text-sm font-semibold text-white transition-colors hover:bg-brand-700', className)}
     >
       {live.label}
       <ExternalIcon />

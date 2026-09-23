@@ -174,7 +174,7 @@ export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } 
                   <span
                     className={cn(
                       'pl-3 font-mono text-[0.625rem] tabular-nums transition-colors duration-base',
-                      isActive ? 'text-brand-600' : 'text-steel-300'
+                      isActive ? 'text-brand-600' : 'text-steel-400'
                     )}
                   >
                     {String(index + 1).padStart(2, '0')}
@@ -216,7 +216,7 @@ export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } 
                   className={cn(
                     'thai-display shrink-0 snap-start rounded-pill border px-4 py-2 text-xs font-semibold transition-colors duration-base',
                     isActive
-                      ? 'border-brand-500 bg-brand-500 text-white'
+                      ? 'border-brand-600 bg-brand-600 text-white'
                       : 'border-steel-300 bg-white text-steel-600'
                   )}
                 >
