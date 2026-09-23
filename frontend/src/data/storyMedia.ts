@@ -111,6 +111,56 @@ export const PRESENT_MEDIA = {
   ordinary: `${M}/archive/memory-162.webp`
 } as const;
 
+/**
+ * Scene 11 — "ทุกอย่างที่เราเป็น". The memory constellation is a recap, drawn
+ * from the shipped, privacy-checked archive as 480px thumbnails. It prefers
+ * frames the story has not shown; the two deliberate recaps (TURR recap,
+ * registration) stay within the audit's two-use limit. `mobile` marks the
+ * smaller set shown on phones. Order interleaves eras so neighbours in the
+ * spiral are never the same kind of memory.
+ */
+export interface ConstellationItem {
+  src: string;
+  event: StoryEvent;
+  video?: boolean;
+  mobile?: boolean;
+}
+
+const T = (id: string) => `${M}/archive/thumbs/memory-${id}.webp`;
+
+export const CONSTELLATION_MEDIA: ConstellationItem[] = [
+  { src: TURR_MEDIA.recap, event: 'turr', mobile: true },
+  { src: T('172'), event: 'pattaya', mobile: true },
+  { src: T('153'), event: 'family', mobile: true },
+  { src: T('015'), event: 'wedding', mobile: true },
+  { src: T('091'), event: 'graduation', mobile: true },
+  { src: T('112'), event: 'daily', mobile: true },
+  { src: T('027'), event: 'sarika', mobile: true },
+  { src: T('180'), event: 'family', mobile: true },
+  { src: T('103'), event: 'daily', mobile: true },
+  { src: T('034'), event: 'roadtrip', mobile: true },
+  { src: T('115'), event: 'registration', mobile: true },
+  { src: T('143'), event: 'suanphueng', mobile: true },
+  { src: T('166'), event: 'family', mobile: true },
+  { src: T('163'), event: 'present', mobile: true },
+  { src: `${M}/video/living-shore.jpg`, event: 'daily', video: true },
+  { src: T('065'), event: 'chaam' },
+  { src: T('004'), event: 'wedding' },
+  { src: T('042'), event: 'daily' },
+  { src: T('132'), event: 'graduation' },
+  { src: T('168'), event: 'family' },
+  { src: T('155'), event: 'daily' },
+  { src: T('111'), event: 'daily' },
+  { src: T('050'), event: 'sarika' },
+  { src: T('012'), event: 'wedding' },
+  { src: T('126'), event: 'daily' },
+  { src: T('108'), event: 'suanphueng' },
+  { src: T('171'), event: 'family' },
+  { src: T('173'), event: 'pattaya' },
+  { src: T('146'), event: 'daily' },
+  { src: T('138'), event: 'daily' }
+];
+
 /** Canonical event of each timeline beat, keyed by the beat id. */
 const TIMELINE_EVENTS: Record<string, StoryEvent> = {
   t1: 'peak',
@@ -174,7 +224,8 @@ export function storyMediaSlots(): StorySlot[] {
     ...PORSCHE_MEDIA.map((item, index) => ({ scene: 'family', slot: `porsche-${index + 1}`, src: item.src, event: 'family' as const })),
     { scene: 'present', slot: 'hero', src: PRESENT_MEDIA.hero, event: 'present' },
     { scene: 'present', slot: 'home', src: PRESENT_MEDIA.home, event: 'present' },
-    { scene: 'present', slot: 'ordinary', src: PRESENT_MEDIA.ordinary, event: 'present' }
+    { scene: 'present', slot: 'ordinary', src: PRESENT_MEDIA.ordinary, event: 'present' },
+    ...CONSTELLATION_MEDIA.map((item, index) => ({ scene: 'constellation', slot: `star-${index + 1}`, src: item.src, event: item.event }))
   );
   return slots;
 }

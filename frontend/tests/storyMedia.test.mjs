@@ -18,13 +18,14 @@ const manifest = JSON.parse(readFileSync(new URL('../../tools/anniversary-media-
 
 /* Runtime path → source file, so a hero and its archive copy count as one. */
 const SOURCE = new Map();
-for (const file of manifest.files) {
+for (const file of [...manifest.files, ...(manifest.part2?.files ?? [])]) {
   for (const path of [...(file.productionAssets ?? []), file.thumb].filter(Boolean)) SOURCE.set(path, file.sourceFilename);
 }
 for (const clip of manifest.videoCuration) {
   if (clip.runtimeVideo) SOURCE.set(clip.runtimeVideo, clip.sourceFilename);
 }
-const sourceOf = (src) => SOURCE.get(src) ?? src;
+/* A thumbnail is the same photograph as its full archive image. */
+const sourceOf = (src) => SOURCE.get(src) ?? SOURCE.get(src.replace('/archive/thumbs/', '/archive/')) ?? src;
 
 test('every story slot points at a local file that exists', () => {
   for (const slot of storyMediaSlots()) {

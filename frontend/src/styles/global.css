@@ -1875,6 +1875,13 @@
 .ai-porsche-orb {
   box-shadow: 0 0 0 1px rgb(235 217 188 / 0.4), 0 0 70px -10px rgb(235 217 188 / 0.45);
 }
+.ai-constellation-card {
+  box-shadow: 0 18px 40px -22px rgb(2 10 18 / 0.95);
+  animation-name: ai-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
 .ai-family-moment {
   box-shadow: 0 26px 60px -34px rgb(2 10 18 / 0.95), inset 0 0 0 1px rgb(235 217 188 / 0.14);
   animation: ai-float 13s ease-in-out infinite alternate;
@@ -2037,6 +2044,7 @@
   .ai-porsche-core,
   .ai-porsche-float,
   .ai-family-moment,
+  .ai-constellation-card,
   .ai-porsche-halo,
   .ai-porsche-scan,
   .ai-present-rule,
