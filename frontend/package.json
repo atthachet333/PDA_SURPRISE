@@ -14,7 +14,7 @@
     "lint": "eslint . --max-warnings 0",
     "test:gateway-timing": "node --test --experimental-strip-types tests/gatewayTiming.test.mjs",
     "test:system-universe": "node --test --experimental-strip-types tests/systemUniverse.test.mjs",
-    "test:case-studies": "node --test --experimental-strip-types tests/caseStudies.test.mjs",
+    "test:case-studies": "tsx --test tests/caseStudies.test.mjs",
     "test:contact-flow": "tsx --test tests/contactFlow.test.mjs",
     "test:memory-videos": "tsx --test tests/memoryVideos.test.mjs",
     "test:relationship-years": "tsx --test tests/relationshipYears.test.mjs",

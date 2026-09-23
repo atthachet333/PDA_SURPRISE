@@ -15,7 +15,6 @@ import { TechDiagram } from '@/components/business/TechDiagram';
 import { InsightStrip } from '@/components/business/InsightStrip';
 import { BigCTA } from '@/components/business/BigCTA';
 import { company, cta } from '@/data/company';
-import { caseStudies } from '@/data/caseStudies';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { SectionBackdrop } from '@/components/business/SectionBackdrop';
@@ -53,7 +52,7 @@ export default function Home() {
       <SystemUniversePreview code="03 / CONNECTED" />
       <ServiceExplorer code="04 / SERVICES" showAllLink />
       <SolutionShowcase code="05 / SOLUTIONS" />
-      <WorkShowcase code="06 / WORK" items={caseStudies.filter((study) => study.featured).slice(0, 3)} showAllLink />
+      <WorkShowcase code="06 / WORK" showAllLink />
       <ProcessPath code="07 / PROCESS" />
       <StrengthStatements code="08 / WHY US" />
       <VerifiedMetrics code="09 / NUMBERS" />

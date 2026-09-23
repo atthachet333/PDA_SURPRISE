@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { BigCTA } from '@/components/business/BigCTA';
 import { CaseStudyFlow } from '@/components/business/CaseStudyFlow';
 import { CaseStudyVisual } from '@/components/business/CaseStudyVisual';
+import { ProjectAccessNote, ProjectLiveButton, ProjectTags, ProjectVisual } from '@/components/business/ProjectParts';
 import { SectionBackdrop } from '@/components/business/SectionBackdrop';
 import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { Container } from '@/components/shared/Layout';
@@ -24,7 +25,7 @@ export default function WorkDetail() {
   const study = slug ? getCaseStudy(slug) : undefined;
   const meta = useMemo<PageMeta>(() => study ? {
     title: `${study.title} — PDA BLISS`,
-    description: `${study.subtitle} อ่านปัญหา แนวทางออกแบบ Workflow และผลลัพธ์เชิงการทำงานของระบบ`,
+    description: `${study.subtitle} — ${study.delivered}`,
     path: `/work/${study.slug}`
   } : pageMeta.work, [study]);
   usePageMeta(meta);
@@ -46,17 +47,20 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
       <section className="sect sect--deep relative overflow-hidden pb-16 pt-32 text-white sm:pb-20 sm:pt-40">
         <SectionBackdrop variant="mesh-dark" pointer />
         <Container wide className="relative">
-          <Link to="/work" className="group inline-flex min-h-11 items-center gap-2 text-sm text-brand-100/60 transition-colors hover:text-white"><ArrowIcon className="rotate-180 transition-transform group-hover:-translate-x-1" />กลับไปหน้า Case Studies</Link>
+          <Link to="/work" className="group inline-flex min-h-11 items-center gap-2 text-sm text-brand-100/60 transition-colors hover:text-white"><ArrowIcon className="rotate-180 transition-transform group-hover:-translate-x-1" />กลับไปหน้าผลงาน</Link>
           <div className="mt-8 grid items-end gap-10 lg:grid-cols-[minmax(0,.9fr)_minmax(22rem,.7fr)] lg:gap-16">
             <div>
               <div className="flex flex-wrap items-center gap-2"><span className="rounded-pill border border-brand-400/30 px-3 py-1 font-mono text-[.58rem] tracking-[.14em] text-brand-300">{caseStudyStatusLabels[study.status]}</span><span className="text-xs text-brand-100/50">{category}</span></div>
               <h1 className="thai-display mt-6 max-w-4xl text-mega font-bold">{study.title}</h1>
               <p className="mt-6 max-w-2xl text-lead text-brand-100/75">{study.subtitle}</p>
               <p className="mt-5 max-w-2xl text-sm leading-relaxed text-brand-100/55">ระบบนี้แก้โจทย์อะไร: {study.problem}</p>
+              <ProjectTags tags={study.tags} className="mt-6" />
+              <div className="mt-7 flex flex-wrap items-center gap-4">
+                <ProjectLiveButton study={study} />
+                <ProjectAccessNote study={study} className="text-brand-100/60" />
+              </div>
             </div>
-            <div className="overflow-hidden rounded-panel border border-brand-400/20 bg-white shadow-lift-lg">
-              <div className="aspect-[16/10]"><CaseStudyVisual kind={study.visual} /></div>
-            </div>
+            <ProjectVisual study={study} priority className="shadow-lift-lg" />
           </div>
         </Container>
       </section>
@@ -112,9 +116,9 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)] lg:gap-16">
             <div>
               <p className="section-code text-brand-300">05 / SYSTEM VIEW</p>
-              {reviewedScreens.length ? <div className="mt-7 grid gap-4 sm:grid-cols-2">{reviewedScreens.map((screen) => <figure key={screen.src} className="overflow-hidden rounded-panel border border-brand-400/20 bg-brand-900"><img src={screen.src} alt={screen.alt} loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover object-top" /><figcaption className="p-4 text-xs leading-relaxed text-brand-100/60">{screen.caption}</figcaption></figure>)}</div> : <div className="mt-7 aspect-[16/9] max-w-4xl overflow-hidden rounded-panel border border-brand-400/20 bg-white shadow-lift-lg"><CaseStudyVisual kind={study.visual} /></div>}
+              {study.screenshot?.reviewed ? <div className="mt-7 max-w-4xl"><ProjectVisual study={study} /></div> : reviewedScreens.length ? <div className="mt-7 grid gap-4 sm:grid-cols-2">{reviewedScreens.map((screen) => <figure key={screen.src} className="overflow-hidden rounded-panel border border-brand-400/20 bg-brand-900"><img src={screen.src} alt={screen.alt} loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover object-top" /><figcaption className="p-4 text-xs leading-relaxed text-brand-100/60">{screen.caption}</figcaption></figure>)}</div> : <div className="mt-7 aspect-[16/9] max-w-4xl overflow-hidden rounded-panel border border-brand-400/20 bg-white shadow-lift-lg"><CaseStudyVisual kind={study.visual} /></div>}
             </div>
-            <div><p className="font-mono text-[.62rem] tracking-[.16em] text-brand-300">MEDIA POLICY</p><h2 className="thai-display mt-4 text-2xl font-bold">หน้าจอจริงจะเผยแพร่<br />เมื่อผ่าน Privacy review</h2><p className="mt-4 text-sm leading-relaxed text-brand-100/65">ขณะนี้ใช้ภาพจำลองจากโครงสร้าง UI ที่ตรวจสอบได้ เพราะหน้าจอจริงอาจมีข้อมูลพนักงาน ลูกค้า การเงิน หรือชื่อไฟล์ภายใน</p></div>
+            <div><p className="font-mono text-[.62rem] tracking-[.16em] text-brand-300">MEDIA POLICY</p>{study.screenshot?.reviewed ? <><h2 className="thai-display mt-4 text-2xl font-bold">ภาพหน้าจอจริง<br />ของโครงการนี้</h2><p className="mt-4 text-sm leading-relaxed text-brand-100/65">เป็นหน้าสาธารณะ จึงแสดงภาพจริงได้โดยไม่มีข้อมูลส่วนบุคคล</p></> : <><h2 className="thai-display mt-4 text-2xl font-bold">หน้าจอจริงจะเผยแพร่<br />เมื่อผ่าน Privacy review</h2><p className="mt-4 text-sm leading-relaxed text-brand-100/65">ขณะนี้ใช้ภาพจำลองจากโครงสร้าง UI ที่ตรวจสอบได้ เพราะหน้าจอจริงอาจมีข้อมูลพนักงาน ลูกค้า การเงิน หรือชื่อไฟล์ภายใน</p></>}</div>
           </div>
         </Container>
       </section>

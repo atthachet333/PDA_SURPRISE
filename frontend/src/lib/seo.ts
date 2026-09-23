@@ -51,9 +51,9 @@ export const pageMeta = {
     path: '/solutions'
   },
   work: {
-    title: `Case Studies${TITLE_SUFFIX}`,
+    title: `ผลงานระบบและเว็บไซต์${TITLE_SUFFIX}`,
     description:
-      'Case Study ระบบ ERP, Payroll, HR ผ่าน LINE, เอกสาร และเว็บไซต์ของ PDA BLISS พร้อมปัญหา แนวทางออกแบบ และ Workflow ที่ระบบรองรับ',
+      'ผลงานจริงของ PDA BLISS: ระบบ ERP ต้นทุนและสต็อก, Payroll, HR ผ่าน LINE, ระบบเอกสารและจัดเก็บไฟล์ และเว็บไซต์องค์กร พร้อมปัญหา สิ่งที่เราสร้าง และวิธีที่ระบบทำงาน',
     path: '/work'
   },
   insights: {

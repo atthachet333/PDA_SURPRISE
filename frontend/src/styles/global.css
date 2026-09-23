@@ -2064,6 +2064,32 @@
   }
 }
 
+/* -------------------------------------------------------------------------
+ * CORPORATE WORK / PORTFOLIO — screenshot-first, light, technical.
+ * ---------------------------------------------------------------------- */
+.work-grid {
+  background-image:
+    linear-gradient(rgb(23 50 77 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(23 50 77 / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(80% 70% at 70% 30%, #000 30%, transparent 80%);
+}
+.work-shot {
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .work-card:hover .work-shot,
+  .work-feature:hover .work-shot {
+    transform: scale(1.03);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-shot {
+    transition: none;
+    transform: none !important;
+  }
+}
+
 /* Seek control for the cinematic viewer. Deliberately plain: a thin track and
    a small handle, so the controls stay quiet under the picture rather than
    importing a media player's chrome. The 44px hit area comes from the input's

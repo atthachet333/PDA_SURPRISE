@@ -1,6 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { caseStudies } from '../src/data/caseStudies.ts';
+import { existsSync } from 'node:fs';
+import {
+  caseStudies,
+  homeWorkPreview,
+  projectLiveLink,
+  projectsForFilter,
+  workFilters
+} from '../src/data/caseStudies.ts';
+import { isSafePublicUrl } from '../src/lib/externalLinks.ts';
+import { metrics } from '../src/data/company.ts';
 import { services } from '../src/data/services.ts';
 import { businessSystems } from '../src/data/systemUniverse.ts';
 
@@ -53,4 +62,77 @@ test('screens cannot publish without privacy-review fields', () => {
     assert.ok(screen.alt.trim());
     assert.ok(screen.caption.trim());
   });
+});
+
+test('every project is filterable and filters count correctly', () => {
+  const filterIds = new Set(workFilters.map((entry) => entry.id));
+  assert.equal(projectsForFilter('all').length, caseStudies.length);
+  caseStudies.forEach((study) => {
+    assert.ok(study.filters.length > 0, `${study.slug} has no filter`);
+    study.filters.forEach((filter) => assert.ok(filterIds.has(filter), `${study.slug} uses unknown filter ${filter}`));
+  });
+  workFilters.filter((entry) => entry.id !== 'all').forEach((entry) => {
+    const expected = caseStudies.filter((study) => study.filters.includes(entry.id)).length;
+    assert.equal(projectsForFilter(entry.id).length, expected);
+  });
+});
+
+test('project cards carry the required content', () => {
+  caseStudies.forEach((study) => {
+    assert.ok(study.projectType.trim(), `${study.slug} needs a project type`);
+    assert.ok(study.delivered.trim(), `${study.slug} needs a delivered line`);
+    assert.ok(study.tags.length >= 2 && study.tags.length <= 4, `${study.slug} needs 2-4 tags`);
+  });
+  assert.equal(caseStudies.filter((study) => study.featured).length, 3);
+  assert.ok(homeWorkPreview.length >= 3 && homeWorkPreview.length <= 5);
+});
+
+test('screenshots are reviewed local files that exist', () => {
+  caseStudies.forEach((study) => {
+    if (!study.screenshot) return;
+    assert.equal(study.screenshot.reviewed, true);
+    for (const src of [study.screenshot.src, study.screenshot.srcSmall].filter(Boolean)) {
+      assert.ok(src.startsWith('/images/work/'), `${study.slug} screenshot is not local`);
+      assert.ok(existsSync(new URL(`../public${src}`, import.meta.url)), `${src} is missing`);
+    }
+  });
+});
+
+test('external URL gate rejects unsafe destinations', () => {
+  const unsafe = [
+    undefined,
+    '',
+    'http://example.co.th',
+    'https://localhost:3000',
+    'https://127.0.0.1',
+    'https://192.168.1.20/app',
+    'https://10.0.0.5',
+    'https://172.20.1.1',
+    'https://nas.local',
+    'https://intranet',
+    'https://user:pass@example.co.th',
+    'https://example.co.th/?token=abc',
+    'https://example.co.th/admin',
+    'javascript:alert(1)'
+  ];
+  unsafe.forEach((url) => assert.equal(isSafePublicUrl(url), false, `accepted ${url}`));
+  assert.equal(isSafePublicUrl('https://example.co.th/services'), true);
+});
+
+test('only public projects with a safe URL render a live link', () => {
+  caseStudies.forEach((study) => {
+    const live = projectLiveLink(study);
+    if (live) {
+      assert.equal(study.visibility, 'public');
+      assert.ok(isSafePublicUrl(study.liveUrl));
+    }
+    /* Even a mistakenly set URL must never surface on a private project. */
+    if (study.visibility !== 'public') {
+      assert.equal(projectLiveLink({ ...study, liveUrl: 'https://example.co.th' }), null);
+    }
+  });
+});
+
+test('company-level verified metrics are unchanged', () => {
+  assert.deepEqual(metrics.map((metric) => metric.value), [6, 4]);
 });
