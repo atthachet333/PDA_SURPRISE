@@ -419,6 +419,8 @@ export const anniversary = {
     { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/turr-night-recap.webp', objectPosition: '50% 45%' },
     /* OWNER_CONFIRMED ชะอำ (reference #5). */
     { id: 't7', label: '16 OCT 2025', title: 'ชะอำ', body: 'วันที่เราไปทะเลด้วยกัน', type: 'location', treatment: 'split', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
+    /* m21, OWNER_CONFIRMED IMG_5224 — the graduation day, 16 NOV 2025. */
+    { id: 't4a', label: '16 NOV 2025', title: 'วันรับปริญญา', body: 'วันสำคัญที่ไปด้วยกัน', type: 'photo', treatment: 'split', image: '/images/memories/graduation-01.webp', objectPosition: '50% 40%' },
     { id: 't4', label: '10 DEC 2025', title: 'น้ำตกสาริกา', body: 'ทริปที่นครนายก', type: 'location', treatment: 'split', location: 'นครนายก', image: '/images/memories/sarika-01.webp' },
     { id: 't5', label: '25 DEC 2025', title: 'สวนผึ้ง', body: 'ปลายปีที่ราชบุรี', type: 'location', treatment: 'split', location: 'ราชบุรี', image: '/images/memories/suanphueng-01.webp' },
     /* SP121756_26-12-68 — the motorbike trip (m25), 26 DEC 2025. */
@@ -430,7 +432,7 @@ export const anniversary = {
        pre-wedding, the ceremony, the 20 DEC decision, then registration.
        The ceremony preceded the legal registration; its date is unasserted. */
     { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp', '/images/memories/archive/memory-110.webp'] },
-    { id: 't8c', label: 'OUR WEDDING', title: 'วันแต่งงานของเรา', body: 'พิธีมงคลสมรส — ก่อนวันที่เราจดทะเบียนสมรส', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-ceremony-03.webp', images: ['/images/memories/wedding-ceremony-01.webp', '/images/memories/wedding-actual-03.webp', '/images/memories/wedding-actual-01.webp'] },
+    { id: 't8c', label: 'OUR WEDDING', title: 'วันแต่งงานของเรา', body: 'พิธีมงคลสมรส — ก่อนวันที่เราจดทะเบียนสมรส', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-ceremony-03.webp', images: ['/images/memories/wedding-ceremony-01.webp', '/images/memories/wedding-actual-03.webp', '/images/memories/wedding-actual-01.webp', '/images/memories/wedding-actual-02.webp'] },
     /* Two frames from the same afternoon (both 20 DEC 2025, 14:52). */
     { id: 't7b', label: '20 DEC 2025', title: 'วันที่เราเลือกอนาคตเดียวกัน', body: 'วันที่เราตัดสินใจจดทะเบียนสมรสด้วยกัน', type: 'photo', treatment: 'split', image: '/images/memories/marriage-decision-01.webp', images: ['/images/memories/early-days-01.webp'] },
     { id: 't8', label: '28 JUL 2026', title: 'วันจดทะเบียนสมรส', body: 'คนละวันกับพิธีแต่งงาน และเป็นอีกหนึ่งคำสัญญาของเรา', type: 'photo', treatment: 'split', image: '/images/memories/marriage-registration-safe.webp', cropMode: 'contain' }

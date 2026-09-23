@@ -28,6 +28,7 @@ export type StoryEvent =
   | 'peak'
   | 'turr'
   | 'daily'
+  | 'graduation'
   | 'roadtrip'
   | 'sarika'
   | 'suanphueng'
@@ -69,6 +70,8 @@ export const TURR_MEDIA = {
  * Captions are lines that already exist in the story data, never new claims.
  */
 export const LITTLE_MOMENTS_MEDIA = {
+  /** Archive clip 'วันที่เราทำหน้าใส่กัน' — shown muted as a moving fragment. */
+  clipId: 'living-playful',
   lead: { src: `${M}/funny-faces-01.webp`, caption: 'หน้าตาแบบที่ทำใส่กันทุกวัน' },
   reel: [
     { src: `${M}/fair-01.webp`, caption: 'งานวัด งานกาชาด และคนเยอะ ๆ' },
@@ -82,7 +85,12 @@ export const LITTLE_MOMENTS_MEDIA = {
 export const FAMILY_MEDIA = {
   hero: `${M}/cat-together-01.webp`,
   kanomtuay: `${M}/cat-01.webp`,
-  tuayfu: `${M}/cat-02.webp`
+  tuayfu: `${M}/cat-02.webp`,
+  /**
+   * Everyday frames of the household (Feb–Apr 2026). Which cat is in each is
+   * not owner-confirmed, so they carry no names — only "ชีวิตในบ้านของเรา".
+   */
+  household: [`${M}/archive/memory-152.webp`, `${M}/archive/memory-154.webp`, `${M}/archive/memory-159.webp`]
 } as const;
 
 /**
@@ -108,6 +116,7 @@ const TIMELINE_EVENTS: Record<string, StoryEvent> = {
   t1: 'peak',
   t2: 'turr',
   t7: 'chaam',
+  t4a: 'graduation',
   t4: 'sarika',
   t5: 'suanphueng',
   t5b: 'roadtrip',
@@ -161,6 +170,7 @@ export function storyMediaSlots(): StorySlot[] {
     { scene: 'family', slot: 'hero', src: FAMILY_MEDIA.hero, event: 'family' },
     { scene: 'family', slot: 'kanomtuay', src: FAMILY_MEDIA.kanomtuay, event: 'family' },
     { scene: 'family', slot: 'tuayfu', src: FAMILY_MEDIA.tuayfu, event: 'family' },
+    ...FAMILY_MEDIA.household.map((src, index) => ({ scene: 'family', slot: `household-${index + 1}`, src, event: 'family' as const })),
     ...PORSCHE_MEDIA.map((item, index) => ({ scene: 'family', slot: `porsche-${index + 1}`, src: item.src, event: 'family' as const })),
     { scene: 'present', slot: 'hero', src: PRESENT_MEDIA.hero, event: 'present' },
     { scene: 'present', slot: 'home', src: PRESENT_MEDIA.home, event: 'present' },

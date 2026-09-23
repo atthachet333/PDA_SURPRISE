@@ -102,3 +102,14 @@ test('Porsche media, when present, is only privacy-cleared local derivatives', (
     assert.equal(file.privacy, 'safe-after-crop', `${item.src} was not privacy-cropped`);
   }
 });
+
+test('journey travel stops stay in date order', () => {
+  const MONTHS = { JAN: 1, FEB: 2, MAR: 3, APR: 4, MAY: 5, JUN: 6, JUL: 7, AUG: 8, SEP: 9, OCT: 10, NOV: 11, DEC: 12 };
+  const stops = anniversary.timeline.filter((moment) => !MILESTONE_IDS.includes(moment.id) && !['t1', 't2'].includes(moment.id));
+  const keys = stops.map((moment) => {
+    const [day, month, year] = moment.label.split(' ');
+    assert.ok(MONTHS[month], `${moment.id} label is not a date: ${moment.label}`);
+    return Number(year) * 10000 + MONTHS[month] * 100 + Number(day);
+  });
+  assert.deepEqual(keys, [...keys].sort((a, b) => a - b));
+});

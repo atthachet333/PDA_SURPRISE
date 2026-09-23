@@ -6,6 +6,8 @@ import { MemoryImage } from '@/components/surprise/MemoryImage';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { usePageVisible } from '@/hooks/usePageVisible';
 import { LITTLE_MOMENTS_MEDIA } from '@/data/storyMedia';
+import { memoryVideos } from '@/data/memoryVideos';
+import { LivingMemory } from '@/components/surprise/LivingMemory';
 import { cn } from '@/lib/cn';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -19,7 +21,8 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export function Scene06Gallery() {
   const reduced = useReducedMotion();
   const pageVisible = usePageVisible();
-  const { lead, reel } = LITTLE_MOMENTS_MEDIA;
+  const { lead, reel, clipId } = LITTLE_MOMENTS_MEDIA;
+  const clip = memoryVideos.find((entry) => entry.id === clipId);
   const [active, setActive] = useState(0);
   const [held, setHeld] = useState(false);
 
@@ -47,6 +50,14 @@ export function Scene06Gallery() {
                 it drifts slowly by itself. Nothing here needs hover. */}
             <div className="relative -mx-5 mt-10 overflow-x-auto px-5 pb-2 sm:mx-0 sm:overflow-visible sm:px-0 lg:mt-14">
               <div className={cn('flex w-max gap-3 sm:w-auto sm:gap-4', reduced ? '' : 'ai-moments-drift')}>
+                {/* One fragment still moves. Muted, poster-first, played only
+                    on tap — the LivingMemory contract. */}
+                {clip ? (
+                  <div className="ai-moments-fragment relative w-[9.5rem] shrink-0 sm:w-auto sm:min-w-0 sm:flex-1">
+                    <LivingMemory clip={clip} objectPosition="50% 35%" className="aspect-[3/4]" />
+                    <span className="mt-3 block font-thai text-[0.82rem] leading-6 text-ivory">{clip.label}</span>
+                  </div>
+                ) : null}
                 {reel.map((item, index) => (
                   <button
                     key={item.src}
@@ -59,7 +70,7 @@ export function Scene06Gallery() {
                     aria-pressed={active === index}
                     aria-label={item.caption}
                     className={cn(
-                      'ai-moments-fragment group relative w-[9.5rem] shrink-0 text-left transition-[transform,opacity] duration-700 sm:w-[10.5rem] lg:w-[11rem]',
+                      'ai-moments-fragment group relative w-[9.5rem] shrink-0 text-left transition-[transform,opacity] duration-700 sm:w-auto sm:min-w-0 sm:flex-1',
                       reduced || active === index ? 'opacity-100' : 'opacity-60 hover:opacity-100',
                       index % 2 ? 'sm:translate-y-6' : ''
                     )}

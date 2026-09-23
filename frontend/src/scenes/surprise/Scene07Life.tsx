@@ -88,6 +88,26 @@ function FamilyChapter({ reduced }: { reduced: boolean }) {
           <PorscheLight reduced={reduced} photo={porsche} className="col-span-2 mt-4 lg:col-span-3 lg:mt-0 lg:self-end lg:px-2" />
         </div>
 
+        {/* Ordinary days at home. No names: which cat is in each frame is not
+            owner-confirmed, so the strip speaks for the household. */}
+        <div className="mt-14 lg:mt-20">
+          <p className="font-mono text-[0.58rem] uppercase tracking-[0.3em] text-champagne/85">AT HOME · ชีวิตในบ้านของเรา</p>
+          <div className="mt-5 grid grid-cols-3 gap-3 sm:gap-5 lg:max-w-[56rem]">
+            {FAMILY_MEDIA.household.map((src, index) => (
+              <motion.figure
+                key={src}
+                initial={reduced ? false : { opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '0px 0px -8% 0px' }}
+                transition={{ duration: 1.5, delay: index * 0.15, ease: EASE }}
+                className={cn('ai-family-moment relative aspect-[3/4] overflow-hidden', index === 1 && 'mt-6 sm:mt-10')}
+              >
+                <MemoryImage photo={src} alt="แมวของเราในวันธรรมดาที่บ้าน" tone="cream" loading="lazy" objectPosition="50% 40%" />
+              </motion.figure>
+            ))}
+          </div>
+        </div>
+
         <SecretCats className="mx-auto mt-10 h-12 w-full max-w-sm" />
       </div>
     </article>
