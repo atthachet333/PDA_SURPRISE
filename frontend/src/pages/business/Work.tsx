@@ -79,7 +79,7 @@ function WorkHero() {
                   <div key={metric.label} className="bg-white p-5">
                     <dt className="text-xs text-steel-500">{metric.label}</dt>
                     <dd className="mt-1 font-mono text-4xl font-semibold text-ink">{metric.value}</dd>
-                    <dd className="mt-1 text-[0.7rem] leading-snug text-steel-400">{metric.detail}</dd>
+                    <dd className="mt-1 text-[0.7rem] leading-snug text-steel-600">{metric.detail}</dd>
                   </div>
                 ))
               : null}
@@ -107,11 +107,11 @@ function FeaturedRow({ study, index }: { study: CaseStudy; index: number }) {
         <h3 className="thai-display mt-3 text-[clamp(1.6rem,2.6vw,2.3rem)] font-bold leading-tight text-ink">{study.title}</h3>
         <dl className="mt-6 space-y-4">
           <div>
-            <dt className="font-mono text-[0.58rem] tracking-[0.16em] text-steel-400">PROBLEM</dt>
+            <dt className="font-mono text-[0.58rem] tracking-[0.16em] text-steel-600">PROBLEM</dt>
             <dd className="mt-1 text-base leading-relaxed text-steel-700">{study.problem}</dd>
           </div>
           <div>
-            <dt className="font-mono text-[0.58rem] tracking-[0.16em] text-steel-400">WHAT WE BUILT</dt>
+            <dt className="font-mono text-[0.58rem] tracking-[0.16em] text-steel-600">WHAT WE BUILT</dt>
             <dd className="mt-1 text-base leading-relaxed text-ink">{study.delivered}</dd>
           </div>
         </dl>
@@ -154,7 +154,7 @@ function AllProjects() {
               )}
             >
               {entry.label}
-              <span className={cn('ml-2 font-mono text-[0.65rem]', filter === entry.id ? 'text-white/70' : 'text-steel-400')}>
+              <span className={cn('ml-2 font-mono text-[0.65rem]', filter === entry.id ? 'text-white/70' : 'text-steel-600')}>
                 {projectsForFilter(entry.id).length}
               </span>
             </button>

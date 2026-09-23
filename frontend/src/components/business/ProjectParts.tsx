@@ -35,7 +35,7 @@ export function ProjectVisual({
         <span className="h-2 w-2 rounded-full bg-steel-300" />
         <span className="h-2 w-2 rounded-full bg-steel-300" />
         <span className="h-2 w-2 rounded-full bg-steel-300" />
-        <span className="ml-3 truncate font-mono text-[0.55rem] tracking-[0.12em] text-steel-400">{study.projectType}</span>
+        <span className="ml-3 truncate font-mono text-[0.55rem] tracking-[0.12em] text-steel-600">{study.projectType}</span>
       </div>
       <div className="relative aspect-[16/10] overflow-hidden">
         {shot ? (
@@ -94,7 +94,7 @@ export function ProjectActions({ study, className }: { study: CaseStudy; classNa
         {caseLink.label}
         <ArrowIcon className="transition-transform duration-base group-hover/cta:translate-x-1" />
       </Link>
-      {live ? <span className="font-mono text-[0.6rem] tracking-[0.08em] text-steel-400">{live.host}</span> : null}
+      {live ? <span className="font-mono text-[0.6rem] tracking-[0.08em] text-steel-600">{live.host}</span> : null}
     </div>
   );
 }
