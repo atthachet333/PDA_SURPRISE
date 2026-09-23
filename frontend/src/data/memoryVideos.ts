@@ -72,6 +72,24 @@ const curatedMemoryVideos: CuratedMemoryVideo[] = [
     hasAudio: false,
     placement: 'life'
   },
+  /* OWNER_CONFIRMED: the night at TURR Kaset, 12 OCT 2025. The confirmed still
+     is a frame of this very story, so it doubles as the poster. Silent at the
+     source — there is no audio track to negotiate with the song. */
+  {
+    id: 'turr-night',
+    video: '/videos/memories/turr-night.mp4',
+    poster: '/images/memories/turr-night-still.webp',
+    width: 540,
+    height: 960,
+    posterWidth: 788,
+    posterHeight: 1400,
+    duration: 5.37,
+    orientation: 'portrait',
+    role: 'story',
+    label: 'คืนที่ร้าน TURR เกษตร',
+    hasAudio: false,
+    placement: 'journey'
+  },
   {
     id: 'living-playful',
     video: '/videos/memories/living-playful.mp4',

@@ -9,6 +9,17 @@ Nothing in Drive was renamed, moved, deleted or modified.
 Machine-readable manifest: [`tools/anniversary-media-curation.json`](../tools/anniversary-media-curation.json)
 Review images: `review-local/` (gitignored — never commit)
 
+## Owner truth lock — Peak vs TURR (2026-09-23, supersedes every table below)
+
+| event | still | clip | recap |
+|---|---|---|---|
+| ร้าน Peak — first meeting | `IMG_3416.HEIC` → `peak-01.webp` | — | timeline uses `IMG_3417` (`archive/memory-060.webp`, same minute) |
+| ร้าน TURR เกษตร — 12 OCT 2025 | `IMG_3479.PNG` → `turr-night-still.webp` (formerly `peak-02.webp`) | `6769b2a3….MOV` → `/videos/memories/turr-night.mp4` (silent, poster = the still) | frame of `40f120df….MOV` → `turr-night-recap.webp` |
+
+`IMG_3479` is a frame of the `6769b2a3` story (same neon sign, same burned-in caption).
+The owner confirmed both as the TURR night, overriding the earlier bystander exclusion.
+Peak and TURR never share a source; `frontend/tests/storyMedia.test.mjs` enforces it.
+
 ## Current authoritative pass — full media rebuild (2026-09-20)
 
 This section supersedes every historical count and chronology note below it.
@@ -79,8 +90,8 @@ Owner-confirmed mappings now used by the runtime:
 
 | story fact | source / treatment | runtime asset |
 |---|---|---|
-| ร้าน Peak = จุดเริ่มต้น / ร้านที่เจอกันครั้งแรก | owner-confirmed reference images #1 and #2 | `peak-01.webp`, `peak-02.webp` |
-| ร้าน TURR เกษตร = วันที่ขอคบ, 2025-10-12 | no confirmed photo; text only | none |
+| ร้าน Peak = จุดเริ่มต้น / ร้านที่เจอกันครั้งแรก | owner-confirmed reference image #1 | `peak-01.webp` *(#2 was TURR — see truth lock above)* |
+| ร้าน TURR เกษตร = วันที่ขอคบ, 2025-10-12 | *superseded:* owner-confirmed still + clip | `turr-night-still.webp`, `turr-night.mp4` |
 | สวนผึ้ง | Christmas-tree photograph | `suanphueng-01.webp` |
 | หนมถ้วย | confirmed kitten image | `cat-01.webp` |
 | ถ้วยฟู | confirmed sleeping-cat image | `cat-02.webp` |
@@ -352,7 +363,7 @@ This table reflects that corrected mapping.
 | ref | meaning | source file | status |
 |---|---|---|---|
 | 1 | **ร้าน Peak — จุดเริ่มต้น** | `IMG_3416.HEIC` | owner-confirmed; integrated as `peak-01.webp` |
-| 2 | **ร้าน Peak — จุดเริ่มต้น** | `IMG_3479.PNG` | owner-confirmed; integrated as `peak-02.webp` |
+| 2 | **ร้าน Peak — จุดเริ่มต้น** | `IMG_3479.PNG` | *superseded:* TURR, integrated as `turr-night-still.webp` |
 | 3 | **หนมถ้วย** | `IMG_2536.JPG` | integrated as `cat-01.webp` |
 | 4 | งานแต่งจริง | `24.jpg` | arrived in the 132-file refresh; integrated as `wedding-actual-01.webp` |
 | 5 | **ถ้วยฟู** | `IMG_6158.JPG` | integrated as `cat-02.webp` |
@@ -504,8 +515,8 @@ runtime data before this pass. They were checked rather than changed:
 
 | Beat | Asset | Status |
 | --- | --- | --- |
-| ร้าน Peak — ร้านที่เราเจอกันครั้งแรก | `peak-01`, `peak-02` | OWNER_CONFIRMED |
-| ร้าน TURR เกษตร — 12 OCT 2025 | *(none — text beat)* | OWNER_CONFIRMED |
+| ร้าน Peak — ร้านที่เราเจอกันครั้งแรก | `peak-01` | OWNER_CONFIRMED |
+| ร้าน TURR เกษตร — 12 OCT 2025 | `turr-night-still`, `turr-night.mp4` | OWNER_CONFIRMED (2026-09-23) |
 | พัทยา | `pattaya-01` | OWNER_CONFIRMED |
 | ชะอำ (beach beat) | `chaam-beach-02` | OWNER_CONFIRMED |
 | สวนผึ้ง | `suanphueng-01` | OWNER_CONFIRMED |

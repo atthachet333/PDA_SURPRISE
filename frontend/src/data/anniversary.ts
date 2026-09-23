@@ -327,12 +327,11 @@ export const anniversary = {
     { id: 'm16', title: 'วัดไร่แตงทอง', date: 'MEMORY 16', caption: 'วัดที่นครปฐม', location: 'นครปฐม', tags: ['family'], tone: 'champagne' },
     { id: 'm17', title: 'วัดหุบกระทิง', date: 'MEMORY 17', caption: 'วัดที่ราชบุรี', location: 'ราชบุรี', tags: ['family'], tone: 'cream' },
     { id: 'm18', title: 'ทางรถไฟ', date: 'MEMORY 18', caption: 'เดินเล่นริมทางรถไฟ', tags: ['daily'], tone: 'navy', featured: true },
-    /* The 19th place, and the one that carries the date. The dedicated 12 OCT
-       hero owns the owner-confirmed TURR nightlife frame. Peak remains the
-       distinct first meeting.
-       This later archive/recap card uses a distinct early-days portrait so
-       the same source plate is not repeated when the story looks back. */
-    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/early-days-01.webp', tags: ['daily'], tone: 'champagne', featured: true },
+    /* The 19th place, and the one that carries the date. The 12 OCT scene owns
+       the owner-confirmed TURR still and clip; this card uses a different frame
+       from the same table that night (40f120df….MOV). The former
+       `early-days-01` recap was captured on 20 DEC 2025, not at TURR. */
+    { id: 'm19', title: 'ร้าน TURR เกษตร', date: '12 OCT 2025', caption: 'วันที่เราเริ่มเป็น “เรา”', image: '/images/memories/turr-night-recap.webp', tags: ['daily'], tone: 'champagne', featured: true },
 
     /* ── MOMENTS, NOT PLACES ──────────────────────────────────────────────────
        Everything above is somewhere they went. These are things that happened,
@@ -383,9 +382,13 @@ export const anniversary = {
 
     /** A short photo essay of places with owner-confirmed images. */
     photoStories: [
-      { id: 'jp-suanphueng', label: 'สวนผึ้ง', province: 'ราชบุรี', date: '25 DEC 2025', caption: 'ปลายปีที่ราชบุรี', image: '/images/memories/suanphueng-01.webp', objectPosition: '50% 42%' },
-      { id: 'jp-peak', label: 'ร้าน Peak', date: 'จุดเริ่มต้น', caption: 'ร้านที่เราเจอกันครั้งแรก', image: '/images/memories/peak-01.webp', objectPosition: '50% 42%' },
-      { id: 'jp-sarika', label: 'น้ำตกสาริกา', province: 'นครนายก', date: '10 DEC 2025', caption: 'ทริปที่นครนายก', image: '/images/memories/sarika-01.webp' },
+      /* IMG_1746 — the Suan Phueng session; the hero frame stays on the timeline. */
+      { id: 'jp-suanphueng', label: 'สวนผึ้ง', province: 'ราชบุรี', date: '25 DEC 2025', caption: 'ปลายปีที่ราชบุรี', image: '/images/memories/archive/memory-141.webp', objectPosition: '50% 38%' },
+      /* Peak has its own scene; the essay carries Pattaya instead. IMG_7235 is
+         the same afternoon as the owner-confirmed Pattaya hero (16 min apart). */
+      { id: 'jp-pattaya', label: 'พัทยา', province: 'ชลบุรี', date: '11 JAN 2026', caption: 'ยืนรับลมด้วยกัน', image: '/images/memories/seawall-01.webp', objectPosition: '50% 40%' },
+      /* IMG_5874 — one minute before the Sarika hero the timeline uses. */
+      { id: 'jp-sarika', label: 'น้ำตกสาริกา', province: 'นครนายก', date: '10 DEC 2025', caption: 'ทริปที่นครนายก', image: '/images/memories/archive/memory-036.webp' },
       { id: 'jp-chaam', label: 'ชะอำ', province: 'เพชรบุรี', date: '16 OCT 2025', caption: 'ทะเลเพชรบุรี', image: '/images/memories/chaam-01.webp' }
     ] as JourneyPhoto[],
 
@@ -406,11 +409,13 @@ export const anniversary = {
    * invented date. Bodies say only what is true.
    */
   timeline: [
-    /* Peak opens the timeline because Peak is where the story starts. */
-    { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'fullbleed', image: '/images/memories/peak-01.webp', objectPosition: '50% 42%' },
-    /* Owner-confirmed TURR nightlife photograph from the night the
-       relationship began. Keep this exact frame on the 12 OCT hero. */
-    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/peak-02.webp', objectPosition: '50% 35%' },
+    /* Peak opens the timeline because Peak is where the story starts. The
+       Peak scene owns IMG_3416; this look-back uses IMG_3417, taken the same
+       minute at the same spot, so the hero is not repeated. */
+    { id: 't1', label: 'จุดเริ่มต้น', title: 'ร้าน Peak', body: 'ร้าน Peak — ร้านที่เราเจอกันครั้งแรก', type: 'photo', treatment: 'polaroid', image: '/images/memories/archive/memory-060.webp', objectPosition: '50% 45%' },
+    /* The 12 OCT scene owns the TURR still and clip. This recap is a second
+       moment from the same table that night — never the hero frame again. */
+    { id: 't2', label: '12 OCT 2025', title: 'วันที่เราเริ่มเป็น “เรา”', body: 'ร้าน TURR เกษตร — คืนที่ขอเธอเป็นแฟน', type: 'photo', treatment: 'date', image: '/images/memories/turr-night-recap.webp', objectPosition: '50% 45%' },
     /* The archive proves the ceremony preceded the legal registration, but the
        exact ceremony date remains unasserted. */
     { id: 't8b', label: 'PRE-WEDDING', title: 'ก่อนถึงวันนั้น', body: 'วันถ่ายภาพก่อนงานแต่ง', type: 'photo', treatment: 'stack', image: '/images/memories/wedding-01.webp', images: ['/images/memories/wedding-03.webp'] },
@@ -426,8 +431,9 @@ export const anniversary = {
        beat. Ban Pong remains a story highlight; this photograph is Cha-am. */
     { id: 't7', label: 'ชายหาด ชะอำ', title: 'วันที่เราไปทะเลด้วยกัน', body: 'ชะอำ · เพชรบุรี', type: 'photo', treatment: 'split', location: 'เพชรบุรี', image: '/images/memories/chaam-beach-02.webp', objectPosition: '50% 38%' },
     { id: 't8', label: '28 JUL 2026', title: 'วันจดทะเบียนสมรส', body: 'คนละวันกับพิธีแต่งงาน และเป็นอีกหนึ่งคำสัญญาของเรา', type: 'photo', treatment: 'split', image: '/images/memories/marriage-registration-safe.webp', cropMode: 'contain' },
-    /* Latest owner-confirmed reference #6: the present-day emotional close. */
-    { id: 't9', label: 'วันนี้', title: 'เรายังอยู่ด้วยกัน', body: 'แต่สุดท้าย เราก็ยังเลือกที่จะอยู่ข้างกัน', type: 'highlight', treatment: 'fullbleed', image: '/images/memories/together-now-01.webp', objectPosition: '50% 38%' }
+    /* The present-day close. together-now-01 now leads the Life scene, so the
+       timeline ends on a 2026 frame (13 MAR 2026) instead of repeating it. */
+    { id: 't9', label: 'วันนี้', title: 'เรายังอยู่ด้วยกัน', body: 'แต่สุดท้าย เราก็ยังเลือกที่จะอยู่ข้างกัน', type: 'highlight', treatment: 'fullbleed', image: '/images/memories/archive/memory-139.webp', objectPosition: '50% 40%' }
   ] as TimelineMoment[],
 
   // ------------------------------------------------------------- statistics --
@@ -528,7 +534,8 @@ export const anniversary = {
   /** Stable slots for the editorial photo groups used across the experience. */
   featuredMemories: [
     { id: 'featured-01', category: 'hero', intent: 'ภาพเด่นของเรื่อง — ภาพของสองคน', image: '/images/memories/shore-hands-01.webp', caption: 'วันแดดดีริมทะเล', objectPosition: '50% 40%', featured: true },
-    { id: 'featured-02', category: 'timeline', intent: 'ภาพเด่นจากช่วงเริ่มต้น', image: '/images/memories/early-days-01.webp', caption: 'ช่วงแรก ๆ ของเรา', objectPosition: '50% 35%', featured: true },
+    /* Captured 20 DEC 2025 14:52, the marriage-decision afternoon — not the early days. */
+    { id: 'featured-02', category: 'timeline', intent: 'ภาพเด่นอีกหนึ่งวันของเรา', image: '/images/memories/early-days-01.webp', caption: 'อีกหนึ่งวันของเรา', objectPosition: '50% 35%', featured: true },
     { id: 'featured-03', category: 'travel', intent: 'ภาพเด่นจากการเดินทาง', image: '/images/memories/shore-embrace-01.webp', caption: 'ริมทะเลวันนั้น', objectPosition: '50% 40%', featured: true },
     { id: 'featured-04', category: 'family', intent: 'ภาพเด่นของครอบครัว', image: '/images/memories/cat-together-01.webp', caption: 'วันว่างกับแมวของเรา', objectPosition: '50% 40%', featured: true }
   ] as ImageSlot[],

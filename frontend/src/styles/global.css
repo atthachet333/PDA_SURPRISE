@@ -1452,153 +1452,246 @@
 }
 
 /* -------------------------------------------------------------------------
- * THREE-SCENE EDITORIAL PROTOTYPE
- * Scoped to Peak, TURR and the present-day payoff. The differing durations
- * are intentional: Peak is most alive, TURR is symbolic, and today is heavy.
+ * THREE-SCENE EDITORIAL PROTOTYPE — Peak, 12 OCT and the present day.
+ * Motion hierarchy is deliberate: Peak is the liveliest (6–9s cycles), TURR
+ * is symbolic (paths, pulse, the clip itself), today is the slowest (20s+).
+ * Every animated class is listed again under reduced motion, where the scene
+ * renders its complete final composition.
  * ---------------------------------------------------------------------- */
-.ai-prototype-photo {
-  border: 1px solid rgb(235 217 188 / 0.15);
-  background: rgb(12 27 41 / 0.45);
-  box-shadow:
-    0 42px 100px -44px rgb(2 10 18 / 0.95),
-    0 0 54px -34px rgb(126 200 255 / 0.5);
+
+/* ── PEAK ── */
+.ai-peak {
+  background:
+    radial-gradient(60% 70% at 78% 40%, rgb(235 217 188 / 0.07), transparent 70%),
+    linear-gradient(180deg, rgb(9 20 34 / 0.2), rgb(9 20 34 / 0.55));
+}
+
+.ai-peak-depth {
+  background: radial-gradient(40% 55% at 30% 55%, rgb(126 200 255 / 0.1), transparent 70%);
+  animation: ai-peak-depth 9s ease-in-out infinite alternate;
+}
+
+.ai-peak-frame {
+  box-shadow: 30px 0 90px -40px rgb(2 10 18 / 0.9);
 }
 
 .ai-peak-image {
-  animation: ai-peak-breathe 10s ease-in-out infinite alternate;
+  animation: ai-peak-breathe 7s ease-in-out infinite alternate;
   will-change: transform;
 }
 
-.ai-peak-highlight {
-  background: linear-gradient(108deg, transparent 24%, rgb(247 241 232 / 0.13) 46%, transparent 66%);
-  translate: -125% 0;
-  animation: ai-peak-light-sweep 8.5s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+.ai-peak-sweep {
+  background: linear-gradient(105deg, transparent 30%, rgb(247 241 232 / 0.16) 48%, transparent 64%);
+  translate: -120% 0;
+  mix-blend-mode: soft-light;
+  animation: ai-peak-sweep 6.5s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
 
-.ai-peak-orbit {
-  animation: ai-peak-orbit-drift 14s ease-in-out infinite alternate;
+.ai-peak-title {
+  text-shadow: 0 2px 30px rgb(8 16 28 / 0.65), 0 1px 3px rgb(8 16 28 / 0.5);
 }
 
-.ai-prototype-turr {
-  background: linear-gradient(155deg, rgb(10 22 38 / 0.38), rgb(17 21 48 / 0.28));
+.ai-peak-rule {
+  animation: ai-peak-rule 6s ease-in-out infinite alternate;
 }
 
-.ai-turr-image {
-  animation: ai-turr-drift 17s ease-in-out infinite alternate;
-  will-change: transform;
+.ai-peak-dot {
+  box-shadow: 0 0 18px rgb(235 217 188 / 0.85);
+  animation: ai-peak-dot 3.2s ease-in-out infinite;
 }
 
-.ai-turr-trail {
-  stroke-dasharray: 12 10;
-  animation: ai-turr-path-flow 12s linear infinite;
+.ai-peak-index {
+  animation: ai-peak-index 8s ease-in-out infinite alternate;
 }
 
-.ai-turr-trail-two {
-  animation-direction: reverse;
-  animation-duration: 15s;
+/* ── 12 OCT / TURR ── */
+.ai-turr {
+  background: linear-gradient(160deg, rgb(12 18 38 / 0.55), rgb(24 14 44 / 0.5) 55%, rgb(10 18 34 / 0.6));
 }
 
-.ai-turr-convergence,
-.ai-turr-pulse {
-  transform-origin: center;
-  animation: ai-turr-pulse 4.8s ease-in-out infinite;
-  filter: drop-shadow(0 0 12px rgb(235 217 188 / 0.72));
-}
-
-.ai-prototype-present {
+.ai-turr-atmosphere {
   background:
-    radial-gradient(75% 64% at 34% 48%, rgb(235 217 188 / 0.08), transparent 70%),
-    linear-gradient(180deg, rgb(12 27 41 / 0.08), rgb(7 20 34 / 0.28));
+    radial-gradient(40% 50% at 74% 50%, rgb(186 84 214 / 0.28), transparent 70%),
+    radial-gradient(60% 40% at 50% 100%, rgb(120 60 170 / 0.16), transparent 75%),
+    radial-gradient(30% 40% at 18% 70%, rgb(126 200 255 / 0.08), transparent 70%);
+  animation: ai-turr-atmosphere 11s ease-in-out infinite alternate;
 }
 
-.ai-present-glow {
-  background: rgb(235 217 188 / 0.1);
-  filter: blur(90px);
-  animation: ai-present-glow 9s ease-in-out infinite alternate;
+.ai-turr-halo {
+  background: radial-gradient(closest-side, rgb(196 96 226 / 0.3), rgb(126 200 255 / 0.08) 60%, transparent);
+  filter: blur(30px);
+  animation: ai-turr-halo 7s ease-in-out infinite alternate;
+}
+
+.ai-turr-film {
+  border: 1px solid rgb(235 217 188 / 0.2);
+  box-shadow:
+    0 50px 120px -50px rgb(3 4 16 / 0.95),
+    0 0 70px -30px rgb(206 120 236 / 0.55);
+}
+
+.ai-turr-path {
+  stroke-dasharray: 26 64;
+  filter: drop-shadow(0 0 4px rgb(235 217 188 / 0.7));
+  animation: ai-turr-flow 14s linear infinite;
+}
+
+.ai-turr-path-b {
+  animation-duration: 17s;
+}
+
+.ai-turr-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ai-turr-pulse 4.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgb(235 217 188 / 0.8));
+}
+
+.ai-turr-year {
+  text-shadow: 0 0 36px rgb(206 120 236 / 0.35);
+}
+
+/* ── PRESENT DAY ── */
+.ai-present {
+  background:
+    radial-gradient(70% 60% at 30% 55%, rgb(235 200 160 / 0.09), transparent 72%),
+    linear-gradient(180deg, rgb(12 27 41 / 0.1), rgb(10 20 32 / 0.4));
+}
+
+.ai-present-warmth {
+  background: radial-gradient(45% 50% at 72% 45%, rgb(235 217 188 / 0.07), transparent 70%);
+  animation: ai-present-warmth 22s ease-in-out infinite alternate;
+}
+
+.ai-present-hero {
+  box-shadow: 0 50px 110px -50px rgb(2 10 18 / 0.95);
 }
 
 .ai-present-hero-image {
-  animation: ai-present-drift 24s ease-in-out infinite alternate;
+  animation: ai-present-drift 26s ease-in-out infinite alternate;
   will-change: transform;
 }
 
+.ai-present-breath {
+  background: rgb(235 200 160 / 0.2);
+  filter: blur(60px);
+  animation: ai-present-breath 12s ease-in-out infinite alternate;
+}
+
+.ai-present-title {
+  text-shadow: 0 2px 34px rgb(8 16 28 / 0.7), 0 1px 3px rgb(8 16 28 / 0.55);
+}
+
 .ai-present-support {
-  border: 1px solid rgb(235 217 188 / 0.12);
-  box-shadow: 0 24px 60px -36px rgb(2 10 18 / 0.95);
+  border: 1px solid rgb(235 217 188 / 0.14);
+  box-shadow: 0 26px 60px -34px rgb(2 10 18 / 0.95);
 }
 
 .ai-present-support img {
-  animation: ai-present-support-drift 19s ease-in-out infinite alternate;
+  animation: ai-present-support 21s ease-in-out infinite alternate;
   animation-delay: inherit;
   will-change: transform;
 }
 
 .ai-present-close {
-  text-shadow: 0 0 28px rgb(235 217 188 / 0.13);
+  text-shadow: 0 0 30px rgb(235 217 188 / 0.16);
+}
+
+@keyframes ai-peak-depth {
+  from { opacity: 0.55; transform: translate3d(-2%, 1%, 0); }
+  to { opacity: 1; transform: translate3d(3%, -2%, 0); }
 }
 
 @keyframes ai-peak-breathe {
-  from { transform: scale(1.015) translate3d(-0.35%, -0.25%, 0); }
-  to { transform: scale(1.065) translate3d(0.65%, 0.45%, 0); }
+  from { transform: scale(1.02) translate3d(-0.6%, -0.4%, 0); }
+  to { transform: scale(1.08) translate3d(0.8%, 0.6%, 0); }
 }
 
-@keyframes ai-peak-light-sweep {
-  0%, 18% { translate: -125% 0; opacity: 0; }
-  34% { opacity: 1; }
-  54%, 100% { translate: 125% 0; opacity: 0; }
+@keyframes ai-peak-sweep {
+  0%, 12% { translate: -120% 0; opacity: 0; }
+  30% { opacity: 1; }
+  58%, 100% { translate: 120% 0; opacity: 0; }
 }
 
-@keyframes ai-peak-orbit-drift {
-  from { transform: translate3d(-1.5rem, -0.75rem, 0) rotate(-2deg); opacity: 0.42; }
-  to { transform: translate3d(1.75rem, 1rem, 0) rotate(2deg); opacity: 0.8; }
+@keyframes ai-peak-rule {
+  from { transform: scaleX(0.72); opacity: 0.65; }
+  to { transform: scaleX(1); opacity: 1; }
 }
 
-@keyframes ai-turr-drift {
-  from { transform: scale(1.02) translate3d(0, -0.45%, 0); }
-  to { transform: scale(1.065) translate3d(-0.7%, 0.55%, 0); }
+@keyframes ai-peak-dot {
+  0%, 100% { transform: scale(0.8); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
 }
 
-@keyframes ai-turr-path-flow {
-  to { stroke-dashoffset: -176; }
+@keyframes ai-peak-index {
+  from { transform: translateY(0); opacity: 0.55; }
+  to { transform: translateY(-10px); opacity: 1; }
+}
+
+@keyframes ai-turr-atmosphere {
+  from { opacity: 0.7; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.06); }
+}
+
+@keyframes ai-turr-halo {
+  from { opacity: 0.55; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes ai-turr-flow {
+  to { stroke-dashoffset: -220; }
 }
 
 @keyframes ai-turr-pulse {
-  0%, 100% { opacity: 0.52; transform: scale(0.82); }
-  50% { opacity: 1; transform: scale(1.35); }
+  0%, 100% { opacity: 0.5; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.45); }
 }
 
-@keyframes ai-present-glow {
-  from { opacity: 0.48; transform: translate(-50%, -50%) scale(0.94); }
-  to { opacity: 0.86; transform: translate(-50%, -50%) scale(1.08); }
+@keyframes ai-present-warmth {
+  from { opacity: 0.5; transform: translate3d(-2%, 0, 0); }
+  to { opacity: 1; transform: translate3d(2%, -1%, 0); }
 }
 
 @keyframes ai-present-drift {
-  from { transform: scale(1.018) translate3d(-0.25%, -0.25%, 0); }
-  to { transform: scale(1.052) translate3d(0.4%, 0.5%, 0); }
+  from { transform: scale(1.02) translate3d(-0.3%, -0.3%, 0); }
+  to { transform: scale(1.06) translate3d(0.4%, 0.5%, 0); }
 }
 
-@keyframes ai-present-support-drift {
-  from { transform: scale(1.015) translate3d(0, -0.25%, 0); }
-  to { transform: scale(1.04) translate3d(-0.4%, 0.35%, 0); }
+@keyframes ai-present-breath {
+  from { opacity: 0.35; transform: scale(0.92); }
+  to { opacity: 0.8; transform: scale(1.06); }
+}
+
+@keyframes ai-present-support {
+  from { transform: scale(1.02) translate3d(0, -0.4%, 0); }
+  to { transform: scale(1.06) translate3d(-0.5%, 0.4%, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ai-peak-depth,
   .ai-peak-image,
-  .ai-peak-highlight,
-  .ai-peak-orbit,
-  .ai-turr-image,
-  .ai-turr-trail,
-  .ai-turr-convergence,
+  .ai-peak-sweep,
+  .ai-peak-rule,
+  .ai-peak-dot,
+  .ai-peak-index,
+  .ai-turr-atmosphere,
+  .ai-turr-halo,
+  .ai-turr-path,
   .ai-turr-pulse,
-  .ai-present-glow,
+  .ai-present-warmth,
   .ai-present-hero-image,
+  .ai-present-breath,
   .ai-present-support img {
     animation: none !important;
-    transform: none !important;
-    translate: none !important;
   }
 
-  .ai-peak-highlight {
+  .ai-peak-image,
+  .ai-present-hero-image,
+  .ai-present-support img {
+    transform: none !important;
+  }
+
+  .ai-peak-sweep {
     opacity: 0;
   }
 }

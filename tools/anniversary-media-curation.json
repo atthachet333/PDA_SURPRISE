@@ -1499,13 +1499,13 @@
    "gpsInternal": null,
    "sha256": "20a23bf40de06fe66eb834a7f1ac73ccc3839f7364b74e08f8806b02e241d098",
    "phash": "9a446d9f11f24cec",
-   "event": "unknown",
+   "event": "turr-2025-10-12",
    "category": "A. STORY HERO",
    "duplicateGroup": null,
    "privacy": "safe",
    "ownerConfirmed": true,
    "productionAssets": [
-    "/images/memories/peak-02.webp",
+    "/images/memories/turr-night-still.webp",
     "/images/memories/archive/memory-053.webp"
    ],
    "thumb": "/images/memories/archive/thumbs/memory-053.webp",
@@ -1791,7 +1791,7 @@
    },
    "sha256": "f5f632b3299033e0dea035c5af5c3f9cc2bbe1b52a67cf40edaecf965adc971e",
    "phash": "ff79f4d40088da46",
-   "event": "unknown",
+   "event": "peak-first-meeting",
    "category": "A. STORY HERO",
    "duplicateGroup": null,
    "privacy": "safe",
@@ -7075,7 +7075,7 @@
    "hasMeaningfulAudio": "OWNER_DECISION",
    "storyPlacement": null,
    "exclusionReason": "360x640 source is below shippable quality, and the bar setting is bystander-heavy",
-   "note": null
+   "note": "Same table at TURR Kaset, 12 OCT 2025. The clip stays excluded at 360x640; one frame ships as the 12 OCT recap still /images/memories/turr-night-recap.webp."
   },
   {
    "id": "memory-clip-05",
@@ -7111,34 +7111,37 @@
    "note": null
   },
   {
-   "id": null,
+   "id": "turr-night",
    "sourceFolder": "A&I Anniversary 2026",
    "sourceFilename": "6769b2a3e5a248d4833bef137f530def.MOV",
    "sourceFileId": "1hnWdr0Rk4AS0LdLZ8KBG3hKKHQZVKRkg",
    "sourceBytes": 585079,
-   "productionBytes": null,
+   "productionBytes": 679154,
    "duration": 5.37,
    "orientation": "portrait",
    "dimensions": {
     "width": 540,
     "height": 960
    },
-   "runtimeDimensions": null,
+   "runtimeDimensions": {
+    "width": 540,
+    "height": 960
+   },
    "codec": "h264",
    "sha256": "490866acd61026aa6a84f1c9b754599c4f917ec0212f37551ee00c2812478e23",
-   "privacyStatus": "excluded",
-   "role": "EXCLUDE",
+   "privacyStatus": "owner-approved",
+   "role": "story",
    "confidence": "HIGH",
-   "poster": null,
+   "poster": "/images/memories/turr-night-still.webp",
    "preview": null,
-   "runtimeVideo": null,
+   "runtimeVideo": "/videos/memories/turr-night.mp4",
    "sourceHasAudioTrack": false,
    "runtimeHasAudioTrack": false,
    "audioMeanDb": null,
    "hasMeaningfulAudio": false,
-   "storyPlacement": null,
-   "exclusionReason": "bar setting with identifiable bystanders around a private moment",
-   "note": null
+   "storyPlacement": "journey",
+   "exclusionReason": null,
+   "note": "OWNER_CONFIRMED 2026-09-23: the night at TURR Kaset, 12 OCT 2025. The confirmed still IMG_3479 is a frame of this story (same neon sign, same burned-in caption). Owner confirmation overrides the earlier bystander exclusion; source has no audio track."
   },
   {
    "id": "memory-clip-07",

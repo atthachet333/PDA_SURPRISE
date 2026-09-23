@@ -3,8 +3,10 @@ import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/Scen
 import { MemoryImage } from '@/components/surprise/MemoryImage';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { frameStyle } from '@/lib/mediaAspect';
+import { LITTLE_MOMENTS_MEDIA } from '@/data/storyMedia';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+const STRIP_ALTS = ['วันธรรมดาที่พิเศษ', 'เราในอีกวันหนึ่ง', 'ทะเลและแสงแดด'];
 
 /**
  * An editorial opening spread for the real photo story.
@@ -37,7 +39,7 @@ export function Scene06Gallery() {
         >
           <div className="aspect-[5/4] sm:aspect-[16/8] lg:aspect-[21/9]">
             <MemoryImage
-              photo="/images/memories/special-roadtrip-wide.webp"
+              photo={LITTLE_MOMENTS_MEDIA.wide}
               alt="การเดินทางด้วยกันบนถนนสายหนึ่ง"
               tone="navy"
               loading="eager"
@@ -53,14 +55,14 @@ export function Scene06Gallery() {
 
         <div className="mt-5 grid gap-5 sm:grid-cols-12 sm:items-end lg:mt-8 lg:gap-8">
           <EditorialPhoto
-            photo="/images/memories/sarika-01.webp"
+            photo={LITTLE_MOMENTS_MEDIA.sarika}
             alt="ทริปน้ำตกสาริกา"
             caption="น้ำตกสาริกา"
             className="sm:col-span-7"
             index={1}
           />
           <EditorialPhoto
-            photo="/images/memories/suanphueng-01.webp"
+            photo={LITTLE_MOMENTS_MEDIA.suanphueng}
             alt="ความทรงจำที่สวนผึ้ง"
             caption="ปลายปีที่สวนผึ้ง"
             className="sm:col-span-5 sm:mb-10"
@@ -69,11 +71,7 @@ export function Scene06Gallery() {
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-5">
-          {([
-            ['/images/memories/archive/thumbs/memory-051.webp', 'วันธรรมดาที่พิเศษ'],
-            ['/images/memories/archive/thumbs/memory-094.webp', 'เราในอีกวันหนึ่ง'],
-            ['/images/memories/archive/thumbs/memory-130.webp', 'ทะเลและแสงแดด']
-          ] as const).map(([photo, alt], index) => (
+          {LITTLE_MOMENTS_MEDIA.strip.map((photo, index) => (
             <motion.figure
               key={photo}
               initial={reduced ? false : { y: 18 }}
@@ -82,7 +80,7 @@ export function Scene06Gallery() {
               transition={{ duration: 0.9, delay: index * 0.08, ease: EASE }}
               className="aspect-[3/4] overflow-hidden even:translate-y-4 sm:even:translate-y-8"
             >
-              <MemoryImage photo={photo} alt={alt} tone="sky" loading="lazy" cropMode="cover" />
+              <MemoryImage photo={photo} alt={STRIP_ALTS[index] ?? ''} tone="sky" loading="lazy" cropMode="cover" />
             </motion.figure>
           ))}
         </div>

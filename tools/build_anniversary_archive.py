@@ -60,7 +60,7 @@ EXCLUSIONS: dict[str, tuple[str, str, str | None]] = {
 
 STORY_ASSETS = {
     "IMG_3416.HEIC": ["/images/memories/peak-01.webp"],
-    "IMG_3479.PNG": ["/images/memories/peak-02.webp"],
+    "IMG_3479.PNG": ["/images/memories/turr-night-still.webp"],
     "IMG_3555.HEIC": ["/images/memories/chaam-01.webp"],
     "IMG_3550.HEIC": ["/images/memories/chaam-beach-02.webp"],
     "IMG_3525.HEIC": ["/images/memories/chaam-shadows.webp"],
