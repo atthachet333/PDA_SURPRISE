@@ -15,6 +15,7 @@ import { TechDiagram } from '@/components/business/TechDiagram';
 import { InsightStrip } from '@/components/business/InsightStrip';
 import { BigCTA } from '@/components/business/BigCTA';
 import { company, cta } from '@/data/company';
+import { homeServicePreview } from '@/data/services';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { SectionBackdrop } from '@/components/business/SectionBackdrop';
@@ -50,7 +51,7 @@ export default function Home() {
       <KineticMarquee />
       <SystemShowreel code="02 / SYSTEMS" />
       <SystemUniversePreview code="03 / CONNECTED" />
-      <ServiceExplorer code="04 / SERVICES" showAllLink />
+      <ServiceExplorer code="04 / SERVICES" items={homeServicePreview} showAllLink />
       <SolutionShowcase code="05 / SOLUTIONS" />
       <WorkShowcase code="06 / WORK" showAllLink />
       <ProcessPath code="07 / PROCESS" />

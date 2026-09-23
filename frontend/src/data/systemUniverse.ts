@@ -108,7 +108,7 @@ export const businessSystems: readonly BusinessSystem[] = [
     category: 'data',
     connections: [],
     status: 'available-solution',
-    route: '/services#document-management',
+    route: '/services#file-management',
     icon: 'storage',
     position: { x: 35, y: 88 }
   },

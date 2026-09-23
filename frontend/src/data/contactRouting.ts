@@ -5,6 +5,7 @@ export type ContactServiceId =
   | 'web-applications'
   | 'mobile-applications'
   | 'document-management'
+  | 'file-management'
   | 'hr-line-bot'
   | 'automation'
   | 'custom-software'
@@ -12,10 +13,13 @@ export type ContactServiceId =
 
 const contactServiceIds = new Set<ContactServiceId>([
   'business-systems', 'payroll', 'websites', 'web-applications', 'mobile-applications',
-  'document-management', 'hr-line-bot', 'automation', 'custom-software', 'consulting'
+  'document-management', 'file-management', 'hr-line-bot', 'automation', 'custom-software', 'consulting'
 ]);
 const systemIds = new Set(['erp', 'payroll', 'hr-line-bot', 'documents', 'nas-files', 'webapp', 'mobile-app', 'website']);
-const caseSlugs = new Set(['erp-inventory-costing', 'payroll-monthly-control', 'hr-line-leave-approval', 'document-file-workflow', 'corporate-website-system']);
+const caseSlugs = new Set([
+  'erp-inventory-costing', 'payroll-monthly-control', 'hr-line-leave-approval', 'document-file-workflow',
+  'nas-file-storage', 'corporate-website-system', 's2-accounting-website'
+]);
 
 export function isContactServiceId(value: string | null | undefined): value is ContactServiceId {
   return Boolean(value && contactServiceIds.has(value as ContactServiceId));
@@ -23,7 +27,7 @@ export function isContactServiceId(value: string | null | undefined): value is C
 
 export const systemToContactService: Readonly<Record<string, ContactServiceId>> = {
   erp: 'business-systems', payroll: 'payroll', 'hr-line-bot': 'hr-line-bot', documents: 'document-management',
-  'nas-files': 'document-management', webapp: 'web-applications', 'mobile-app': 'mobile-applications', website: 'websites'
+  'nas-files': 'file-management', webapp: 'web-applications', 'mobile-app': 'mobile-applications', website: 'websites'
 };
 
 export const solutionToContactService: Readonly<Record<string, ContactServiceId>> = {

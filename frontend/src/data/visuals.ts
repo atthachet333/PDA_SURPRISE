@@ -121,6 +121,7 @@ export const serviceVisuals: Record<string, VisualSlot> = {
   'mobile-applications': { id: 'svc-mobile', mock: 'hrLine', label: 'mobile', titleTh: 'แอปมือถือ' },
   'hr-line-bot': { id: 'svc-hr', mock: 'hrLine', label: 'HR · LINE', titleTh: 'HR ผ่าน LINE' },
   'document-management': { id: 'svc-docs', mock: 'documents', label: 'docs', titleTh: 'ระบบเอกสาร' },
+  'file-management': { id: 'svc-files', mock: 'nas', label: 'files', titleTh: 'ไฟล์กลาง (NAS)' },
   'custom-software': { id: 'svc-custom', mock: 'workflow', label: 'workflow', titleTh: 'ระบบเฉพาะทาง' },
   'internal-tools': { id: 'svc-internal', mock: 'analytics', label: 'tools', titleTh: 'ระบบภายใน' },
   automation: { id: 'svc-auto', mock: 'workflow', label: 'automation', titleTh: 'Automation' },

@@ -5,7 +5,7 @@ import { Container } from '@/components/shared/Layout';
 import { Icon } from '@/components/shared/Icon';
 import { ArrowIcon } from '@/components/shared/Button';
 import { ProductPanel } from './ProductPanel';
-import { primaryServices, services, type Service } from '@/data/services';
+import { primaryServices, type Service } from '@/data/services';
 import { visualForService } from '@/data/visuals';
 import { SectionBackdrop } from './SectionBackdrop';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -15,7 +15,7 @@ import { contactHref, isContactServiceId } from '@/data/contactRouting';
 /**
  * SERVICES — a three-column explorer, not a card grid.
  *
- *   LEFT    01-07 numbered index; the active row expands
+ *   LEFT    numbered index; the active row expands
  *   CENTRE  Thai headline, description, deliverables
  *   RIGHT   a product visual that swaps with the selection
  *
@@ -29,7 +29,7 @@ import { contactHref, isContactServiceId } from '@/data/contactRouting';
  */
 
 interface ServiceExplorerProps {
-  /** Which services to show. Defaults to the seven primary ones. */
+  /** Which services to show. Defaults to the core catalogue. */
   items?: Service[];
   /** Section eyebrow code, e.g. '03 / SERVICES'. */
   code?: string;
@@ -44,12 +44,12 @@ export function ServiceExplorer({
   code = '03 / SERVICES',
   title = (
     <>
-      เจ็ดบริการหลัก
+      เราทำอะไร
       <br />
-      <span className="text-brand-600">ที่ธุรกิจไทยใช้งานจริง</span>
+      <span className="text-brand-600">ให้ธุรกิจคุณได้บ้าง</span>
     </>
   ),
-  lead = 'เลือกหัวข้อเพื่อดูสิ่งที่ส่งมอบและเทคโนโลยีที่ใช้ งานส่วนใหญ่ใช้หลายบริการร่วมกัน',
+  lead = 'เลือกหัวข้อเพื่อดูปัญหาที่แก้และสิ่งที่เราสร้าง งานส่วนใหญ่ใช้หลายบริการร่วมกัน',
   showAllLink = false
 }: ServiceExplorerProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -251,7 +251,7 @@ export function ServiceExplorer({
                 <span>
                   {String(activeIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
                 </span>
-                <span>{active.primary ? 'PRIMARY SERVICE' : 'CAPABILITY'}</span>
+                <span>{active.primary ? 'CORE SERVICE' : 'CAPABILITY'}</span>
               </div>
             </div>
           </div>
@@ -356,7 +356,7 @@ export function ServiceExplorer({
               to="/services"
               className="group inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-600"
             >
-              ดูบริการทั้งหมด ({services.length})
+              ดูบริการทั้งหมด ({primaryServices.length})
               <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
             </Link>
           </div>

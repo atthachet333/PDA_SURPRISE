@@ -48,11 +48,18 @@ const AnniversaryPreview = import.meta.env.DEV
   ? lazy(() => import('@/pages/surprise/AnniversaryPreview'))
   : null;
 
+/**
+ * A new route starts at the top — unless the URL names a fragment. Deep links
+ * such as `/services#payroll` (case studies, the footer menu, the System
+ * Universe) must keep the position the target page scrolls to, so resetting
+ * here would undo it a frame later.
+ */
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
+    if (hash) return;
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
-  }, [pathname]);
+  }, [pathname, hash]);
   return null;
 }
 

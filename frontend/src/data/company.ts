@@ -257,15 +257,16 @@ export const footer = {
   menuHeading: 'เมนูหลัก',
   servicesHeading: 'บริการของเรา',
   contactHeading: 'ติดต่อเรา',
-  /** Mirrors the seven primary services in data/services.ts. */
+  /** Mirrors the eight core services in data/services.ts, in selling order. */
   servicesLinks: [
     { label: 'ระบบ ERP / บริหารธุรกิจ', to: '/services#business-systems' },
     { label: 'ระบบ Payroll / เงินเดือน', to: '/services#payroll' },
-    { label: 'เว็บไซต์องค์กรและธุรกิจ', to: '/services#websites' },
+    { label: 'ระบบ HR ผ่าน LINE', to: '/services#hr-line-bot' },
+    { label: 'ระบบเอกสารและการอนุมัติ', to: '/services#document-management' },
+    { label: 'ระบบจัดเก็บไฟล์กลาง (NAS)', to: '/services#file-management' },
     { label: 'เว็บแอปพลิเคชัน', to: '/services#web-applications' },
     { label: 'แอปพลิเคชันมือถือ', to: '/services#mobile-applications' },
-    { label: 'ระบบ HR ผ่าน LINE', to: '/services#hr-line-bot' },
-    { label: 'ระบบจัดเก็บเอกสารและไฟล์', to: '/services#document-management' }
+    { label: 'เว็บไซต์องค์กรและธุรกิจ', to: '/services#websites' }
   ],
   legalLinks: [
     { label: 'นโยบายความเป็นส่วนตัว', to: '/privacy' },

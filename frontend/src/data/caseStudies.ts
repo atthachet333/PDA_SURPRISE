@@ -298,7 +298,7 @@ export const caseStudies: readonly CaseStudy[] = [
     outcomes: ['ไฟล์ขององค์กรอยู่ในที่เดียว', 'แยกสิทธิ์การเข้าถึงได้ชัดเจนขึ้น', 'ค้นคืนไฟล์ได้ง่ายขึ้น'],
     screens: [],
     relatedSystems: ['nas-files', 'documents'],
-    serviceRoute: '/services#document-management',
+    serviceRoute: '/services#file-management',
     featured: false,
     visual: 'documents',
     technicalNotes: ['React · Vite · Fastify · Prisma · MySQL', 'เก็บไฟล์บน S3-compatible object storage', 'ติดตั้งเป็นเว็บแอป (PWA) บนมือถือได้'],
