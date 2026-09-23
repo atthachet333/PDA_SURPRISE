@@ -24,6 +24,13 @@ import { cn } from '@/lib/cn';
  * with every frame and caption fully visible.
  */
 const PROLOGUE = new Set(['t1', 't2']);
+/*
+ * Reel frames load eagerly. They sit in a clipped track that only a transform
+ * moves, which is exactly where native lazy loading is least reliable across
+ * browsers — a frame could slide into view before it was ever requested and
+ * read as an empty dark card. The scene already preloads these same files, so
+ * eager costs nothing extra.
+ */
 const MOMENTS = anniversary.timeline.filter((moment) => !(MILESTONE_IDS as readonly string[]).includes(moment.id));
 const PROLOGUE_MOMENTS = MOMENTS.filter((moment) => PROLOGUE.has(moment.id));
 const STOPS = MOMENTS.filter((moment) => !PROLOGUE.has(moment.id));
@@ -152,7 +159,7 @@ function Prologue({ moment, number }: { moment: TimelineMoment; number: number }
     <figure className="relative w-[8.5rem] sm:w-[10rem] lg:w-[11.5rem]">
       <div className="ai-journey-print bg-[#f7f1e8] p-1.5 pb-6">
         <div className="aspect-[3/4] overflow-hidden">
-          <MemoryImage photo={moment.image} alt={moment.title} tone="navy" loading="lazy" objectPosition={moment.objectPosition} />
+          <MemoryImage photo={moment.image} alt={moment.title} tone="navy" loading="eager" objectPosition={moment.objectPosition} />
         </div>
       </div>
       <figcaption className="mt-3">
@@ -173,7 +180,7 @@ function Stop({ moment, number }: { moment: TimelineMoment; number: number }) {
         className={cn('ai-journey-frame relative overflow-hidden', landscape ? 'h-[min(46svh,26rem)]' : 'h-[min(52svh,30rem)]')}
         style={{ aspectRatio: landscape ? '3 / 2' : '3 / 4' }}
       >
-        <MemoryImage photo={moment.image} alt={`${moment.title} ${moment.label}`} tone="sky" loading="lazy" objectPosition={moment.objectPosition ?? '50% 45%'} className="ai-journey-image" />
+        <MemoryImage photo={moment.image} alt={`${moment.title} ${moment.label}`} tone="sky" loading="eager" objectPosition={moment.objectPosition ?? '50% 45%'} className="ai-journey-image" />
         <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0b1522]/80 to-transparent" />
         <span aria-hidden="true" className="absolute right-4 top-2 font-display text-[clamp(3rem,5vw,4.6rem)] font-light leading-none text-ivory/85">
           {String(number).padStart(2, '0')}

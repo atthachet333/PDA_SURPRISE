@@ -58,7 +58,7 @@ function PeakScene({ reduced }: { reduced: boolean }) {
       id="peak"
       ref={ref}
       onPointerMove={onPointerMove}
-      className="ai-peak relative w-full overflow-hidden lg:grid lg:min-h-[100svh] lg:grid-cols-[56fr_44fr]"
+      className="ai-peak relative w-full overflow-hidden lg:grid lg:min-h-[100svh] lg:grid-cols-[52fr_48fr] lg:items-center"
     >
       <span aria-hidden="true" className="ai-peak-depth pointer-events-none absolute inset-0" />
 
@@ -67,7 +67,7 @@ function PeakScene({ reduced }: { reduced: boolean }) {
         whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
         viewport={{ once: true, margin: '0px 0px -10% 0px' }}
         transition={{ duration: 1.6, ease: EASE }}
-        className="ai-peak-frame relative h-[74svh] min-h-[27rem] w-full overflow-hidden sm:h-[82svh] lg:h-auto lg:min-h-[100svh]"
+        className="ai-peak-frame relative h-[74svh] min-h-[27rem] w-full overflow-hidden sm:h-[82svh] lg:h-[86svh] lg:min-h-0"
       >
         <motion.div style={{ y: drift }} className="absolute -inset-[4%]">
           <motion.div style={{ x: imageX, y: imageY }} className="h-full w-full">
