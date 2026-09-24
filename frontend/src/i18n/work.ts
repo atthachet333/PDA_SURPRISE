@@ -73,8 +73,6 @@ export const workPage = {
     en: ['Have a system in mind?', 'Tell us about it'],
     zh: ['已经有想做的系统了吗？', '告诉我们您的需求']
   } as Lines,
-  ctaSend: { th: 'ส่งรายละเอียดโครงการ', en: 'Send project details', zh: '发送项目详情' },
-  ctaCall: { th: 'โทร', en: 'Call', zh: '致电' },
   showcaseTitle: { th: ['ผลงานที่', 'ใช้ทำงานจริง'], en: ['Work that is', 'used every day'], zh: ['真正投入', '日常使用的案例'] } as Lines,
   showcaseLead: {
     th: 'ระบบหลังบ้าน เว็บไซต์ และเครื่องมือสำหรับงานจริงของธุรกิจ แต่ละงานเล่าจากปัญหาและสิ่งที่เราสร้าง',
@@ -126,5 +124,5 @@ export const detailPage = {
   relatedTitle: { th: 'ระบบที่เกี่ยวข้อง', en: 'Related systems', zh: '相关系统' },
   viewInUniverse: { th: 'ดูใน System Universe', en: 'View in the System Universe', zh: '在 System Universe 中查看' },
   relatedService: { th: 'ดูบริการที่เกี่ยวข้อง', en: 'View the related service', zh: '查看相关服务' },
-  consultSimilar: { th: 'ปรึกษาระบบลักษณะนี้', en: 'Discuss a system like this', zh: '咨询类似系统' }
+  consultSimilar: { th: 'อยากทำระบบลักษณะนี้', en: 'Discuss a system like this', zh: '咨询类似系统' }
 };

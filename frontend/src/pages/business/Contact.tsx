@@ -10,11 +10,17 @@ import { contactPage as copy } from '@/i18n/contact';
 import { addressLines, businessHours } from '@/i18n/company';
 import { companyCopy, trustLinks } from '@/i18n/trust';
 import { LocaleLink } from '@/components/shared/LocaleLink';
+import { ui } from '@/i18n/ui';
 
 /**
  * /contact — the form is the page. Everything else is a quiet reference column.
  *
  * Every contact detail comes from `data/company.ts`. Nothing is literal here.
+ *
+ * EP42: the direct column leads with the channels a visitor can use right now
+ * — LINE, phone, email, hours — and keeps the registered name and office below
+ * them. The floating contact button hides itself here: this page already
+ * shows the same channels beside the form.
  */
 export default function Contact() {
   usePageMeta(pageMeta.contact);
@@ -40,30 +46,39 @@ export default function Contact() {
               <p className="section-code">03 / DIRECT</p>
 
               <dl className="mt-8 border-t border-steel-200">
-                {/* EP40: the registered company behind every channel below. */}
-                <Row label={t(companyCopy.registeredName)}>
-                  <span className="block" lang="th">{company.legalNameTh}</span>
-                  <span className="block">{company.legalName}</span>
-                </Row>
-                <Row label={t(copy.email)}>
-                  <a className="hover:text-brand-600" href={`mailto:${company.email}`}>
-                    {company.email}
-                  </a>
-                </Row>
-                <Row label={t(copy.phone)}>
-                  <a className="hover:text-brand-600" href={`tel:${company.phone}`}>
-                    {company.phoneDisplay}
-                  </a>
-                </Row>
                 <Row label={t(copy.line)}>
                   <a
-                    className="hover:text-brand-600"
+                    className="inline-flex min-h-11 items-center hover:text-brand-600"
                     href={company.lineUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-channel="line"
                   >
                     {company.lineOA}
+                    <span className="sr-only">{t(ui.opensInNewTab)}</span>
                   </a>
+                </Row>
+                <Row label={t(copy.phone)}>
+                  <a className="inline-flex min-h-11 items-center hover:text-brand-600" href={`tel:${company.phone}`} data-channel="phone">
+                    {company.phoneDisplay}
+                  </a>
+                </Row>
+                <Row label={t(copy.email)}>
+                  <a className="inline-flex min-h-11 items-center break-all hover:text-brand-600" href={`mailto:${company.email}`} data-channel="email">
+                    {company.email}
+                  </a>
+                </Row>
+                <Row label={t(copy.hours)}>
+                  <span className="block">{t(businessHours.days)}</span>
+                  <span className="block">{t(businessHours.time)}</span>
+                  <span className="mt-2 block font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-steel-500">
+                    {t(businessHours.note)}
+                  </span>
+                </Row>
+                {/* EP40: the registered company behind every channel above. */}
+                <Row label={t(companyCopy.registeredName)}>
+                  <span className="block" lang="th">{company.legalNameTh}</span>
+                  <span className="block">{company.legalName}</span>
                 </Row>
                 <Row label={t(copy.office)}>
                   <address className="not-italic">
@@ -73,13 +88,6 @@ export default function Contact() {
                       </span>
                     ))}
                   </address>
-                </Row>
-                <Row label={t(copy.hours)}>
-                  <span className="block">{t(businessHours.days)}</span>
-                  <span className="block">{t(businessHours.time)}</span>
-                  <span className="mt-2 block font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-steel-400">
-                    {t(businessHours.note)}
-                  </span>
                 </Row>
               </dl>
               <LocaleLink
@@ -92,7 +100,7 @@ export default function Contact() {
               {/* What happens next */}
               <div className="on-dark mt-10 overflow-hidden rounded-panel border border-brand-400/20 bg-[linear-gradient(155deg,#063B2A,#04261B)] p-7 text-white">
                 <p className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-brand-300">
-                  next steps
+                  {t(copy.nextStepsLabel)}
                 </p>
                 <ol className="mt-5 space-y-4">
                   {t(copy.nextSteps).split('|').map((step, index) => (

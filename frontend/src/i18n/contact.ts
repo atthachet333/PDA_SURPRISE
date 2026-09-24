@@ -155,9 +155,9 @@ export const intentText: Translations<Record<string, IntentText>> = {
       }
     },
     consulting: {
-      label: 'Not sure yet / I would like advice',
+      label: 'Not sure yet',
       shortLabel: 'Advice',
-      description: 'Start from the problem, then choose an approach together',
+      description: 'Tell us the problem — we will help you work out where to start',
       questions: {
         topic: { label: 'What would you like to start talking about?', placeholder: 'A short description is fine — no need to know the technology' }
       }
@@ -261,7 +261,7 @@ export const intentText: Translations<Record<string, IntentText>> = {
       }
     },
     consulting: {
-      label: '还不确定 / 想先咨询',
+      label: '还不确定，希望我们协助判断',
       shortLabel: '咨询',
       description: '先从需求谈起，再一起选择合适的方案',
       questions: {
@@ -325,7 +325,7 @@ export const stepLabel: Record<string, LocalizedText> = {
 };
 
 export const form = {
-  modeGroup: { th: 'รูปแบบการติดต่อ', en: 'How would you like to contact us?', zh: '联系方式类型' },
+  modeGroup: { th: 'รูปแบบการส่งข้อมูล', en: 'How would you like to send your details?', zh: '填写方式' },
   modeGuided: { th: 'ช่วยวางโจทย์ให้', en: 'Help me shape the brief', zh: '协助我梳理需求' },
   modeQuick: { th: 'ส่งข้อความแบบสั้น', en: 'Send a short message', zh: '发送简短留言' },
   privacyNote: {
@@ -333,6 +333,10 @@ export const form = {
     en: 'Please do not send passwords, confidential information or employees’ personal data.',
     zh: '请勿发送密码、机密信息或员工个人数据。'
   },
+  privacyLink: { th: 'นโยบายความเป็นส่วนตัว', en: 'Privacy policy', zh: '隐私政策' },
+  /** Announced on every step change: "Step 2 of 5 · Current situation". */
+  stepOf: { th: 'ขั้นตอนที่ {current} จาก {total} · {title}', en: 'Step {current} of {total} · {title}', zh: '第 {current} 步，共 {total} 步 · {title}' },
+  otherTopics: { th: 'หรือเรื่องอื่น', en: 'Or something else', zh: '或其他需求' },
   askingAbout: { th: 'คุณกำลังสอบถามเกี่ยวกับ {topic}', en: 'You are asking about {topic}', zh: '您正在咨询：{topic}' },
   from: { th: ' จาก {source}', en: ' from {source}', zh: '（来自 {source}）' },
   sourceHome: { th: 'หน้าแรก', en: 'the home page', zh: '首页' },
@@ -359,14 +363,14 @@ export const form = {
     en: 'e.g. less re-entering of data, and work status visible in one place',
     zh: '例如：减少重复录入，并在一个地方看到工作状态'
   },
-  budget: { th: 'ช่วงงบประมาณ (ไม่บังคับ)', en: 'Budget range (optional)', zh: '预算范围（选填）' },
-  timeline: { th: 'ช่วงเวลาที่คิดไว้ (ไม่บังคับ)', en: 'Expected timeline (optional)', zh: '预计时间（选填）' },
+  budget: { th: 'งบประมาณคร่าว ๆ (ถ้ามี)', en: 'Rough budget (if you have one)', zh: '大致预算（如有）' },
+  timeline: { th: 'มีช่วงเวลาที่ต้องการใช้งานหรือไม่ (ถ้ามี)', en: 'When would you like to start using it? (if known)', zh: '希望何时开始使用？（如有）' },
   industry: { th: 'ประเภทธุรกิจ (ไม่บังคับ)', en: 'Type of business (optional)', zh: '行业类型（选填）' },
   existingWebsite: { th: 'เว็บไซต์ปัจจุบัน (ไม่บังคับ)', en: 'Current website (optional)', zh: '现有网站（选填）' },
   budgetNote: {
-    th: 'ช่วงงบและเวลาใช้เพื่อเตรียมบทสนทนาเท่านั้น ไม่ใช่ราคาเสนอหรือคำสัญญาวันส่งมอบ',
-    en: 'Budget and timeline are only used to prepare the conversation. They are not a quotation or a promised delivery date.',
-    zh: '预算和时间仅用于准备沟通，并不构成报价或交付日期的承诺。'
+    th: 'ถ้ามีงบประมาณหรือช่วงเวลาคร่าว ๆ สามารถระบุได้ ถ้ายังไม่มีก็ส่งได้เลย ข้อมูลนี้ใช้เตรียมการพูดคุยเท่านั้น ไม่ใช่ราคาเสนอหรือคำสัญญาวันส่งมอบ',
+    en: 'If you have a rough budget or timeframe, you can add it — if not, send it anyway. It only helps us prepare the conversation; it is not a quotation or a promised delivery date.',
+    zh: '如有大致预算或时间，可以填写；没有也可以直接发送。这些信息仅用于准备沟通，并不构成报价或交付日期的承诺。'
   },
   contactTitle: { th: 'สะดวกให้เราติดต่อกลับทางไหน?', en: 'How should we get back to you?', zh: '您希望我们通过什么方式回复？' },
   contactLead: { th: 'กรอกอีเมล โทรศัพท์ หรือ LINE ID อย่างน้อยหนึ่งช่องทาง', en: 'Fill in at least one of email, phone or LINE ID.', zh: '请至少填写邮箱、电话或 LINE ID 其中一项。' },
@@ -394,6 +398,17 @@ export const form = {
     en: 'Our team will read your details to understand the brief and prepare for the next conversation, and will get back to you through the channel you gave during business hours.',
     zh: '我们的团队会阅读您的信息以理解需求、准备下一步的沟通，并在工作时间内通过您留下的方式与您联系。'
   },
+  successNext: {
+    th: 'ถ้าต้องการเพิ่มเติมข้อมูล หรือมีเรื่องที่ต้องคุยก่อน ติดต่อเราโดยตรงได้ที่',
+    en: 'To add anything, or if something needs discussing sooner, you can also reach us directly:',
+    zh: '如需补充信息，或有需要尽快沟通的事项，也可以直接联系我们：'
+  },
+  failedChannels: {
+    th: 'หรือส่งเรื่องเดียวกันถึงเราโดยตรง:',
+    en: 'Or send the same request to us directly:',
+    zh: '或者直接把同样的内容发给我们：'
+  },
+  retry: { th: 'ลองส่งอีกครั้ง', en: 'Try again', zh: '重新发送' },
   reference: { th: 'หมายเลขอ้างอิง', en: 'Reference number', zh: '参考编号' },
   sendAnother: { th: 'ส่งข้อความใหม่', en: 'Send another message', zh: '发送新留言' }
 } satisfies Record<string, LocalizedText>;
@@ -405,15 +420,16 @@ export const validation = {
   url: { th: 'กรุณาระบุ URL ที่ถูกต้อง เช่น https://example.com', en: 'Please enter a valid URL, e.g. https://example.com', zh: '请输入有效的网址，例如 https://example.com' },
   contactName: { th: 'กรุณาระบุชื่อสำหรับติดต่อ', en: 'Please enter a contact name.', zh: '请填写联系人姓名。' },
   oneChannel: { th: 'ระบุอีเมล โทรศัพท์ หรือ LINE ID อย่างน้อยหนึ่งช่องทาง', en: 'Please give at least one of email, phone or LINE ID.', zh: '请至少填写邮箱、电话或 LINE ID 其中一项。' },
-  email: { th: 'กรุณาระบุอีเมลที่ใช้งานได้', en: 'Please enter a working email address.', zh: '请填写有效的邮箱地址。' },
-  notes: { th: 'กรุณาเล่าเรื่องที่ต้องการคุยอย่างน้อย 1–2 ประโยค', en: 'Please describe what you would like to discuss in at least 1–2 sentences.', zh: '请用至少 1–2 句话说明想沟通的内容。' },
+  email: { th: 'กรุณาระบุอีเมลที่สามารถติดต่อกลับได้ เช่น name@company.com', en: 'Please enter an email address we can reply to, e.g. name@company.com', zh: '请填写我们可以回复的邮箱，例如 name@company.com' },
+  phone: { th: 'กรุณาระบุเบอร์โทรเป็นตัวเลข เช่น 081 234 5678', en: 'Please enter the phone number in digits, e.g. 081 234 5678', zh: '请用数字填写电话号码，例如 081 234 5678' },
+  notes: { th: 'ช่วยเล่าเรื่องที่ต้องการคุยสั้น ๆ สัก 1–2 ประโยค (อย่างน้อย 10 ตัวอักษร)', en: 'Please tell us briefly what you would like to discuss — a sentence or two (at least 10 characters).', zh: '请简单说明想沟通的内容，一两句话即可（至少 10 个字符）。' },
   stepIncomplete: { th: 'ยังมีข้อมูลสั้น ๆ ที่ต้องตรวจสอบ', en: 'A few details still need checking.', zh: '还有一些信息需要检查。' },
   checkFields: { th: 'กรุณาตรวจสอบข้อมูลที่ระบุ', en: 'Please check the details you entered.', zh: '请检查您填写的信息。' },
   rateLimited: { th: 'ส่งข้อมูลหลายครั้งเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง', en: 'Too many submissions. Please wait a moment and try again.', zh: '提交次数过多，请稍候再试。' },
   failed: {
-    th: 'ยังส่งข้อมูลไม่ได้ ข้อมูลที่กรอกไว้ยังอยู่ครบ กรุณาลองอีกครั้งหรือติดต่อเราทางอีเมล',
-    en: 'We could not send your details. Everything you entered is still here — please try again or contact us by email.',
-    zh: '暂时无法发送。您填写的内容仍然保留，请重试或通过邮件与我们联系。'
+    th: 'ยังส่งข้อมูลไม่ได้ ข้อมูลที่กรอกไว้ยังอยู่ครบ ลองส่งอีกครั้ง หรือติดต่อเราทาง LINE โทรศัพท์ หรืออีเมลด้านล่าง',
+    en: 'We could not send your details. Everything you entered is still here — try again, or reach us by LINE, phone or email below.',
+    zh: '暂时无法发送。您填写的内容仍然保留，请重试，或通过下方的 LINE、电话或邮件联系我们。'
   },
   /** Shown for a server field error outside Thai, whose message is written in Thai. */
   fieldInvalid: { th: 'กรุณาตรวจสอบข้อมูลช่องนี้', en: 'Please check this field.', zh: '请检查此项。' },
@@ -432,6 +448,7 @@ export const contactPage = {
   line: { th: 'LINE OA', en: 'LINE OA', zh: 'LINE 官方账号' },
   office: { th: 'ที่ตั้งสำนักงาน', en: 'Office', zh: '办公地址' },
   hours: { th: 'เวลาทำการ', en: 'Business hours', zh: '营业时间' },
+  nextStepsLabel: { th: 'ขั้นตอนถัดไป', en: 'What happens next', zh: '接下来' },
   nextSteps: {
     th: 'ทีมงานอ่านโจทย์และตอบกลับ|นัดคุยเพื่อเข้าใจ Workflow|สรุปแนวทาง ขอบเขต และขั้นตอนถัดไป',
     en: 'Our team reads your brief and replies|We arrange a call to understand the workflow|We summarise the approach, scope and next steps',

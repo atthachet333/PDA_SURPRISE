@@ -69,7 +69,6 @@ export const servicesPage = {
     en: 'From back-office systems and websites to tools built for your team. Every service starts from a problem businesses really face — not from the technology.',
     zh: '从后台系统、网站到为您团队定制的工具。每项服务都从企业真实遇到的问题出发，而不是从技术出发。'
   },
-  heroTell: { th: 'เล่าโจทย์ให้เราฟัง', en: 'Tell us about your problem', zh: '告诉我们您的需求' },
   statCore: { th: 'บริการหลัก', en: 'Core services', zh: '核心服务' },
   statCoreNote: { th: 'กลุ่มบริการที่ส่งมอบเป็นงานเดี่ยวได้', en: 'Service families we deliver as standalone projects', zh: '可作为独立项目交付的服务类别' },
   statWork: { th: 'มีผลงานจริง', en: 'With real work', zh: '有真实案例' },
@@ -101,7 +100,7 @@ export const servicesPage = {
     en: 'There is no work in this family that we can share in detail yet — talk to us to see what we can do for you.',
     zh: '这一类暂时还没有可以公开详情的案例——欢迎与我们沟通，了解我们能为您做什么。'
   },
-  talkSystem: { th: 'คุยเกี่ยวกับระบบนี้', en: 'Talk to us about this system', zh: '咨询这类系统' },
+  talkSystem: { th: 'คุยเรื่องบริการนี้', en: 'Discuss this service', zh: '咨询此项服务' },
   techIn: { th: 'เทคโนโลยีที่ใช้ใน{title}', en: 'Technology used in {title}', zh: '{title}所用技术' },
   distinctTitle: {
     th: ['เว็บไซต์ เว็บแอป และ ERP', 'ไม่ใช่สิ่งเดียวกัน'],
@@ -120,7 +119,7 @@ export const servicesPage = {
     en: 'This work is usually part of a larger project rather than sold on its own, but it is often what keeps the core system useful in the long run.',
     zh: '这类工作通常是大型项目的一部分，而不是单独出售，但往往正是它让核心系统能长期真正发挥作用。'
   },
-  talkWork: { th: 'คุยเกี่ยวกับงานนี้', en: 'Talk to us about this', zh: '咨询这项工作' },
+  talkWork: { th: 'คุยเรื่องบริการนี้', en: 'Discuss this service', zh: '咨询此项服务' },
   universeTitle: { th: 'อยากเห็นว่าระบบเหล่านี้เชื่อมกันอย่างไร?', en: 'Want to see how these systems connect?', zh: '想看看这些系统如何相互连接？' },
   universeBody: {
     th: 'หน้านี้บอกว่าเราสร้างอะไรได้บ้าง ส่วนหน้า “ระบบของเรา” แสดงภาพรวมว่าระบบแต่ละตัวส่งข้อมูลต่อกันได้อย่างไร',
@@ -139,7 +138,5 @@ export const servicesPage = {
     th: 'เล่าให้ฟังว่าตอนนี้ทีมทำงานกันอย่างไร แล้วเราช่วยดูว่าควรเริ่มจากระบบไหนก่อน ถ้างานนี้ไม่ใช่สิ่งที่เราถนัด เราจะบอกคุณตั้งแต่ต้น',
     en: 'Tell us how your team works today and we will help you see which system to start with. If the job is not something we do well, we will tell you at the start.',
     zh: '告诉我们您的团队目前如何工作，我们会帮您判断应该先从哪个系统开始。如果这项工作不是我们擅长的，我们会在一开始就告诉您。'
-  },
-  ctaSend: { th: 'ส่งรายละเอียดโครงการ', en: 'Send project details', zh: '发送项目详情' },
-  ctaCall: { th: 'โทร', en: 'Call', zh: '致电' }
+  }
 } satisfies Record<string, LocalizedText | Record<Locale, readonly string[]>>;

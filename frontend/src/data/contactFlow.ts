@@ -1,9 +1,9 @@
 import { caseStudies } from './caseStudies';
 import { services } from './services';
 import { businessSystems } from './systemUniverse';
-import type { ContactServiceId } from './contactRouting';
+import { payloadSourceContext, type ContactServiceId } from './contactRouting';
 
-export { contactHref, resolveContactPrefill, systemToContactService } from './contactRouting';
+export { contactHref, payloadSourceContext, resolveContactPrefill, systemToContactService } from './contactRouting';
 export type { ContactServiceId } from './contactRouting';
 
 export type ContactQuestionKind = 'text' | 'single' | 'multi';
@@ -123,7 +123,7 @@ export const contactIntents: readonly ContactIntent[] = [
     ]
   },
   {
-    id: 'consulting', label: 'ยังไม่แน่ใจ / อยากปรึกษา', shortLabel: 'ปรึกษา',
+    id: 'consulting', label: 'ยังไม่แน่ใจ / อยากให้ช่วยแนะนำ', shortLabel: 'ปรึกษา',
     description: 'เริ่มจากโจทย์ก่อน แล้วค่อยช่วยกันเลือกแนวทาง',
     questions: [{ id: 'topic', label: 'อยากเริ่มคุยจากเรื่องไหน?', kind: 'text', placeholder: 'เล่าสั้น ๆ ได้ ไม่ต้องรู้ชื่อเทคโนโลยี' }]
   }
@@ -138,6 +138,17 @@ export const contactTimelineOptions = choices(
   ['not-defined', 'ยังไม่กำหนด'], ['within-1-month', 'ภายใน 1 เดือน'], ['1-3-months', '1–3 เดือน'],
   ['3-6-months', '3–6 เดือน'], ['over-6-months', 'มากกว่า 6 เดือน']
 );
+
+/**
+ * The topic chooser, in the EP38 service order. `file-management` shares the
+ * Document / File System intent; the last two are supporting needs, shown
+ * smaller, and "not sure" is always offered on its own.
+ */
+export const intentOrder = {
+  core: ['business-systems', 'payroll', 'hr-line-bot', 'document-management', 'web-applications', 'mobile-applications', 'websites'],
+  other: ['custom-software', 'automation'],
+  notSure: 'consulting'
+} as const satisfies { core: readonly ContactServiceId[]; other: readonly ContactServiceId[]; notSure: ContactServiceId };
 
 export function getContactIntent(id: string | null | undefined): ContactIntent | undefined {
   return contactIntents.find((intent) => intent.id === id);
@@ -188,3 +199,53 @@ export interface QuickContactPayload {
 }
 
 export type ContactPayload = GuidedContactPayload | QuickContactPayload;
+
+/** Everything the form holds. Field names are the payload's, one to one. */
+export interface ContactFormValues {
+  serviceId: ContactServiceId | '';
+  currentSituation: string;
+  desiredOutcome: string;
+  projectDetails: Record<string, ContactDetailValue>;
+  budgetRange: string;
+  timeline: string;
+  companyName: string;
+  industry: string;
+  existingWebsite: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  lineId: string;
+  notes: string;
+  website: string;
+}
+
+const clean = (value: string) => value.trim() || undefined;
+
+/**
+ * The form → the API payload. EP42 changed the UX, not this contract: the
+ * guided, quick and legacy shapes the backend accepts are unchanged, and only a
+ * source the API validates is sent (`payloadSourceContext`). The quick form
+ * sends what it shows — name, one channel and a message.
+ */
+export function buildContactPayload(mode: 'guided' | 'quick', values: ContactFormValues, sourceContext?: string): ContactPayload {
+  const channels = { email: clean(values.email), phone: clean(values.phone), lineId: clean(values.lineId) };
+  const common = {
+    contactName: values.contactName.trim(),
+    ...channels,
+    sourceContext: payloadSourceContext(sourceContext),
+    website: values.website
+  };
+  if (mode === 'quick') {
+    return { contactType: 'quick', serviceId: values.serviceId || undefined, ...common, notes: values.notes.trim() };
+  }
+  if (!values.serviceId) throw new Error('Missing service intent');
+  const projectDetails = Object.fromEntries(
+    Object.entries(values.projectDetails).filter(([, value]) => (Array.isArray(value) ? value.length : value.trim()))
+  );
+  return {
+    contactType: 'guided', serviceId: values.serviceId, ...common, companyName: clean(values.companyName),
+    currentSituation: values.currentSituation.trim(), desiredOutcome: values.desiredOutcome.trim(),
+    projectDetails, budgetRange: values.budgetRange, timeline: values.timeline,
+    industry: clean(values.industry), existingWebsite: clean(values.existingWebsite), notes: clean(values.notes)
+  };
+}

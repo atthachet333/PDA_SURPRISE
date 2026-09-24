@@ -11,7 +11,14 @@ import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { LocaleLink, LocaleNavLink } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
-import { header } from '@/i18n/ui';
+import { channel as channelText, header, ui } from '@/i18n/ui';
+
+/*
+ * EP42: /contact is reached through the primary button beside the menu, so the
+ * menu itself does not repeat it as a second, differently-labelled link. The
+ * footer menu still lists every page.
+ */
+const menu = navigation.filter((item) => item.to !== cta.primary.to);
 
 /**
  * HEADER — transparent and open at the top, compact and frosted on scroll.
@@ -102,7 +109,7 @@ export function Header() {
 
           {/* ------------------------------------------------- desktop nav -- */}
           <nav className="hidden items-center xl:flex" aria-label={t(header.mainNav)}>
-            {navigation.map((item) => (
+            {menu.map((item) => (
               <LocaleNavLink
                 key={item.to}
                 to={item.to}
@@ -171,7 +178,7 @@ export function Header() {
               <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
               {t(cta.login.label)}
             </LocaleLink>
-            <ButtonLink to="/contact" size="sm" className="hidden whitespace-nowrap md:inline-flex" data-cursor="cta">
+            <ButtonLink to={cta.primary.to} size="sm" className="hidden whitespace-nowrap md:inline-flex max-xl:min-h-11" data-cursor="cta" data-cta="primary">
               {t(cta.primary.label)}
             </ButtonLink>
 
@@ -246,7 +253,7 @@ export function Header() {
               aria-label={t(header.mobileNav)}
             >
               <ul>
-                {navigation.map((item, index) => (
+                {menu.map((item, index) => (
                   <li key={item.to} className="overflow-hidden border-b border-steel-200/70">
                     <motion.div
                       /* Menu items use opacity, not a mask: a stalled
@@ -291,11 +298,8 @@ export function Header() {
                   <LanguageSwitcher large />
                   <ThemeToggle showLabels />
                 </div>
-                <ButtonLink to="/contact" size="lg">
+                <ButtonLink to={cta.primary.to} size="lg" data-cta="primary">
                   {t(cta.primary.label)}
-                </ButtonLink>
-                <ButtonLink to="/login" size="lg" variant="secondary">
-                  {t(cta.login.label)}
                 </ButtonLink>
               </motion.div>
 
@@ -303,11 +307,18 @@ export function Header() {
                 initial={reduced ? false : { opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.7 }}
-                className="mt-10 space-y-1 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-steel-400"
+                className="mt-8"
               >
-                <p>{company.phoneDisplay}</p>
-                <p className="normal-case tracking-normal">{company.email}</p>
-                <p>LINE {company.lineOA}</p>
+                {/* Real channels, one tap each — then client login, kept quiet. */}
+                <ul className="flex flex-wrap gap-x-5 text-sm text-steel-600">
+                  <li><a className="inline-flex min-h-11 items-center hover:text-brand-700" href={company.lineUrl} target="_blank" rel="noopener noreferrer">{t(channelText.line)} {company.lineOA}<span className="sr-only">{t(ui.opensInNewTab)}</span></a></li>
+                  <li><a className="inline-flex min-h-11 items-center hover:text-brand-700" href={`tel:${company.phone}`}>{company.phoneDisplay}</a></li>
+                  <li><a className="inline-flex min-h-11 items-center break-all hover:text-brand-700" href={`mailto:${company.email}`}>{company.email}</a></li>
+                </ul>
+                <LocaleLink to={cta.login.to} className="mt-2 inline-flex min-h-11 items-center gap-2 text-xs font-medium text-steel-500 hover:text-ink">
+                  <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
+                  {t(cta.login.label)}
+                </LocaleLink>
               </motion.div>
           </nav>
         </motion.div>

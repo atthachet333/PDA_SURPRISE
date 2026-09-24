@@ -12,7 +12,7 @@ import { servicesPage as copy } from '@/i18n/services';
 import { cta as ctaText } from '@/i18n/ui';
 import { fill, fillText } from '@/i18n/fill';
 import { visualForService } from '@/data/visuals';
-import { contactHref, isContactServiceId } from '@/data/contactRouting';
+import { contactHref } from '@/data/contactRouting';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
@@ -37,7 +37,7 @@ function relatedCases(service: PrimaryService, studies: readonly CaseStudy[]) {
 }
 
 function serviceContactHref(service: PrimaryService): string {
-  return isContactServiceId(service.id) ? contactHref(service.id, `service:${service.id}`) : '/contact';
+  return contactHref(service.id, `service:${service.id}`);
 }
 
 /* ------------------------------------------------------------- overview -- */

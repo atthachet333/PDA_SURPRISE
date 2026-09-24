@@ -1,5 +1,6 @@
 import { Container } from '@/components/shared/Layout';
-import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
+import { ArrowIcon } from '@/components/shared/Button';
+import { LocaleLink } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
 import { company } from '@/data/company';
 import { addressLines, businessHours } from '@/i18n/company';
@@ -54,9 +55,13 @@ export function ScopeFactors({ code, className }: { code: string; className?: st
             </ul>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <p className="text-sm font-medium text-ink">{t(scopeCopy.note)}</p>
-              <ButtonLink to="/contact" variant="secondary" size="md">
-                {t(scopeCopy.cta)} <ArrowIcon />
-              </ButtonLink>
+              {/* A quiet link: the page's one primary action is its closing CTA. */}
+              <LocaleLink
+                to="/contact"
+                className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-700 transition-colors hover:text-ink"
+              >
+                {t(scopeCopy.cta)} <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
+              </LocaleLink>
             </div>
           </div>
         </div>

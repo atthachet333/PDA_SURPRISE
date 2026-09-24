@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { LocaleLink as Link } from '@/components/shared/LocaleLink';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon } from '@/components/shared/Button';
 import { solutions } from '@/data/solutions';

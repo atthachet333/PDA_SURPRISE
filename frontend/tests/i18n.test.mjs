@@ -119,7 +119,7 @@ test('global chrome: nav, CTAs, theme, header, footer, cookie banner, dock', () 
     dark: { th: 'มืด', en: 'Dark', zh: '深色' },
     system: { th: 'ตามระบบ', en: 'System', zh: '跟随系统' }
   });
-  ['startProject', 'viewWork', 'viewAllServices', 'contactUs', 'seeRelatedWork', 'viewCaseStudy', 'visitWebsite', 'back', 'nextCase', 'learnMore'].forEach((key) =>
+  ['discussProject', 'viewWork', 'viewAllServices', 'contactUs', 'seeRelatedWork', 'viewCaseStudy', 'visitWebsite', 'back', 'nextCase', 'learnMore'].forEach((key) =>
     assert.ok(ui.cta[key], `CTA vocabulary is missing ${key}`)
   );
   ['title', 'body', 'acceptAll', 'necessaryOnly', 'settings', 'policy'].forEach((key) => assert.ok(ui.cookie[key], `cookie banner is missing ${key}`));

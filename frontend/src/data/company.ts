@@ -70,7 +70,8 @@ export const company = {
   businessHours: {
     days: 'จันทร์ – เสาร์',
     time: '08:30 – 17:30 น.',
-    note: 'ตอบกลับภายใน 1 วันทำการ'
+    /* EP42: no response-time promise until the owner confirms one. */
+    note: 'ตอบกลับในเวลาทำการ'
   },
 
   /** Only rendered when `href` is a real URL. */
@@ -102,11 +103,10 @@ export const navigation = [
 ] as const;
 
 export const cta = {
-  primary: { label: ctaText.startProject, to: '/contact' },
+  /** EP42: the one primary action. Every page uses this label and destination. */
+  primary: { label: ctaText.discussProject, to: '/contact' },
   secondary: { label: ctaText.viewWork, to: '/work' },
-  login: { label: ctaText.clientLogin, to: '/login' },
-  talk: { label: ctaText.talkToUs, to: '/contact' },
-  consult: { label: ctaText.discussProject, to: '/contact' }
+  login: { label: ctaText.clientLogin, to: '/login' }
 } as const;
 
 // --- hero trust strip ------------------------------------------------------

@@ -4,12 +4,11 @@ import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { ProductPanel } from './ProductPanel';
 import { heroVisuals } from '@/data/visuals';
-import { company, cta } from '@/data/company';
+import { cta } from '@/data/company';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useLocale } from '@/app/LocaleContext';
-import { bigCta, channel as channelText } from '@/i18n/ui';
-import { businessHours } from '@/i18n/company';
-import { cn } from '@/lib/cn';
+import { bigCta } from '@/i18n/ui';
+import { DirectChannels } from './DirectChannels';
 
 /**
  * START — the finale.
@@ -25,12 +24,16 @@ import { cn } from '@/lib/cn';
  *   own box, and the section rendered blank. It now uses `RevealLines`, whose
  *   resting state is visible and which disarms itself on a watchdog.
  *
+ * EP42: the canonical closing conversion block — headline, one support line,
+ * ONE primary action and the direct channels as a quiet row. `contactTo` lets a
+ * page carry its context into the form (a case study prefills its service).
+ *
  * Contact details come from the central config; nothing here is literal.
  */
 
 const [PRIMARY, , DOCS] = heroVisuals;
 
-export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
+export function BigCTA({ code = '12 / START', contactTo = cta.primary.to }: { code?: string; contactTo?: string } = {}) {
   const reduced = useReducedMotion();
   const { t } = useLocale();
 
@@ -125,25 +128,18 @@ export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
               className="mt-9 flex flex-wrap items-center gap-3"
             >
               <ButtonLink
-                to="/contact"
+                to={contactTo}
                 size="lg"
                 data-cursor="cta"
+                data-cta="primary"
                 className="bg-white text-brand-800 hover:bg-brand-50"
               >
                 {t(cta.primary.label)}
                 <ArrowIcon />
               </ButtonLink>
-              <ButtonLink
-                to={`tel:${company.phone}`}
-                size="lg"
-                variant="ghost"
-                className="border border-white/25 text-white hover:bg-white/10"
-              >
-                {t(cta.talk.label)}
-              </ButtonLink>
             </motion.div>
 
-            <ContactStrip reduced={reduced} />
+            <DirectChannels className="mt-10" />
           </div>
 
           {/* ------------------------------------------- right: device stack -- */}
@@ -193,101 +189,5 @@ export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
         </div>
       </Container>
     </section>
-  );
-}
-
-/* ------------------------------------------------------------ contact strip -- */
-
-/** The three real channels, at a readable size. All from the central config. */
-function ContactStrip({ reduced }: { reduced: boolean }) {
-  const { t } = useLocale();
-  const channels = [
-    { label: company.phoneDisplay, href: `tel:${company.phone}`, hint: t(channelText.phone), icon: 'phone' as const },
-    { label: company.email, href: `mailto:${company.email}`, hint: t(channelText.email), icon: 'mail' as const },
-    {
-      label: company.lineOA,
-      href: company.lineUrl,
-      hint: t(channelText.line),
-      icon: 'chat' as const,
-      external: true
-    }
-  ];
-
-  return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.7, delay: 0.45 }}
-      className="mt-10 border-t border-white/12 pt-7"
-    >
-      <p className="flex items-center gap-2 font-mono text-[0.5625rem] uppercase tracking-[0.18em] text-brand-300/70">
-        <span
-          className={cn('h-1.5 w-1.5 rounded-full bg-brand-400', !reduced && 'animate-status-blink')}
-        />
-        {t(businessHours.note)}
-      </p>
-
-      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-4">
-        {channels.map((channel, index) => (
-          <span key={channel.icon} className="flex items-center gap-5">
-            <a
-              href={channel.href}
-              target={channel.external ? '_blank' : undefined}
-              rel={channel.external ? 'noopener noreferrer' : undefined}
-              className="group flex min-h-11 items-center gap-2.5"
-            >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-brand-300 transition-colors duration-base group-hover:border-brand-400/60 group-hover:bg-brand-500/15 group-hover:text-brand-200">
-                <ChannelIcon kind={channel.icon} />
-              </span>
-              <span className="min-w-0">
-                <span className="block font-mono text-[0.5rem] uppercase tracking-[0.16em] text-brand-300/60">
-                  {channel.hint}
-                </span>
-                <span className="block truncate text-sm font-medium text-white transition-colors duration-base group-hover:text-brand-200">
-                  {channel.label}
-                </span>
-              </span>
-            </a>
-            {index < channels.length - 1 ? (
-              <span aria-hidden="true" className="hidden h-9 w-px bg-white/12 sm:block" />
-            ) : null}
-          </span>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-function ChannelIcon({ kind }: { kind: 'phone' | 'mail' | 'chat' }) {
-  const common = {
-    viewBox: '0 0 20 20',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.5,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-    className: 'h-4 w-4',
-    'aria-hidden': true
-  };
-  if (kind === 'phone') {
-    return (
-      <svg {...common}>
-        <path d="M6.5 3.5 8 6.5 6.5 8a9 9 0 0 0 5 5L13 11.5l3 1.5v3a1 1 0 0 1-1.1 1A12.5 12.5 0 0 1 3.5 4.6 1 1 0 0 1 4.5 3.5Z" />
-      </svg>
-    );
-  }
-  if (kind === 'mail') {
-    return (
-      <svg {...common}>
-        <rect x="3" y="5" width="14" height="10" rx="2" />
-        <path d="m3.8 6 6.2 4.5L16.2 6" />
-      </svg>
-    );
-  }
-  return (
-    <svg {...common}>
-      <path d="M17 11.5a2 2 0 0 1-2 2H8l-4 3V5.5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2Z" />
-    </svg>
   );
 }

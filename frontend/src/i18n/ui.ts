@@ -31,14 +31,13 @@ export const nav = {
 
 /** Recurring actions. Reuse these rather than re-translating a label. */
 export const cta = {
-  startProject: { th: 'เริ่มโปรเจกต์', en: 'Start a project', zh: '开始项目' },
+  /** EP42: THE primary action, site-wide. Always leads to /contact. */
+  discussProject: { th: 'คุยเรื่องโปรเจกต์', en: 'Discuss a project', zh: '咨询项目' },
   viewWork: { th: 'ดูผลงานของเรา', en: 'View our work', zh: '查看案例' },
   viewAllWork: { th: 'ดูผลงานทั้งหมด', en: 'View all work', zh: '查看全部案例' },
   viewAllServices: { th: 'ดูบริการทั้งหมด', en: 'View all services', zh: '查看全部服务' },
   clientLogin: { th: 'เข้าสู่ระบบลูกค้า', en: 'Client login', zh: '客户登录' },
-  talkToUs: { th: 'พูดคุยกับเรา', en: 'Talk to us', zh: '与我们沟通' },
   contactUs: { th: 'ติดต่อเรา', en: 'Contact us', zh: '联系我们' },
-  discussProject: { th: 'ปรึกษาโปรเจกต์นี้', en: 'Discuss a similar project', zh: '咨询类似项目' },
   seeRelatedWork: { th: 'ดูผลงานที่เกี่ยวข้อง', en: 'See related work', zh: '查看相关案例' },
   viewCaseStudy: { th: 'ดูกรณีศึกษา', en: 'View case study', zh: '查看案例详情' },
   visitWebsite: { th: 'เยี่ยมชมเว็บไซต์', en: 'Visit website', zh: '访问网站' },
@@ -77,16 +76,6 @@ export const header = {
 /* ---------------------------------------------------------------- footer -- */
 
 export const footer = {
-  finalTitle: {
-    th: ['พร้อมเปลี่ยนไอเดีย', 'ให้เป็นระบบที่ใช้งานได้จริงหรือยัง?'],
-    en: ['Ready to turn your idea', 'into a system people actually use?'],
-    zh: ['准备好把想法', '变成真正可用的系统了吗？']
-  },
-  finalBody: {
-    th: 'คุยกับเราเรื่องแนวคิด ระบบ หรือ Workflow ที่คุณกำลังวางแผน เราช่วยประเมินแนวทางก่อนเริ่มโปรเจกต์ได้',
-    en: 'Tell us about the idea, system or workflow you are planning. We can help you assess the approach before the project starts.',
-    zh: '欢迎和我们聊聊您正在规划的想法、系统或工作流程。项目开始前，我们可以先协助评估可行的方案。'
-  },
   blurb: {
     th: 'พัฒนาซอฟต์แวร์และระบบธุรกิจที่ออกแบบจากกระบวนการทำงานจริง',
     en: 'Software and business systems designed around how your team actually works.',
@@ -123,13 +112,14 @@ export const dock = {
   close: { th: 'ปิดช่องทางติดต่อ', en: 'Close contact options', zh: '关闭联系方式' },
   closeShort: { th: 'ปิด', en: 'Close', zh: '关闭' },
   dialog: { th: 'ช่องทางติดต่อ PDA BLISS', en: 'Contact PDA BLISS', zh: '联系 PDA BLISS' },
-  title: { th: 'พร้อมช่วยเรื่องโปรเจกต์ของคุณ', en: 'Ready to help with your project', zh: '随时为您的项目提供帮助' },
+  title: { th: 'ติดต่อ PDA BLISS', en: 'Contact PDA BLISS', zh: '联系 PDA BLISS' },
   button: { th: 'ติดต่อเรา', en: 'Contact', zh: '联系我们' },
   callEyebrow: { th: 'โทรหาเรา', en: 'Call us', zh: '致电我们' },
   lineEyebrow: { th: 'LINE OA', en: 'LINE OA', zh: 'LINE 官方账号' },
   mailEyebrow: { th: 'ส่งอีเมล', en: 'Email us', zh: '发送邮件' },
-  consultEyebrow: { th: 'ขอรับคำปรึกษา', en: 'Request a consultation', zh: '预约咨询' },
-  consultLabel: { th: 'นัดหมายพูดคุยเกี่ยวกับโปรเจกต์', en: 'Book a call about your project', zh: '预约项目沟通' }
+  /** The form, not a booking: PDA BLISS has no booking system. */
+  formEyebrow: { th: 'ส่งรายละเอียดผ่านแบบฟอร์ม', en: 'Send details through the form', zh: '通过表单发送详情' },
+  channels: { th: 'ติดต่อโดยตรง', en: 'Contact directly', zh: '直接联系' }
 } satisfies Record<string, LocalizedText>;
 
 /** Short channel hints used beside contact details. */

@@ -2,23 +2,22 @@ import { LocaleLink as Link } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
 import { usePrimaryServices, useSupportingServices } from '@/i18n/useContent';
 import { servicesPage as copy } from '@/i18n/services';
-import { cta as ctaText, ui } from '@/i18n/ui';
-import { businessHours } from '@/i18n/company';
+import { cta as ctaText } from '@/i18n/ui';
 import { fill } from '@/i18n/fill';
 import { Container } from '@/components/shared/Layout';
-import { ArrowIcon } from '@/components/shared/Button';
+import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
+import { DirectChannels } from '@/components/business/DirectChannels';
 import { Icon } from '@/components/shared/Icon';
 import { ProcessPath } from '@/components/business/ProcessPath';
 import { ServiceDistinctions, ServiceMap, ServiceSections } from '@/components/business/ServiceCatalogue';
 import { caseStudies } from '@/data/caseStudies';
-import { company } from '@/data/company';
-import { contactHref, isContactServiceId } from '@/data/contactRouting';
+import { cta } from '@/data/company';
+import { contactHref } from '@/data/contactRouting';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useHashTarget } from '@/hooks/useHashTarget';
 import { ScopeFactors } from '@/components/business/TrustSections';
 import { trustLinks } from '@/i18n/trust';
 import { pageMeta } from '@/lib/seo';
-import { cn } from '@/lib/cn';
 
 /**
  * /services — "PDA BLISS ช่วยธุรกิจของผมเรื่องอะไรได้บ้าง?"
@@ -87,10 +86,10 @@ function ServicesHero() {
                 <ArrowIcon className="transition-transform duration-base group-hover:translate-y-0.5 group-hover:rotate-90" />
               </a>
               <Link
-                to="/contact"
+                to={cta.primary.to}
                 className="inline-flex min-h-11 items-center gap-2 rounded-pill border border-steel-300 px-5 text-sm font-semibold text-ink transition-colors hover:border-brand-400 hover:text-brand-700"
               >
-                {t(copy.heroTell)}
+                {t(cta.primary.label)}
                 <ArrowIcon />
               </Link>
             </div>
@@ -153,7 +152,7 @@ function SupportingCapabilities() {
                     <p className="thai-display text-sm font-bold text-ink">{service.title}</p>
                   </div>
                   <p className="mt-2.5 text-sm leading-relaxed text-steel-600">{service.summary}</p>
-                  {isContactServiceId(service.id) ? (
+                  {contactHref(service.id) !== '/contact' ? (
                     <Link
                       to={contactHref(service.id, `service:${service.id}`)}
                       className="group mt-3 inline-flex min-h-11 items-center gap-1.5 text-xs font-semibold text-ink transition-colors hover:text-brand-700"
@@ -208,69 +207,36 @@ function SupportingCapabilities() {
 function ServicesCta() {
   const { t } = useLocale();
   const [lead, accent] = t(copy.ctaTitle);
-  const actions = [
-    { label: `LINE ${company.lineOA}`, href: company.lineUrl, external: true, primary: true },
-    { label: t(copy.ctaSend), to: '/contact', primary: false },
-    { label: `${t(copy.ctaCall)} ${company.phoneDisplay}`, href: `tel:${company.phone}`, primary: false },
-    { label: company.email, href: `mailto:${company.email}`, primary: false }
-  ];
 
   return (
     <section aria-labelledby="services-cta" className="sect sect--deep relative overflow-hidden py-section text-white">
       <Container wide>
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <div>
-            <p className="section-code text-brand-300">08 / START</p>
-            <h2
-              id="services-cta"
-              className="thai-display mt-3 max-w-3xl text-[clamp(1.9rem,4vw,3.2rem)] font-bold leading-tight"
-            >
-              {lead}
-              <br />
-              <span className="text-brand-300">{accent}</span>
-            </h2>
-            <p className="mt-5 max-w-xl text-sm leading-relaxed text-brand-100/70">
-              {t(copy.ctaBody)}
-            </p>
-            <p className="mt-4 text-xs leading-relaxed text-brand-100/55">
-              {t(businessHours.days)} {t(businessHours.time)} · {t(businessHours.note)}
-            </p>
+        <div className="max-w-3xl">
+          <p className="section-code text-brand-300">08 / START</p>
+          <h2
+            id="services-cta"
+            className="thai-display mt-3 text-[clamp(1.9rem,4vw,3.2rem)] font-bold leading-tight"
+          >
+            {lead}
+            <br />
+            <span className="text-brand-300">{accent}</span>
+          </h2>
+          <p className="mt-5 max-w-xl text-sm leading-relaxed text-brand-100/70">
+            {t(copy.ctaBody)}
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <ButtonLink to={cta.primary.to} size="lg" data-cta="primary" className="bg-white text-brand-800 hover:bg-brand-50">
+              {t(cta.primary.label)} <ArrowIcon />
+            </ButtonLink>
             <Link
               to="/about#process"
-              className="group mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white"
+              className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white"
             >
               {t(trustLinks.howWeWork)}
               <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
             </Link>
           </div>
-          <div className="flex flex-wrap gap-3 lg:max-w-md lg:justify-end">
-            {actions.map((action) =>
-              action.to ? (
-                <Link
-                  key={action.label}
-                  to={action.to}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-pill border border-white/25 px-5 text-sm font-semibold text-white transition-colors hover:border-brand-300 hover:bg-white/5"
-                >
-                  {action.label} <ArrowIcon />
-                </Link>
-              ) : (
-                <a
-                  key={action.label}
-                  href={action.href}
-                  {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  className={cn(
-                    'inline-flex min-h-11 items-center gap-2 rounded-pill px-5 text-sm font-semibold transition-colors',
-                    action.primary
-                      ? 'bg-brand-600 text-white hover:bg-brand-700'
-                      : 'border border-white/25 text-white hover:border-brand-300 hover:bg-white/5'
-                  )}
-                >
-                  {action.label}
-                  {action.external ? <span className="sr-only">{t(ui.opensInNewTab)}</span> : null}
-                </a>
-              )
-            )}
-          </div>
+          <DirectChannels className="mt-10" />
         </div>
       </Container>
     </section>

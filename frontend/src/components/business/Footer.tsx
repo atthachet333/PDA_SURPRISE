@@ -1,15 +1,13 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import { company, cta, footer, navigation } from '@/data/company';
+import { company, footer, navigation } from '@/data/company';
 import { Container } from '@/components/shared/Layout';
-import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
-import { HeroSystem } from './HeroSystem';
 import { Logo } from './Logo';
 import { LocaleLink } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
-import { footer as footerText } from '@/i18n/ui';
+import { footer as footerText, ui } from '@/i18n/ui';
 import { addressLines, addressNote, businessHours } from '@/i18n/company';
 
 export function Footer() {
@@ -18,7 +16,6 @@ export function Footer() {
   const { scrollYProgress } = useScroll({ target: footerRef, offset: ['start end', 'end start'] });
   const wordmarkY = useTransform(scrollYProgress, [0, 1], [-14, 22]);
   const { t } = useLocale();
-  const [finalLead, finalAccent] = t(footerText.finalTitle);
   const address = t(addressLines);
 
   /*
@@ -28,25 +25,12 @@ export function Footer() {
    */
   return (
     <footer ref={footerRef} className="on-dark relative overflow-hidden text-white">
-      {/* A — final CTA: a distinct cinematic scene. */}
-      <section className="sect sect--immersive relative overflow-hidden border-t border-brand-400/20 py-section">
-        <FooterAtmosphere reduced={reduced} />
-        <Container wide className="relative">
-          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)]">
-            <div>
-              <p className="section-code text-brand-300">FINAL / START</p>
-              <h2 className="thai-display mt-5 text-mega font-bold">{finalLead}<br /><span className="text-brand-300">{finalAccent}</span></h2>
-              <p className="mt-6 max-w-xl text-sm leading-7 text-brand-100/70">{t(footerText.finalBody)}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink to={cta.primary.to} size="lg" className="bg-white text-brand-900 hover:bg-brand-50">{t(cta.primary.label)} <ArrowIcon /></ButtonLink>
-                <ButtonLink to={`tel:${company.phone}`} size="lg" variant="ghost" className="border border-white/25 text-white hover:bg-white/10">{t(cta.talk.label)}</ButtonLink>
-              </div>
-            </div>
-            <div className="hidden h-[30rem] lg:block"><HeroSystem className="h-full" /></div>
-          </div>
-        </Container>
-      </section>
-
+      {/*
+        EP42: no second closing CTA here. Every page already ends with one
+        (BigCTA, or the Services / Work closing block), so a footer CTA only
+        repeated the same button a screen apart. The footer keeps the real
+        contact details instead.
+      */}
       {/* B — informational footer: quieter and denser than the CTA. */}
       <section className="relative bg-[#031b13] py-14 sm:py-16">
         <Container wide>
@@ -60,9 +44,10 @@ export function Footer() {
             <FooterColumn title={t(footerText.menuHeading)}>{navigation.map((item) => <li key={item.to}><LocaleLink className="footer-link" to={item.to}>{t(item.label)}</LocaleLink></li>)}</FooterColumn>
             <FooterColumn title={t(footerText.servicesHeading)}>{footer.servicesLinks.map((item) => <li key={item.to}><LocaleLink className="footer-link" to={item.to}>{t(item.label)}</LocaleLink></li>)}</FooterColumn>
             <FooterColumn title={t(footerText.contactHeading)}>
-              <ContactItem icon="phone"><a className="footer-link" href={`tel:${company.phone}`}>{company.phoneDisplay}</a></ContactItem>
-              <ContactItem icon="mail"><a className="footer-link break-all" href={`mailto:${company.email}`}>{company.email}</a></ContactItem>
-              <ContactItem icon="line"><a className="footer-link" href={company.lineUrl} target="_blank" rel="noopener noreferrer">{company.lineOA}</a></ContactItem>
+              {/* EP42: LINE, phone, email — the same order as every direct-channel row; 44px targets. */}
+              <ContactItem icon="line" tall><a className="footer-link -my-2 inline-flex min-h-11 items-center" href={company.lineUrl} target="_blank" rel="noopener noreferrer">{company.lineOA}<span className="sr-only">{t(ui.opensInNewTab)}</span></a></ContactItem>
+              <ContactItem icon="phone" tall><a className="footer-link -my-2 inline-flex min-h-11 items-center" href={`tel:${company.phone}`}>{company.phoneDisplay}</a></ContactItem>
+              <ContactItem icon="mail" tall><a className="footer-link -my-2 inline-flex min-h-11 items-center break-all" href={`mailto:${company.email}`}>{company.email}</a></ContactItem>
               <ContactItem icon="map">{company.mapUrl ? <a href={company.mapUrl} target="_blank" rel="noopener noreferrer" className="footer-link"><address className="not-italic text-xs leading-6">{address.map((line) => <span key={line} className="block">{line}</span>)}</address></a> : <address className="not-italic text-xs leading-6 text-brand-100/55">{address.map((line) => <span key={line} className="block">{line}</span>)}</address>}</ContactItem>
               <ContactItem icon="clock"><span className="text-xs leading-6 text-brand-100/55">{t(businessHours.days)}<br />{t(businessHours.time)}</span></ContactItem>
             </FooterColumn>
@@ -97,8 +82,8 @@ function FooterColumn({ title, children }: { title: string; children: React.Reac
   return <div><h3 className="font-mono text-[.5625rem] uppercase tracking-[.2em] text-brand-400">{title}</h3><ul className="mt-6 space-y-3 [&_.footer-link]:text-sm [&_.footer-link]:text-brand-100/65 [&_.footer-link]:transition-colors hover:[&_.footer-link]:text-white">{children}</ul></div>;
 }
 
-function ContactItem({ icon, children }: { icon: ContactIconName; children: React.ReactNode }) {
-  return <li className="group flex items-start gap-3"><span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-400/15 text-brand-300/60 transition group-hover:border-brand-400/40 group-hover:text-brand-300"><ContactIcon name={icon} /></span><div>{children}</div></li>;
+function ContactItem({ icon, tall = false, children }: { icon: ContactIconName; tall?: boolean; children: React.ReactNode }) {
+  return <li className={cn('group flex gap-3', tall ? 'items-center' : 'items-start')}><span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-400/15 text-brand-300/60 transition group-hover:border-brand-400/40 group-hover:text-brand-300"><ContactIcon name={icon} /></span><div>{children}</div></li>;
 }
 
 type ContactIconName = 'phone' | 'mail' | 'line' | 'map' | 'clock';

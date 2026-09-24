@@ -47,7 +47,7 @@ export const solutionsPage = {
   },
   viewExample: { th: 'ดูตัวอย่างระบบ', en: 'See an example', zh: '查看系统示例' },
   viewService: { th: 'ดูบริการ', en: 'View service', zh: '查看服务' },
-  consult: { th: 'ปรึกษาระบบนี้', en: 'Discuss this system', zh: '咨询此系统' }
+  consult: { th: 'คุยเรื่องระบบนี้', en: 'Discuss this system', zh: '咨询此系统' }
 };
 
 /** The two example business flows on /solutions. Codes stay English design labels. */

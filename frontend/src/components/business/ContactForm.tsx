@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAudio } from '@/app/audioContext';
 import { Button } from '@/components/shared/Button';
@@ -10,7 +10,10 @@ import {
   contactSourceLabel,
   contactTimelineOptions,
   getContactIntent,
+  buildContactPayload,
+  intentOrder,
   resolveContactPrefill,
+  type ContactFormValues,
   type ContactDetailValue,
   type ContactPayload,
   type ContactQuestion,
@@ -28,27 +31,15 @@ import { localizeService } from '@/i18n/services';
 import { caseStudies } from '@/data/caseStudies';
 import { services } from '@/data/services';
 import { fill } from '@/i18n/fill';
+import { LocaleLink } from '@/components/shared/LocaleLink';
+import { DirectChannels } from './DirectChannels';
 
 type Mode = 'guided' | 'quick';
 type Status = 'idle' | 'submitting' | 'success' | 'error';
+/** Why the last attempt stopped: a field to fix, or a send that failed. */
+type Failure = 'fields' | 'send';
 
-interface FormValues {
-  serviceId: ContactServiceId | '';
-  currentSituation: string;
-  desiredOutcome: string;
-  projectDetails: Record<string, ContactDetailValue>;
-  budgetRange: string;
-  timeline: string;
-  companyName: string;
-  industry: string;
-  existingWebsite: string;
-  contactName: string;
-  email: string;
-  phone: string;
-  lineId: string;
-  notes: string;
-  website: string;
-}
+type FormValues = ContactFormValues;
 
 function createValues(serviceId?: ContactServiceId): FormValues {
   return {
@@ -57,8 +48,6 @@ function createValues(serviceId?: ContactServiceId): FormValues {
     existingWebsite: '', contactName: '', email: '', phone: '', lineId: '', notes: '', website: ''
   };
 }
-
-const clean = (value: string) => value.trim() || undefined;
 
 /**
  * Where the visitor came from, in their language. Mirrors `contactSourceLabel`
@@ -80,6 +69,8 @@ function sourceLabelFor(sourceContext: string | undefined, locale: Locale, conte
   return contactSourceLabel(sourceContext);
 }
 const validEmail = (value: string) => !value || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value.trim());
+/** Mirrors the API's phone rule: digits and + ( ) . - spaces only. */
+const validPhone = (value: string) => /^[0-9+().\-\s]*$/.test(value.trim());
 const validUrl = (value: string) => {
   if (!value.trim()) return true;
   try { new URL(value.trim()); return true; } catch { return false; }
@@ -89,7 +80,20 @@ export function ContactForm() {
   const location = useLocation();
   const prefill = useMemo(() => resolveContactPrefill(location.search), [location.search]);
   const [mode, setMode] = useState<Mode>('guided');
-  const [step, setStep] = useState(1);
+  /* A service that arrives prefilled is already answered — start at step 2. */
+  const [step, setStepState] = useState(() => (prefill.serviceId ? 2 : 1));
+  const [failure, setFailure] = useState<Failure>('fields');
+  const formRef = useRef<HTMLDivElement>(null);
+  const stepStatus = useRef<HTMLParagraphElement>(null);
+  const moved = useRef(false);
+  /* Moving between steps moves focus to the step announcement, never on load. */
+  const setStep = (next: number | ((current: number) => number)) => {
+    moved.current = true;
+    setStepState(next);
+  };
+  useEffect(() => {
+    if (moved.current) stepStatus.current?.focus();
+  }, [step]);
   const [values, setValues] = useState<FormValues>(() => createValues(prefill.serviceId));
   const [status, setStatus] = useState<Status>('idle');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -129,6 +133,14 @@ export function ContactForm() {
     setValues((current) => ({ ...current, projectDetails: { ...current.projectDetails, [questionId]: value } }));
   };
 
+  /** After a failed check, take keyboard and screen-reader users to the first problem. */
+  const focusFirstError = () => {
+    /* A timeout, not rAF: it still runs in a tab the browser has paused. */
+    window.setTimeout(() => {
+      formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"], [data-intent-error] button')?.focus();
+    }, 0);
+  };
+
   const validateStep = (targetStep: number): boolean => {
     const errors: Record<string, string> = {};
     if (targetStep === 1 && !values.serviceId) errors.serviceId = t(v.serviceId);
@@ -141,11 +153,14 @@ export function ContactForm() {
       if (values.contactName.trim().length < 2) errors.contactName = t(v.contactName);
       if (!values.email.trim() && !values.phone.trim() && !values.lineId.trim()) errors.email = t(v.oneChannel);
       if (!validEmail(values.email)) errors.email = t(v.email);
+      if (!validPhone(values.phone)) errors.phone = t(v.phone);
     }
     setFieldErrors(errors);
     if (Object.keys(errors).length) {
       setStatus('error');
+      setFailure('fields');
       setMessage(t(v.stepIncomplete));
+      focusFirstError();
       return false;
     }
     setStatus('idle');
@@ -158,32 +173,17 @@ export function ContactForm() {
     setStep((current) => Math.min(5, current + 1));
   };
 
-  const buildPayload = (): ContactPayload => {
-    const base = {
-      serviceId: values.serviceId || undefined,
-      contactName: values.contactName.trim(),
-      companyName: clean(values.companyName),
-      email: clean(values.email), phone: clean(values.phone), lineId: clean(values.lineId),
-      sourceContext: prefill.sourceContext, website: values.website
-    };
-    if (mode === 'quick') return { contactType: 'quick', ...base, notes: values.notes.trim() };
-    if (!values.serviceId) throw new Error('Missing service intent');
-    const projectDetails = Object.fromEntries(Object.entries(values.projectDetails).filter(([, value]) => Array.isArray(value) ? value.length : value.trim()));
-    return {
-      contactType: 'guided', ...base, serviceId: values.serviceId,
-      currentSituation: values.currentSituation.trim(), desiredOutcome: values.desiredOutcome.trim(),
-      projectDetails, budgetRange: values.budgetRange, timeline: values.timeline,
-      industry: clean(values.industry), existingWebsite: clean(values.existingWebsite), notes: clean(values.notes)
-    };
-  };
+  const buildPayload = (): ContactPayload => buildContactPayload(mode, values, prefill.sourceContext);
 
   const validateQuick = (): boolean => {
     const errors: Record<string, string> = {};
     if (values.contactName.trim().length < 2) errors.contactName = t(v.contactName);
     if (!values.email.trim() && !values.phone.trim() && !values.lineId.trim()) errors.email = t(v.oneChannel);
     if (!validEmail(values.email)) errors.email = t(v.email);
+    if (!validPhone(values.phone)) errors.phone = t(v.phone);
     if (values.notes.trim().length < 10) errors.notes = t(v.notes);
     setFieldErrors(errors);
+    if (Object.keys(errors).length) focusFirstError();
     return Object.keys(errors).length === 0;
   };
 
@@ -192,6 +192,7 @@ export function ContactForm() {
     if (inFlight.current || status === 'submitting') return;
     if (mode === 'quick' ? !validateQuick() : !validateStep(4)) {
       setStatus('error');
+      setFailure('fields');
       setMessage(t(v.checkFields));
       return;
     }
@@ -205,6 +206,8 @@ export function ContactForm() {
       play('transitionRise');
     } catch (error) {
       setStatus('error');
+      /* A field the API rejected is fixable in place; anything else is a failed send. */
+      setFailure(error instanceof ApiError && error.fields.length ? 'fields' : 'send');
       if (error instanceof ApiError) {
         /*
          * The API answers in Thai. Thai visitors see its exact wording; other
@@ -212,7 +215,9 @@ export function ContactForm() {
          * Thai sentence in the middle of an English or Chinese form.
          */
         const serverText = locale === 'th';
-        setMessage(error.status === 429 ? t(v.rateLimited) : serverText ? error.message : t(v.serverRejected));
+        /* No answer from the API at all: the client's own (English) text is never shown. */
+        const unreachable = error.code === 'NETWORK_ERROR' || error.code === 'BAD_RESPONSE';
+        setMessage(unreachable ? t(v.failed) : error.status === 429 ? t(v.rateLimited) : serverText ? error.message : t(v.serverRejected));
         if (error.fields.length) setFieldErrors(Object.fromEntries(error.fields.map((field) => [field.field, serverText ? field.message : t(v.fieldInvalid)])));
       } else {
         setMessage(t(v.failed));
@@ -223,17 +228,23 @@ export function ContactForm() {
   };
 
   if (status === 'success') {
-    return <Success reference={reference} reduced={reduced} onReset={() => { setValues(createValues(prefill.serviceId)); setStep(1); setStatus('idle'); setReference(''); }} />;
+    return <Success reference={reference} reduced={reduced} onReset={() => { setValues(createValues(prefill.serviceId)); moved.current = false; setStepState(prefill.serviceId ? 2 : 1); setStatus('idle'); setReference(''); }} />;
   }
 
+  const stepMeta = contactSteps[step - 1];
+  const stepTitle = stepMeta ? (stepLabel[stepMeta.id] ? t(stepLabel[stepMeta.id]!) : stepMeta.label) : '';
+
   return (
-    <div className="relative">
+    <div className="relative" ref={formRef}>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex rounded-pill border border-steel-200 bg-white p-1" aria-label={t(f.modeGroup)}>
+        <div role="group" className="inline-flex rounded-pill border border-steel-200 bg-white p-1" aria-label={t(f.modeGroup)}>
           <ModeButton active={mode === 'guided'} onClick={() => { setMode('guided'); setStatus('idle'); }}>{t(f.modeGuided)}</ModeButton>
           <ModeButton active={mode === 'quick'} onClick={() => { setMode('quick'); setStatus('idle'); }}>{t(f.modeQuick)}</ModeButton>
         </div>
-        <p className="text-xs text-steel-400">{t(f.privacyNote)}</p>
+        <p className="text-xs leading-relaxed text-steel-500">
+          {t(f.privacyNote)}{' '}
+          <LocaleLink to="/privacy" className="underline decoration-steel-300 underline-offset-4 hover:text-brand-700">{t(f.privacyLink)}</LocaleLink>
+        </p>
       </div>
 
       {prefill.serviceId && intent ? (
@@ -246,23 +257,29 @@ export function ContactForm() {
       {mode === 'guided' ? (
         <form onSubmit={submit} noValidate className="rounded-panel border border-steel-200 bg-white p-5 sm:p-8">
           <Progress step={step} onStep={setStep} />
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={step} initial={reduced ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduced ? undefined : { opacity: 0, x: -12 }} transition={{ duration: reduced ? 0 : 0.22 }} className="mt-8">
+          <p ref={stepStatus} tabIndex={-1} aria-live="polite" className="mt-4 text-xs font-medium text-steel-600 focus:outline-none" data-step-status="">
+            {fill(t(f.stepOf), { current: String(step), total: String(contactSteps.length), title: stepTitle })}
+          </p>
+          {/*
+            No exit animation, so no AnimatePresence "wait": a paused (background)
+            tab never finishes an exit, which left the previous step on screen
+            while the form had already moved on. The new step mounts at once.
+          */}
+          <motion.div key={step} initial={reduced || !moved.current ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduced ? 0 : 0.22 }} className="mt-8">
               {step === 1 ? <IntentStep selected={values.serviceId} error={fieldErrors.serviceId} onSelect={chooseIntent} /> : null}
               {step === 2 && intent ? <SituationStep intent={intent} values={values} errors={fieldErrors} update={update} setDetail={setDetail} /> : null}
               {step === 3 ? <OutcomeStep values={values} errors={fieldErrors} update={update} /> : null}
               {step === 4 ? <ContactStep values={values} errors={fieldErrors} update={update} /> : null}
               {step === 5 && intent ? <ReviewStep intentLabel={intent.label} values={values} onEdit={setStep} /> : null}
-            </motion.div>
-          </AnimatePresence>
+          </motion.div>
           <Honeypot value={values.website} onChange={(value) => update('website', value)} />
-          <StatusMessage status={status} message={message} />
+          <StatusMessage status={status} message={message} failure={failure} />
           <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-steel-100 pt-6">
             <button type="button" className={cn('min-h-11 rounded-pill px-4 text-sm font-semibold text-steel-600', step === 1 && 'invisible')} onClick={() => setStep((current) => Math.max(1, current - 1))}>{t(f.back)}</button>
-            {step < 5 ? <Button type="button" size="lg" onClick={nextStep}>{t(f.next)}</Button> : <Button type="submit" size="lg" disabled={status === 'submitting'}>{status === 'submitting' ? t(f.sending) : t(f.confirmSend)}</Button>}
+            {step < 5 ? <Button type="button" size="lg" onClick={nextStep}>{t(f.next)}</Button> : <Button type="submit" size="lg" disabled={status === 'submitting'}>{status === 'submitting' ? t(f.sending) : status === 'error' && failure === 'send' ? t(f.retry) : t(f.confirmSend)}</Button>}
           </div>
         </form>
-      ) : <QuickForm values={values} errors={fieldErrors} status={status} message={message} update={update} onSubmit={submit} />}
+      ) : <QuickForm values={values} errors={fieldErrors} status={status} message={message} failure={failure} update={update} onSubmit={submit} />}
     </div>
   );
 }
@@ -273,12 +290,19 @@ function ModeButton({ active, onClick, children }: { active: boolean; onClick: (
 
 function Progress({ step, onStep }: { step: number; onStep: (step: number) => void }) {
   const { t } = useLocale();
-  return <nav aria-label={t(f.progress)}><ol className="grid grid-cols-5 gap-1">{contactSteps.map(({ id, label }, index) => { const number = index + 1; const reachable = number < step; return <li key={id}><button type="button" disabled={!reachable} onClick={() => onStep(number)} aria-current={number === step ? 'step' : undefined} className={cn('min-h-11 w-full rounded-card border px-1 text-center transition-colors', number === step ? 'border-brand-500 bg-brand-50 text-brand-800' : number < step ? 'border-brand-200 text-brand-700' : 'border-steel-100 text-steel-300')}><span className="block font-mono text-[.58rem]">0{number}</span><span className="hidden text-[.62rem] sm:block">{stepLabel[id] ? t(stepLabel[id]!) : label}</span></button></li>; })}</ol></nav>;
+  return <nav aria-label={t(f.progress)}><ol className="grid grid-cols-5 gap-1">{contactSteps.map(({ id, label }, index) => { const number = index + 1; const reachable = number < step; return <li key={id}><button type="button" disabled={!reachable} onClick={() => onStep(number)} aria-current={number === step ? 'step' : undefined} className={cn('min-h-11 w-full rounded-card border px-1 text-center transition-colors', number === step ? 'border-brand-500 bg-brand-50 text-brand-800' : number < step ? 'border-brand-200 text-brand-700' : 'border-steel-100 text-steel-300')}><span className="block font-mono text-[.58rem]">0{number}</span><span className="sr-only text-[.62rem] sm:not-sr-only sm:block">{stepLabel[id] ? t(stepLabel[id]!) : label}</span></button></li>; })}</ol></nav>;
 }
 
 function IntentStep({ selected, error, onSelect }: { selected: string; error?: string; onSelect: (id: ContactServiceId) => void }) {
   const { locale, t } = useLocale();
-  return <fieldset aria-describedby={error ? 'service-intent-error' : undefined}><legend className="thai-display text-2xl font-bold text-ink">{t(f.intentTitle)}</legend><p className="mt-2 text-sm text-steel-500">{t(f.intentLead)}</p><div className="mt-6 grid gap-3 sm:grid-cols-2">{contactIntents.map((source) => localizeIntent(source, locale)).map((item) => <button key={item.id} type="button" aria-pressed={selected === item.id} onClick={() => onSelect(item.id)} className={cn('min-h-[5.5rem] rounded-card border p-4 text-left transition-colors', selected === item.id ? 'border-brand-500 bg-brand-50 ring-2 ring-brand-500/15' : 'border-steel-200 hover:border-brand-300')}><span className="block text-sm font-semibold text-ink">{item.label}</span><span className="mt-1.5 block text-xs leading-relaxed text-steel-500">{item.description}</span><span className="mt-3 block font-mono text-[.52rem] text-brand-600">{selected === item.id ? t(f.selected) : t(f.chooseTopic)}</span></button>)}</div>{error ? <p id="service-intent-error" className="mt-3 text-sm text-red-600" role="alert">{error}</p> : null}</fieldset>;
+  const card = (id: ContactServiceId, wide = false) => {
+    const source = contactIntents.find((intent) => intent.id === id);
+    if (!source) return null;
+    const item = localizeIntent(source, locale);
+    const on = selected === item.id;
+    return <button key={item.id} type="button" aria-pressed={on} data-intent={item.id} onClick={() => onSelect(item.id)} className={cn('min-h-[5.5rem] rounded-card border p-4 text-left transition-colors', wide && 'sm:col-span-2', on ? 'border-brand-500 bg-brand-50 ring-2 ring-brand-500/15' : 'border-steel-200 hover:border-brand-300')}><span className="block text-sm font-semibold text-ink">{item.label}</span><span className="mt-1.5 block text-xs leading-relaxed text-steel-500">{item.description}</span><span className="mt-3 block font-mono text-[.52rem] text-brand-600">{on ? t(f.selected) : t(f.chooseTopic)}</span></button>;
+  };
+  return <fieldset aria-describedby={error ? 'service-intent-error' : undefined} data-intent-error={error ? '' : undefined}><legend className="thai-display text-2xl font-bold text-ink">{t(f.intentTitle)}</legend><p className="mt-2 text-sm text-steel-500">{t(f.intentLead)}</p><div className="mt-6 grid gap-3 sm:grid-cols-2">{intentOrder.core.map((id) => card(id))}{card(intentOrder.notSure, true)}</div><p className="mt-6 font-mono text-[.6rem] uppercase tracking-[.14em] text-steel-500">{t(f.otherTopics)}</p><div className="mt-3 grid gap-3 sm:grid-cols-2">{intentOrder.other.map((id) => card(id))}</div>{error ? <p id="service-intent-error" className="mt-3 text-sm text-red-600" role="alert">{error}</p> : null}</fieldset>;
 }
 
 function SituationStep({ intent, values, errors, update, setDetail }: { intent: NonNullable<ReturnType<typeof getContactIntent>>; values: FormValues; errors: Record<string, string>; update: <K extends keyof FormValues>(key: K, value: FormValues[K]) => void; setDetail: (id: string, value: ContactDetailValue) => void }) {
@@ -319,22 +343,39 @@ function ReviewBlock({ title, rows, onEdit }: { title: string; rows: readonly (r
   return <section className="rounded-card border border-steel-200 p-4 sm:p-5"><div className="flex items-center justify-between gap-3"><h3 className="font-mono text-[.6rem] tracking-[.16em] text-brand-600">{title}</h3><button type="button" onClick={onEdit} className="min-h-11 px-2 text-xs font-semibold text-brand-700">{t(f.edit)}</button></div><dl className="mt-3 space-y-3">{rows.filter(([, value]) => value).map(([label, value]) => <div key={label} className="grid gap-1 sm:grid-cols-[10rem_1fr]"><dt className="text-xs text-steel-400">{label}</dt><dd className="whitespace-pre-wrap text-sm leading-relaxed text-steel-700">{value}</dd></div>)}</dl></section>;
 }
 
-function QuickForm({ values, errors, status, message, update, onSubmit }: StepProps & { status: Status; message: string; onSubmit: (event: React.FormEvent<HTMLFormElement>) => void }) {
+function QuickForm({ values, errors, status, message, failure, update, onSubmit }: StepProps & { status: Status; message: string; failure: Failure; onSubmit: (event: React.FormEvent<HTMLFormElement>) => void }) {
   const { t } = useLocale();
-  return <form onSubmit={onSubmit} noValidate className="rounded-panel border border-steel-200 bg-white p-5 sm:p-8"><h2 className="thai-display text-2xl font-bold text-ink">{t(f.quickTitle)}</h2><p className="mt-2 text-sm text-steel-500">{t(f.quickLead)}</p><div className="mt-6 grid gap-5 sm:grid-cols-2"><InputField id="quick-name" label={t(f.name)} required autoComplete="name" value={values.contactName} onChange={(value) => update('contactName', value)} error={errors.contactName} /><InputField id="quick-company" label={t(f.company)} autoComplete="organization" value={values.companyName} onChange={(value) => update('companyName', value)} /><InputField id="quick-email" type="email" label={t(f.email)} autoComplete="email" value={values.email} onChange={(value) => update('email', value)} error={errors.email} /><InputField id="quick-phone" type="tel" label={t(f.phone)} autoComplete="tel" value={values.phone} onChange={(value) => update('phone', value)} /><InputField id="quick-line" label="LINE ID" value={values.lineId} onChange={(value) => update('lineId', value)} /><TextAreaField id="quick-message" label={t(f.quickMessage)} required value={values.notes} onChange={(value) => update('notes', value)} error={errors.notes} placeholder={t(f.quickPlaceholder)} className="sm:col-span-2" /></div><Honeypot value={values.website} onChange={(value) => update('website', value)} /><StatusMessage status={status} message={message} /><div className="mt-8"><Button type="submit" size="lg" disabled={status === 'submitting'}>{status === 'submitting' ? t(f.sending) : t(f.quickSend)}</Button></div></form>;
+  return <form onSubmit={onSubmit} noValidate className="rounded-panel border border-steel-200 bg-white p-5 sm:p-8"><h2 className="thai-display text-2xl font-bold text-ink">{t(f.quickTitle)}</h2><p className="mt-2 text-sm text-steel-500">{t(f.quickLead)}</p><div className="mt-6 grid gap-5 sm:grid-cols-2"><InputField id="quick-name" label={t(f.name)} required autoComplete="name" value={values.contactName} onChange={(value) => update('contactName', value)} error={errors.contactName} /><InputField id="quick-email" type="email" label={t(f.email)} autoComplete="email" value={values.email} onChange={(value) => update('email', value)} error={errors.email} /><InputField id="quick-phone" type="tel" label={t(f.phone)} autoComplete="tel" value={values.phone} onChange={(value) => update('phone', value)} error={errors.phone} /><InputField id="quick-line" label="LINE ID" value={values.lineId} onChange={(value) => update('lineId', value)} /><TextAreaField id="quick-message" label={t(f.quickMessage)} required value={values.notes} onChange={(value) => update('notes', value)} error={errors.notes} placeholder={t(f.quickPlaceholder)} className="sm:col-span-2" /></div><Honeypot value={values.website} onChange={(value) => update('website', value)} /><StatusMessage status={status} message={message} failure={failure} /><div className="mt-8"><Button type="submit" size="lg" disabled={status === 'submitting'}>{status === 'submitting' ? t(f.sending) : status === 'error' && failure === 'send' ? t(f.retry) : t(f.quickSend)}</Button></div></form>;
 }
 
 function Success({ reference, reduced, onReset }: { reference: string; reduced: boolean; onReset: () => void }) {
   const { t } = useLocale();
-  return <motion.div initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-panel border border-brand-200 bg-brand-50 p-7 sm:p-10" role="status"><span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-600 text-xl text-white">✓</span><h2 className="thai-display mt-6 text-2xl font-bold text-ink">{t(f.successTitle)}</h2><p className="mt-3 max-w-xl text-sm leading-relaxed text-steel-600">{t(f.successBody)}</p><p className="mt-4 text-xs text-steel-500">{t(f.reference)} <span className="font-mono text-ink">{reference}</span></p><Button type="button" variant="secondary" size="sm" className="mt-7" onClick={onReset}>{t(f.sendAnother)}</Button></motion.div>;
+  const heading = useRef<HTMLHeadingElement>(null);
+  /* The form is gone; move focus to the confirmation so it is read out. */
+  useEffect(() => heading.current?.focus(), []);
+  return <motion.div initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-panel border border-brand-200 bg-brand-50 p-7 sm:p-10" role="status" data-contact-success=""><span aria-hidden="true" className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-600 text-xl text-white">✓</span><h2 ref={heading} tabIndex={-1} className="thai-display mt-6 text-2xl font-bold text-ink focus:outline-none">{t(f.successTitle)}</h2><p className="mt-3 max-w-xl text-sm leading-relaxed text-steel-600">{t(f.successBody)}</p>{reference ? <p className="mt-4 text-xs text-steel-500">{t(f.reference)} <span className="font-mono text-ink">{reference}</span></p> : null}<p className="mt-7 text-sm text-steel-600">{t(f.successNext)}</p><DirectChannels tone="light" className="mt-3" /><Button type="button" variant="secondary" size="sm" className="mt-7" onClick={onReset}>{t(f.sendAnother)}</Button></motion.div>;
 }
 
 function Honeypot({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   return <div className="absolute left-[-9999px]" aria-hidden="true"><label htmlFor="website-field">Website</label><input id="website-field" tabIndex={-1} autoComplete="off" value={value} onChange={(event) => onChange(event.target.value)} /></div>;
 }
 
-function StatusMessage({ status, message }: { status: Status; message: string }) {
-  return <div aria-live="polite">{status === 'error' && message ? <p className="mt-6 rounded-card border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{message}</p> : null}</div>;
+function StatusMessage({ status, message, failure }: { status: Status; message: string; failure: Failure }) {
+  const { t } = useLocale();
+  if (status !== 'error' || !message) return <div aria-live="polite" />;
+  return (
+    <div aria-live="polite" className="mt-6" data-contact-error={failure}>
+      <p className="rounded-card border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{message}</p>
+      {/* A failed send never strands the visitor: the real channels, right here.
+          On the themed card surface, not inside the fixed red alert, so it reads in Dark too. */}
+      {failure === 'send' ? (
+        <div className="mt-3 rounded-card border border-steel-200 px-4 py-3">
+          <p className="text-xs text-steel-600">{t(f.failedChannels)}</p>
+          <DirectChannels tone="light" hours={false} className="mt-2 pt-3" />
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 function InputField({ id, label, value, onChange, error, helper, required, type = 'text', placeholder, autoComplete }: { id: string; label: string; value: string; onChange: (value: string) => void; error?: string; helper?: string; required?: boolean; type?: React.HTMLInputTypeAttribute; placeholder?: string; autoComplete?: string }) {

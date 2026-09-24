@@ -59,7 +59,7 @@ export const addressNote: LocalizedText = {
 export const businessHours = {
   days: { th: company.businessHours.days, en: 'Monday – Saturday', zh: '周一至周六' },
   time: { th: company.businessHours.time, en: '08:30 – 17:30', zh: '08:30 – 17:30' },
-  note: { th: company.businessHours.note, en: 'We reply within 1 business day', zh: '1 个工作日内回复' }
+  note: { th: company.businessHours.note, en: 'We reply during business hours', zh: '我们在工作时间内回复' }
 } satisfies Record<string, LocalizedText>;
 
 export const tagline: LocalizedText = {

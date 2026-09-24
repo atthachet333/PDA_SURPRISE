@@ -8,7 +8,7 @@ import {
   supportingServices
 } from '../src/data/services.ts';
 import { caseStudies } from '../src/data/caseStudies.ts';
-import { isContactServiceId, isValidSourceContext } from '../src/data/contactRouting.ts';
+import { isValidSourceContext, toContactServiceId } from '../src/data/contactRouting.ts';
 import { serviceVisuals } from '../src/data/visuals.ts';
 
 /**
@@ -78,7 +78,7 @@ test('every case study with a service route points at a real service', () => {
 
 test('service CTAs resolve to valid contact destinations', () => {
   primaryServices.forEach((service) => {
-    assert.ok(isContactServiceId(service.id), `${service.id} cannot prefill the contact form`);
+    assert.ok(toContactServiceId(service.id), `${service.id} cannot prefill the contact form`);
     assert.ok(
       isValidSourceContext(`service:${service.id}`),
       `${service.id} is not an accepted contact source context`

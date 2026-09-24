@@ -4,12 +4,11 @@ import { useLocale } from '@/app/LocaleContext';
 import { useCaseStudies } from '@/i18n/useContent';
 import { metricText, workPage as copy, workProcess } from '@/i18n/work';
 import { workFilterLabel } from '@/i18n/caseStudies';
-import { businessHours } from '@/i18n/company';
-import { ui } from '@/i18n/ui';
 import { fillText } from '@/i18n/fill';
 import { trustLinks } from '@/i18n/trust';
 import { Container } from '@/components/shared/Layout';
-import { ArrowIcon } from '@/components/shared/Button';
+import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
+import { DirectChannels } from '@/components/business/DirectChannels';
 import { ProjectAccessNote, ProjectActions, ProjectTags, ProjectVisual } from '@/components/business/ProjectParts';
 import {
   caseStudies,
@@ -18,7 +17,7 @@ import {
   type CaseStudy,
   type WorkFilter
 } from '@/data/caseStudies';
-import { company, metrics, metricsVerified } from '@/data/company';
+import { cta, metrics, metricsVerified } from '@/data/company';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useHashTarget } from '@/hooks/useHashTarget';
 import { pageMeta } from '@/lib/seo';
@@ -236,51 +235,24 @@ function HowWeBuild() {
 function WorkCta() {
   const { t } = useLocale();
   const [lead, accent] = t(copy.ctaTitle);
-  const actions = [
-    { label: `LINE ${company.lineOA}`, href: company.lineUrl, external: true, primary: true },
-    { label: t(copy.ctaSend), to: '/contact', primary: false },
-    { label: `${t(copy.ctaCall)} ${company.phoneDisplay}`, href: `tel:${company.phone}`, primary: false },
-    { label: company.email, href: `mailto:${company.email}`, primary: false }
-  ];
   return (
     <section aria-labelledby="work-cta" className="sect sect--deep relative overflow-hidden py-section text-white">
       <Container wide>
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <div>
-            <p className="section-code text-brand-300">04 / START</p>
-            <h2 id="work-cta" className="thai-display mt-3 text-[clamp(2rem,4.4vw,3.6rem)] font-bold leading-tight">{lead}<br /><span className="text-brand-300">{accent}</span></h2>
-            <p className="mt-5 max-w-xl text-sm leading-relaxed text-brand-100/70">{t(businessHours.days)} {t(businessHours.time)} · {t(businessHours.note)}</p>
-            <div className="mt-3 flex flex-wrap gap-x-6">
-              <Link to="/about#process" className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white">
-                {t(trustLinks.howWeWork)} <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
-              </Link>
-              <Link to="/about#company" className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white">
-                {t(trustLinks.companyInfo)} <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
-              </Link>
-            </div>
+        <div className="max-w-3xl">
+          <p className="section-code text-brand-300">04 / START</p>
+          <h2 id="work-cta" className="thai-display mt-3 text-[clamp(2rem,4.4vw,3.6rem)] font-bold leading-tight">{lead}<br /><span className="text-brand-300">{accent}</span></h2>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <ButtonLink to={cta.primary.to} size="lg" data-cta="primary" className="bg-white text-brand-800 hover:bg-brand-50">
+              {t(cta.primary.label)} <ArrowIcon />
+            </ButtonLink>
+            <Link to="/about#process" className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white">
+              {t(trustLinks.howWeWork)} <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
+            </Link>
+            <Link to="/about#company" className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white">
+              {t(trustLinks.companyInfo)} <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
+            </Link>
           </div>
-          <div className="flex flex-wrap gap-3 lg:max-w-md lg:justify-end">
-            {actions.map((action) =>
-              action.to ? (
-                <Link key={action.label} to={action.to} className="inline-flex min-h-11 items-center gap-2 rounded-pill border border-white/25 px-5 text-sm font-semibold text-white transition-colors hover:border-brand-300 hover:bg-white/5">
-                  {action.label} <ArrowIcon />
-                </Link>
-              ) : (
-                <a
-                  key={action.label}
-                  href={action.href}
-                  {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  className={cn(
-                    'inline-flex min-h-11 items-center gap-2 rounded-pill px-5 text-sm font-semibold transition-colors',
-                    action.primary ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-white/25 text-white hover:border-brand-300 hover:bg-white/5'
-                  )}
-                >
-                  {action.label}
-                  {action.external ? <span className="sr-only">{t(ui.opensInNewTab)}</span> : null}
-                </a>
-              )
-            )}
-          </div>
+          <DirectChannels className="mt-10" />
         </div>
       </Container>
     </section>

@@ -147,11 +147,11 @@ function Hero() {
               transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="mt-7 flex flex-wrap items-center gap-2.5"
             >
-              <ButtonLink to="/contact" size="lg" data-cursor="cta">
+              <ButtonLink to={cta.primary.to} size="lg" data-cursor="cta" data-cta="primary">
                 {t(cta.primary.label)}
                 <ArrowIcon />
               </ButtonLink>
-              <ButtonLink to="/work" size="lg" variant="secondary">
+              <ButtonLink to={cta.secondary.to} size="lg" variant="secondary">
                 {t(cta.secondary.label)}
               </ButtonLink>
             </motion.div>

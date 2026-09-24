@@ -65,7 +65,7 @@ export const explorer = {
     en: 'Choose a topic to see the problem it solves and what we build. Most projects combine several services.',
     zh: '选择一个主题，查看它解决的问题和我们构建的内容。大多数项目会组合使用多项服务。'
   },
-  consult: { th: 'ปรึกษาเรื่องบริการนี้', en: 'Ask about this service', zh: '咨询这项服务' },
+  consult: { th: 'คุยเรื่องบริการนี้', en: 'Discuss this service', zh: '咨询此项服务' },
   viewAll: { th: 'ดูบริการทั้งหมด ({n})', en: 'View all services ({n})', zh: '查看全部服务（{n}）' }
 };
 

@@ -146,7 +146,7 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
       </section>
 
       {next && next.id !== study.id ? <section className="sect sect--field py-14"><Container><Link to={`/work/${next.slug}`} className="group flex flex-wrap items-end justify-between gap-5 border-t border-steel-300 pt-7"><div><p className="section-code">NEXT CASE</p><p className="thai-display mt-3 text-2xl font-bold text-ink group-hover:text-brand-700">{next.title}</p></div><span className="flex h-12 w-12 items-center justify-center rounded-full border border-steel-300 group-hover:border-brand-400"><ArrowIcon /></span></Link></Container></section> : null}
-      <BigCTA code="08 / NEXT STEP" />
+      <BigCTA code="08 / NEXT STEP" contactTo={contactService ? contactHref(contactService, `case:${study.slug}`) : undefined} />
     </>
   );
 }
