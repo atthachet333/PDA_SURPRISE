@@ -1,4 +1,7 @@
-import { Link } from 'react-router-dom';
+import { LocaleLink as Link } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { visualText } from '@/i18n/visuals';
+import { projectText } from '@/i18n/work';
 import { ArrowIcon } from '@/components/shared/Button';
 import { CaseStudyVisual } from './CaseStudyVisual';
 import { projectAccessNote, projectCaseLink, projectLiveLink, type CaseStudy } from '@/data/caseStudies';
@@ -29,6 +32,7 @@ export function ProjectVisual({
   className?: string;
 }) {
   const shot = study.screenshot?.reviewed ? study.screenshot : undefined;
+  const { t } = useLocale();
   return (
     <figure className={cn('work-frame group/visual relative overflow-hidden rounded-panel border border-steel-200 bg-white', className)}>
       <div className="flex h-8 items-center gap-1.5 border-b border-steel-200 bg-steel-50 px-3">
@@ -54,7 +58,7 @@ export function ProjectVisual({
           <CaseStudyVisual kind={study.visual} className="work-shot" />
         )}
         <figcaption className="absolute bottom-2.5 right-2.5 rounded-pill bg-ink/75 px-2.5 py-1 font-mono text-[0.5rem] tracking-[0.12em] text-white/85">
-          {shot ? 'SCREENSHOT' : 'ภาพจำลองโครงสร้างระบบ'}
+          {shot ? 'SCREENSHOT' : t(visualText.schematic)}
         </figcaption>
       </div>
     </figure>
@@ -67,8 +71,9 @@ export function ProjectVisual({
  * announces that it leaves the site.
  */
 export function ProjectActions({ study, className }: { study: CaseStudy; className?: string }) {
-  const live = projectLiveLink(study);
-  const caseLink = projectCaseLink(study);
+  const { locale, t } = useLocale();
+  const live = projectLiveLink(study, locale);
+  const caseLink = projectCaseLink(study, locale);
   return (
     <div className={cn('flex flex-wrap items-center gap-3', className)}>
       {live ? (
@@ -80,7 +85,7 @@ export function ProjectActions({ study, className }: { study: CaseStudy; classNa
         >
           {live.label}
           <ExternalIcon />
-          <span className="sr-only">(เปิดแท็บใหม่ ออกจากเว็บไซต์ PDA BLISS ไปที่ {live.host})</span>
+          <span className="sr-only">{t(projectText.leavesSiteTo).replace('{host}', live.host)}</span>
         </a>
       ) : null}
       <Link
@@ -100,17 +105,19 @@ export function ProjectActions({ study, className }: { study: CaseStudy; classNa
 }
 
 export function ProjectAccessNote({ study, className }: { study: CaseStudy; className?: string }) {
+  const { locale } = useLocale();
   return (
     <p className={cn('flex items-center gap-2 text-xs text-steel-500', className)}>
       <span aria-hidden="true" className={cn('h-1.5 w-1.5 rounded-full', projectLiveLink(study) ? 'bg-brand-500' : 'bg-steel-300')} />
-      {projectAccessNote(study)}
+      {projectAccessNote(study, locale)}
     </p>
   );
 }
 
 export function ProjectTags({ tags, className }: { tags: readonly string[]; className?: string }) {
+  const { t } = useLocale();
   return (
-    <ul className={cn('flex flex-wrap gap-1.5', className)} aria-label="ความสามารถของระบบ">
+    <ul className={cn('flex flex-wrap gap-1.5', className)} aria-label={t(projectText.capabilities)}>
       {tags.map((tag) => (
         <li key={tag} className="rounded-pill border border-brand-100 bg-brand-50/70 px-2.5 py-1 text-[0.7rem] text-brand-800">{tag}</li>
       ))}
@@ -120,7 +127,8 @@ export function ProjectTags({ tags, className }: { tags: readonly string[]; clas
 
 /** The live action alone (detail pages), or nothing when no safe URL exists. */
 export function ProjectLiveButton({ study, className }: { study: CaseStudy; className?: string }) {
-  const live = projectLiveLink(study);
+  const { locale, t } = useLocale();
+  const live = projectLiveLink(study, locale);
   if (!live) return null;
   return (
     <a
@@ -132,7 +140,7 @@ export function ProjectLiveButton({ study, className }: { study: CaseStudy; clas
       {live.label}
       <ExternalIcon />
       <span className="font-mono text-[0.65rem] font-normal text-white/75">{live.host}</span>
-      <span className="sr-only">(เปิดแท็บใหม่ ออกจากเว็บไซต์ PDA BLISS)</span>
+      <span className="sr-only">{t(projectText.leavesSite)}</span>
     </a>
   );
 }

@@ -1,6 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { LocaleLink as Link } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { insightsCopy } from '@/i18n/home';
+import { localizeInsight } from '@/i18n/insights';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon } from '@/components/shared/Button';
 import { insightCategories, insights, isInsightPublished, type Insight, type InsightCategory } from '@/data/insights';
@@ -14,7 +17,8 @@ interface InsightStripProps {
 }
 
 export function InsightStrip({ items, variant = 'strip', code = '11 / INSIGHTS' }: InsightStripProps) {
-  const source = items ?? insights;
+  const { t, content } = useLocale();
+  const source = useMemo(() => (items ?? insights).map((insight) => localizeInsight(insight, content)), [items, content]);
   const reduced = useReducedMotion();
   const [active, setActive] = useState<InsightCategory | 'all'>('all');
   const featured = source[0];
@@ -53,7 +57,7 @@ export function InsightStrip({ items, variant = 'strip', code = '11 / INSIGHTS' 
         </div>
 
         <div className="mt-12 border-y border-steel-300/60 py-4">
-          <div className="no-scrollbar flex gap-2 overflow-x-auto" role="tablist" aria-label="หมวดบทความ">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto" role="tablist" aria-label={t(insightsCopy.categories)}>
             {(['all', ...insightCategories] as const).map((category) => {
               const selected = active === category;
               return (
@@ -65,7 +69,7 @@ export function InsightStrip({ items, variant = 'strip', code = '11 / INSIGHTS' 
                   onClick={() => setActive(category)}
                   className={cn('relative shrink-0 rounded-pill border px-4 py-2 text-xs transition-colors', selected ? 'border-brand-700 bg-brand-700 text-white' : 'border-steel-300 bg-white/70 text-steel-600 hover:border-brand-300 hover:text-brand-700')}
                 >
-                  {category === 'all' ? 'ทั้งหมด' : category}
+                  {category === 'all' ? t(insightsCopy.all) : category}
                 </button>
               );
             })}
@@ -85,10 +89,12 @@ export function InsightStrip({ items, variant = 'strip', code = '11 / INSIGHTS' 
 }
 
 function SectionHeading({ code, allLink = false }: { code: string; allLink?: boolean }) {
+  const { t } = useLocale();
+  const [first, second, third] = t(insightsCopy.title);
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-      <div><p className="section-code">{code}</p><h2 className="thai-display mt-3 text-statement font-bold text-ink">บทความและมุมมอง<br /><span className="text-brand-700">สำหรับการตัดสินใจ<br />เรื่องระบบ</span></h2></div>
-      {allLink ? <Link to="/insights" className="group inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-brand-700">ดูบทความทั้งหมด<ArrowIcon className="transition-transform group-hover:translate-x-1" /></Link> : null}
+      <div><p className="section-code">{code}</p><h2 className="thai-display mt-3 text-statement font-bold text-ink">{first}<br /><span className="text-brand-700">{second}<br />{third}</span></h2></div>
+      {allLink ? <Link to="/insights" className="group inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-brand-700">{t(insightsCopy.viewAll)}<ArrowIcon className="transition-transform group-hover:translate-x-1" /></Link> : null}
     </div>
   );
 }
@@ -118,10 +124,11 @@ function InsightVisual({ insight, compact = false }: { insight: Insight; compact
 }
 
 function PublicationState({ insight }: { insight: Insight }) {
+  const { t } = useLocale();
   return isInsightPublished(insight) ? (
-    <span className="inline-flex items-center gap-2 text-xs font-semibold text-brand-700">อ่านบทความ<ArrowIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" /></span>
+    <span className="inline-flex items-center gap-2 text-xs font-semibold text-brand-700">{t(insightsCopy.read)}<ArrowIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" /></span>
   ) : (
-    <span className="font-mono text-[.5625rem] uppercase tracking-[.14em] text-steel-400">กำลังเตรียมบทความ</span>
+    <span className="font-mono text-[.5625rem] uppercase tracking-[.14em] text-steel-400">{t(insightsCopy.preparing)}</span>
   );
 }
 

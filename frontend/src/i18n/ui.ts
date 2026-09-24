@@ -202,6 +202,8 @@ export const cookie = {
 export const ui = {
   loading: { th: 'กำลังโหลด', en: 'Loading', zh: '加载中' },
   backToTop: { th: 'กลับด้านบน', en: 'Back to top', zh: '返回顶部' },
+  /** The label inside the custom cursor over project cards. */
+  viewProject: { th: 'ดูโปรเจกต์', en: 'View project', zh: '查看项目' },
   opensInNewTab: { th: '(เปิดในแท็บใหม่)', en: '(opens in a new tab)', zh: '（在新标签页中打开）' },
   errorTitle: { th: 'หน้านี้มีปัญหาชั่วคราว', en: 'This page is having a temporary problem', zh: '此页面暂时出现问题' },
   errorBody: {

@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
-import { useCallback, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { LocaleLink as Link } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { useSolutions } from '@/i18n/useContent';
+import { solutionPurpose, solutionShowcase as copy } from '@/i18n/solutions';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon } from '@/components/shared/Button';
 import { ProductPanel } from './ProductPanel';
 import { SectionBackdrop } from './SectionBackdrop';
-import { solutions, type Solution } from '@/data/solutions';
+import type { Solution } from '@/data/solutions';
 import { visualForSolution } from '@/data/visuals';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
@@ -34,21 +37,18 @@ const FEATURED_IDS = [
   'automation'
 ];
 
-/** One-line statement of what each solution is actually for. */
-const PROBLEM: Record<string, string> = {
-  erp: 'รวมข้อมูลธุรกิจไว้ในระบบเดียว',
-  'hr-payroll': 'ลดเวลาจัดทำเงินเดือนและตรวจสอบย้อนหลัง',
-  'document-workflow': 'จัดเก็บ ค้นหา และควบคุมเอกสารจากจุดเดียว',
-  'sales-inventory': 'ยอดสต็อกตรงกับของจริงทุกช่องทาง',
-  tracking: 'รู้ว่างานอยู่ขั้นตอนไหน โดยไม่ต้องโทรถาม',
-  automation: 'ตัดงานซ้ำที่กินเวลาทุกเดือนออกไป'
-};
-
-const FEATURED: Solution[] = FEATURED_IDS.map((id) =>
-  solutions.find((solution) => solution.id === id)
-).filter((solution): solution is Solution => Boolean(solution));
-
 export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } = {}) {
+  const { t } = useLocale();
+  const solutions = useSolutions();
+  /* One-line statement of what each featured solution is actually for. */
+  const FEATURED = useMemo<Solution[]>(
+    () =>
+      FEATURED_IDS.map((id) => solutions.find((solution) => solution.id === id)).filter(
+        (solution): solution is Solution => Boolean(solution)
+      ),
+    [solutions]
+  );
+  const [lead, accent] = t(copy.title);
   const [activeIndex, setActiveIndex] = useState(0);
   const reduced = useReducedMotion();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -61,7 +61,7 @@ export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } 
     if (!keys.includes(event.key)) return;
     event.preventDefault();
     setActiveIndex((current) => {
-      const last = FEATURED.length - 1;
+      const last = FEATURED_IDS.length - 1;
       let next = current;
       if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = current === last ? 0 : current + 1;
       if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = current === 0 ? last : current - 1;
@@ -85,16 +85,16 @@ export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } 
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>
             <h2 className="thai-display mt-3 text-statement font-bold text-ink">
-              ไม่ใช่แค่เขียนโปรแกรม
+              {lead}
               <br />
-              <span className="text-brand-600">แต่ออกแบบให้ธุรกิจทำงานง่ายขึ้น</span>
+              <span className="text-brand-600">{accent}</span>
             </h2>
           </div>
           <Link
             to="/solutions"
             className="group inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-600"
           >
-            ดูโซลูชันทั้งหมด
+            {t(copy.viewAll)}
             <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
           </Link>
         </div>
@@ -139,7 +139,7 @@ export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } 
 
           <div
             role="tablist"
-            aria-label="เลือกโซลูชัน"
+            aria-label={t(copy.choose)}
             aria-orientation="vertical"
             onKeyDown={onKeyDown}
             className="self-start border-t border-steel-300/60"
@@ -182,7 +182,7 @@ export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } 
                   <span className="min-w-0 flex-1">
                     <span className="thai-display block text-sm font-semibold">{solution.title}</span>
                     <span className="mt-1 block text-xs leading-relaxed text-steel-500">
-                      {PROBLEM[solution.id] ?? solution.summary}
+                      {solutionPurpose[solution.id] ? t(solutionPurpose[solution.id]!) : solution.summary}
                     </span>
                   </span>
                   <ArrowIcon
@@ -201,7 +201,7 @@ export function SolutionShowcase({ code = '05 / SOLUTIONS' }: { code?: string } 
         <div className="mt-8 lg:hidden">
           <div
             role="tablist"
-            aria-label="เลือกโซลูชัน"
+            aria-label={t(copy.choose)}
             className="no-scrollbar -mx-gutter flex snap-x gap-2 overflow-x-auto px-gutter pb-1"
           >
             {FEATURED.map((solution, index) => {

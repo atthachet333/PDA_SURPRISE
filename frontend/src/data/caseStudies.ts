@@ -1,4 +1,6 @@
 import { isSafePublicUrl, displayHost } from '@/lib/externalLinks';
+import { projectLinkText } from '@/i18n/caseStudies';
+import type { Locale } from '@/i18n/locales';
 
 export type CaseStudyCategory = 'business-system' | 'people' | 'document-data' | 'web';
 export type CaseStudyStatus = 'internal-system' | 'custom-system' | 'built-system';
@@ -405,26 +407,27 @@ export type ProjectLink =
  * How a visitor opens a project. A live link exists only for a public project
  * whose `liveUrl` passes the safety gate; everything else opens its case study.
  */
-export function projectLiveLink(study: CaseStudy): Extract<ProjectLink, { kind: 'live' }> | null {
+export function projectLiveLink(study: CaseStudy, locale: Locale = 'th'): Extract<ProjectLink, { kind: 'live' }> | null {
   if (study.visibility !== 'public' || !isSafePublicUrl(study.liveUrl)) return null;
   return {
     kind: 'live',
     href: study.liveUrl,
     host: displayHost(study.liveUrl),
-    label: study.category === 'web' ? 'ดูเว็บไซต์จริง' : 'ดูระบบจริง'
+    label: (study.category === 'web' ? projectLinkText.liveWebsite : projectLinkText.liveSystem)[locale]
   };
 }
 
-export function projectCaseLink(study: CaseStudy): Extract<ProjectLink, { kind: 'case-study' }> {
-  return { kind: 'case-study', href: `/work/${study.slug}`, label: 'ดู Case Study' };
+/** `href` is locale-neutral; LocaleLink adds the prefix. */
+export function projectCaseLink(study: CaseStudy, locale: Locale = 'th'): Extract<ProjectLink, { kind: 'case-study' }> {
+  return { kind: 'case-study', href: `/work/${study.slug}`, label: projectLinkText.caseStudy[locale] };
 }
 
 /** Plain-language access note shown on every project. */
-export function projectAccessNote(study: CaseStudy): string {
-  if (projectLiveLink(study)) return 'เปิดดูได้สาธารณะ';
-  if (study.visibility === 'internal') return 'ระบบภายในองค์กร · ไม่เปิดสาธารณะ';
-  if (study.visibility === 'client') return 'ระบบของลูกค้า · ไม่เปิดสาธารณะ';
-  return 'เว็บไซต์สาธารณะ';
+export function projectAccessNote(study: CaseStudy, locale: Locale = 'th'): string {
+  if (projectLiveLink(study)) return projectLinkText.accessPublic[locale];
+  if (study.visibility === 'internal') return projectLinkText.accessInternal[locale];
+  if (study.visibility === 'client') return projectLinkText.accessClient[locale];
+  return projectLinkText.accessWebsite[locale];
 }
 
 export function projectsForFilter(filter: WorkFilter | 'all', items: readonly CaseStudy[] = caseStudies): readonly CaseStudy[] {

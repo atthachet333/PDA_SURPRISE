@@ -1,4 +1,8 @@
-import { Link } from 'react-router-dom';
+import { LocaleLink as Link } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { useCaseStudies } from '@/i18n/useContent';
+import { workPage } from '@/i18n/work';
+import { cta as ctaText } from '@/i18n/ui';
 import { ArrowIcon } from '@/components/shared/Button';
 import { Container } from '@/components/shared/Layout';
 import { homeWorkPreview, type CaseStudy } from '@/data/caseStudies';
@@ -20,22 +24,26 @@ interface WorkShowcaseProps {
 export function WorkShowcase({
   items = homeWorkPreview,
   code = '06 / WORK',
-  title = <><span>ผลงานที่</span><br /><span className="text-brand-400">ใช้ทำงานจริง</span></>,
-  lead = 'ระบบหลังบ้าน เว็บไซต์ และเครื่องมือสำหรับงานจริงของธุรกิจ แต่ละงานเล่าจากปัญหาและสิ่งที่เราสร้าง',
+  title,
+  lead,
   showAllLink = false
 }: WorkShowcaseProps) {
+  const { t } = useLocale();
+  const localized = useCaseStudies(items);
+  const [titleLead, titleAccent] = t(workPage.showcaseTitle);
+  const heading = title ?? <><span>{titleLead}</span><br /><span className="text-brand-400">{titleAccent}</span></>;
   return (
     <section id="work" className="sect sect--deep relative overflow-hidden py-section text-white">
       <span aria-hidden="true" className="sect-edge-top sect-edge-top--dark" />
       <SectionBackdrop variant="mesh-dark" pointer intensity={0.85} />
       <Container wide className="relative">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl"><p className="section-code text-brand-400">{code}</p><h2 className="thai-display mt-3 text-statement font-bold text-white">{title}</h2></div>
-          <p className="max-w-md text-sm leading-relaxed text-brand-100/65">{lead}</p>
+          <div className="max-w-2xl"><p className="section-code text-brand-400">{code}</p><h2 className="thai-display mt-3 text-statement font-bold text-white">{heading}</h2></div>
+          <p className="max-w-md text-sm leading-relaxed text-brand-100/65">{lead ?? t(workPage.showcaseLead)}</p>
         </div>
 
         <ul className="mt-10 grid gap-5 md:grid-cols-2">
-          {items.map((item, index) => (
+          {localized.map((item, index) => (
             <li key={item.id}>
               <PreviewCard item={item} priority={index === 0} />
             </li>
@@ -44,7 +52,7 @@ export function WorkShowcase({
 
         {showAllLink ? (
           <Link to="/work" className="group mt-10 inline-flex min-h-11 items-center gap-2 rounded-pill bg-brand-500 px-6 text-sm font-semibold text-white transition-colors hover:bg-brand-400">
-            ดูผลงานทั้งหมด <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
+            {t(ctaText.viewAllWork)} <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
           </Link>
         ) : null}
       </Container>

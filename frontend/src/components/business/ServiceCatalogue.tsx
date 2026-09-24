@@ -1,11 +1,16 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { Container } from '@/components/shared/Layout';
 import { Icon } from '@/components/shared/Icon';
 import { ArrowIcon } from '@/components/shared/Button';
 import { ProductPanel } from './ProductPanel';
-import { primaryServices, serviceDistinctions, type PrimaryService } from '@/data/services';
-import { caseStudies } from '@/data/caseStudies';
+import type { PrimaryService } from '@/data/services';
+import type { CaseStudy } from '@/data/caseStudies';
+import { LocaleLink as Link } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { useCaseStudies, usePrimaryServices, useServiceDistinctions } from '@/i18n/useContent';
+import { servicesPage as copy } from '@/i18n/services';
+import { cta as ctaText } from '@/i18n/ui';
+import { fill, fillText } from '@/i18n/fill';
 import { visualForService } from '@/data/visuals';
 import { contactHref, isContactServiceId } from '@/data/contactRouting';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -25,10 +30,10 @@ import { cn } from '@/lib/cn';
  */
 
 /** Resolves a service's related case studies from the canonical project data. */
-function relatedCases(service: PrimaryService) {
+function relatedCases(service: PrimaryService, studies: readonly CaseStudy[]) {
   return service.relatedProjects
-    .map((slug) => caseStudies.find((study) => study.slug === slug))
-    .filter((study): study is (typeof caseStudies)[number] => Boolean(study));
+    .map((slug) => studies.find((study) => study.slug === slug))
+    .filter((study): study is CaseStudy => Boolean(study));
 }
 
 function serviceContactHref(service: PrimaryService): string {
@@ -44,6 +49,8 @@ function serviceContactHref(service: PrimaryService): string {
  */
 export function ServiceMap({ code = '02 / CAPABILITY MAP' }: { code?: string } = {}) {
   const reduced = useReducedMotion();
+  const { t } = useLocale();
+  const primaryServices = usePrimaryServices();
 
   return (
     <section aria-labelledby="service-map" className="sect sect--paper relative py-section">
@@ -52,11 +59,13 @@ export function ServiceMap({ code = '02 / CAPABILITY MAP' }: { code?: string } =
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>
             <h2 id="service-map" className="thai-display mt-3 text-statement font-bold text-ink">
-              บริการหลัก <span className="text-brand-700">{primaryServices.length} กลุ่ม</span>
+              {fill(t(copy.mapTitle), {
+                count: <span className="text-brand-700">{fillText(t(copy.mapCount), { n: primaryServices.length })}</span>
+              })}
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-steel-600">
-            แต่ละกลุ่มแก้ปัญหาคนละแบบ เลือกหัวข้อเพื่อข้ามไปอ่านรายละเอียดด้านล่าง
+            {t(copy.mapLead)}
           </p>
         </div>
 
@@ -100,20 +109,24 @@ export function ServiceMap({ code = '02 / CAPABILITY MAP' }: { code?: string } =
 
 /** All eight service sections, alternating surface so they read as separate. */
 export function ServiceSections({ code = '03 / SERVICES' }: { code?: string } = {}) {
+  const { t } = useLocale();
+  const primaryServices = usePrimaryServices();
+  const studies = useCaseStudies();
+  const [lead, accent] = t(copy.sectionsTitle);
   return (
     <section aria-labelledby="service-detail" className="sect sect--bright relative py-section">
       <Container wide>
         <p className="section-code">{code}</p>
         <h2 id="service-detail" className="thai-display mt-3 text-statement font-bold text-ink">
-          แต่ละบริการ<span className="text-brand-700">แก้ปัญหาอะไร</span>
+          {lead}<span className="text-brand-700">{accent}</span>
         </h2>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-steel-600">
-          ทุกหัวข้อเล่าด้วยโครงเดียวกัน คือปัญหาที่เจอ สิ่งที่เราสร้าง กลุ่มที่เหมาะ และผลงานจริงที่เกี่ยวข้อง
+          {t(copy.sectionsLead)}
         </p>
 
         <div className="mt-14 space-y-16 lg:mt-20 lg:space-y-24">
           {primaryServices.map((service, index) => (
-            <ServiceBlock key={service.id} service={service} index={index} />
+            <ServiceBlock key={service.id} service={service} index={index} studies={studies} />
           ))}
         </div>
       </Container>
@@ -121,10 +134,11 @@ export function ServiceSections({ code = '03 / SERVICES' }: { code?: string } = 
   );
 }
 
-function ServiceBlock({ service, index }: { service: PrimaryService; index: number }) {
+function ServiceBlock({ service, index, studies }: { service: PrimaryService; index: number; studies: readonly CaseStudy[] }) {
   const reduced = useReducedMotion();
+  const { t } = useLocale();
   const flip = index % 2 === 1;
-  const cases = relatedCases(service);
+  const cases = relatedCases(service, studies);
   const leadCase = cases[0];
   const visual = visualForService(service.id);
 
@@ -174,7 +188,7 @@ function ServiceBlock({ service, index }: { service: PrimaryService; index: numb
       {/* ------------------------------------------------------------ body -- */}
       <div className={cn('mt-10 lg:col-span-7 lg:mt-0', flip && 'lg:order-1')}>
         <div className="rounded-panel border border-brand-100 bg-brand-50/60 p-5 sm:p-6">
-          <p className="font-mono text-[0.58rem] tracking-[0.16em] text-brand-700">PROBLEM · ปัญหาที่เจอ</p>
+          <p className="font-mono text-[0.58rem] tracking-[0.16em] text-brand-700">{t(copy.labelProblem)}</p>
           <p className="thai-display mt-3 text-lg font-semibold leading-snug text-ink">{service.problem}</p>
           <ul className="mt-4 grid gap-2 sm:grid-cols-2">
             {service.problems.map((item) => (
@@ -186,9 +200,9 @@ function ServiceBlock({ service, index }: { service: PrimaryService; index: numb
           </ul>
         </div>
 
-        <div className="mt-7 grid gap-7 sm:grid-cols-2">
+        <div className="mt-7 grid gap-7 sm:grid-cols-2 [&>*]:min-w-0">
           <div>
-            <p className="font-mono text-[0.58rem] tracking-[0.16em] text-steel-600">WHAT WE BUILD · สิ่งที่เราสร้าง</p>
+            <p className="font-mono text-[0.58rem] tracking-[0.16em] text-steel-600">{t(copy.labelBuild)}</p>
             <p className="mt-3 text-sm leading-relaxed text-steel-700">{service.detail}</p>
             <ul className="mt-4 space-y-2">
               {service.deliverables.map((item) => (
@@ -201,7 +215,7 @@ function ServiceBlock({ service, index }: { service: PrimaryService; index: numb
           </div>
 
           <div>
-            <p className="font-mono text-[0.58rem] tracking-[0.16em] text-steel-600">GOOD FOR · เหมาะกับใคร</p>
+            <p className="font-mono text-[0.58rem] tracking-[0.16em] text-steel-600">{t(copy.labelFor)}</p>
             <ul className="mt-3 space-y-2">
               {service.targetUsers.map((item) => (
                 <li
@@ -214,7 +228,7 @@ function ServiceBlock({ service, index }: { service: PrimaryService; index: numb
             </ul>
 
             <p className="mt-6 font-mono text-[0.58rem] tracking-[0.16em] text-steel-600">
-              RELATED WORK · ผลงานที่เกี่ยวข้อง
+              {t(copy.labelWork)}
             </p>
             {cases.length ? (
               <ul className="mt-3 space-y-2">
@@ -241,7 +255,7 @@ function ServiceBlock({ service, index }: { service: PrimaryService; index: numb
               /* No public case study exists for this service. We say so rather
                  than dressing an unrelated project up as one. */
               <p className="mt-3 rounded-card border border-dashed border-steel-300 bg-white p-3 text-sm leading-relaxed text-steel-600">
-                ยังไม่มีผลงานที่เปิดเผยรายละเอียดได้ในกลุ่มนี้ — คุยกับเราเพื่อดูว่าทำอะไรให้ได้บ้าง
+                {t(copy.noWork)}
               </p>
             )}
           </div>
@@ -252,7 +266,7 @@ function ServiceBlock({ service, index }: { service: PrimaryService; index: numb
             to={serviceContactHref(service)}
             className="group inline-flex min-h-11 items-center gap-2 rounded-pill bg-ink px-5 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
           >
-            คุยเกี่ยวกับระบบนี้
+            {t(copy.talkSystem)}
             <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
           </Link>
           {leadCase ? (
@@ -260,11 +274,11 @@ function ServiceBlock({ service, index }: { service: PrimaryService; index: numb
               to={`/work/${leadCase.slug}`}
               className="inline-flex min-h-11 items-center gap-2 rounded-pill border border-steel-300 px-5 text-sm font-semibold text-ink transition-colors hover:border-brand-400 hover:text-brand-700"
             >
-              ดูผลงานที่เกี่ยวข้อง
+              {t(ctaText.seeRelatedWork)}
               <ArrowIcon />
             </Link>
           ) : null}
-          <ul className="flex flex-wrap gap-1.5" aria-label={`เทคโนโลยีที่ใช้ใน${service.title}`}>
+          <ul className="flex flex-wrap gap-1.5" aria-label={fillText(t(copy.techIn), { title: service.title })}>
             {service.tech.map((item) => (
               <li
                 key={item}
@@ -288,6 +302,9 @@ function ServiceBlock({ service, index }: { service: PrimaryService; index: numb
  * plain language with a link into the matching service.
  */
 export function ServiceDistinctions({ code = '04 / NOT THE SAME THING' }: { code?: string } = {}) {
+  const { t } = useLocale();
+  const serviceDistinctions = useServiceDistinctions();
+  const [lead, accent] = t(copy.distinctTitle);
   return (
     <section aria-labelledby="service-distinctions" className="sect sect--field relative py-section">
       <Container wide>
@@ -295,12 +312,12 @@ export function ServiceDistinctions({ code = '04 / NOT THE SAME THING' }: { code
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>
             <h2 id="service-distinctions" className="thai-display mt-3 text-statement font-bold text-ink">
-              เว็บไซต์ เว็บแอป และ ERP<br />
-              <span className="text-brand-700">ไม่ใช่สิ่งเดียวกัน</span>
+              {lead}<br />
+              <span className="text-brand-700">{accent}</span>
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-steel-600">
-            คำเหล่านี้ถูกใช้ปนกันบ่อย ตารางนี้ช่วยให้คุยกันได้ตรงเรื่องตั้งแต่ครั้งแรก
+            {t(copy.distinctLead)}
           </p>
         </div>
 
@@ -316,13 +333,13 @@ export function ServiceDistinctions({ code = '04 / NOT THE SAME THING' }: { code
               </div>
               <p className="text-sm leading-relaxed text-steel-700">{entry.is}</p>
               <div>
-                <p className="font-mono text-[0.55rem] tracking-[0.14em] text-steel-600">ใช้โดย</p>
+                <p className="font-mono text-[0.55rem] tracking-[0.14em] text-steel-600">{t(copy.usedBy)}</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-steel-700">{entry.forWhom}</p>
                 <a
                   href={`#${entry.serviceId}`}
                   className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-brand-700"
                 >
-                  ดูรายละเอียด
+                  {t(ctaText.learnMore)}
                   <ArrowIcon />
                 </a>
               </div>

@@ -1,6 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { LocaleLink as Link } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { explorer } from '@/i18n/home';
+import { localizeService } from '@/i18n/services';
+import { fillText } from '@/i18n/fill';
 import { Container } from '@/components/shared/Layout';
 import { Icon } from '@/components/shared/Icon';
 import { ArrowIcon } from '@/components/shared/Button';
@@ -40,18 +45,23 @@ interface ServiceExplorerProps {
 }
 
 export function ServiceExplorer({
-  items = primaryServices,
+  items: sourceItems = primaryServices,
   code = '03 / SERVICES',
-  title = (
-    <>
-      เราทำอะไร
-      <br />
-      <span className="text-brand-600">ให้ธุรกิจคุณได้บ้าง</span>
-    </>
-  ),
-  lead = 'เลือกหัวข้อเพื่อดูปัญหาที่แก้และสิ่งที่เราสร้าง งานส่วนใหญ่ใช้หลายบริการร่วมกัน',
+  title: titleProp,
+  lead: leadProp,
   showAllLink = false
 }: ServiceExplorerProps) {
+  const { t, content } = useLocale();
+  const items = useMemo(() => sourceItems.map((service) => localizeService(service, content)), [sourceItems, content]);
+  const [titleLead, titleAccent] = t(explorer.title);
+  const title = titleProp ?? (
+    <>
+      {titleLead}
+      <br />
+      <span className="text-brand-600">{titleAccent}</span>
+    </>
+  );
+  const lead = leadProp ?? t(explorer.lead);
   const [activeIndex, setActiveIndex] = useState(0);
   const { hash } = useLocation();
   const reduced = useReducedMotion();
@@ -224,7 +234,7 @@ export function ServiceExplorer({
                   to={activeContactIntent ? contactHref(activeContactIntent, `service:${activeContactIntent}`) : '/contact'}
                   className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-600"
                 >
-                  ปรึกษาเรื่องบริการนี้
+                  {t(explorer.consult)}
                   <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
                 </Link>
               </motion.div>
@@ -340,7 +350,7 @@ export function ServiceExplorer({
                             </span>
                           ))}
                         </div>
-                        <Link to={isContactServiceId(service.id) ? contactHref(service.id, `service:${service.id}`) : '/contact'} className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-700">ปรึกษาเรื่องบริการนี้ <ArrowIcon /></Link>
+                        <Link to={isContactServiceId(service.id) ? contactHref(service.id, `service:${service.id}`) : '/contact'} className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-700">{t(explorer.consult)} <ArrowIcon /></Link>
                       </div>
                     </motion.div>
                   ) : null}
@@ -356,7 +366,7 @@ export function ServiceExplorer({
               to="/services"
               className="group inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-600"
             >
-              ดูบริการทั้งหมด ({primaryServices.length})
+              {fillText(t(explorer.viewAll), { n: primaryServices.length })}
               <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
             </Link>
           </div>

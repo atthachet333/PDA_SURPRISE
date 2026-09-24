@@ -1,5 +1,12 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { LocaleLink as Link } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { useCaseStudies } from '@/i18n/useContent';
+import { metricText, workPage as copy, workProcess } from '@/i18n/work';
+import { workFilterLabel } from '@/i18n/caseStudies';
+import { businessHours } from '@/i18n/company';
+import { ui } from '@/i18n/ui';
+import { fillText } from '@/i18n/fill';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon } from '@/components/shared/Button';
 import { ProjectAccessNote, ProjectActions, ProjectTags, ProjectVisual } from '@/components/business/ProjectParts';
@@ -26,18 +33,12 @@ import { cn } from '@/lib/cn';
 /** Technologies the listed projects actually use (verified from their code). */
 const TECH = ['React', 'TypeScript', 'Vite', 'Next.js', 'Tailwind CSS', 'Fastify', 'Express', 'Prisma', 'MySQL', 'Google APIs', 'LINE Official Account'];
 
-const PROCESS = [
-  { title: 'Requirement', th: 'เก็บโจทย์จากงานจริง' },
-  { title: 'Design', th: 'ออกแบบ Workflow และหน้าจอ' },
-  { title: 'Development', th: 'พัฒนาเป็นระบบที่ใช้ได้' },
-  { title: 'Test', th: 'ทดสอบกับข้อมูลและผู้ใช้' },
-  { title: 'Deploy', th: 'นำขึ้นระบบจริง' },
-  { title: 'Support', th: 'ดูแลและปรับต่อ' }
-];
-
 export default function Work() {
   usePageMeta(pageMeta.work);
-  const featured = caseStudies.filter((study) => study.featured);
+  const { t } = useLocale();
+  const studies = useCaseStudies();
+  const featured = studies.filter((study) => study.featured);
+  const [featuredLead, featuredAccent] = t(copy.featuredTitle);
 
   return (
     <>
@@ -45,13 +46,13 @@ export default function Work() {
       <section aria-labelledby="featured-work" className="sect sect--paper relative py-section">
         <Container wide>
           <p className="section-code">01 / FEATURED WORK</p>
-          <h2 id="featured-work" className="thai-display mt-3 text-statement font-bold text-ink">ผลงานที่แสดง<span className="text-brand-700">ความสามารถคนละด้าน</span></h2>
+          <h2 id="featured-work" className="thai-display mt-3 text-statement font-bold text-ink">{featuredLead}<span className="text-brand-700">{featuredAccent}</span></h2>
           <div className="mt-12 space-y-16 lg:mt-16 lg:space-y-24">
             {featured.map((study, index) => <FeaturedRow key={study.id} study={study} index={index} />)}
           </div>
         </Container>
       </section>
-      <AllProjects />
+      <AllProjects studies={studies} />
       <HowWeBuild />
       <WorkCta />
     </>
@@ -59,32 +60,34 @@ export default function Work() {
 }
 
 function WorkHero() {
+  const { t } = useLocale();
+  const [lead, accent] = t(copy.heroTitle);
   return (
     <section className="sect sect--bright relative overflow-hidden pb-14 pt-32 sm:pb-16 sm:pt-40">
       <span aria-hidden="true" className="work-grid pointer-events-none absolute inset-0" />
       <Container wide className="relative">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.65fr)] lg:items-end">
           <div>
-            <p className="section-code">WORK · ผลงาน</p>
+            <p className="section-code">{t(copy.heroCode)}</p>
             <h1 className="thai-display mt-4 max-w-4xl text-[clamp(2.3rem,5vw,4.4rem)] font-bold leading-[1.12] text-ink">
-              เราไม่ได้แค่ทำเว็บไซต์<br /><span className="text-brand-700">เราสร้างระบบที่ใช้ทำงานจริง</span>
+              {lead}<br /><span className="text-brand-700">{accent}</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lead text-steel-600">
-              ผลงานของเราครอบคลุมระบบหลังบ้าน เว็บไซต์ และเครื่องมือสำหรับงานจริงของธุรกิจ แต่ละโครงการเล่าจากปัญหา สิ่งที่เราสร้าง และวิธีที่ระบบทำงาน
+              {t(copy.heroLead)}
             </p>
           </div>
           <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-panel border border-steel-200 bg-steel-200">
             {metricsVerified
-              ? metrics.map((metric) => (
+              ? metrics.map((metric, index) => (
                   <div key={metric.label} className="bg-white p-5">
-                    <dt className="text-xs text-steel-500">{metric.label}</dt>
+                    <dt className="text-xs text-steel-500">{metricText[index] ? t(metricText[index]!.label) : metric.label}</dt>
                     <dd className="mt-1 font-mono text-4xl font-semibold text-ink">{metric.value}</dd>
-                    <dd className="mt-1 text-[0.7rem] leading-snug text-steel-600">{metric.detail}</dd>
+                    <dd className="mt-1 text-[0.7rem] leading-snug text-steel-600">{metricText[index] ? t(metricText[index]!.detail) : metric.detail}</dd>
                   </div>
                 ))
               : null}
             <div className="col-span-2 bg-brand-50 p-4 text-xs leading-relaxed text-brand-800">
-              หน้านี้อธิบาย {caseStudies.length} โครงการที่เปิดเผยรายละเอียดได้ ระบบของลูกค้าแสดงโดยไม่เปิดเผยข้อมูลภายใน
+              {fillText(t(copy.heroNote), { n: caseStudies.length })}
             </div>
           </dl>
         </div>
@@ -123,9 +126,10 @@ function FeaturedRow({ study, index }: { study: CaseStudy; index: number }) {
   );
 }
 
-function AllProjects() {
+function AllProjects({ studies }: { studies: readonly CaseStudy[] }) {
+  const { t } = useLocale();
   const [filter, setFilter] = useState<WorkFilter | 'all'>('all');
-  const visible = useMemo(() => projectsForFilter(filter), [filter]);
+  const visible = useMemo(() => projectsForFilter(filter, studies), [filter, studies]);
   const available = workFilters.filter((entry) => entry.id === 'all' || projectsForFilter(entry.id).length > 0);
 
   return (
@@ -134,14 +138,16 @@ function AllProjects() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="section-code">02 / ALL PROJECTS</p>
-            <h2 id="all-projects" className="thai-display mt-3 text-statement font-bold text-ink">ผลงานทั้งหมด</h2>
+            <h2 id="all-projects" className="thai-display mt-3 text-statement font-bold text-ink">{t(copy.allTitle)}</h2>
           </div>
           <p aria-live="polite" className="text-sm text-steel-500">
-            แสดง <span className="font-semibold text-ink">{visible.length}</span> จาก {caseStudies.length} โครงการ
+            {t(copy.showing).split(/(\{shown\}|\{total\})/).map((part, index) =>
+              part === '{shown}' ? <span key={index} className="font-semibold text-ink">{visible.length}</span> : part === '{total}' ? caseStudies.length : part
+            )}
           </p>
         </div>
 
-        <div role="group" aria-label="กรองผลงานตามประเภท" className="no-scrollbar -mx-5 mt-7 flex gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
+        <div role="group" aria-label={t(copy.filterGroup)} className="no-scrollbar -mx-5 mt-7 flex gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
           {available.map((entry) => (
             <button
               key={entry.id}
@@ -153,7 +159,7 @@ function AllProjects() {
                 filter === entry.id ? 'border-ink bg-ink text-white' : 'border-steel-300 bg-white text-steel-600 hover:border-brand-400 hover:text-brand-700'
               )}
             >
-              {entry.label}
+              {t(workFilterLabel[entry.id])}
               <span className={cn('ml-2 font-mono text-[0.65rem]', filter === entry.id ? 'text-white/70' : 'text-steel-600')}>
                 {projectsForFilter(entry.id).length}
               </span>
@@ -192,27 +198,28 @@ function ProjectCard({ study }: { study: CaseStudy }) {
 }
 
 function HowWeBuild() {
+  const { t } = useLocale();
   return (
     <section aria-labelledby="how-we-build" className="sect sect--bright relative py-section">
       <Container wide>
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <p className="section-code">03 / HOW WE BUILD</p>
-            <h2 id="how-we-build" className="thai-display mt-3 text-statement font-bold text-ink">จากโจทย์ ถึงระบบที่ใช้งาน</h2>
+            <h2 id="how-we-build" className="thai-display mt-3 text-statement font-bold text-ink">{t(copy.howTitle)}</h2>
             <ol className="mt-8 grid gap-px overflow-hidden rounded-panel border border-steel-200 bg-steel-200 sm:grid-cols-2">
-              {PROCESS.map((step, index) => (
+              {workProcess.map((step, index) => (
                 <li key={step.title} className="bg-white p-4">
                   <span className="font-mono text-[0.6rem] text-brand-600">{String(index + 1).padStart(2, '0')}</span>
                   <p className="mt-1 text-sm font-semibold text-ink">{step.title}</p>
-                  <p className="text-xs text-steel-500">{step.th}</p>
+                  <p className="text-xs text-steel-500">{t(step.text)}</p>
                 </li>
               ))}
             </ol>
           </div>
           <div>
             <p className="section-code">TECHNOLOGY</p>
-            <h3 className="thai-display mt-3 text-2xl font-bold text-ink">เครื่องมือที่ใช้จริงในโครงการเหล่านี้</h3>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-steel-500">เลือกเครื่องมือตามโจทย์ ไม่ใช่ตามกระแส งานของระบบสำคัญกว่าชื่อเทคโนโลยี</p>
+            <h3 className="thai-display mt-3 text-2xl font-bold text-ink">{t(copy.techTitle)}</h3>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-steel-500">{t(copy.techLead)}</p>
             <ul className="mt-6 flex flex-wrap gap-2">
               {TECH.map((tech) => <li key={tech} className="rounded-card border border-steel-200 bg-white px-3 py-2 font-mono text-xs text-steel-700">{tech}</li>)}
             </ul>
@@ -224,10 +231,12 @@ function HowWeBuild() {
 }
 
 function WorkCta() {
+  const { t } = useLocale();
+  const [lead, accent] = t(copy.ctaTitle);
   const actions = [
     { label: `LINE ${company.lineOA}`, href: company.lineUrl, external: true, primary: true },
-    { label: 'ส่งรายละเอียดโครงการ', to: '/contact', primary: false },
-    { label: `โทร ${company.phoneDisplay}`, href: `tel:${company.phone}`, primary: false },
+    { label: t(copy.ctaSend), to: '/contact', primary: false },
+    { label: `${t(copy.ctaCall)} ${company.phoneDisplay}`, href: `tel:${company.phone}`, primary: false },
     { label: company.email, href: `mailto:${company.email}`, primary: false }
   ];
   return (
@@ -236,8 +245,8 @@ function WorkCta() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
             <p className="section-code text-brand-300">04 / START</p>
-            <h2 id="work-cta" className="thai-display mt-3 text-[clamp(2rem,4.4vw,3.6rem)] font-bold leading-tight">มีระบบที่อยากทำอยู่หรือยัง?<br /><span className="text-brand-300">เล่าโจทย์ให้เราฟัง</span></h2>
-            <p className="mt-5 max-w-xl text-sm leading-relaxed text-brand-100/70">{company.businessHours.days} {company.businessHours.time} · {company.businessHours.note}</p>
+            <h2 id="work-cta" className="thai-display mt-3 text-[clamp(2rem,4.4vw,3.6rem)] font-bold leading-tight">{lead}<br /><span className="text-brand-300">{accent}</span></h2>
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-brand-100/70">{t(businessHours.days)} {t(businessHours.time)} · {t(businessHours.note)}</p>
           </div>
           <div className="flex flex-wrap gap-3 lg:max-w-md lg:justify-end">
             {actions.map((action) =>
@@ -256,7 +265,7 @@ function WorkCta() {
                   )}
                 >
                   {action.label}
-                  {action.external ? <span className="sr-only">(เปิดแท็บใหม่)</span> : null}
+                  {action.external ? <span className="sr-only">{t(ui.opensInNewTab)}</span> : null}
                 </a>
               )
             )}

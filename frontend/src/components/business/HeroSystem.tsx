@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import { cn } from '@/lib/cn';
 import { ProductPanel } from './ProductPanel';
 import { heroVisuals } from '@/data/visuals';
+import { metrics } from '@/data/company';
+import { useLocale } from '@/app/LocaleContext';
+import { hero } from '@/i18n/home';
 import { useDeviceProfile } from '@/hooks/useDeviceProfile';
 import { usePageVisible } from '@/hooks/usePageVisible';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -136,6 +139,7 @@ export function HeroSystem({ className }: { className?: string }) {
 /* --------------------------------------------------------------- sub-parts -- */
 
 function StatusCard({ animate }: { animate: boolean }) {
+  const { t } = useLocale();
   return (
     <div className="rounded-card border border-steel-200 bg-white/95 p-3 shadow-lift backdrop-blur-sm sm:p-3.5">
       <div className="flex items-center justify-between">
@@ -153,10 +157,7 @@ function StatusCard({ animate }: { animate: boolean }) {
       </div>
 
       <div className="mt-2.5 grid grid-cols-2 gap-2">
-        {[
-          { label: 'ระบบซอฟต์แวร์', value: '6' },
-          { label: 'เว็บไซต์', value: '4' }
-        ].map((stat) => (
+        {metrics.map((metric, index) => ({ label: t(hero.rigStats)[index] ?? '', value: String(metric.value) })).map((stat) => (
           <div key={stat.label}>
             <p className="text-lg font-semibold leading-none tabular-nums text-ink">{stat.value}</p>
             <p className="thai-display mt-1 truncate text-[0.625rem] text-steel-500">{stat.label}</p>

@@ -6,6 +6,8 @@ import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 import { SectionBackdrop } from './SectionBackdrop';
+import { useLocale } from '@/app/LocaleContext';
+import { techCopy, techText } from '@/i18n/home';
 
 /**
  * TECHNOLOGY — a capability diagram, not a logo wall.
@@ -33,6 +35,11 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
      reason we chose it. */
   const [active, setActive] = useState<{ name: string; note: string; layer: string } | null>(null);
   const reduced = useReducedMotion();
+  const { t } = useLocale();
+  const note = (group: string, name: string, fallback: string) => {
+    const text = techText[group]?.notes[name];
+    return text ? t(text) : fallback;
+  };
 
   return (
     <section className="sect sect--technical relative overflow-hidden py-section">
@@ -44,13 +51,12 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
           <div>
             <p className="section-code">{code}</p>
             <h2 className="thai-display mt-3 text-statement font-bold text-ink">
-              เลือกเทคโนโลยี
+              {t(techCopy.title)[0]}
               <br />
-              <span className="text-brand-600">เพื่อปีที่สอง</span>
+              <span className="text-brand-600">{t(techCopy.title)[1]}</span>
             </h2>
             <p className="mt-4 max-w-sm text-[0.9375rem] leading-relaxed text-steel-600">
-              เครื่องมือที่มีชุมชนแข็งแรง รองรับระยะยาว และหาทีมดูแลต่อได้
-              เพื่อให้ระบบยังพัฒนาต่อได้หลังส่งมอบ
+              {t(techCopy.lead)}
             </p>
 
             {/* Read-out for the focused tool: which layer, and why we use it */}
@@ -75,7 +81,7 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
                 transition={{ duration: 0.3 }}
                 className="mt-2 text-sm leading-relaxed text-steel-600"
               >
-                {active?.note ?? 'เลือกดูเครื่องมือแต่ละตัวเพื่อดูเหตุผลที่เราเลือกใช้ และชั้นที่มันทำงานอยู่'}
+                {active ? note(active.layer, active.name, active.note) : t(techCopy.idle)}
               </motion.p>
             </div>
           </div>
@@ -131,7 +137,7 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
                   >
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <h3 className="text-sm font-semibold text-ink">{group.group}</h3>
-                      <span className="thai-display text-xs text-steel-400">{group.groupTh}</span>
+                      <span className="thai-display text-xs text-steel-400">{techText[group.group] ? t(techText[group.group]!.group) : group.groupTh}</span>
                     </div>
 
                     <ul className="mt-4 flex flex-wrap gap-2">

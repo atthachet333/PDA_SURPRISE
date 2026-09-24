@@ -19,6 +19,15 @@ import {
 import { ApiError, api } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useLocale } from '@/app/LocaleContext';
+import type { Locale } from '@/i18n/locales';
+import type { ContentPack } from '@/i18n/content/types';
+import { budgetLabel, form as f, localizeIntent, localizeOptions, stepLabel, timelineLabel, validation as v } from '@/i18n/contact';
+import { localizeCaseStudy } from '@/i18n/caseStudies';
+import { localizeService } from '@/i18n/services';
+import { caseStudies } from '@/data/caseStudies';
+import { services } from '@/data/services';
+import { fill } from '@/i18n/fill';
 
 type Mode = 'guided' | 'quick';
 type Status = 'idle' | 'submitting' | 'success' | 'error';
@@ -50,6 +59,26 @@ function createValues(serviceId?: ContactServiceId): FormValues {
 }
 
 const clean = (value: string) => value.trim() || undefined;
+
+/**
+ * Where the visitor came from, in their language. Mirrors `contactSourceLabel`
+ * in data/contactFlow.ts, which stays the Thai reference.
+ */
+function sourceLabelFor(sourceContext: string | undefined, locale: Locale, content: ContentPack | null): string | undefined {
+  if (!sourceContext) return undefined;
+  if (locale === 'th') return contactSourceLabel(sourceContext);
+  const [kind, id] = sourceContext.split(':');
+  if (kind === 'case') {
+    const study = caseStudies.find((entry) => entry.slug === id);
+    return study ? localizeCaseStudy(study, content).title : undefined;
+  }
+  if (kind === 'service') {
+    const service = services.find((entry) => entry.id === id);
+    return service ? localizeService(service, content).title : undefined;
+  }
+  if (sourceContext === 'home') return f.sourceHome[locale];
+  return contactSourceLabel(sourceContext);
+}
 const validEmail = (value: string) => !value || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value.trim());
 const validUrl = (value: string) => {
   if (!value.trim()) return true;
@@ -68,6 +97,7 @@ export function ContactForm() {
   const [reference, setReference] = useState('');
   const reduced = useReducedMotion();
   const { play } = useAudio();
+  const { locale, t, content } = useLocale();
   /*
    * `status` is only accurate once React has re-rendered, so a burst of submits
    * inside a single tick (held Enter, a fast double-click, a janky main thread)
@@ -76,8 +106,9 @@ export function ContactForm() {
    */
   const inFlight = useRef(false);
 
-  const intent = getContactIntent(values.serviceId);
-  const sourceLabel = contactSourceLabel(prefill.sourceContext);
+  const baseIntent = getContactIntent(values.serviceId);
+  const intent = baseIntent ? localizeIntent(baseIntent, locale) : undefined;
+  const sourceLabel = sourceLabelFor(prefill.sourceContext, locale, content);
 
   const update = <K extends keyof FormValues>(key: K, value: FormValues[K]) => {
     setValues((current) => ({ ...current, [key]: value }));
@@ -100,21 +131,21 @@ export function ContactForm() {
 
   const validateStep = (targetStep: number): boolean => {
     const errors: Record<string, string> = {};
-    if (targetStep === 1 && !values.serviceId) errors.serviceId = 'กรุณาเลือกหัวข้อที่ใกล้เคียงที่สุด';
-    if (targetStep === 2 && values.currentSituation.trim().length < 3) errors.currentSituation = 'ช่วยเล่าว่าตอนนี้จัดการเรื่องนี้อย่างไร';
+    if (targetStep === 1 && !values.serviceId) errors.serviceId = t(v.serviceId);
+    if (targetStep === 2 && values.currentSituation.trim().length < 3) errors.currentSituation = t(v.currentSituation);
     if (targetStep === 3) {
-      if (values.desiredOutcome.trim().length < 3) errors.desiredOutcome = 'ช่วยบอกผลลัพธ์ที่อยากได้';
-      if (!validUrl(values.existingWebsite)) errors.existingWebsite = 'กรุณาระบุ URL ที่ถูกต้อง เช่น https://example.com';
+      if (values.desiredOutcome.trim().length < 3) errors.desiredOutcome = t(v.desiredOutcome);
+      if (!validUrl(values.existingWebsite)) errors.existingWebsite = t(v.url);
     }
     if (targetStep === 4) {
-      if (values.contactName.trim().length < 2) errors.contactName = 'กรุณาระบุชื่อสำหรับติดต่อ';
-      if (!values.email.trim() && !values.phone.trim() && !values.lineId.trim()) errors.email = 'ระบุอีเมล โทรศัพท์ หรือ LINE ID อย่างน้อยหนึ่งช่องทาง';
-      if (!validEmail(values.email)) errors.email = 'กรุณาระบุอีเมลที่ใช้งานได้';
+      if (values.contactName.trim().length < 2) errors.contactName = t(v.contactName);
+      if (!values.email.trim() && !values.phone.trim() && !values.lineId.trim()) errors.email = t(v.oneChannel);
+      if (!validEmail(values.email)) errors.email = t(v.email);
     }
     setFieldErrors(errors);
     if (Object.keys(errors).length) {
       setStatus('error');
-      setMessage('ยังมีข้อมูลสั้น ๆ ที่ต้องตรวจสอบ');
+      setMessage(t(v.stepIncomplete));
       return false;
     }
     setStatus('idle');
@@ -148,10 +179,10 @@ export function ContactForm() {
 
   const validateQuick = (): boolean => {
     const errors: Record<string, string> = {};
-    if (values.contactName.trim().length < 2) errors.contactName = 'กรุณาระบุชื่อสำหรับติดต่อ';
-    if (!values.email.trim() && !values.phone.trim() && !values.lineId.trim()) errors.email = 'ระบุอีเมล โทรศัพท์ หรือ LINE ID อย่างน้อยหนึ่งช่องทาง';
-    if (!validEmail(values.email)) errors.email = 'กรุณาระบุอีเมลที่ใช้งานได้';
-    if (values.notes.trim().length < 10) errors.notes = 'กรุณาเล่าเรื่องที่ต้องการคุยอย่างน้อย 1–2 ประโยค';
+    if (values.contactName.trim().length < 2) errors.contactName = t(v.contactName);
+    if (!values.email.trim() && !values.phone.trim() && !values.lineId.trim()) errors.email = t(v.oneChannel);
+    if (!validEmail(values.email)) errors.email = t(v.email);
+    if (values.notes.trim().length < 10) errors.notes = t(v.notes);
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -161,7 +192,7 @@ export function ContactForm() {
     if (inFlight.current || status === 'submitting') return;
     if (mode === 'quick' ? !validateQuick() : !validateStep(4)) {
       setStatus('error');
-      setMessage('กรุณาตรวจสอบข้อมูลที่ระบุ');
+      setMessage(t(v.checkFields));
       return;
     }
     inFlight.current = true;
@@ -175,10 +206,16 @@ export function ContactForm() {
     } catch (error) {
       setStatus('error');
       if (error instanceof ApiError) {
-        setMessage(error.status === 429 ? 'ส่งข้อมูลหลายครั้งเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง' : error.message);
-        if (error.fields.length) setFieldErrors(Object.fromEntries(error.fields.map((field) => [field.field, field.message])));
+        /*
+         * The API answers in Thai. Thai visitors see its exact wording; other
+         * locales get the same outcome in their own language rather than a
+         * Thai sentence in the middle of an English or Chinese form.
+         */
+        const serverText = locale === 'th';
+        setMessage(error.status === 429 ? t(v.rateLimited) : serverText ? error.message : t(v.serverRejected));
+        if (error.fields.length) setFieldErrors(Object.fromEntries(error.fields.map((field) => [field.field, serverText ? field.message : t(v.fieldInvalid)])));
       } else {
-        setMessage('ยังส่งข้อมูลไม่ได้ ข้อมูลที่กรอกไว้ยังอยู่ครบ กรุณาลองอีกครั้งหรือติดต่อเราทางอีเมล');
+        setMessage(t(v.failed));
       }
     } finally {
       inFlight.current = false;
@@ -192,17 +229,17 @@ export function ContactForm() {
   return (
     <div className="relative">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex rounded-pill border border-steel-200 bg-white p-1" aria-label="รูปแบบการติดต่อ">
-          <ModeButton active={mode === 'guided'} onClick={() => { setMode('guided'); setStatus('idle'); }}>ช่วยวางโจทย์ให้</ModeButton>
-          <ModeButton active={mode === 'quick'} onClick={() => { setMode('quick'); setStatus('idle'); }}>ส่งข้อความแบบสั้น</ModeButton>
+        <div className="inline-flex rounded-pill border border-steel-200 bg-white p-1" aria-label={t(f.modeGroup)}>
+          <ModeButton active={mode === 'guided'} onClick={() => { setMode('guided'); setStatus('idle'); }}>{t(f.modeGuided)}</ModeButton>
+          <ModeButton active={mode === 'quick'} onClick={() => { setMode('quick'); setStatus('idle'); }}>{t(f.modeQuick)}</ModeButton>
         </div>
-        <p className="text-xs text-steel-400">ไม่ต้องส่งรหัสผ่าน ข้อมูลลับ หรือข้อมูลส่วนบุคคลของพนักงาน</p>
+        <p className="text-xs text-steel-400">{t(f.privacyNote)}</p>
       </div>
 
       {prefill.serviceId && intent ? (
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-card border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-900">
-          <p>คุณกำลังสอบถามเกี่ยวกับ <strong>{intent.label}</strong>{sourceLabel ? <span className="text-brand-700/70"> จาก {sourceLabel}</span> : null}</p>
-          <button type="button" className="min-h-11 rounded-pill border border-brand-300 px-4 text-xs font-semibold" onClick={() => { setMode('guided'); setStep(1); }}>เปลี่ยนหัวข้อ</button>
+          <p>{fill(t(f.askingAbout), { topic: <strong>{intent.label}</strong> })}{sourceLabel ? <span className="text-brand-700/70">{fill(t(f.from), { source: sourceLabel })}</span> : null}</p>
+          <button type="button" className="min-h-11 rounded-pill border border-brand-300 px-4 text-xs font-semibold" onClick={() => { setMode('guided'); setStep(1); }}>{t(f.changeTopic)}</button>
         </div>
       ) : null}
 
@@ -221,8 +258,8 @@ export function ContactForm() {
           <Honeypot value={values.website} onChange={(value) => update('website', value)} />
           <StatusMessage status={status} message={message} />
           <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-steel-100 pt-6">
-            <button type="button" className={cn('min-h-11 rounded-pill px-4 text-sm font-semibold text-steel-600', step === 1 && 'invisible')} onClick={() => setStep((current) => Math.max(1, current - 1))}>← ย้อนกลับ</button>
-            {step < 5 ? <Button type="button" size="lg" onClick={nextStep}>ถัดไป →</Button> : <Button type="submit" size="lg" disabled={status === 'submitting'}>{status === 'submitting' ? 'กำลังส่ง…' : 'ยืนยันและส่งข้อมูล'}</Button>}
+            <button type="button" className={cn('min-h-11 rounded-pill px-4 text-sm font-semibold text-steel-600', step === 1 && 'invisible')} onClick={() => setStep((current) => Math.max(1, current - 1))}>{t(f.back)}</button>
+            {step < 5 ? <Button type="button" size="lg" onClick={nextStep}>{t(f.next)}</Button> : <Button type="submit" size="lg" disabled={status === 'submitting'}>{status === 'submitting' ? t(f.sending) : t(f.confirmSend)}</Button>}
           </div>
         </form>
       ) : <QuickForm values={values} errors={fieldErrors} status={status} message={message} update={update} onSubmit={submit} />}
@@ -235,15 +272,18 @@ function ModeButton({ active, onClick, children }: { active: boolean; onClick: (
 }
 
 function Progress({ step, onStep }: { step: number; onStep: (step: number) => void }) {
-  return <nav aria-label="ขั้นตอนการส่งข้อมูล"><ol className="grid grid-cols-5 gap-1">{contactSteps.map(({ id, label }, index) => { const number = index + 1; const reachable = number < step; return <li key={id}><button type="button" disabled={!reachable} onClick={() => onStep(number)} aria-current={number === step ? 'step' : undefined} className={cn('min-h-11 w-full rounded-card border px-1 text-center transition-colors', number === step ? 'border-brand-500 bg-brand-50 text-brand-800' : number < step ? 'border-brand-200 text-brand-700' : 'border-steel-100 text-steel-300')}><span className="block font-mono text-[.58rem]">0{number}</span><span className="hidden text-[.62rem] sm:block">{label}</span></button></li>; })}</ol></nav>;
+  const { t } = useLocale();
+  return <nav aria-label={t(f.progress)}><ol className="grid grid-cols-5 gap-1">{contactSteps.map(({ id, label }, index) => { const number = index + 1; const reachable = number < step; return <li key={id}><button type="button" disabled={!reachable} onClick={() => onStep(number)} aria-current={number === step ? 'step' : undefined} className={cn('min-h-11 w-full rounded-card border px-1 text-center transition-colors', number === step ? 'border-brand-500 bg-brand-50 text-brand-800' : number < step ? 'border-brand-200 text-brand-700' : 'border-steel-100 text-steel-300')}><span className="block font-mono text-[.58rem]">0{number}</span><span className="hidden text-[.62rem] sm:block">{stepLabel[id] ? t(stepLabel[id]!) : label}</span></button></li>; })}</ol></nav>;
 }
 
 function IntentStep({ selected, error, onSelect }: { selected: string; error?: string; onSelect: (id: ContactServiceId) => void }) {
-  return <fieldset aria-describedby={error ? 'service-intent-error' : undefined}><legend className="thai-display text-2xl font-bold text-ink">คุณต้องการให้เราช่วยเรื่องอะไร?</legend><p className="mt-2 text-sm text-steel-500">เลือกหัวข้อที่ใกล้เคียงที่สุด เปลี่ยนภายหลังได้เสมอ</p><div className="mt-6 grid gap-3 sm:grid-cols-2">{contactIntents.map((item) => <button key={item.id} type="button" aria-pressed={selected === item.id} onClick={() => onSelect(item.id)} className={cn('min-h-[5.5rem] rounded-card border p-4 text-left transition-colors', selected === item.id ? 'border-brand-500 bg-brand-50 ring-2 ring-brand-500/15' : 'border-steel-200 hover:border-brand-300')}><span className="block text-sm font-semibold text-ink">{item.label}</span><span className="mt-1.5 block text-xs leading-relaxed text-steel-500">{item.description}</span><span className="mt-3 block font-mono text-[.52rem] text-brand-600">{selected === item.id ? 'SELECTED ✓' : 'เลือกหัวข้อนี้'}</span></button>)}</div>{error ? <p id="service-intent-error" className="mt-3 text-sm text-red-600" role="alert">{error}</p> : null}</fieldset>;
+  const { locale, t } = useLocale();
+  return <fieldset aria-describedby={error ? 'service-intent-error' : undefined}><legend className="thai-display text-2xl font-bold text-ink">{t(f.intentTitle)}</legend><p className="mt-2 text-sm text-steel-500">{t(f.intentLead)}</p><div className="mt-6 grid gap-3 sm:grid-cols-2">{contactIntents.map((source) => localizeIntent(source, locale)).map((item) => <button key={item.id} type="button" aria-pressed={selected === item.id} onClick={() => onSelect(item.id)} className={cn('min-h-[5.5rem] rounded-card border p-4 text-left transition-colors', selected === item.id ? 'border-brand-500 bg-brand-50 ring-2 ring-brand-500/15' : 'border-steel-200 hover:border-brand-300')}><span className="block text-sm font-semibold text-ink">{item.label}</span><span className="mt-1.5 block text-xs leading-relaxed text-steel-500">{item.description}</span><span className="mt-3 block font-mono text-[.52rem] text-brand-600">{selected === item.id ? t(f.selected) : t(f.chooseTopic)}</span></button>)}</div>{error ? <p id="service-intent-error" className="mt-3 text-sm text-red-600" role="alert">{error}</p> : null}</fieldset>;
 }
 
 function SituationStep({ intent, values, errors, update, setDetail }: { intent: NonNullable<ReturnType<typeof getContactIntent>>; values: FormValues; errors: Record<string, string>; update: <K extends keyof FormValues>(key: K, value: FormValues[K]) => void; setDetail: (id: string, value: ContactDetailValue) => void }) {
-  return <div><p className="section-code">{intent.shortLabel}</p><h2 className="thai-display mt-3 text-2xl font-bold text-ink">ตอนนี้คุณจัดการเรื่องนี้ด้วยวิธีไหน?</h2><TextAreaField id="current-situation" label="สถานการณ์ปัจจุบัน" required value={values.currentSituation} onChange={(value) => update('currentSituation', value)} error={errors.currentSituation} placeholder="เล่าขั้นตอนหรือปัญหาที่เจอสั้น ๆ" className="mt-6" />{intent.questions.length ? <div className="mt-8 space-y-7 border-t border-steel-100 pt-7"><div><h3 className="text-sm font-semibold text-ink">รายละเอียดที่ช่วยให้เราเข้าใจเร็วขึ้น</h3><p className="mt-1 text-xs text-steel-400">ทุกข้อนี้เป็นข้อมูลเสริม ไม่แน่ใจก็ข้ามได้</p></div>{intent.questions.map((question) => <AdaptiveQuestion key={question.id} question={question} value={values.projectDetails[question.id]} onChange={(value) => setDetail(question.id, value)} />)}</div> : null}</div>;
+  const { t } = useLocale();
+  return <div><p className="section-code">{intent.shortLabel}</p><h2 className="thai-display mt-3 text-2xl font-bold text-ink">{t(f.situationTitle)}</h2><TextAreaField id="current-situation" label={t(f.situationLabel)} required value={values.currentSituation} onChange={(value) => update('currentSituation', value)} error={errors.currentSituation} placeholder={t(f.situationPlaceholder)} className="mt-6" />{intent.questions.length ? <div className="mt-8 space-y-7 border-t border-steel-100 pt-7"><div><h3 className="text-sm font-semibold text-ink">{t(f.detailsTitle)}</h3><p className="mt-1 text-xs text-steel-400">{t(f.detailsLead)}</p></div>{intent.questions.map((question) => <AdaptiveQuestion key={question.id} question={question} value={values.projectDetails[question.id]} onChange={(value) => setDetail(question.id, value)} />)}</div> : null}</div>;
 }
 
 function AdaptiveQuestion({ question, value, onChange }: { question: ContactQuestion; value?: ContactDetailValue; onChange: (value: ContactDetailValue) => void }) {
@@ -253,31 +293,40 @@ function AdaptiveQuestion({ question, value, onChange }: { question: ContactQues
 }
 
 function OutcomeStep({ values, errors, update }: StepProps) {
-  return <div><h2 className="thai-display text-2xl font-bold text-ink">อยากให้ระบบช่วยให้งานดีขึ้นอย่างไร?</h2><p className="mt-2 text-sm text-steel-500">บอกผลลัพธ์ที่ต้องการ ไม่จำเป็นต้องรู้วิธีทำทางเทคนิค</p><TextAreaField id="desired-outcome" label="ผลลัพธ์ที่อยากได้" required value={values.desiredOutcome} onChange={(value) => update('desiredOutcome', value)} error={errors.desiredOutcome} placeholder="เช่น ลดการกรอกข้อมูลซ้ำ และเห็นสถานะงานจากจุดเดียว" className="mt-6" /><div className="mt-6 grid gap-5 sm:grid-cols-2"><SelectField id="budget-range" label="ช่วงงบประมาณ (ไม่บังคับ)" value={values.budgetRange} options={contactBudgetOptions} onChange={(value) => update('budgetRange', value)} /><SelectField id="timeline" label="ช่วงเวลาที่คิดไว้ (ไม่บังคับ)" value={values.timeline} options={contactTimelineOptions} onChange={(value) => update('timeline', value)} /><InputField id="industry" label="ประเภทธุรกิจ (ไม่บังคับ)" value={values.industry} onChange={(value) => update('industry', value)} /><InputField id="existing-website" type="url" label="เว็บไซต์ปัจจุบัน (ไม่บังคับ)" value={values.existingWebsite} onChange={(value) => update('existingWebsite', value)} error={errors.existingWebsite} placeholder="https://example.com" /></div><p className="mt-4 text-xs leading-relaxed text-steel-400">ช่วงงบและเวลาใช้เพื่อเตรียมบทสนทนาเท่านั้น ไม่ใช่ราคาเสนอหรือคำสัญญาวันส่งมอบ</p></div>;
+  const { locale, t } = useLocale();
+  return <div><h2 className="thai-display text-2xl font-bold text-ink">{t(f.outcomeTitle)}</h2><p className="mt-2 text-sm text-steel-500">{t(f.outcomeLead)}</p><TextAreaField id="desired-outcome" label={t(f.outcomeLabel)} required value={values.desiredOutcome} onChange={(value) => update('desiredOutcome', value)} error={errors.desiredOutcome} placeholder={t(f.outcomePlaceholder)} className="mt-6" /><div className="mt-6 grid gap-5 sm:grid-cols-2"><SelectField id="budget-range" label={t(f.budget)} value={values.budgetRange} options={localizeOptions(contactBudgetOptions, budgetLabel, locale)} onChange={(value) => update('budgetRange', value)} /><SelectField id="timeline" label={t(f.timeline)} value={values.timeline} options={localizeOptions(contactTimelineOptions, timelineLabel, locale)} onChange={(value) => update('timeline', value)} /><InputField id="industry" label={t(f.industry)} value={values.industry} onChange={(value) => update('industry', value)} /><InputField id="existing-website" type="url" label={t(f.existingWebsite)} value={values.existingWebsite} onChange={(value) => update('existingWebsite', value)} error={errors.existingWebsite} placeholder="https://example.com" /></div><p className="mt-4 text-xs leading-relaxed text-steel-400">{t(f.budgetNote)}</p></div>;
 }
 
 interface StepProps { values: FormValues; errors: Record<string, string>; update: <K extends keyof FormValues>(key: K, value: FormValues[K]) => void }
 
 function ContactStep({ values, errors, update }: StepProps) {
-  return <div><h2 className="thai-display text-2xl font-bold text-ink">สะดวกให้เราติดต่อกลับทางไหน?</h2><p className="mt-2 text-sm text-steel-500">กรอกอีเมล โทรศัพท์ หรือ LINE ID อย่างน้อยหนึ่งช่องทาง</p><div className="mt-6 grid gap-5 sm:grid-cols-2"><InputField id="contact-name" label="ชื่อสำหรับติดต่อ" required autoComplete="name" value={values.contactName} onChange={(value) => update('contactName', value)} error={errors.contactName} /><InputField id="company-name" label="บริษัท / องค์กร (ไม่บังคับ)" autoComplete="organization" value={values.companyName} onChange={(value) => update('companyName', value)} /><InputField id="contact-email" type="email" label="อีเมล" autoComplete="email" value={values.email} onChange={(value) => update('email', value)} error={errors.email} /><InputField id="contact-phone" type="tel" label="โทรศัพท์" autoComplete="tel" value={values.phone} onChange={(value) => update('phone', value)} error={errors.phone} /><InputField id="line-id" label="LINE ID" value={values.lineId} onChange={(value) => update('lineId', value)} /><TextAreaField id="contact-notes" label="ข้อมูลเพิ่มเติม (ไม่บังคับ)" value={values.notes} onChange={(value) => update('notes', value)} className="sm:col-span-2" /></div></div>;
+  const { t } = useLocale();
+  return <div><h2 className="thai-display text-2xl font-bold text-ink">{t(f.contactTitle)}</h2><p className="mt-2 text-sm text-steel-500">{t(f.contactLead)}</p><div className="mt-6 grid gap-5 sm:grid-cols-2"><InputField id="contact-name" label={t(f.name)} required autoComplete="name" value={values.contactName} onChange={(value) => update('contactName', value)} error={errors.contactName} /><InputField id="company-name" label={t(f.company)} autoComplete="organization" value={values.companyName} onChange={(value) => update('companyName', value)} /><InputField id="contact-email" type="email" label={t(f.email)} autoComplete="email" value={values.email} onChange={(value) => update('email', value)} error={errors.email} /><InputField id="contact-phone" type="tel" label={t(f.phone)} autoComplete="tel" value={values.phone} onChange={(value) => update('phone', value)} error={errors.phone} /><InputField id="line-id" label="LINE ID" value={values.lineId} onChange={(value) => update('lineId', value)} /><TextAreaField id="contact-notes" label={t(f.notes)} value={values.notes} onChange={(value) => update('notes', value)} className="sm:col-span-2" /></div></div>;
 }
 
 function ReviewStep({ intentLabel, values, onEdit }: { intentLabel: string; values: FormValues; onEdit: (step: number) => void }) {
-  const intent = getContactIntent(values.serviceId);
+  const { locale, t } = useLocale();
+  const base = getContactIntent(values.serviceId);
+  const intent = base ? localizeIntent(base, locale) : undefined;
+  const budgets = localizeOptions(contactBudgetOptions, budgetLabel, locale);
+  const timelines = localizeOptions(contactTimelineOptions, timelineLabel, locale);
   const detailRows = intent?.questions.map((question) => { const answer = values.projectDetails[question.id]; if (!answer || (Array.isArray(answer) && !answer.length)) return null; const ids = Array.isArray(answer) ? answer : [answer]; const labels = ids.map((id) => question.options?.find((option) => option.value === id)?.label ?? id); return [question.label, labels.join(', ')] as const; }).filter((row) => row !== null) ?? [];
-  return <div><h2 className="thai-display text-2xl font-bold text-ink">ตรวจสอบก่อนส่ง</h2><p className="mt-2 text-sm text-steel-500">ตรวจดูอีกครั้งก่อนส่งให้ทีมงาน แก้ไขส่วนไหนก็ได้</p><div className="mt-6 space-y-4"><ReviewBlock title="REQUEST" onEdit={() => onEdit(1)} rows={[["หัวข้อ", intentLabel], ['สถานการณ์ปัจจุบัน', values.currentSituation], ...detailRows]} /><ReviewBlock title="GOAL" onEdit={() => onEdit(3)} rows={[["ผลลัพธ์ที่อยากได้", values.desiredOutcome], ['งบประมาณ', contactBudgetOptions.find((item) => item.value === values.budgetRange)?.label ?? ''], ['ช่วงเวลา', contactTimelineOptions.find((item) => item.value === values.timeline)?.label ?? '']]} /><ReviewBlock title="CONTACT" onEdit={() => onEdit(4)} rows={[["ชื่อ", values.contactName], ['บริษัท / องค์กร', values.companyName], ['อีเมล', values.email], ['โทรศัพท์', values.phone], ['LINE ID', values.lineId]]} /></div></div>;
+  return <div><h2 className="thai-display text-2xl font-bold text-ink">{t(f.reviewTitle)}</h2><p className="mt-2 text-sm text-steel-500">{t(f.reviewLead)}</p><div className="mt-6 space-y-4"><ReviewBlock title="REQUEST" onEdit={() => onEdit(1)} rows={[[t(f.rowTopic), intentLabel], [t(f.situationLabel), values.currentSituation], ...detailRows]} /><ReviewBlock title="GOAL" onEdit={() => onEdit(3)} rows={[[t(f.outcomeLabel), values.desiredOutcome], [t(f.rowBudget), budgets.find((item) => item.value === values.budgetRange)?.label ?? ''], [t(f.rowTimeline), timelines.find((item) => item.value === values.timeline)?.label ?? '']]} /><ReviewBlock title="CONTACT" onEdit={() => onEdit(4)} rows={[[t(f.rowName), values.contactName], [t(f.rowCompany), values.companyName], [t(f.email), values.email], [t(f.phone), values.phone], ['LINE ID', values.lineId]]} /></div></div>;
 }
 
 function ReviewBlock({ title, rows, onEdit }: { title: string; rows: readonly (readonly [string, string])[]; onEdit: () => void }) {
-  return <section className="rounded-card border border-steel-200 p-4 sm:p-5"><div className="flex items-center justify-between gap-3"><h3 className="font-mono text-[.6rem] tracking-[.16em] text-brand-600">{title}</h3><button type="button" onClick={onEdit} className="min-h-11 px-2 text-xs font-semibold text-brand-700">แก้ไข</button></div><dl className="mt-3 space-y-3">{rows.filter(([, value]) => value).map(([label, value]) => <div key={label} className="grid gap-1 sm:grid-cols-[10rem_1fr]"><dt className="text-xs text-steel-400">{label}</dt><dd className="whitespace-pre-wrap text-sm leading-relaxed text-steel-700">{value}</dd></div>)}</dl></section>;
+  const { t } = useLocale();
+  return <section className="rounded-card border border-steel-200 p-4 sm:p-5"><div className="flex items-center justify-between gap-3"><h3 className="font-mono text-[.6rem] tracking-[.16em] text-brand-600">{title}</h3><button type="button" onClick={onEdit} className="min-h-11 px-2 text-xs font-semibold text-brand-700">{t(f.edit)}</button></div><dl className="mt-3 space-y-3">{rows.filter(([, value]) => value).map(([label, value]) => <div key={label} className="grid gap-1 sm:grid-cols-[10rem_1fr]"><dt className="text-xs text-steel-400">{label}</dt><dd className="whitespace-pre-wrap text-sm leading-relaxed text-steel-700">{value}</dd></div>)}</dl></section>;
 }
 
 function QuickForm({ values, errors, status, message, update, onSubmit }: StepProps & { status: Status; message: string; onSubmit: (event: React.FormEvent<HTMLFormElement>) => void }) {
-  return <form onSubmit={onSubmit} noValidate className="rounded-panel border border-steel-200 bg-white p-5 sm:p-8"><h2 className="thai-display text-2xl font-bold text-ink">ส่งข้อความแบบสั้น</h2><p className="mt-2 text-sm text-steel-500">ถ้ายังไม่อยากตอบเป็นขั้นตอน เล่าเรื่องที่ต้องการคุยได้เลย</p><div className="mt-6 grid gap-5 sm:grid-cols-2"><InputField id="quick-name" label="ชื่อสำหรับติดต่อ" required autoComplete="name" value={values.contactName} onChange={(value) => update('contactName', value)} error={errors.contactName} /><InputField id="quick-company" label="บริษัท / องค์กร (ไม่บังคับ)" autoComplete="organization" value={values.companyName} onChange={(value) => update('companyName', value)} /><InputField id="quick-email" type="email" label="อีเมล" autoComplete="email" value={values.email} onChange={(value) => update('email', value)} error={errors.email} /><InputField id="quick-phone" type="tel" label="โทรศัพท์" autoComplete="tel" value={values.phone} onChange={(value) => update('phone', value)} /><InputField id="quick-line" label="LINE ID" value={values.lineId} onChange={(value) => update('lineId', value)} /><TextAreaField id="quick-message" label="เรื่องที่ต้องการคุย" required value={values.notes} onChange={(value) => update('notes', value)} error={errors.notes} placeholder="เล่าโจทย์สั้น ๆ 1–2 ประโยค" className="sm:col-span-2" /></div><Honeypot value={values.website} onChange={(value) => update('website', value)} /><StatusMessage status={status} message={message} /><div className="mt-8"><Button type="submit" size="lg" disabled={status === 'submitting'}>{status === 'submitting' ? 'กำลังส่ง…' : 'ส่งข้อความ'}</Button></div></form>;
+  const { t } = useLocale();
+  return <form onSubmit={onSubmit} noValidate className="rounded-panel border border-steel-200 bg-white p-5 sm:p-8"><h2 className="thai-display text-2xl font-bold text-ink">{t(f.quickTitle)}</h2><p className="mt-2 text-sm text-steel-500">{t(f.quickLead)}</p><div className="mt-6 grid gap-5 sm:grid-cols-2"><InputField id="quick-name" label={t(f.name)} required autoComplete="name" value={values.contactName} onChange={(value) => update('contactName', value)} error={errors.contactName} /><InputField id="quick-company" label={t(f.company)} autoComplete="organization" value={values.companyName} onChange={(value) => update('companyName', value)} /><InputField id="quick-email" type="email" label={t(f.email)} autoComplete="email" value={values.email} onChange={(value) => update('email', value)} error={errors.email} /><InputField id="quick-phone" type="tel" label={t(f.phone)} autoComplete="tel" value={values.phone} onChange={(value) => update('phone', value)} /><InputField id="quick-line" label="LINE ID" value={values.lineId} onChange={(value) => update('lineId', value)} /><TextAreaField id="quick-message" label={t(f.quickMessage)} required value={values.notes} onChange={(value) => update('notes', value)} error={errors.notes} placeholder={t(f.quickPlaceholder)} className="sm:col-span-2" /></div><Honeypot value={values.website} onChange={(value) => update('website', value)} /><StatusMessage status={status} message={message} /><div className="mt-8"><Button type="submit" size="lg" disabled={status === 'submitting'}>{status === 'submitting' ? t(f.sending) : t(f.quickSend)}</Button></div></form>;
 }
 
 function Success({ reference, reduced, onReset }: { reference: string; reduced: boolean; onReset: () => void }) {
-  return <motion.div initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-panel border border-brand-200 bg-brand-50 p-7 sm:p-10" role="status"><span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-600 text-xl text-white">✓</span><h2 className="thai-display mt-6 text-2xl font-bold text-ink">ได้รับข้อมูลแล้ว</h2><p className="mt-3 max-w-xl text-sm leading-relaxed text-steel-600">ทีมงานจะอ่านข้อมูลเพื่อเข้าใจโจทย์และเตรียมการพูดคุยขั้นถัดไป โดยติดต่อกลับผ่านช่องทางที่คุณระบุในเวลาทำการ</p><p className="mt-4 text-xs text-steel-500">หมายเลขอ้างอิง <span className="font-mono text-ink">{reference}</span></p><Button type="button" variant="secondary" size="sm" className="mt-7" onClick={onReset}>ส่งข้อความใหม่</Button></motion.div>;
+  const { t } = useLocale();
+  return <motion.div initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-panel border border-brand-200 bg-brand-50 p-7 sm:p-10" role="status"><span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-600 text-xl text-white">✓</span><h2 className="thai-display mt-6 text-2xl font-bold text-ink">{t(f.successTitle)}</h2><p className="mt-3 max-w-xl text-sm leading-relaxed text-steel-600">{t(f.successBody)}</p><p className="mt-4 text-xs text-steel-500">{t(f.reference)} <span className="font-mono text-ink">{reference}</span></p><Button type="button" variant="secondary" size="sm" className="mt-7" onClick={onReset}>{t(f.sendAnother)}</Button></motion.div>;
 }
 
 function Honeypot({ value, onChange }: { value: string; onChange: (value: string) => void }) {

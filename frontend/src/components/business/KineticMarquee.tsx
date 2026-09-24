@@ -1,6 +1,9 @@
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { usePageVisible } from '@/hooks/usePageVisible';
 import { primaryServices } from '@/data/services';
+import { useLocale } from '@/app/LocaleContext';
+import { usePrimaryServices } from '@/i18n/useContent';
+import { marquee } from '@/i18n/home';
 import { cn } from '@/lib/cn';
 import { SectionBackdrop } from './SectionBackdrop';
 
@@ -28,6 +31,8 @@ export function KineticMarquee({ className }: { className?: string }) {
   const reduced = useReducedMotion();
   const visible = usePageVisible();
   const running = !reduced && visible;
+  const { t } = useLocale();
+  const services = usePrimaryServices();
 
   return (
     <section
@@ -35,13 +40,13 @@ export function KineticMarquee({ className }: { className?: string }) {
         'sect sect--grid relative overflow-hidden border-y border-steel-200 py-6 sm:py-7',
         className
       )}
-      aria-label="บริการของ PDA BLISS"
+      aria-label={t(marquee.label)}
     >
       <SectionBackdrop variant="light-grid" intensity={0.5} />
 
       {/* The names as real text, for screen readers and for no-CSS fallback. */}
       <ul className="sr-only">
-        {primaryServices.map((service) => (
+        {services.map((service) => (
           <li key={service.id}>{service.title}</li>
         ))}
       </ul>

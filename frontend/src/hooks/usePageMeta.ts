@@ -28,7 +28,7 @@ export function usePageMeta(meta: PageMeta | LocalizedPageMeta): void {
   const { locale } = useLocale();
 
   useEffect(() => {
-    const localized = typeof meta.title !== 'string';
+    const localized = typeof meta.title !== 'string' || ('localizedRoute' in meta && meta.localizedRoute === true);
     const title = typeof meta.title === 'string' ? meta.title : meta.title[locale];
     const description = typeof meta.description === 'string' ? meta.description : meta.description[locale];
 

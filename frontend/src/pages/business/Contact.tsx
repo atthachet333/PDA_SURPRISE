@@ -5,6 +5,9 @@ import { company } from '@/data/company';
 import { cn } from '@/lib/cn';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { pageMeta } from '@/lib/seo';
+import { useLocale } from '@/app/LocaleContext';
+import { contactPage as copy } from '@/i18n/contact';
+import { addressLines, businessHours } from '@/i18n/company';
 
 /**
  * /contact — the form is the page. Everything else is a quiet reference column.
@@ -13,13 +16,14 @@ import { pageMeta } from '@/lib/seo';
  */
 export default function Contact() {
   usePageMeta(pageMeta.contact);
+  const { t } = useLocale();
 
   return (
     <>
       <PageHeader
         eyebrow="01 / CONTACT"
-        title={<>เล่าโจทย์ให้เราฟัง</>}
-        lead="ยิ่งเราเข้าใจกระบวนการปัจจุบันมากเท่าไร การคุยครั้งแรกก็ยิ่งมีประโยชน์มากขึ้น"
+        title={<>{t(copy.title)}</>}
+        lead={t(copy.lead)}
       />
 
       <section className="sect sect--bright relative overflow-hidden py-section">
@@ -34,17 +38,17 @@ export default function Contact() {
               <p className="section-code">03 / DIRECT</p>
 
               <dl className="mt-8 border-t border-steel-200">
-                <Row label="อีเมล">
+                <Row label={t(copy.email)}>
                   <a className="hover:text-brand-600" href={`mailto:${company.email}`}>
                     {company.email}
                   </a>
                 </Row>
-                <Row label="โทรศัพท์">
+                <Row label={t(copy.phone)}>
                   <a className="hover:text-brand-600" href={`tel:${company.phone}`}>
                     {company.phoneDisplay}
                   </a>
                 </Row>
-                <Row label="LINE OA">
+                <Row label={t(copy.line)}>
                   <a
                     className="hover:text-brand-600"
                     href={company.lineUrl}
@@ -54,20 +58,20 @@ export default function Contact() {
                     {company.lineOA}
                   </a>
                 </Row>
-                <Row label="ที่ตั้งสำนักงาน">
+                <Row label={t(copy.office)}>
                   <address className="not-italic">
-                    {company.address.lines.map((line) => (
+                    {t(addressLines).map((line) => (
                       <span key={line} className="block">
                         {line}
                       </span>
                     ))}
                   </address>
                 </Row>
-                <Row label="เวลาทำการ">
-                  <span className="block">{company.businessHours.days}</span>
-                  <span className="block">{company.businessHours.time}</span>
+                <Row label={t(copy.hours)}>
+                  <span className="block">{t(businessHours.days)}</span>
+                  <span className="block">{t(businessHours.time)}</span>
                   <span className="mt-2 block font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-steel-400">
-                    {company.businessHours.note}
+                    {t(businessHours.note)}
                   </span>
                 </Row>
               </dl>
@@ -78,11 +82,7 @@ export default function Contact() {
                   next steps
                 </p>
                 <ol className="mt-5 space-y-4">
-                  {[
-                    'ทีมงานอ่านโจทย์และตอบกลับ',
-                    'นัดคุยเพื่อเข้าใจ Workflow',
-                    'สรุปแนวทาง ขอบเขต และขั้นตอนถัดไป'
-                  ].map((step, index) => (
+                  {t(copy.nextSteps).split('|').map((step, index) => (
                     <li key={step} className="flex items-start gap-3.5">
                       <span className="mt-px font-mono text-[0.625rem] tabular-nums text-brand-400">
                         {String(index + 1).padStart(2, '0')}

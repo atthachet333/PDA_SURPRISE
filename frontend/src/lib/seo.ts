@@ -10,7 +10,8 @@ import { localizedPaths } from '@/i18n/seo';
  * correct — canonical and Open Graph tags simply carry less weight until a real
  * origin exists. Nothing breaks, and nothing invents a hostname.
  */
-export const PUBLIC_ORIGIN: string = (import.meta.env.VITE_PUBLIC_ORIGIN ?? '')
+/* `?.` only so node tests can import this module; Vite always defines env. */
+export const PUBLIC_ORIGIN: string = (import.meta.env?.VITE_PUBLIC_ORIGIN ?? '')
   .toString()
   .replace(/\/$/, '');
 
@@ -27,6 +28,12 @@ export interface PageMeta {
    * metadata for those routes is deliberately generic — see `privateMeta`.
    */
   noindex?: boolean;
+  /**
+   * A public page whose title and description are already in the active
+   * locale (built from a record, like a case study). Gets the same per-locale
+   * canonical and hreflang treatment as a `LocalizedPageMeta`.
+   */
+  localizedRoute?: boolean;
 }
 
 /**

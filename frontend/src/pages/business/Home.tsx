@@ -15,13 +15,14 @@ import { TechDiagram } from '@/components/business/TechDiagram';
 import { InsightStrip } from '@/components/business/InsightStrip';
 import { BigCTA } from '@/components/business/BigCTA';
 import { company, cta } from '@/data/company';
-import { homeServicePreview } from '@/data/services';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { SectionBackdrop } from '@/components/business/SectionBackdrop';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { pageMeta } from '@/lib/seo';
 import { useLocale } from '@/app/LocaleContext';
+import { hero } from '@/i18n/home';
+import { useHomeServices } from '@/i18n/useContent';
 
 /**
  * HOME
@@ -45,6 +46,7 @@ import { useLocale } from '@/app/LocaleContext';
  */
 export default function Home() {
   usePageMeta(pageMeta.home);
+  const homeServicePreview = useHomeServices();
 
   return (
     <>
@@ -67,22 +69,16 @@ export default function Home() {
 
 /* --------------------------------------------------------------------- hero -- */
 
-/**
- * Explicit line breaks, not wrapping: Thai has no inter-word spaces, so a
- * browser handed one long string will break it mid-word at display size.
- */
-const HEADLINE = ['ไอเดียของคุณ', 'เราทำให้มัน', 'ใช้งานได้จริง'];
-
-/** Short proof points under the CTAs — concrete, and all independently true. */
-const CAPABILITIES = [
-  'ERP · Payroll · เอกสาร',
-  'เชื่อมระบบเดิมได้',
-  'ส่งมอบซอร์สโค้ดทั้งหมด'
-];
-
 function Hero() {
   const reduced = useReducedMotion();
   const { t } = useLocale();
+  /*
+   * Explicit line breaks, not wrapping: Thai has no inter-word spaces, so a
+   * browser handed one long string will break it mid-word at display size.
+   * Each locale supplies its own three lines (i18n/home.ts).
+   */
+  const HEADLINE = t(hero.headline);
+  const CAPABILITIES = t(hero.proof);
 
   return (
     <section
@@ -141,8 +137,7 @@ function Hero() {
               transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="mt-5 max-w-lg text-lead text-steel-600"
             >
-              พัฒนาซอฟต์แวร์ ระบบธุรกิจ เว็บแอปพลิเคชัน และระบบภายในองค์กร
-              จาก Workflow ที่ใช้งานจริงของธุรกิจ
+              {t(hero.lead)}
             </motion.p>
 
             <motion.div

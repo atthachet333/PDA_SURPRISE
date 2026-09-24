@@ -5,6 +5,8 @@ import { SectionBackdrop } from './SectionBackdrop';
 import { strengths } from '@/data/company';
 import type { IconName } from '@/data/services';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useLocale } from '@/app/LocaleContext';
+import { strengthItems, strengthsCopy } from '@/i18n/home';
 
 /**
  * WHY US — given its own world.
@@ -23,11 +25,9 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
  *   claim than the sentence beside it.
  */
 
-/** One-word headline per strength, in stored order. */
-const KEYWORDS = ['เร็ว', 'คุ้มค่า', 'ตรงเวลา', 'ละเอียด', 'ดูแลต่อ'];
-
 export function StrengthStatements({ code = '08 / WHY US' }: { code?: string } = {}) {
   const reduced = useReducedMotion();
+  const { t } = useLocale();
 
   return (
     <section className="sect sect--cream relative overflow-hidden py-section">
@@ -54,13 +54,12 @@ export function StrengthStatements({ code = '08 / WHY US' }: { code?: string } =
           <div className="lg:sticky lg:top-28 lg:self-start">
             <p className="section-code">{code}</p>
             <h2 className="thai-display mt-3 text-statement font-bold text-ink">
-              ทำไมต้อง
+              {t(strengthsCopy.title)}
               <br />
               <span className="text-brand-600">PDA BLISS</span>
             </h2>
             <p className="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-steel-600">
-              ห้าเรื่องที่เรายึดกับทุกโปรเจกต์ ไม่ใช่คำโฆษณา
-              แต่เป็นสิ่งที่คุณใช้วัดเราได้ตั้งแต่การคุยครั้งแรกจนถึงการดูแลหลังส่งมอบ
+              {t(strengthsCopy.lead)}
             </p>
 
             {/* Small system map — the section's visual anchor */}
@@ -109,7 +108,9 @@ export function StrengthStatements({ code = '08 / WHY US' }: { code?: string } =
           {/* ----------------------------------------------- right: the five -- */}
           <ul className="border-t border-brand-200/60">
             {strengths.map((strength, index) => {
-              const keyword = KEYWORDS[index] ?? strength.title;
+              /* One-word headline per strength, in stored order. */
+              const text = strengthItems[index];
+              const keyword = text ? t(text.keyword) : strength.title;
               return (
                 <motion.li
                   key={strength.title}
@@ -136,11 +137,11 @@ export function StrengthStatements({ code = '08 / WHY US' }: { code?: string } =
                         <Icon name={strength.icon as IconName} className="h-3.5 w-3.5" />
                       </span>
                       <h3 className="thai-display text-[0.9375rem] font-bold text-ink">
-                        {strength.title}
+                        {text ? t(text.title) : strength.title}
                       </h3>
                     </div>
                     <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-steel-600">
-                      {strength.body}
+                      {text ? t(text.body) : strength.body}
                     </p>
                   </div>
                 </motion.li>

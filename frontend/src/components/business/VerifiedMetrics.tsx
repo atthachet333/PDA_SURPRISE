@@ -7,6 +7,9 @@ import { useCountUp } from '@/hooks/useCountUp';
 import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { useLocale } from '@/app/LocaleContext';
+import { capabilityMarkerText, metricsCopy } from '@/i18n/home';
+import { metricText } from '@/i18n/work';
 
 /**
  * NUMBERS — the two verified figures, on their own dark ground.
@@ -30,6 +33,7 @@ import { cn } from '@/lib/cn';
 export function VerifiedMetrics({ code = '09 / NUMBERS' }: { code?: string } = {}) {
   const [ref, inView] = useInViewOnce<HTMLDivElement>({ threshold: 0.3 });
   const reduced = useReducedMotion();
+  const { t } = useLocale();
 
   return (
     <section className="sect sect--deep relative overflow-hidden py-section text-white">
@@ -93,13 +97,12 @@ export function VerifiedMetrics({ code = '09 / NUMBERS' }: { code?: string } = {
           <div>
             <p className="section-code text-brand-400">{code}</p>
             <h2 className="thai-display mt-3 text-statement font-bold text-white">
-              ตัวเลขที่ยืนยันได้
+              {t(metricsCopy.title)[0]}
               <br />
-              <span className="text-brand-400">เท่านั้น</span>
+              <span className="text-brand-400">{t(metricsCopy.title)[1]}</span>
             </h2>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-brand-100/65">
-              เราไม่แสดงจำนวนลูกค้า เปอร์เซ็นต์ความพึงพอใจ หรือจำนวนปีที่ดำเนินกิจการ
-              เพราะยังไม่มีการเก็บข้อมูลที่ยืนยันได้ ตัวเลขด้านล่างคือทั้งหมดที่เรายืนยันได้จริง
+              {t(metricsCopy.lead)}
             </p>
           </div>
 
@@ -110,8 +113,8 @@ export function VerifiedMetrics({ code = '09 / NUMBERS' }: { code?: string } = {
                   key={metric.label}
                   value={metric.value}
                   suffix={metric.suffix}
-                  label={metric.label}
-                  detail={metric.detail}
+                  label={metricText[index] ? t(metricText[index]!.label) : metric.label}
+                  detail={metricText[index] ? t(metricText[index]!.detail) : metric.detail}
                   active={inView}
                   index={index}
                   reduced={reduced}
@@ -121,10 +124,10 @@ export function VerifiedMetrics({ code = '09 / NUMBERS' }: { code?: string } = {
           ) : (
             /* No verified figure may be shown — qualitative markers only. */
             <dl className="grid gap-6 sm:grid-cols-2">
-              {capabilityMarkers.map((item) => (
+              {capabilityMarkers.map((item, index) => (
                 <div key={item.label}>
-                  <dt className="thai-display text-base font-bold text-white">{item.label}</dt>
-                  <dd className="mt-2 text-sm leading-relaxed text-brand-100/65">{item.detail}</dd>
+                  <dt className="thai-display text-base font-bold text-white">{capabilityMarkerText[index] ? t(capabilityMarkerText[index]!.label) : item.label}</dt>
+                  <dd className="mt-2 text-sm leading-relaxed text-brand-100/65">{capabilityMarkerText[index] ? t(capabilityMarkerText[index]!.detail) : item.detail}</dd>
                 </div>
               ))}
             </dl>
@@ -144,9 +147,9 @@ export function VerifiedMetrics({ code = '09 / NUMBERS' }: { code?: string } = {
                 >
                   <dt className="flex items-center gap-2 text-sm font-semibold text-white">
                     <span className="h-1 w-1 rounded-full bg-brand-400" />
-                    {item.label}
+                    {capabilityMarkerText[index] ? t(capabilityMarkerText[index]!.label) : item.label}
                   </dt>
-                  <dd className="mt-2 text-xs leading-relaxed text-brand-100/60">{item.detail}</dd>
+                  <dd className="mt-2 text-xs leading-relaxed text-brand-100/60">{capabilityMarkerText[index] ? t(capabilityMarkerText[index]!.detail) : item.detail}</dd>
                 </motion.div>
               ))}
             </dl>

@@ -2,6 +2,8 @@ import { SystemMock, BrowserFrame, PhoneFrame } from './SystemMock';
 import { isPhoneMock } from '@/lib/systemMocks';
 import { type VisualSlot } from '@/data/visuals';
 import { cn } from '@/lib/cn';
+import { useLocale } from '@/app/LocaleContext';
+import { slotCaption, visualText } from '@/i18n/visuals';
 
 /**
  * PRODUCT PANEL — the single place a visual slot becomes pixels.
@@ -35,6 +37,7 @@ export function ProductPanel({
    */
   interactive?: boolean;
 }) {
+  const { locale, t } = useLocale();
   const resolved = frame === 'auto' ? (isPhoneMock(slot.mock) ? 'phone' : 'browser') : frame;
 
   // --- reviewed screenshot -------------------------------------------------
@@ -42,7 +45,7 @@ export function ProductPanel({
     const image = (
       <img
         src={slot.screenshot}
-        alt={slot.alt ?? slot.titleTh ?? slot.label}
+        alt={locale === 'th' ? (slot.alt ?? slot.titleTh ?? slot.label) : slotCaption(slot, locale)}
         loading="lazy"
         decoding="async"
         className="h-full w-full object-cover object-top"
@@ -71,7 +74,7 @@ export function ProductPanel({
       />
       {showMockNotice ? (
         <span className="pointer-events-none absolute bottom-2 right-2 rounded-pill bg-ink/70 px-2 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.12em] text-white/80 backdrop-blur-sm">
-          ภาพตัวอย่างระบบ
+          {t(visualText.mockNotice)}
         </span>
       ) : null}
     </div>

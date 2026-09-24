@@ -9,6 +9,7 @@ import {
   writeStoredLocale
 } from '@/i18n/locales';
 import { header } from '@/i18n/ui';
+import { preloadContentPack } from '@/i18n/content/cache';
 import { cn } from '@/lib/cn';
 
 /**
@@ -58,6 +59,8 @@ export function LanguageSwitcher({
             aria-label={LOCALE_NAME[option]}
             title={LOCALE_NAME[option]}
             onClick={() => writeStoredLocale(option)}
+            onPointerEnter={() => preloadContentPack(option)}
+            onFocus={() => preloadContentPack(option)}
             className={cn(
               'inline-flex min-h-9 min-w-9 items-center justify-center whitespace-nowrap rounded-pill px-2.5 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-600',
               large && 'min-h-11 min-w-11 px-3.5 text-sm',

@@ -2,6 +2,8 @@ import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
+import { useLocale } from '@/app/LocaleContext';
+import { ui } from '@/i18n/ui';
 
 /**
  * CORPORATE CURSOR — a green dot that becomes a label over meaningful targets.
@@ -28,6 +30,7 @@ const INTERACTIVE_SELECTOR = 'a,button,input,select,textarea,[role="button"],[ta
 
 export function CorporateCursor() {
   const reduced = useReducedMotion();
+  const { t } = useLocale();
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
   const springX = useSpring(x, { stiffness: 620, damping: 40, mass: 0.25 });
@@ -105,7 +108,7 @@ export function CorporateCursor() {
       >
         {state === 'project' ? (
           <span className="thai-display whitespace-nowrap text-[0.5625rem] font-semibold">
-            ดูโปรเจกต์
+            {t(ui.viewProject)}
           </span>
         ) : null}
         {state === 'drag' ? (

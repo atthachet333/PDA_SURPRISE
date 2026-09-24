@@ -5,6 +5,8 @@ import { SectionBackdrop } from './SectionBackdrop';
 import { StageVisual } from './StageVisual';
 import { STAGE_VISUALS } from '@/lib/processStages';
 import { process } from '@/data/company';
+import { useLocale } from '@/app/LocaleContext';
+import { processCopy, processSteps } from '@/i18n/home';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 
@@ -30,6 +32,9 @@ export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
   const [userTook, setUserTook] = useState(false);
   const reduced = useReducedMotion();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const { t } = useLocale();
+  const stepText = (index: number) => processSteps[index] ?? processSteps[0]!;
+  const [titleLead, titleAccent] = t(processCopy.title);
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -91,13 +96,13 @@ export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
           <div className="max-w-2xl">
             <p className="section-code">{code}</p>
             <h2 className="thai-display mt-3 text-statement font-bold text-ink">
-              จากไอเดีย
+              {titleLead}
               <br />
-              <span className="text-brand-600">สู่ระบบที่ใช้งานได้จริง</span>
+              <span className="text-brand-600">{titleAccent}</span>
             </h2>
           </div>
           <p className="max-w-xs text-sm leading-relaxed text-steel-500">
-            เจ็ดขั้นตอนที่ใช้กับทุกโปรเจกต์ เลือกดูรายละเอียดแต่ละขั้นได้
+            {t(processCopy.lead)}
           </p>
         </div>
 
@@ -105,7 +110,7 @@ export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
           {/* ------------------------------------------------------- timeline -- */}
           <div
             role="tablist"
-            aria-label="ขั้นตอนการทำงาน"
+            aria-label={t(processCopy.tablist)}
             aria-orientation="vertical"
             onKeyDown={onKeyDown}
             className="relative border-t border-steel-200"
@@ -163,7 +168,7 @@ export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
                       isActive ? 'text-ink' : 'text-steel-500 group-hover:text-ink'
                     )}
                   >
-                    {step.title}
+                    {t(stepText(index).title)}
                   </span>
 
                   {/* Auto-progress bar on the active row only */}
@@ -214,8 +219,8 @@ export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
               </div>
 
               <div className="border-t border-steel-100 px-6 py-5">
-                <h3 className="thai-display text-lg font-bold text-ink">{active.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-steel-600">{active.body}</p>
+                <h3 className="thai-display text-lg font-bold text-ink">{t(stepText(activeIndex).title)}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-steel-600">{t(stepText(activeIndex).body)}</p>
               </div>
             </motion.div>
           </div>

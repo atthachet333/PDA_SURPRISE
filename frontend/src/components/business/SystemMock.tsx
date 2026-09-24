@@ -902,5 +902,18 @@ export function SystemMock({
       </BrowserFrame>
     );
 
-  return <InteractiveContext.Provider value={interactive}>{body}</InteractiveContext.Provider>;
+  /*
+   * The miniature interfaces depict the Thai-language software delivered to
+   * Thai businesses, so their text is Thai on every locale — part of the
+   * artwork, like text inside a screenshot. `lang="th"` tells assistive tech
+   * (and the CJK font rules) what it is on /en and /zh pages; `contents`
+   * keeps the wrapper out of layout.
+   */
+  return (
+    <InteractiveContext.Provider value={interactive}>
+      <div lang="th" data-system-mock="" className="contents">
+        {body}
+      </div>
+    </InteractiveContext.Provider>
+  );
 }

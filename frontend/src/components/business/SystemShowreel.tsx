@@ -13,6 +13,9 @@ import { SectionBackdrop } from "./SectionBackdrop";
 import { useDeviceProfile } from "@/hooks/useDeviceProfile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/cn";
+import { useLocale } from "@/app/LocaleContext";
+import { showreel as copy } from "@/i18n/home";
+import { slotCaption, visualText } from "@/i18n/visuals";
 import type { CaseStudyVisual as CaseVisualKind } from "@/data/caseStudies";
 
 /**
@@ -35,6 +38,7 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
   const reduced = useReducedMotion();
   const device = useDeviceProfile();
   const fanned = !reduced && !device.isTouch;
+  const { locale, t } = useLocale();
 
   /*
     The deck opens once the section is properly on screen.
@@ -80,23 +84,22 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
           <div className="max-w-xl">
             <p className="section-code">{code}</p>
             <h2 className="thai-display mt-3 text-statement font-bold text-ink">
-              ระบบที่เราสร้างจริง
+              {t(copy.title)}
             </h2>
             <p className="mt-3 text-[0.9375rem] leading-relaxed text-steel-600">
-              ERP, เงินเดือน, เอกสาร, เว็บไซต์ และระบบ HR ผ่าน LINE
-              ทั้งหมดออกแบบจาก Workflow ของธุรกิจที่ใช้งานอยู่จริง
+              {t(copy.lead)}
             </p>
           </div>
 
           <div className="flex shrink-0 items-center gap-4">
             <span className="rounded-pill border border-steel-300 bg-white px-3 py-1.5 font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-steel-500">
-              ภาพตัวอย่างระบบ
+              {t(visualText.mockNotice)}
             </span>
             <Link
               to="/work"
               className="group inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-600"
             >
-              ดูผลงาน
+              {t(copy.viewWork)}
               <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
             </Link>
           </div>
@@ -154,10 +157,10 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
                 </div>
                 <p className="mt-3 flex flex-wrap items-center gap-x-2">
                   <span className="thai-display text-sm font-semibold text-ink">
-                    {slot.titleTh ?? slot.label}
+                    {slotCaption(slot, locale)}
                   </span>
                   <span className="font-mono text-[0.5rem] uppercase tracking-[0.12em] text-brand-600">
-                    {slot.caseStudySlug ? "ดู Case Study" : "ดูบริการ"} →
+                    {t(slot.caseStudySlug ? copy.viewCase : copy.viewService)} →
                   </span>
                 </p>
               </Link>
@@ -216,7 +219,9 @@ function ShowreelCard({
   const destination = slot.caseStudySlug
     ? `/work/${slot.caseStudySlug}`
     : (showreelDestination[slot.id] ?? "/work");
-  const actionLabel = slot.caseStudySlug ? "ดู Case Study" : "ดูบริการ";
+  const { locale, t } = useLocale();
+  const actionLabel = t(slot.caseStudySlug ? copy.viewCase : copy.viewService);
+  const caption = slotCaption(slot, locale);
 
   return (
     /*
@@ -265,7 +270,7 @@ function ShowreelCard({
             onBlur={onDeactivate}
             data-cursor="project"
             className="block h-full focus-visible:outline-none"
-            aria-label={`${actionLabel} — ${slot.titleTh ?? slot.label}`}
+            aria-label={`${actionLabel} — ${caption}`}
           >
             <div
               className={cn(
@@ -285,7 +290,7 @@ function ShowreelCard({
               transition={{ duration: 0.3 }}
             >
               <span className="thai-display inline-flex items-center gap-1.5 rounded-pill bg-ink px-3 py-1 text-xs font-semibold text-white">
-                {slot.titleTh ?? slot.label}
+                {caption}
                 <span className="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-brand-300">
                   {actionLabel} →
                 </span>

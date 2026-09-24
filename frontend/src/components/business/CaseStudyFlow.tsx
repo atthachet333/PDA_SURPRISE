@@ -1,6 +1,8 @@
 import { useId, useState } from 'react';
 import type { CaseFlowStep } from '@/data/caseStudies';
 import { cn } from '@/lib/cn';
+import { useLocale } from '@/app/LocaleContext';
+import { projectText } from '@/i18n/work';
 
 /**
  * A semantic, touch-friendly process navigator. The ordered list remains the
@@ -9,6 +11,7 @@ import { cn } from '@/lib/cn';
 export function CaseStudyFlow({ steps }: { steps: readonly CaseFlowStep[] }) {
   const [activeId, setActiveId] = useState(steps[0]?.id ?? '');
   const detailId = useId();
+  const { t } = useLocale();
   const active = steps.find((step) => step.id === activeId) ?? steps[0];
 
   if (!active) return null;
@@ -55,7 +58,7 @@ export function CaseStudyFlow({ steps }: { steps: readonly CaseFlowStep[] }) {
         <div className="border-t border-steel-200 pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
           <p className="font-mono text-[.6rem] tracking-[.15em] text-steel-400">OUTPUT</p>
           <p className="thai-display mt-2 text-sm font-semibold text-brand-800">{active.output}</p>
-          <p className="mt-2 text-xs text-steel-500">ผู้ดำเนินการ: {active.actor}</p>
+          <p className="mt-2 text-xs text-steel-500">{t(projectText.actor)}{active.actor}</p>
         </div>
       </div>
     </div>
