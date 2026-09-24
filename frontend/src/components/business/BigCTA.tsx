@@ -6,6 +6,9 @@ import { ProductPanel } from './ProductPanel';
 import { heroVisuals } from '@/data/visuals';
 import { company, cta } from '@/data/company';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useLocale } from '@/app/LocaleContext';
+import { bigCta, channel as channelText } from '@/i18n/ui';
+import { businessHours } from '@/i18n/company';
 import { cn } from '@/lib/cn';
 
 /**
@@ -29,6 +32,7 @@ const [PRIMARY, , DOCS] = heroVisuals;
 
 export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
   const reduced = useReducedMotion();
+  const { t } = useLocale();
 
   return (
     <section className="sect sect--immersive relative overflow-hidden py-section text-white">
@@ -98,7 +102,7 @@ export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
               className="thai-display mt-5 text-mega font-bold"
               /* Three explicit lines: the narrower column beside the device
                  stack wrapped the long second line mid-phrase. */
-              lines={['มีไอเดียอยู่แล้ว?', 'มาทำให้มัน', 'ใช้งานได้จริงกัน']}
+              lines={[...t(bigCta.lines)]}
               lineClassName={(index) => (index >= 1 ? 'text-brand-300' : undefined)}
             />
 
@@ -109,11 +113,8 @@ export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="mt-7 max-w-xl"
             >
-              <p className="text-lead text-brand-100/85">คุยกับเราก่อนได้</p>
-              <p className="mt-2 text-[0.9375rem] leading-relaxed text-brand-100/65">
-                เราช่วยประเมินแนวทางและขอบเขตงานก่อนเริ่มโปรเจกต์
-                ถ้าเราไม่ใช่ทีมที่เหมาะกับงานนี้ เราจะบอกคุณตั้งแต่ต้น
-              </p>
+              <p className="text-lead text-brand-100/85">{t(bigCta.lead)}</p>
+              <p className="mt-2 text-[0.9375rem] leading-relaxed text-brand-100/65">{t(bigCta.body)}</p>
             </motion.div>
 
             <motion.div
@@ -129,7 +130,7 @@ export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
                 data-cursor="cta"
                 className="bg-white text-brand-800 hover:bg-brand-50"
               >
-                {cta.primary.label}
+                {t(cta.primary.label)}
                 <ArrowIcon />
               </ButtonLink>
               <ButtonLink
@@ -138,7 +139,7 @@ export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
                 variant="ghost"
                 className="border border-white/25 text-white hover:bg-white/10"
               >
-                {cta.talk.label}
+                {t(cta.talk.label)}
               </ButtonLink>
             </motion.div>
 
@@ -199,13 +200,14 @@ export function BigCTA({ code = '12 / START' }: { code?: string } = {}) {
 
 /** The three real channels, at a readable size. All from the central config. */
 function ContactStrip({ reduced }: { reduced: boolean }) {
+  const { t } = useLocale();
   const channels = [
-    { label: company.phoneDisplay, href: `tel:${company.phone}`, hint: 'โทร', icon: 'phone' as const },
-    { label: company.email, href: `mailto:${company.email}`, hint: 'อีเมล', icon: 'mail' as const },
+    { label: company.phoneDisplay, href: `tel:${company.phone}`, hint: t(channelText.phone), icon: 'phone' as const },
+    { label: company.email, href: `mailto:${company.email}`, hint: t(channelText.email), icon: 'mail' as const },
     {
       label: company.lineOA,
       href: company.lineUrl,
-      hint: 'LINE OA',
+      hint: t(channelText.line),
       icon: 'chat' as const,
       external: true
     }
@@ -223,12 +225,12 @@ function ContactStrip({ reduced }: { reduced: boolean }) {
         <span
           className={cn('h-1.5 w-1.5 rounded-full bg-brand-400', !reduced && 'animate-status-blink')}
         />
-        {company.businessHours.note}
+        {t(businessHours.note)}
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-4">
         {channels.map((channel, index) => (
-          <span key={channel.hint} className="flex items-center gap-5">
+          <span key={channel.icon} className="flex items-center gap-5">
             <a
               href={channel.href}
               target={channel.external ? '_blank' : undefined}

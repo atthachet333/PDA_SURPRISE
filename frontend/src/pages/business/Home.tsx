@@ -21,6 +21,7 @@ import { RevealLines } from '@/components/shared/RevealLines';
 import { SectionBackdrop } from '@/components/business/SectionBackdrop';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { pageMeta } from '@/lib/seo';
+import { useLocale } from '@/app/LocaleContext';
 
 /**
  * HOME
@@ -81,6 +82,7 @@ const CAPABILITIES = [
 
 function Hero() {
   const reduced = useReducedMotion();
+  const { t } = useLocale();
 
   return (
     <section
@@ -150,11 +152,11 @@ function Hero() {
               className="mt-7 flex flex-wrap items-center gap-2.5"
             >
               <ButtonLink to="/contact" size="lg" data-cursor="cta">
-                {cta.primary.label}
+                {t(cta.primary.label)}
                 <ArrowIcon />
               </ButtonLink>
               <ButtonLink to="/work" size="lg" variant="secondary">
-                {cta.secondary.label}
+                {t(cta.secondary.label)}
               </ButtonLink>
             </motion.div>
 

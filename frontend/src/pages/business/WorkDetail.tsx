@@ -16,14 +16,14 @@ import {
 } from '@/data/caseStudies';
 import { getSystemById } from '@/data/systemUniverse';
 import { contactHref, contactServiceFromRoute } from '@/data/contactRouting';
-import type { PageMeta } from '@/lib/seo';
+import type { LocalizedPageMeta, PageMeta } from '@/lib/seo';
 import { pageMeta } from '@/lib/seo';
 import { usePageMeta } from '@/hooks/usePageMeta';
 
 export default function WorkDetail() {
   const { slug } = useParams<{ slug: string }>();
   const study = slug ? getCaseStudy(slug) : undefined;
-  const meta = useMemo<PageMeta>(() => study ? {
+  const meta = useMemo<PageMeta | LocalizedPageMeta>(() => study ? {
     title: `${study.title} — PDA BLISS`,
     description: `${study.subtitle} — ${study.delivered}`,
     path: `/work/${study.slug}`

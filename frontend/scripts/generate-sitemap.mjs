@@ -9,6 +9,11 @@
  * Only public corporate routes are ever listed. The private routes (/login,
  * /memory-gate, /workspace, /us) and the dev console are never included.
  *
+ * LOCALES — every public route is listed in Thai (unprefixed), English (/en)
+ * and Simplified Chinese (/zh), each entry carrying xhtml:link alternates for
+ * th, en, zh-Hans and x-default (the Thai route). Keep the prefixes in step
+ * with `localizePath` in src/i18n/locales.ts.
+ *
  * Run automatically by `npm run build`.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -34,7 +39,9 @@ const paths = [
   '/work/payroll-monthly-control',
   '/work/hr-line-leave-approval',
   '/work/document-file-workflow',
+  '/work/nas-file-storage',
   '/work/corporate-website-system',
+  '/work/s2-accounting-website',
   '/about',
   '/contact',
   '/insights',
@@ -64,21 +71,36 @@ if (!origin.startsWith('https://')) {
 
 const today = new Date().toISOString().slice(0, 10);
 
+/** Thai is unprefixed; en and zh carry a prefix. `hreflang` for Chinese is zh-Hans. */
+const locales = [
+  { prefix: '', hreflang: 'th' },
+  { prefix: '/en', hreflang: 'en' },
+  { prefix: '/zh', hreflang: 'zh-Hans' }
+];
+const localized = (prefix, path) => `${origin}${prefix}${prefix && path === '/' ? '' : path}`;
+
 const urls = paths
-  .map((path) => {
+  .flatMap((path) => {
     const priority = path === '/' ? '1.0' : path.startsWith('/privacy') || path.startsWith('/terms') || path.startsWith('/cookie') ? '0.3' : '0.8';
-    return [
-      '  <url>',
-      `    <loc>${origin}${path}</loc>`,
-      `    <lastmod>${today}</lastmod>`,
-      `    <priority>${priority}</priority>`,
-      '  </url>'
-    ].join('\n');
+    const alternates = [
+      ...locales.map(({ prefix, hreflang }) => `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${localized(prefix, path)}" />`),
+      `    <xhtml:link rel="alternate" hreflang="x-default" href="${localized('', path)}" />`
+    ];
+    return locales.map(({ prefix }) =>
+      [
+        '  <url>',
+        `    <loc>${localized(prefix, path)}</loc>`,
+        ...alternates,
+        `    <lastmod>${today}</lastmod>`,
+        `    <priority>${priority}</priority>`,
+        '  </url>'
+      ].join('\n')
+    );
   })
   .join('\n');
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls}
 </urlset>
 `;
@@ -96,4 +118,4 @@ if (existsSync(robotsPath)) {
   writeFileSync(robotsPath, robots, 'utf8');
 }
 
-console.log(`[sitemap] wrote ${paths.length} public routes for ${origin}`);
+console.log(`[sitemap] wrote ${paths.length * locales.length} public URLs (${paths.length} routes × ${locales.length} locales) for ${origin}`);

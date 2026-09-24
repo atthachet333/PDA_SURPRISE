@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { company, cta, navigation } from '@/data/company';
 import { cn } from '@/lib/cn';
 import { ButtonLink } from '@/components/shared/Button';
@@ -8,6 +8,10 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useEntranceReveal } from '@/hooks/useEntranceReveal';
 import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { LocaleLink, LocaleNavLink } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { header } from '@/i18n/ui';
 
 /**
  * HEADER — transparent and open at the top, compact and frosted on scroll.
@@ -22,6 +26,11 @@ import { ThemeToggle } from './ThemeToggle';
  *
  * The mobile menu animation is editorial rather than app-like: items rise and
  * unmask in sequence, no slide-in panel, no bounce.
+ *
+ * BREAKPOINT — the inline nav starts at xl (1280px), not lg. With the language
+ * control beside the theme control, seven Thai or English labels plus the
+ * actions do not fit a 1024px bar; below xl the full-screen menu carries nav,
+ * language, theme and both CTAs instead of letting the bar overlap.
  */
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -29,6 +38,7 @@ export function Header() {
   const location = useLocation();
   const reduced = useReducedMotion();
   const reveal = useEntranceReveal();
+  const { t } = useLocale();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -71,7 +81,7 @@ export function Header() {
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-white"
       >
-        ข้ามไปที่เนื้อหา
+        {t(header.skipToContent)}
       </a>
 
       <div className="container-page">
@@ -81,32 +91,32 @@ export function Header() {
             scrolled ? 'h-[4.375rem]' : 'h-20 sm:h-[5.25rem]'
           )}
         >
-          <Link to="/" className="relative z-10 shrink-0" aria-label="PDA BLISS — หน้าแรก">
+          <LocaleLink to="/" className="relative z-10 shrink-0" aria-label={t(header.homeLink)}>
             <Logo compact className="sm:hidden" />
             {scrolled ? (
               <span className="hidden items-center gap-2.5 sm:inline-flex"><Logo compact /><span className="text-sm font-semibold tracking-[.02em] text-ink">PDA BLISS</span></span>
             ) : (
               <Logo className="hidden origin-left transition-transform duration-slow ease-smooth sm:inline-flex" />
             )}
-          </Link>
+          </LocaleLink>
 
           {/* ------------------------------------------------- desktop nav -- */}
-          <nav className="hidden items-center lg:flex" aria-label="เมนูหลัก">
+          <nav className="hidden items-center xl:flex" aria-label={t(header.mainNav)}>
             {navigation.map((item) => (
-              <NavLink
+              <LocaleNavLink
                 key={item.to}
                 to={item.to}
                 end={item.to === '/'}
                 className={({ isActive }) =>
                   cn(
-                    'group relative px-3.5 py-2 text-sm font-medium transition-colors duration-base xl:px-4',
+                    'group relative px-3 py-2 text-sm font-medium transition-colors duration-base xl:px-3.5 2xl:px-4',
                     isActive ? 'text-ink' : 'text-steel-500 hover:text-ink'
                   )
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <span className="thai-display">{item.label}</span>
+                    <span className="thai-display whitespace-nowrap">{t(item.label)}</span>
                     {/* Active route marker */}
                     {isActive ? (
                       <motion.span
@@ -127,7 +137,7 @@ export function Header() {
                     )}
                   </>
                 )}
-              </NavLink>
+              </LocaleNavLink>
             ))}
           </nav>
 
@@ -135,22 +145,40 @@ export function Header() {
           <div className="flex items-center gap-2">
             {/* Icons only in the bar — the labels would crowd the nav. Each
                 button still carries its name for screen readers. */}
-            <ThemeToggle className="hidden lg:inline-flex" />
-            <Link
+            <LanguageSwitcher className="hidden xl:inline-flex" />
+            <ThemeToggle className="hidden xl:inline-flex" />
+            {/*
+              Client login. With the language control added, the full pill
+              only fits from 2xl; between xl and 2xl it collapses to an icon
+              that keeps the same accessible name and a tooltip, so the header
+              never overlaps in the longer English and Thai labels.
+            */}
+            <LocaleLink
               to="/login"
-              className="hidden items-center gap-2 rounded-pill border border-steel-200 px-4 py-2 text-xs font-medium text-steel-600 transition-colors duration-base hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 xl:inline-flex"
+              aria-label={t(cta.login.label)}
+              title={t(cta.login.label)}
+              className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full border border-steel-200 text-steel-600 transition-colors duration-base hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-600 xl:inline-flex 2xl:hidden"
+            >
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="h-4 w-4">
+                <circle cx="10" cy="7" r="3" />
+                <path d="M4 17a6 6 0 0 1 12 0" />
+              </svg>
+            </LocaleLink>
+            <LocaleLink
+              to="/login"
+              className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-pill border border-steel-200 px-4 py-2 text-xs font-medium text-steel-600 transition-colors duration-base hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 2xl:inline-flex"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-              {cta.login.label}
-            </Link>
-            <ButtonLink to="/contact" size="sm" className="hidden md:inline-flex" data-cursor="cta">
-              {cta.primary.label}
+              {t(cta.login.label)}
+            </LocaleLink>
+            <ButtonLink to="/contact" size="sm" className="hidden whitespace-nowrap md:inline-flex" data-cursor="cta">
+              {t(cta.primary.label)}
             </ButtonLink>
 
             <button
               type="button"
-              className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-full text-ink transition-colors duration-base hover:bg-steel-100 lg:hidden"
-              aria-label={menuOpen ? 'ปิดเมนู' : 'เปิดเมนู'}
+              className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-full text-ink transition-colors duration-base hover:bg-steel-100 xl:hidden"
+              aria-label={t(menuOpen ? header.closeMenu : header.openMenu)}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
             >
@@ -198,7 +226,7 @@ export function Header() {
           initial={reveal ? { clipPath: 'inset(0 0 100% 0)' } : false}
           animate={reveal ? { clipPath: 'inset(0 0 0% 0)' } : undefined}
           transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 top-0 -z-10 flex h-[100dvh] flex-col bg-white lg:hidden"
+          className="fixed inset-0 top-0 -z-10 flex h-[100dvh] flex-col bg-white xl:hidden"
         >
             {/* Menu ground */}
             <div className="sect-layer" aria-hidden="true">
@@ -215,7 +243,7 @@ export function Header() {
 
             <nav
               className="container-page relative flex flex-1 flex-col justify-center overflow-y-auto pb-10 pt-24"
-              aria-label="เมนูมือถือ"
+              aria-label={t(header.mobileNav)}
             >
               <ul>
                 {navigation.map((item, index) => (
@@ -231,7 +259,7 @@ export function Header() {
                         ease: [0.16, 1, 0.3, 1]
                       }}
                     >
-                      <NavLink
+                      <LocaleNavLink
                         to={item.to}
                         end={item.to === '/'}
                         className={({ isActive }) =>
@@ -245,9 +273,9 @@ export function Header() {
                           {String(index + 1).padStart(2, '0')}
                         </span>
                         <span className="thai-display text-[clamp(1.75rem,8vw,2.75rem)] font-bold">
-                          {item.label}
+                          {t(item.label)}
                         </span>
-                      </NavLink>
+                      </LocaleNavLink>
                     </motion.div>
                   </li>
                 ))}
@@ -259,12 +287,15 @@ export function Header() {
                 transition={{ duration: 0.6, delay: 0.55 }}
                 className="mt-9 flex flex-col gap-3"
               >
-                <ThemeToggle showLabels className="self-start" />
+                <div className="flex flex-wrap items-center gap-2">
+                  <LanguageSwitcher large />
+                  <ThemeToggle showLabels />
+                </div>
                 <ButtonLink to="/contact" size="lg">
-                  {cta.primary.label}
+                  {t(cta.primary.label)}
                 </ButtonLink>
                 <ButtonLink to="/login" size="lg" variant="secondary">
-                  {cta.login.label}
+                  {t(cta.login.label)}
                 </ButtonLink>
               </motion.div>
 

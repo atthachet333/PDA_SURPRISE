@@ -2,11 +2,14 @@ import { AnimatePresence, motion, useScroll } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { ContactIcon } from './Footer';
+import { useLocale } from '@/app/LocaleContext';
+import { ui } from '@/i18n/ui';
 
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll();
+  const { t } = useLocale();
 
   useEffect(() => {
     const update = () => setVisible(window.scrollY > 600);
@@ -20,8 +23,8 @@ export function BackToTop() {
       {visible ? (
         <motion.button
           type="button"
-          aria-label="กลับด้านบน"
-          title="กลับด้านบน"
+          aria-label={t(ui.backToTop)}
+          title={t(ui.backToTop)}
           onClick={() => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })}
           initial={reduced ? { opacity: 0 } : { opacity: 0, scale: .8 }}
           animate={{ opacity: 1, scale: 1 }}

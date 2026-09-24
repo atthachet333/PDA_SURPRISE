@@ -7,6 +7,8 @@
  * ============================================================================
  */
 
+import { cta as ctaText, footer as footerText, footerServiceLinks, nav } from '@/i18n/ui';
+
 export interface SocialLink {
   label: string;
   href: string;
@@ -85,22 +87,26 @@ export const activeSocials = company.socials.filter((social) => social.href.leng
 
 // --- navigation ------------------------------------------------------------
 
+/**
+ * Labels are localised triples from `i18n/ui`; targets are locale-neutral and
+ * resolved for the active language by `LocaleLink`.
+ */
 export const navigation = [
-  { label: 'หน้าแรก', to: '/' },
-  { label: 'บริการของเรา', to: '/services' },
-  { label: 'ระบบของเรา', to: '/solutions' },
-  { label: 'ผลงาน', to: '/work' },
-  { label: 'เกี่ยวกับเรา', to: '/about' },
-  { label: 'บทความ', to: '/insights' },
-  { label: 'ติดต่อเรา', to: '/contact' }
+  { label: nav.home, to: '/' },
+  { label: nav.services, to: '/services' },
+  { label: nav.solutions, to: '/solutions' },
+  { label: nav.work, to: '/work' },
+  { label: nav.about, to: '/about' },
+  { label: nav.insights, to: '/insights' },
+  { label: nav.contact, to: '/contact' }
 ] as const;
 
 export const cta = {
-  primary: { label: 'เริ่มโปรเจกต์', to: '/contact' },
-  secondary: { label: 'ดูผลงานของเรา', to: '/work' },
-  login: { label: 'เข้าสู่ระบบลูกค้า', to: '/login' },
-  talk: { label: 'พูดคุยกับเรา', to: '/contact' },
-  consult: { label: 'ปรึกษาโปรเจกต์นี้', to: '/contact' }
+  primary: { label: ctaText.startProject, to: '/contact' },
+  secondary: { label: ctaText.viewWork, to: '/work' },
+  login: { label: ctaText.clientLogin, to: '/login' },
+  talk: { label: ctaText.talkToUs, to: '/contact' },
+  consult: { label: ctaText.discussProject, to: '/contact' }
 } as const;
 
 // --- hero trust strip ------------------------------------------------------
@@ -254,24 +260,12 @@ export const process = [
 // --- footer ----------------------------------------------------------------
 
 export const footer = {
-  menuHeading: 'เมนูหลัก',
-  servicesHeading: 'บริการของเรา',
-  contactHeading: 'ติดต่อเรา',
   /** Mirrors the eight core services in data/services.ts, in selling order. */
-  servicesLinks: [
-    { label: 'ระบบ ERP / บริหารธุรกิจ', to: '/services#business-systems' },
-    { label: 'ระบบ Payroll / เงินเดือน', to: '/services#payroll' },
-    { label: 'ระบบ HR ผ่าน LINE', to: '/services#hr-line-bot' },
-    { label: 'ระบบเอกสารและการอนุมัติ', to: '/services#document-management' },
-    { label: 'ระบบจัดเก็บไฟล์กลาง (NAS)', to: '/services#file-management' },
-    { label: 'เว็บแอปพลิเคชัน', to: '/services#web-applications' },
-    { label: 'แอปพลิเคชันมือถือ', to: '/services#mobile-applications' },
-    { label: 'เว็บไซต์องค์กรและธุรกิจ', to: '/services#websites' }
-  ],
+  servicesLinks: footerServiceLinks.map((item) => ({ label: item.label, to: `/services#${item.id}` })),
   legalLinks: [
-    { label: 'นโยบายความเป็นส่วนตัว', to: '/privacy' },
-    { label: 'นโยบายคุกกี้', to: '/cookie-policy' },
-    { label: 'เงื่อนไขการใช้งาน', to: '/terms' },
+    { label: footerText.privacy, to: '/privacy' },
+    { label: footerText.cookies, to: '/cookie-policy' },
+    { label: footerText.terms, to: '/terms' }
   ]
 } as const;
 

@@ -85,6 +85,24 @@
         }
       })();
     </script>
+    <!--
+      LOCALE BOOTSTRAP — the URL alone decides the language.
+
+      /en/… is English, /zh/… is Simplified Chinese, everything else is Thai.
+      Setting lang and data-locale before first paint means screen readers and
+      the CJK font stack in global.css are right from the first frame, before
+      React mounts. Keep in step with `splitLocalePath` / `applyDocumentLang`
+      in src/i18n/locales.ts. The stored preference (pdabliss.locale) is NOT
+      read here: a direct link always renders the language it names.
+    -->
+    <script>
+      (function () {
+        var segment = window.location.pathname.split('/')[1];
+        var locale = segment === 'en' || segment === 'zh' ? segment : 'th';
+        document.documentElement.lang = locale === 'zh' ? 'zh-Hans' : locale;
+        document.documentElement.dataset.locale = locale;
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

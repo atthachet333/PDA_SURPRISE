@@ -1,5 +1,7 @@
 import { useTheme } from '@/app/ThemeContext';
 import { THEME_MODES, type ThemeMode } from '@/lib/theme';
+import { useLocale } from '@/app/LocaleContext';
+import { theme as themeText, themeLabel } from '@/i18n/ui';
 import { cn } from '@/lib/cn';
 
 /**
@@ -13,12 +15,6 @@ import { cn } from '@/lib/cn';
  *
  * Drawn on the same 24px / 1.5-stroke grid as `components/shared/Icon`.
  */
-
-const MODE_LABEL: Record<ThemeMode, string> = {
-  light: 'สว่าง',
-  dark: 'มืด',
-  system: 'ตามระบบ'
-};
 
 function ModeIcon({ mode }: { mode: ThemeMode }) {
   const common = {
@@ -63,13 +59,15 @@ export function ThemeToggle({
   showLabels?: boolean;
 }) {
   const { mode, resolved, setMode } = useTheme();
+  const { t } = useLocale();
+  const label = (option: ThemeMode) => t(themeLabel[option]);
 
   return (
     <div
       role="group"
-      aria-label="ธีมของเว็บไซต์"
+      aria-label={t(themeText.group)}
       className={cn(
-        'inline-flex items-center gap-0.5 rounded-pill border border-steel-200 bg-white/70 p-0.5',
+        'inline-flex shrink-0 items-center gap-0.5 rounded-pill border border-steel-200 bg-white/70 p-0.5',
         className
       )}
     >
@@ -81,7 +79,7 @@ export function ThemeToggle({
             type="button"
             onClick={() => setMode(option)}
             aria-pressed={active}
-            title={MODE_LABEL[option]}
+            title={label(option)}
             className={cn(
               'inline-flex min-h-9 items-center gap-1.5 rounded-pill px-2.5 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-600',
               showLabels && 'min-h-11 px-3.5',
@@ -89,7 +87,7 @@ export function ThemeToggle({
             )}
           >
             <ModeIcon mode={option} />
-            {showLabels ? <span>{MODE_LABEL[option]}</span> : <span className="sr-only">{MODE_LABEL[option]}</span>}
+            {showLabels ? <span>{label(option)}</span> : <span className="sr-only">{label(option)}</span>}
           </button>
         );
       })}
@@ -98,7 +96,7 @@ export function ThemeToggle({
         case where the pressed button does not tell you what you are looking at.
       */}
       <span aria-live="polite" className="sr-only">
-        {mode === 'system' ? `ตามระบบ — ขณะนี้${resolved === 'dark' ? 'มืด' : 'สว่าง'}` : MODE_LABEL[mode]}
+        {mode === 'system' ? `${t(themeText.systemNow)}${label(resolved)}` : label(mode)}
       </span>
     </div>
   );

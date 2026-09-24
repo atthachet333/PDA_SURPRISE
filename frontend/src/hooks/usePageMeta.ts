@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
-import { absoluteUrl, type PageMeta } from '@/lib/seo';
+import { PUBLIC_ORIGIN, type LocalizedPageMeta, type PageMeta } from '@/lib/seo';
+import { useLocale } from '@/app/LocaleContext';
+import { OG_LOCALE } from '@/i18n/locales';
+import { alternatesFor, canonicalFor } from '@/i18n/seo';
 
 /**
  * Per-route document metadata for a single-page app.
@@ -13,13 +16,26 @@ import { absoluteUrl, type PageMeta } from '@/lib/seo';
  * index.html. That is the accepted trade-off of a client-rendered site, and it
  * is why those defaults are a complete, honest description of the company
  * rather than a placeholder.
+ *
+ * LOCALES
+ *   A `LocalizedPageMeta` (every public corporate page) resolves its title and
+ *   description for the active locale, points the canonical at that locale's
+ *   own route and — only when a public origin is configured — lists th / en /
+ *   zh-Hans / x-default alternates. A plain `PageMeta` (the private routes) is
+ *   written exactly as given, Thai-default, with no alternates.
  */
-export function usePageMeta(meta: PageMeta): void {
-  useEffect(() => {
-    const previousTitle = document.title;
-    document.title = meta.title;
+export function usePageMeta(meta: PageMeta | LocalizedPageMeta): void {
+  const { locale } = useLocale();
 
-    const canonical = absoluteUrl(meta.path);
+  useEffect(() => {
+    const localized = typeof meta.title !== 'string';
+    const title = typeof meta.title === 'string' ? meta.title : meta.title[locale];
+    const description = typeof meta.description === 'string' ? meta.description : meta.description[locale];
+
+    const previousTitle = document.title;
+    document.title = title;
+
+    const canonical = canonicalFor(meta.path, localized ? locale : 'th', PUBLIC_ORIGIN);
     const cleanups: Array<() => void> = [];
 
     const setTag = (selector: string, create: () => HTMLElement, value: string, attr: string) => {
@@ -51,12 +67,13 @@ export function usePageMeta(meta: PageMeta): void {
       );
     };
 
-    setMeta('description', meta.description);
-    setMeta('og:title', meta.title, 'property');
-    setMeta('og:description', meta.description, 'property');
+    setMeta('description', description);
+    setMeta('og:title', title, 'property');
+    setMeta('og:description', description, 'property');
     setMeta('og:url', canonical, 'property');
-    setMeta('twitter:title', meta.title);
-    setMeta('twitter:description', meta.description);
+    setMeta('og:locale', OG_LOCALE[localized ? locale : 'th'], 'property');
+    setMeta('twitter:title', title);
+    setMeta('twitter:description', description);
 
     /*
      * `noindex, nofollow` for every private route. This is a request to
@@ -76,9 +93,25 @@ export function usePageMeta(meta: PageMeta): void {
       'href'
     );
 
+    /*
+     * Alternates are owned entirely by this effect: created here, removed on
+     * cleanup. Nothing is emitted without a real origin, and nothing for a
+     * noindex page.
+     */
+    if (localized && !meta.noindex) {
+      alternatesFor(meta.path, PUBLIC_ORIGIN).forEach(({ hreflang, href }) => {
+        const link = document.createElement('link');
+        link.rel = 'alternate';
+        link.hreflang = hreflang;
+        link.href = href;
+        document.head.appendChild(link);
+        cleanups.push(() => link.remove());
+      });
+    }
+
     return () => {
       document.title = previousTitle;
       cleanups.forEach((cleanup) => cleanup());
     };
-  }, [meta]);
+  }, [meta, locale]);
 }

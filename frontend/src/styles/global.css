@@ -212,6 +212,47 @@
     }
   }
 
+  /*
+   * Simplified Chinese (corporate `/zh` routes only — `data-locale` is written
+   * by the LocaleProvider, which never mounts on the private routes).
+   *
+   * FONTS  IBM Plex Sans Thai and Inter carry no CJK glyphs, so Chinese would
+   *        otherwise fall through to whatever the OS picks per character. The
+   *        stack names the platform CJK faces explicitly — PingFang (Apple),
+   *        Microsoft YaHei (Windows), Noto / Source Han (Android, Linux) — with
+   *        Inter first so Latin words and numerals keep the corporate face. No
+   *        CJK webfont is downloaded; every target platform ships one.
+   *
+   * BREAKING  `.thai-display` sets `word-break: keep-all`, which for CJK
+   *        forbids breaking between characters — a Chinese headline would
+   *        become one unbreakable line. Chinese breaks between characters by
+   *        design, so it gets normal breaking with strict punctuation rules
+   *        (no line starting with 。，、).
+   *
+   * Sizes are deliberately NOT changed per locale.
+   */
+  :root[data-locale='zh'] body {
+    font-family: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC',
+      'Noto Sans CJK SC', 'Source Han Sans SC', 'IBM Plex Sans Thai', system-ui, sans-serif;
+  }
+
+  :root[data-locale='zh'] .thai-display,
+  :root[data-locale='zh'] .font-thai {
+    word-break: normal;
+    line-break: strict;
+    overflow-wrap: break-word;
+  }
+
+  /* Thai glyphs inside a Chinese page (the registered Thai name) keep Plex. */
+  :root[data-locale='zh'] :lang(th) {
+    font-family: 'IBM Plex Sans Thai', 'Inter', sans-serif;
+  }
+
+  /* English display type does not need Thai's keep-all either. */
+  :root[data-locale='en'] .thai-display {
+    word-break: normal;
+  }
+
   p {
     text-wrap: pretty;
   }

@@ -8,6 +8,11 @@ import { FloatingContact } from '@/components/business/FloatingContact';
 import { BackToTop } from '@/components/business/BackToTop';
 import { CookieConsentProvider } from '@/app/CookieConsent';
 import { ThemeProvider } from '@/app/ThemeProvider';
+import { LocaleProvider } from '@/app/LocaleProvider';
+import { useLocale } from '@/app/LocaleContext';
+import { pick } from '@/i18n/text';
+import { ui } from '@/i18n/ui';
+import { splitLocalePath } from '@/i18n/locales';
 import { ErrorBoundary } from '@/app/ErrorBoundary';
 import { OrganizationSchema } from '@/components/business/OrganizationSchema';
 import { AILoader } from '@/components/surprise/AILoader';
@@ -73,6 +78,7 @@ function BusinessLayout({ children }: { children: React.ReactNode }) {
   useLenis();
   return (
     <ThemeProvider>
+    <LocaleProvider>
     <CookieConsentProvider>
       <OrganizationSchema />
       <div className="corporate-shell flex min-h-screen flex-col">
@@ -89,6 +95,7 @@ function BusinessLayout({ children }: { children: React.ReactNode }) {
         <FloatingContact />
       </div>
     </CookieConsentProvider>
+    </LocaleProvider>
     </ThemeProvider>
   );
 }
@@ -104,8 +111,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 }
 
 function RouteFallback() {
+  const { locale } = useLocale();
   return (
-    <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-label="Loading">
+    <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-label={pick(ui.loading, locale)}>
       <span className="h-6 w-6 animate-spin rounded-full border-2 border-steel-200 border-t-brand-500" />
     </div>
   );
@@ -121,6 +129,21 @@ function FullScreenFallback() {
       <span className="h-6 w-6 animate-spin rounded-full border-2 border-ivory/20 border-t-ivory/80" />
     </div>
   );
+}
+
+/**
+ * The public route table, matched against the locale-NEUTRAL path.
+ *
+ * `/en/services` and `/zh/services` are matched as `/services`, so one table
+ * serves all three languages and no route, slug or param is duplicated. The
+ * stripped location is also what pages see from `useLocation`, which keeps
+ * hash handling (`/en/services#payroll`) identical to Thai. Only `en` and `zh`
+ * are prefixes — `/fr/services` stays as it is and reaches NotFound.
+ */
+function CorporateRoutes({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const { path } = splitLocalePath(location.pathname);
+  return <Routes location={{ ...location, pathname: path }}>{children}</Routes>;
 }
 
 export default function App() {
@@ -195,7 +218,7 @@ export default function App() {
           element={
             <BusinessLayout>
               <Suspense fallback={<RouteFallback />}>
-                <Routes>
+                <CorporateRoutes>
                   <Route path="/" element={<Home />} />
                   <Route path="/services" element={<Services />} />
                   <Route path="/solutions" element={<Solutions />} />
@@ -209,7 +232,7 @@ export default function App() {
                   <Route path="/cookie-policy" element={<CookiePolicy />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="*" element={<NotFound />} />
-                </Routes>
+                </CorporateRoutes>
               </Suspense>
             </BusinessLayout>
           }

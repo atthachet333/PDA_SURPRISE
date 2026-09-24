@@ -1,4 +1,6 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Component, type ContextType, type ErrorInfo, type ReactNode } from 'react';
+import { LocaleContext } from '@/app/LocaleContext';
+import { cta, ui } from '@/i18n/ui';
 
 interface Props {
   children: ReactNode;
@@ -27,6 +29,14 @@ interface State {
  * the console for a developer to read.
  */
 export class ErrorBoundary extends Component<Props, State> {
+  /*
+   * Only the corporate variant reads it. The A&I routes sit outside the
+   * LocaleProvider, so the context there is the Thai default — and the A&I
+   * panel below does not consult it at all.
+   */
+  static contextType = LocaleContext;
+  declare context: ContextType<typeof LocaleContext>;
+
   state: State = { failed: false };
 
   static getDerivedStateFromError(): State {
@@ -75,14 +85,15 @@ export class ErrorBoundary extends Component<Props, State> {
       );
     }
 
+    const { t, path } = this.context;
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-8 text-center">
         <p className="font-mono text-sm text-brand-600">ERROR</p>
         <h1 className="thai-display mt-4 text-2xl font-bold text-ink sm:text-3xl">
-          หน้านี้มีปัญหาชั่วคราว
+          {t(ui.errorTitle)}
         </h1>
         <p className="mt-4 max-w-md text-sm leading-relaxed text-steel-500">
-          ลองโหลดหน้านี้ใหม่อีกครั้ง หากยังไม่ได้ กรุณาติดต่อเราโดยตรง
+          {t(ui.errorBody)}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <button
@@ -90,13 +101,13 @@ export class ErrorBoundary extends Component<Props, State> {
             onClick={this.reload}
             className="inline-flex min-h-11 items-center rounded-pill bg-ink px-6 text-sm font-medium text-white transition-colors hover:bg-brand-800"
           >
-            โหลดใหม่
+            {t(ui.reload)}
           </button>
           <a
-            href="/"
+            href={path('/')}
             className="inline-flex min-h-11 items-center rounded-pill border border-steel-200 px-6 text-sm font-medium text-ink transition-colors hover:border-brand-300 hover:text-brand-700"
           >
-            กลับหน้าแรก
+            {t(cta.backHome)}
           </a>
         </div>
       </div>

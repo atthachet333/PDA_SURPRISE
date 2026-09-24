@@ -1,6 +1,5 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { company, cta, footer, navigation } from '@/data/company';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
@@ -8,12 +7,19 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 import { HeroSystem } from './HeroSystem';
 import { Logo } from './Logo';
+import { LocaleLink } from '@/components/shared/LocaleLink';
+import { useLocale } from '@/app/LocaleContext';
+import { footer as footerText } from '@/i18n/ui';
+import { addressLines, addressNote, businessHours } from '@/i18n/company';
 
 export function Footer() {
   const reduced = useReducedMotion();
   const footerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: footerRef, offset: ['start end', 'end start'] });
   const wordmarkY = useTransform(scrollYProgress, [0, 1], [-14, 22]);
+  const { t } = useLocale();
+  const [finalLead, finalAccent] = t(footerText.finalTitle);
+  const address = t(addressLines);
 
   /*
    * `on-dark`: the footer keeps its dark green ground in BOTH themes, so the
@@ -29,11 +35,11 @@ export function Footer() {
           <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,.88fr)_minmax(0,1.12fr)]">
             <div>
               <p className="section-code text-brand-300">FINAL / START</p>
-              <h2 className="thai-display mt-5 text-mega font-bold">พร้อมเปลี่ยนไอเดีย<br /><span className="text-brand-300">ให้เป็นระบบที่ใช้งานได้จริงหรือยัง?</span></h2>
-              <p className="mt-6 max-w-xl text-sm leading-7 text-brand-100/70">คุยกับเราเรื่องแนวคิด ระบบ หรือ Workflow ที่คุณกำลังวางแผน<br className="hidden sm:block" /> เราช่วยประเมินแนวทางก่อนเริ่มโปรเจกต์ได้</p>
+              <h2 className="thai-display mt-5 text-mega font-bold">{finalLead}<br /><span className="text-brand-300">{finalAccent}</span></h2>
+              <p className="mt-6 max-w-xl text-sm leading-7 text-brand-100/70">{t(footerText.finalBody)}</p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink to={cta.primary.to} size="lg" className="bg-white text-brand-900 hover:bg-brand-50">เริ่มโปรเจกต์ <ArrowIcon /></ButtonLink>
-                <ButtonLink to={`tel:${company.phone}`} size="lg" variant="ghost" className="border border-white/25 text-white hover:bg-white/10">พูดคุยกับเรา</ButtonLink>
+                <ButtonLink to={cta.primary.to} size="lg" className="bg-white text-brand-900 hover:bg-brand-50">{t(cta.primary.label)} <ArrowIcon /></ButtonLink>
+                <ButtonLink to={`tel:${company.phone}`} size="lg" variant="ghost" className="border border-white/25 text-white hover:bg-white/10">{t(cta.talk.label)}</ButtonLink>
               </div>
             </div>
             <div className="hidden h-[30rem] lg:block"><HeroSystem className="h-full" /></div>
@@ -47,18 +53,18 @@ export function Footer() {
           <div className="grid gap-12 lg:grid-cols-[1.15fr_.72fr_1fr_1.12fr]">
             <div>
               <Logo inverted className="h-9" />
-              <p className="thai-display mt-7 text-sm font-semibold text-white">{company.legalNameTh}</p>
+              <p className="thai-display mt-7 text-sm font-semibold text-white" lang="th">{company.legalNameTh}</p>
               <p className="mt-1 font-mono text-[.5625rem] uppercase tracking-[.16em] text-brand-300/55">{company.legalName}</p>
-              <p className="mt-6 max-w-xs text-sm leading-7 text-brand-100/60">พัฒนาซอฟต์แวร์และระบบธุรกิจ<br />ที่ออกแบบจากกระบวนการทำงานจริง</p>
+              <p className="mt-6 max-w-xs text-sm leading-7 text-brand-100/60">{t(footerText.blurb)}</p>
             </div>
-            <FooterColumn title={footer.menuHeading}>{navigation.map((item) => <li key={item.to}><Link className="footer-link" to={item.to}>{item.label}</Link></li>)}</FooterColumn>
-            <FooterColumn title={footer.servicesHeading}>{footer.servicesLinks.map((item) => <li key={item.to}><Link className="footer-link" to={item.to}>{item.label}</Link></li>)}</FooterColumn>
-            <FooterColumn title={footer.contactHeading}>
+            <FooterColumn title={t(footerText.menuHeading)}>{navigation.map((item) => <li key={item.to}><LocaleLink className="footer-link" to={item.to}>{t(item.label)}</LocaleLink></li>)}</FooterColumn>
+            <FooterColumn title={t(footerText.servicesHeading)}>{footer.servicesLinks.map((item) => <li key={item.to}><LocaleLink className="footer-link" to={item.to}>{t(item.label)}</LocaleLink></li>)}</FooterColumn>
+            <FooterColumn title={t(footerText.contactHeading)}>
               <ContactItem icon="phone"><a className="footer-link" href={`tel:${company.phone}`}>{company.phoneDisplay}</a></ContactItem>
               <ContactItem icon="mail"><a className="footer-link break-all" href={`mailto:${company.email}`}>{company.email}</a></ContactItem>
               <ContactItem icon="line"><a className="footer-link" href={company.lineUrl} target="_blank" rel="noopener noreferrer">{company.lineOA}</a></ContactItem>
-              <ContactItem icon="map">{company.mapUrl ? <a href={company.mapUrl} target="_blank" rel="noopener noreferrer" className="footer-link"><address className="not-italic text-xs leading-6">{company.address.lines.map((line) => <span key={line} className="block">{line}</span>)}</address></a> : <address className="not-italic text-xs leading-6 text-brand-100/55">{company.address.lines.map((line) => <span key={line} className="block">{line}</span>)}</address>}</ContactItem>
-              <ContactItem icon="clock"><span className="text-xs leading-6 text-brand-100/55">{company.businessHours.days}<br />{company.businessHours.time}</span></ContactItem>
+              <ContactItem icon="map">{company.mapUrl ? <a href={company.mapUrl} target="_blank" rel="noopener noreferrer" className="footer-link"><address className="not-italic text-xs leading-6">{address.map((line) => <span key={line} className="block">{line}</span>)}</address></a> : <address className="not-italic text-xs leading-6 text-brand-100/55">{address.map((line) => <span key={line} className="block">{line}</span>)}</address>}</ContactItem>
+              <ContactItem icon="clock"><span className="text-xs leading-6 text-brand-100/55">{t(businessHours.days)}<br />{t(businessHours.time)}</span></ContactItem>
             </FooterColumn>
           </div>
         </Container>
@@ -68,14 +74,14 @@ export function Footer() {
       <section className="sect sect--horizon relative overflow-hidden border-t border-white/8">
         <FooterAtmosphere reduced={reduced} finale />
         <Container wide className="relative pt-8">
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[.5625rem] uppercase tracking-[.18em] text-brand-300/50"><span>PDA BLISS · DIGITAL SYSTEMS</span><span>tz · asia/bangkok</span><span>{company.businessHours.note}</span></div>
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[.5625rem] uppercase tracking-[.18em] text-brand-300/50"><span>PDA BLISS · DIGITAL SYSTEMS</span><span>tz · asia/bangkok</span><span>{t(businessHours.note)}</span></div>
           <motion.div style={reduced ? undefined : { y: wordmarkY }} className="relative mt-8 select-none overflow-hidden" aria-hidden="true">
             <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 opacity-35"><Logo compact inverted className="h-10 w-10" /></div>
             <span className="block translate-y-[14%] whitespace-nowrap text-center text-[clamp(3.5rem,17vw,15rem)] font-bold leading-[.8] tracking-[-.045em] text-white/[.07]">PDA BLISS</span>
           </motion.div>
           <div className="flex flex-col gap-4 border-t border-white/10 py-7 text-xs text-brand-100/45 lg:flex-row lg:items-center lg:justify-between">
-            <div><p>© {new Date().getFullYear()} {company.legalName}</p><p className="thai-display mt-1">{company.legalNameTh} · {company.addressNote}</p></div>
-            <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="นโยบายและข้อกำหนด">{footer.legalLinks.map((item) => <Link key={item.to} to={item.to} className="transition-colors hover:text-white">{item.label}</Link>)}</nav>
+            <div><p>© {new Date().getFullYear()} {company.legalName}</p><p className="thai-display mt-1"><span lang="th">{company.legalNameTh}</span> · {t(addressNote)}</p></div>
+            <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label={t(footerText.legalNav)}>{footer.legalLinks.map((item) => <LocaleLink key={item.to} to={item.to} className="transition-colors hover:text-white">{t(item.label)}</LocaleLink>)}</nav>
           </div>
         </Container>
       </section>

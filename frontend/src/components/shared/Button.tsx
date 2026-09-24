@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { cn } from '@/lib/cn';
 import { useMagnetic } from '@/hooks/useMagnetic';
 import { useAudio } from '@/app/audioContext';
+import { useLocale } from '@/app/LocaleContext';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'dark';
 type Size = 'sm' | 'md' | 'lg';
@@ -72,6 +73,7 @@ export function ButtonLink({
   ...rest
 }: AnchorProps) {
   const { play } = useAudio();
+  const { path } = useLocale();
   const external = /^https?:|^mailto:|^tel:/.test(to);
 
   if (external) {
@@ -88,7 +90,7 @@ export function ButtonLink({
 
   return (
     <Link
-      to={to}
+      to={path(to)}
       className={cn(BASE, VARIANTS[variant], SIZES[size], className)}
       onClick={() => play('softClick')}
       {...rest}
