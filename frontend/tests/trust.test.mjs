@@ -3,6 +3,8 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import * as trust from '../src/i18n/trust.ts';
 import * as preview from '../src/i18n/trustPreview.ts';
+import * as about from '../src/i18n/about.ts';
+import { primaryServices } from '../src/data/services.ts';
 import { businessHours } from '../src/i18n/company.ts';
 import { caseStudies } from '../src/data/caseStudies.ts';
 import { company, metrics, metricsVerified, process, techStack } from '../src/data/company.ts';
@@ -34,7 +36,7 @@ test('verified metrics are unchanged and nothing claims more', () => {
   assert.deepEqual(metrics.map((metric) => metric.value), [6, 4]);
   assert.deepEqual(metrics.map((metric) => metric.label), ['ระบบซอฟต์แวร์', 'เว็บไซต์']);
   /* Numbers in trust copy are slots filled from data, never typed. */
-  const typedFigures = [...strings(preview.trustTiles), ...strings(trust.whyItems)].filter((text) => /\b\d+\b|\d+\s*(\+|%)/.test(text));
+  const typedFigures = [...strings(preview.trustTiles), ...strings(about.buildGroups)].filter((text) => /\b\d+\b|\d+\s*(\+|%)/.test(text));
   assert.deepEqual(typedFigures, [], `trust copy types a figure instead of using a slot:\n${typedFigures.join('\n')}`);
   assert.ok(caseStudies.length >= 1);
   assert.equal(process.length, 7, 'the canonical process has seven stages');
@@ -119,16 +121,22 @@ test('every technology traces to delivered work', () => {
 
 test('every trust link resolves to real work or a real section', () => {
   const caseSlugs = new Set(caseStudies.map((study) => study.slug));
-  const aboutSource = [read('../src/pages/business/About.tsx'), read('../src/components/business/TrustSections.tsx')].join('\n');
+  const aboutSource = [
+    read('../src/pages/business/About.tsx'),
+    read('../src/components/business/AboutSections.tsx'),
+    read('../src/components/business/TrustSections.tsx')
+  ].join('\n');
   const aboutIds = new Set([...aboutSource.matchAll(/\bid="([a-z-]+)"/g)].map((m) => m[1]));
-  const targets = [...trust.whyItems.map((item) => item.to), ...preview.trustTiles.map((tile) => tile.to), '/about#process', '/about#company'];
+  const targets = [...about.buildGroups.map((group) => group.to), ...about.evidenceCases.map((slug) => `/work/${slug}`), ...preview.trustTiles.map((tile) => tile.to), '/about#process', '/about#company', '/about#technology', '/about#quality', '/about#support', '/services#scope'];
   targets.forEach((to) => {
     if (to.startsWith('#')) return assert.ok(aboutIds.has(to.slice(1)), `${to} is not a section on /about`);
     const [path, hash] = to.split('#');
     if (path.startsWith('/work/')) return assert.ok(caseSlugs.has(path.slice(6)), `${to} is not a case study`);
     assert.ok(['/work', '/solutions', '/about', '/contact', '/services'].includes(path), `${to} is not a public route`);
+    /* /services#<id>: each core service section takes its id from data. */
+    if (path === '/services' && primaryServices.some((service) => service.id === hash)) return;
     if (hash) {
-      const pageSource = path === '/work' ? read('../src/pages/business/Work.tsx') : aboutSource;
+      const pageSource = path === '/work' ? read('../src/pages/business/Work.tsx') : path === '/services' ? [read('../src/pages/business/Services.tsx'), read('../src/components/business/ServiceCatalogue.tsx'), aboutSource].join('\n') : aboutSource;
       assert.ok(pageSource.includes(`id="${hash}"`), `${to} points at a missing section`);
     }
   });

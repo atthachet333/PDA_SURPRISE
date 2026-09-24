@@ -21,74 +21,6 @@ import type { LocalizedText } from './text';
 
 type Lines = Record<Locale, readonly string[]>;
 
-/* ------------------------------------------------------------ why us -- */
-
-export const whyCopy = {
-  title: { th: ['ทำไมต้อง PDA BLISS', 'ดูจากหลักฐาน ไม่ใช่คำโฆษณา'], en: ['Why PDA BLISS?', 'Look at the evidence, not the adjectives'], zh: ['为什么选择 PDA BLISS？', '看证据，而不是广告语'] } as Lines,
-  lead: {
-    th: 'ทุกข้อด้านล่างมีสิ่งที่คุณเปิดดูได้บนเว็บไซต์นี้ ทั้งผลงาน ขั้นตอน และข้อมูลบริษัท',
-    en: 'Each point below links to something you can check on this site — real work, our process or our company details.',
-    zh: '以下每一点都能在本网站上找到可查看的依据——真实案例、工作流程或公司信息。'
-  }
-};
-
-/**
- * Five reasons, each with the page that proves it. `{systems}` and
- * `{websites}` are filled from the verified metrics, never typed here.
- */
-export const whyItems: readonly { title: LocalizedText; body: LocalizedText; link: LocalizedText; to: string }[] = [
-  {
-    title: { th: 'เริ่มจากโจทย์จริง ไม่ใช่เทมเพลตสำเร็จรูป', en: 'Built from the real problem, not a template', zh: '从真实问题出发，而不是套用模板' },
-    body: {
-      th: 'ทุกผลงานเล่าจากปัญหาที่ธุรกิจเจอก่อน แล้วจึงอธิบายสิ่งที่เราสร้างและวิธีที่ระบบทำงาน',
-      en: 'Every project starts from the problem the business faced, then shows what we built and how the system works.',
-      zh: '每个案例都先讲企业遇到的问题，再说明我们构建了什么以及系统如何运作。'
-    },
-    link: { th: 'ดูผลงานจริง', en: 'See real work', zh: '查看真实案例' },
-    to: '/work'
-  },
-  {
-    title: { th: 'ออกแบบตาม Workflow ของธุรกิจ', en: 'Designed around your workflow', zh: '按企业的工作流程设计' },
-    body: {
-      th: 'เช่น ระบบ Payroll ที่ออกแบบเป็นลำดับตรวจเวลา คำนวณ อนุมัติ จ่าย และล็อกรอบ ตามงานจริงของฝ่ายบุคคล',
-      en: 'For example, a payroll system designed as the HR team’s real sequence: review hours, calculate, approve, pay and lock the cycle.',
-      zh: '例如按人事部门的实际顺序设计的 Payroll 系统：核对考勤、计算、审批、发放并锁定周期。'
-    },
-    link: { th: 'ดู Case Study', en: 'View case study', zh: '查看案例详情' },
-    to: '/work/payroll-monthly-control'
-  },
-  {
-    title: { th: 'เชื่อมกับเครื่องมือที่ใช้อยู่แล้ว', en: 'Works with the tools you already use', zh: '与现有工具协同' },
-    body: {
-      th: 'เช่น ระบบ HR ที่ให้พนักงานยื่นคำขอผ่าน LINE ที่ใช้อยู่ทุกวัน โดยข้อมูลจริงยังเก็บในระบบกลาง',
-      en: 'For example, an HR system where employees submit requests through the LINE app they already use, while the real data stays in a central system.',
-      zh: '例如员工通过日常使用的 LINE 提交申请的 HR 系统，而真实数据仍保存在中心系统中。'
-    },
-    link: { th: 'ดู Case Study', en: 'View case study', zh: '查看案例详情' },
-    to: '/work/hr-line-leave-approval'
-  },
-  {
-    title: { th: 'มีทั้งระบบภายในและเว็บไซต์', en: 'Internal systems and websites', zh: '既做内部系统，也做网站' },
-    body: {
-      th: '{systems} ระบบซอฟต์แวร์ และ {websites} เว็บไซต์ ที่พัฒนาและส่งมอบแล้ว',
-      en: '{systems} software systems and {websites} websites developed and delivered.',
-      zh: '已开发并交付 {systems} 个软件系统和 {websites} 个网站。'
-    },
-    link: { th: 'ดูผลงานทั้งหมด', en: 'View all work', zh: '查看全部案例' },
-    to: '/work#all-projects'
-  },
-  {
-    title: { th: 'ปรับต่อได้เมื่อธุรกิจเปลี่ยน', en: 'Room to change as the business does', zh: '业务变化时可以继续调整' },
-    body: {
-      th: 'วางโครงสร้างให้เพิ่มผู้ใช้และโมดูลได้ และดูแลต่อหลังส่งมอบตามขอบเขตงานที่ตกลงกัน',
-      en: 'Structured so users and modules can be added, with support after handover within the agreed scope.',
-      zh: '在结构上预留新增用户和模块的空间，并在约定范围内提供交付后的维护。'
-    },
-    link: { th: 'การดูแลหลังส่งมอบ', en: 'Support after handover', zh: '交付后的维护' },
-    to: '#support'
-  }
-];
-
 /* ------------------------------------------------------ scope factors -- */
 
 export const scopeCopy = {
@@ -112,23 +44,6 @@ export const scopeCopy = {
 };
 
 /* -------------------------------------------------------- technology -- */
-
-export const techCopy = {
-  title: { th: ['เทคโนโลยี', 'จากงานที่ส่งมอบจริง'], en: ['Technology', 'from delivered work'], zh: ['来自已交付项目的', '技术'] } as Lines,
-  lead: {
-    th: 'เฉพาะเครื่องมือที่ใช้จริงในผลงานที่เปิดเผยได้ จัดตามชั้นของระบบ เราเลือกตามโจทย์ ไม่ใช่ตามกระแส',
-    en: 'Only tools used in work we can show, grouped by system layer. We choose for the job, not the trend.',
-    zh: '只列出可公开案例中实际使用的工具，并按系统层级分组。我们根据需求选择，而不是追随潮流。'
-  },
-  idle: {
-    th: 'เลือกเครื่องมือเพื่อดูว่าใช้ทำอะไร และอยู่ในผลงานไหน',
-    en: 'Choose a tool to see what it does and which projects use it.',
-    zh: '选择一个工具，查看它的用途以及用在哪些案例中。'
-  },
-  readout: { th: 'ใช้ทำอะไร', en: 'What it does', zh: '用途' },
-  usedIn: { th: 'ใช้ในผลงาน: ', en: 'Used in: ', zh: '所用案例：' },
-  viewWork: { th: 'ดูผลงานที่ใช้เทคโนโลยีเหล่านี้', en: 'See the work that uses these', zh: '查看使用这些技术的案例' }
-};
 
 /** Mirrors `techStack` in data/company.ts, keyed by group then tool name. */
 export const techText: Record<string, { group: LocalizedText; notes: Record<string, LocalizedText> }> = {
@@ -179,7 +94,6 @@ export const techText: Record<string, { group: LocalizedText; notes: Record<stri
 /* --------------------------------------------------- quality + privacy -- */
 
 export const qualityCopy = {
-  title: { th: ['ตรวจก่อนส่ง', 'และระวังเรื่องข้อมูล'], en: ['Checked before delivery,', 'careful with data'], zh: ['交付前检查，', '谨慎对待数据'] } as Lines,
   practicesTitle: { th: 'สิ่งที่เราตรวจในงานพัฒนา', en: 'What we check during development', zh: '开发过程中的检查' },
   practices: {
     th: [
@@ -269,9 +183,7 @@ export const companyCopy = {
   phone: { th: 'โทรศัพท์', en: 'Phone', zh: '电话' },
   email: { th: 'อีเมล', en: 'Email', zh: '邮箱' },
   line: { th: 'LINE Official Account', en: 'LINE Official Account', zh: 'LINE 官方账号' },
-  hours: { th: 'เวลาทำการ', en: 'Business hours', zh: '营业时间' },
-  contact: { th: 'ติดต่อเรา', en: 'Contact us', zh: '联系我们' },
-  work: { th: 'ดูผลงานจริง', en: 'See real work', zh: '查看真实案例' }
+  hours: { th: 'เวลาทำการ', en: 'Business hours', zh: '营业时间' }
 } satisfies Record<string, LocalizedText>;
 
 /* -------------------------------------------------------- cross-links -- */

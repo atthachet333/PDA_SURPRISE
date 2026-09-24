@@ -25,7 +25,16 @@ import { cn } from '@/lib/cn';
  *   reach the stage they wanted, and a list that keeps moving under the cursor
  *   is worse than one that never moved.
  */
-export function ProcessPath({ code = '07 / PROCESS', id }: { code?: string; id?: string } = {}) {
+export function ProcessPath({
+  code = '07 / PROCESS',
+  id,
+  note
+}: {
+  code?: string;
+  id?: string;
+  /** Optional link or line under the lead, e.g. About's link to /services#scope. */
+  note?: React.ReactNode;
+} = {}) {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [inView, setInView] = useState(false);
@@ -101,9 +110,10 @@ export function ProcessPath({ code = '07 / PROCESS', id }: { code?: string; id?:
               <span className="text-brand-600">{titleAccent}</span>
             </h2>
           </div>
-          <p className="max-w-xs text-sm leading-relaxed text-steel-500">
-            {t(processCopy.lead)}
-          </p>
+          <div className="max-w-xs">
+            <p className="text-sm leading-relaxed text-steel-500">{t(processCopy.lead)}</p>
+            {note}
+          </div>
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-12">

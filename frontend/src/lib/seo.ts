@@ -120,14 +120,14 @@ export const pageMeta = {
   },
   about: {
     title: {
-      th: `เกี่ยวกับเรา${TITLE_SUFFIX}`,
-      en: `About Us${TITLE_SUFFIX}`,
-      zh: `关于我们${TITLE_SUFFIX}`
+      th: 'เกี่ยวกับ PDA BLISS — บริษัทพัฒนาซอฟต์แวร์และระบบธุรกิจ',
+      en: 'About PDA BLISS — Business Software & Web Development',
+      zh: '关于 PDA BLISS — 企业软件与网站开发'
     },
     description: {
-      th: 'PDA BLISS COMPANY LIMITED พัฒนาซอฟต์แวร์ ระบบธุรกิจ เว็บแอปพลิเคชัน และเว็บไซต์ ดูวิธีการทำงาน เทคโนโลยีจากงานที่ส่งมอบจริง การดูแลหลังส่งมอบ และข้อมูลบริษัท',
-      en: 'PDA BLISS COMPANY LIMITED develops software, business systems, web applications and websites. See how we work, the technology behind delivered projects, support after handover and our company details.',
-      zh: 'PDA BLISS COMPANY LIMITED 开发软件、业务系统、Web 应用和网站。了解我们的工作方式、已交付项目所用的技术、交付后维护以及公司信息。'
+      th: 'PDA BLISS COMPANY LIMITED ทีมพัฒนาซอฟต์แวร์ที่เริ่มจากปัญหาจริงของธุรกิจ สร้างระบบธุรกิจ เว็บแอปพลิเคชัน และเว็บไซต์ รู้จักแนวคิด วิธีการทำงาน ผลงาน และข้อมูลบริษัท',
+      en: 'PDA BLISS COMPANY LIMITED is a software team that starts from real business problems, building business systems, web applications and websites. Our approach, process, work and company details.',
+      zh: 'PDA BLISS COMPANY LIMITED 是一支从企业真实问题出发的软件团队，开发业务系统、Web 应用和网站。了解我们的理念、工作方式、案例和公司信息。'
     },
     path: '/about'
   },

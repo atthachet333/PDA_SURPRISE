@@ -37,6 +37,12 @@ export const philosophy = [
   }
 ] as const;
 
+/**
+ * NOT RENDERED since EP41. The first item names PostgreSQL and containers as
+ * preferred tools, but no delivered case study uses them (delivered work runs
+ * on MySQL; see `techStack` in data/company.ts). Preferred tooling must not be
+ * shown as delivered evidence — OWNER DECISION before this is shown again.
+ */
 export const standards = {
   heading: 'มาตรฐานการพัฒนา',
   items: [

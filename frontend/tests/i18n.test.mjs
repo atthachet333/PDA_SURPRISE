@@ -16,8 +16,7 @@ import * as about from '../src/i18n/about.ts';
 import * as legal from '../src/i18n/legal.ts';
 import * as trust from '../src/i18n/trust.ts';
 import * as trustPreview from '../src/i18n/trustPreview.ts';
-import { aftercare, philosophy, standards } from '../src/data/about.ts';
-import { targetMarket } from '../src/data/company.ts';
+import { aftercare, philosophy } from '../src/data/about.ts';
 import { pageMeta } from '../src/lib/seo.ts';
 import en from '../src/i18n/content/en.ts';
 import zh from '../src/i18n/content/zh.ts';
@@ -365,13 +364,9 @@ test('business identifiers are identical in every locale', () => {
 
 test('about and legal pages mirror their Thai sources', () => {
   assert.equal(about.philosophyText.length, philosophy.length);
-  assert.equal(about.standardText.length, standards.items.length);
   assert.equal(about.aftercareText.length, aftercare.items.length);
-  assert.equal(about.marketGroupText.length, targetMarket.groups.length);
   /* Thai values are the Thai source itself, not a second copy that could drift. */
   about.philosophyText.forEach((item, index) => assert.equal(item.body.th, philosophy[index].body));
-  about.standardText.forEach((item, index) => assert.equal(item.body.th, standards.items[index].body));
-  about.marketGroupText.forEach((item, index) => assert.equal(item.label.th, targetMarket.groups[index].label));
 
   [legal.privacyPage, legal.cookiePage, legal.termsPage].forEach((page) => {
     assert.ok(page.sections.length >= 3, `${page.eyebrow} lost sections`);

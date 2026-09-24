@@ -1402,7 +1402,9 @@
 
   /* Panel used on light grounds. Flat, hairline, no blur. */
   .plane-light {
-    background: #ffffff;
+    /* Themed, not #fff: in Dark the text on this panel turns light, so a
+       literal white ground made the process stage panel unreadable. */
+    background: rgb(var(--c-white));
     border: 1px solid theme('colors.steel.200');
   }
 

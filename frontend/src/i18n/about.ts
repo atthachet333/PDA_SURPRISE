@@ -1,5 +1,4 @@
-import { aboutIntro, aftercare, philosophy, standards, statement, whoWeAre } from '@/data/about';
-import { targetMarket } from '@/data/company';
+import { aboutIntro, aftercare, philosophy, statement, whoWeAre } from '@/data/about';
 import type { Locale } from './locales';
 import type { LocalizedText } from './text';
 
@@ -7,10 +6,12 @@ import type { LocalizedText } from './text';
  * ============================================================================
  * ABOUT — TH / EN / 中文
  * ============================================================================
- * Thai values point at `data/about.ts` and `data/company.ts`, so the Thai page
- * reads exactly as before and there is one Thai source. EN and ZH mirror them
- * item for item. No history, founding year, headcount or client count is
- * added — none is verified, and none is in the Thai.
+ * Thai values point at `data/about.ts` wherever the owner's wording exists, so
+ * there is one Thai source. EN and ZH mirror them item for item. No history,
+ * founding year, headcount or client count is added — none is verified.
+ *
+ * EP41 — About answers "who is PDA BLISS and how does it think". What we can
+ * build lives on /services, what we built on /work; About summarises and links.
  * ============================================================================
  */
 
@@ -18,31 +19,28 @@ type Lines = Record<Locale, readonly string[]>;
 
 export const aboutPage = {
   title: { th: 'เกี่ยวกับเรา', en: 'About us', zh: '关于我们' },
-  lead: {
-    th: aboutIntro.body[0],
-    en: 'PDA BLISS COMPANY LIMITED does not start by proposing features. We start by understanding how the work gets done, where your team gets stuck, the people who will actually use the system, the data you already have and the real constraints on the ground.',
-    zh: 'PDA BLISS COMPANY LIMITED 不会一开始就推销功能。我们先了解工作是如何完成的、团队在哪里受阻、真正会使用系统的人、已有的数据，以及现场实际存在的限制。'
-  },
-  statementTitle: {
-    th: aboutIntro.title,
-    en: ['Good technology', 'starts with understanding the real business'],
-    zh: ['好的技术，', '始于对真实业务的理解']
+  /* ------------------------------------------------------------ hero -- */
+  heroTitle: {
+    th: ['เราเป็นทีมพัฒนาซอฟต์แวร์', 'ที่เริ่มจากปัญหาจริงของธุรกิจ'],
+    en: ['We are a software team', 'that starts from real business problems'],
+    zh: ['我们是一支软件团队，', '从企业的真实问题出发']
   } as Lines,
-  secondParagraph: {
-    th: aboutIntro.body[1],
-    en: 'We keep the team small and experienced on purpose. The person who agrees the scope with you is the same person who writes the code — and the same person who picks up the phone a year and a half later when the system needs to change.',
-    zh: '我们刻意保持团队精干且经验丰富。与您确认范围的人，就是写代码的人，也是一年半之后系统需要调整时接听电话的人。'
+  heroLead: {
+    th: 'PDA BLISS พัฒนาระบบธุรกิจ เว็บแอปพลิเคชัน เว็บไซต์ และเครื่องมือสำหรับ Workflow ภายในองค์กร โดยออกแบบจากวิธีทำงานจริงของแต่ละทีม',
+    en: 'PDA BLISS builds business systems, web applications, websites and internal workflow tools, designed around how each team actually works.',
+    zh: 'PDA BLISS 开发业务系统、Web 应用、网站和企业内部工作流程工具，并依据每个团队的实际工作方式来设计。'
   },
-  closing: {
-    th: 'เราไม่ได้เริ่มจากฟีเจอร์ เราเริ่มจาก Workflow ปัญหา ข้อมูล และคนที่ต้องใช้งานระบบจริง',
-    en: 'We do not start from features. We start from the workflow, the problem, the data and the people who will really use the system.',
-    zh: '我们不从功能出发，而是从工作流程、问题、数据以及真正使用系统的人出发。'
-  },
-  whoHeading: { th: whoWeAre.heading, en: 'Who we are', zh: '我们是谁' },
+  /* ----------------------------------------------------------- story -- */
+  storyTitle: { th: 'ทำไมเราทำซอฟต์แวร์แบบนี้', en: 'Why we build software this way', zh: '我们为什么这样做软件' },
   whoBody: {
     th: whoWeAre.body,
     en: 'A software studio that steps in when a business has outgrown what Excel can handle, when off-the-shelf software forces you to work backwards, or when a system that used to fit has become a bottleneck.',
     zh: '一家软件工作室：当企业的发展超出了 Excel 的承受能力，当现成软件迫使您逆着流程工作，或者当曾经合适的系统已经成为瓶颈时，我们就能派上用场。'
+  },
+  secondParagraph: {
+    th: aboutIntro.body[1],
+    en: 'We keep the team small and experienced on purpose. The person who agrees the scope with you is the same person who writes the code — and the same person who picks up the phone a year and a half later when the system needs to change.',
+    zh: '我们刻意保持团队精干且经验丰富。与您确认范围的人，就是写代码的人，也是一年半之后系统需要调整时接听电话的人。'
   },
   quote: {
     th: statement.quote,
@@ -54,18 +52,42 @@ export const aboutPage = {
     en: 'A good system is judged in year two — when people change, the team grows and the business is no longer the same. So we design it to be changed from the start.',
     zh: '好的系统要到第二年才见分晓——那时人员变动、团队壮大、业务也已不同。所以我们从一开始就把它设计成可以继续修改的。'
   },
-  philosophyTitle: { th: 'หลักที่ใช้ตัดสินใจในทุกโปรเจกต์', en: 'The principles behind every project decision', zh: '指导每个项目决策的原则' },
-  marketHeadline: {
-    th: targetMarket.headline,
-    en: ['For businesses of every size', 'that need systems built around their own workflow'],
-    zh: ['适合各种规模的企业，', '需要按自身实际工作流程定制系统']
-  } as Lines,
-  marketLead: {
-    th: targetMarket.lead,
-    en: 'We do not choose clients by size or industry, but by the problem. If your business has its own way of working and off-the-shelf software is starting to force you to work backwards, that is where we can help.',
-    zh: '我们不按规模或行业挑选客户，而是看需求本身。如果您的企业有自己独特的工作方式，而现成软件开始迫使您逆着流程工作，那正是我们能提供帮助的地方。'
+  /* -------------------------------------------------- what we build -- */
+  buildTitle: { th: 'สิ่งที่เราสร้าง', en: 'What we build', zh: '我们构建什么' },
+  buildLead: {
+    th: 'งานส่วนใหญ่ของเราอยู่ในห้ากลุ่มนี้ รายละเอียด ปัญหาที่แก้ และกลุ่มที่เหมาะ อยู่ที่หน้าบริการ',
+    en: 'Most of our work falls into these five groups. The details — the problems each solves and who it suits — are on the Services page.',
+    zh: '我们的大部分工作属于以下五类。每类解决什么问题、适合谁，请见服务页面。'
   },
-  standardsTitle: { th: 'สร้างให้ดูแลต่อได้ตั้งแต่วันแรก', en: 'Built to be maintained from day one', zh: '从第一天起就为可维护而构建' },
+  buildAll: { th: 'ดูบริการทั้งหมด', en: 'View all services', zh: '查看全部服务' },
+  /* ---------------------------------------------------- how we think -- */
+  thinkTitle: { th: 'หลักที่ใช้ตัดสินใจในทุกโปรเจกต์', en: 'The principles behind every project decision', zh: '指导每个项目决策的原则' },
+  /* -------------------------------------------------------- evidence -- */
+  evidenceTitle: { th: 'สิ่งที่สร้างและส่งมอบแล้ว', en: 'What we have built and delivered', zh: '已构建并交付的成果' },
+  evidenceNote: {
+    th: 'แสดงเฉพาะตัวเลขที่ยืนยันได้ ไม่มีจำนวนลูกค้าหรือเปอร์เซ็นต์ที่ยังไม่ได้วัดผล',
+    en: 'Only figures we can verify — no client counts or percentages that have not been measured.',
+    zh: '只展示可以核实的数字，不包含未经测量的客户数量或百分比。'
+  },
+  casesLabel: { th: 'กรณีศึกษา', en: 'Case studies', zh: '案例研究' },
+  casesDetail: { th: 'โครงการที่เปิดเผยรายละเอียดได้', en: 'Projects we can describe in detail', zh: '可公开详情的项目' },
+  examplesTitle: { th: 'ตัวอย่างผลงาน', en: 'Examples', zh: '案例示例' },
+  evidenceAll: { th: 'ดูผลงานจริง', en: 'See real work', zh: '查看真实案例' },
+  /* --------------------------------------------------------- process -- */
+  scopeLink: { th: 'ขอบเขตและราคาประเมินอย่างไร', en: 'How scope and price are estimated', zh: '范围与价格如何评估' },
+  /* ------------------------------------------------ tech + quality -- */
+  techQualityTitle: {
+    th: ['เครื่องมือจากงานจริง', 'และสิ่งที่เราตรวจก่อนส่ง'],
+    en: ['Tools from real work,', 'and what we check before delivery'],
+    zh: ['来自真实项目的工具，', '以及交付前的检查']
+  } as Lines,
+  techHeading: { th: 'เทคโนโลยีในผลงานที่ส่งมอบ', en: 'Technology in delivered work', zh: '已交付项目中的技术' },
+  techNote: {
+    th: 'รายการนี้แสดงเฉพาะเครื่องมือที่อยู่ในผลงานที่ส่งมอบแล้ว สำหรับโปรเจกต์ใหม่ เราเลือกเครื่องมือตามโจทย์และระบบเดิมของลูกค้า',
+    en: 'This list shows only tools found in delivered work. For a new project, tools are chosen to fit the brief and the client’s existing systems.',
+    zh: '此列表只展示已交付项目中实际使用的工具。新项目会根据需求和客户现有系统来选择工具。'
+  },
+  usedIn: { th: 'ใช้ใน: ', en: 'Used in: ', zh: '所用项目：' },
   aftercareHeading: { th: aftercare.heading, en: 'Support after handover', zh: '交付后的维护' },
   aftercareBody: {
     th: aftercare.body,
@@ -73,6 +95,38 @@ export const aboutPage = {
     zh: '交付之后我们不会消失。有明确的负责人、约定的响应时间以及定期的系统复盘，让系统随业务一起发展，而不只是按合同办事。'
   }
 };
+
+/** The five capability groups on About — each anchors a core service on /services. */
+export const buildGroups: readonly { label: LocalizedText; line: LocalizedText; to: string }[] = [
+  {
+    label: { th: 'ระบบธุรกิจ / ERP', en: 'Business systems / ERP', zh: '业务系统 / ERP' },
+    line: { th: 'สต็อก ต้นทุน จัดซื้อ และรายงาน บนข้อมูลชุดเดียว', en: 'Stock, costing, purchasing and reports on one set of data', zh: '库存、成本、采购和报表，基于同一套数据' },
+    to: '/services#business-systems'
+  },
+  {
+    label: { th: 'HR และ Payroll', en: 'HR & payroll', zh: 'HR 与 Payroll' },
+    line: { th: 'รอบเงินเดือน คำขอลา และงานบุคคล รวมถึงผ่าน LINE', en: 'Pay cycles, leave requests and HR work, including through LINE', zh: '薪资周期、请假申请和人事工作，也可通过 LINE 完成' },
+    to: '/services#payroll'
+  },
+  {
+    label: { th: 'เอกสารและไฟล์', en: 'Documents & files', zh: '文档与文件' },
+    line: { th: 'การอนุมัติเอกสาร และที่เก็บไฟล์กลางขององค์กร', en: 'Document approvals and the organisation’s central file store', zh: '文档审批与企业集中文件存储' },
+    to: '/services#document-management'
+  },
+  {
+    label: { th: 'เว็บแอปและแอปมือถือ', en: 'Web & mobile applications', zh: 'Web 与移动应用' },
+    line: { th: 'ระบบที่ทีมใช้ทำงานผ่านเบราว์เซอร์หรือมือถือ', en: 'Systems teams work in through a browser or a phone', zh: '团队通过浏览器或手机使用的工作系统' },
+    to: '/services#web-applications'
+  },
+  {
+    label: { th: 'เว็บไซต์', en: 'Websites', zh: '网站' },
+    line: { th: 'เว็บไซต์องค์กรที่อธิบายบริการได้ชัด และติดต่อกลับได้ง่าย', en: 'Corporate websites that explain the services clearly and are easy to contact through', zh: '清楚介绍服务、方便联系的企业网站' },
+    to: '/services#websites'
+  }
+];
+
+/** Case studies shown as examples in the evidence section. */
+export const evidenceCases = ['payroll-monthly-control', 'hr-line-leave-approval', 'corporate-website-system'] as const;
 
 /** Mirrors `philosophy` in data/about.ts. */
 export const philosophyText: readonly { heading: LocalizedText; body: LocalizedText }[] = [
@@ -110,42 +164,6 @@ export const philosophyText: readonly { heading: LocalizedText; body: LocalizedT
   }
 ];
 
-/** Mirrors `standards.items` in data/about.ts. */
-export const standardText: readonly { heading: LocalizedText; body: LocalizedText }[] = [
-  {
-    heading: { th: standards.items[0].heading, en: 'Technology that lasts', zh: '选择经得起时间考验的技术' },
-    body: {
-      th: standards.items[0].body,
-      en: 'We choose tools with long-term support and people available to work on them, such as TypeScript, PostgreSQL and containers. Newer tools are used only where they create a real advantage, not for the foundations of the system.',
-      zh: '我们选择有长期支持、容易找到维护人员的工具，例如 TypeScript、PostgreSQL 和容器。新技术只用在真正能带来优势的地方，而不用于系统的根基。'
-    }
-  },
-  {
-    heading: { th: standards.items[1].heading, en: 'Type-safe from database to screen', zh: '从数据库到界面全程类型安全' },
-    body: {
-      th: standards.items[1].body,
-      en: 'When the data structure changes, the system flags it at compile time — not as a bug report three weeks later.',
-      zh: '当数据结构发生变化时，系统会在编译阶段就发出提醒，而不是三周后变成一条问题报告。'
-    }
-  },
-  {
-    heading: { th: standards.items[2].heading, en: 'Testing where it matters', zh: '在关键之处做测试' },
-    body: {
-      th: standards.items[2].body,
-      en: 'We test business rules, money figures, access permissions and integrations rigorously, and test frequently changing screens only as much as needed. A coverage percentage is not a good goal; confidence in the risky paths is.',
-      zh: '我们严格测试业务规则、金额数字、访问权限和系统对接，对经常变化的界面只做必要的测试。覆盖率百分比不是好目标，对高风险路径有把握才是。'
-    }
-  },
-  {
-    heading: { th: standards.items[3].heading, en: 'Designed for year two', zh: '为第二年而设计' },
-    body: {
-      th: standards.items[3].body,
-      en: 'Migrations, feature flags, readable logs and identical environments at every stage are set up from the start. It costs a few days at the beginning and saves months once the system is in real use.',
-      zh: '数据迁移、功能开关（Feature flag）、可读的日志以及各环境一致，都从一开始就设置好。前期多花几天，系统真正投入使用后能省下几个月。'
-    }
-  }
-];
-
 /** Mirrors `aftercare.items` in data/about.ts. */
 export const aftercareText: readonly { label: LocalizedText; value: LocalizedText }[] = [
   {
@@ -167,41 +185,5 @@ export const aftercareText: readonly { label: LocalizedText; value: LocalizedTex
   {
     label: { th: aftercare.items[4].label, en: 'Ongoing support', zh: '后续维护' },
     value: { th: aftercare.items[4].value, en: 'An agreed response time, with an ongoing improvement budget', zh: '约定的响应时间，并配有持续改进的预算' }
-  }
-];
-
-/** Mirrors `targetMarket.groups` in data/company.ts. */
-export const marketGroupText: readonly { label: LocalizedText; note: LocalizedText }[] = [
-  {
-    label: { th: targetMarket.groups[0].label, en: 'SMEs', zh: '中小企业（SME）' },
-    note: { th: targetMarket.groups[0].note, en: 'Businesses growing faster than their current systems', zh: '发展速度超过现有系统的企业' }
-  },
-  {
-    label: { th: targetMarket.groups[1].label, en: 'Accounting firms', zh: '会计师事务所' },
-    note: { th: targetMarket.groups[1].note, en: 'Document and period-close work that must be accurate and auditable', zh: '需要准确且可回查的文档与结账工作' }
-  },
-  {
-    label: { th: targetMarket.groups[2].label, en: 'Factories', zh: '工厂' },
-    note: { th: targetMarket.groups[2].note, en: 'Production, warehouse, costing and traceability', zh: '生产、仓储、成本与追溯' }
-  },
-  {
-    label: { th: targetMarket.groups[3].label, en: 'Service businesses', zh: '服务型企业' },
-    note: { th: targetMarket.groups[3].note, en: 'Queues, schedules and teams spread across many locations', zh: '排队、排班以及分布在多个地点的团队' }
-  },
-  {
-    label: { th: targetMarket.groups[4].label, en: 'Retail', zh: '零售企业' },
-    note: { th: targetMarket.groups[4].note, en: 'Multi-channel stock that has to match at all times', zh: '需要时刻保持一致的多渠道库存' }
-  },
-  {
-    label: { th: targetMarket.groups[5].label, en: 'Companies with internal systems', zh: '已有内部系统的公司' },
-    note: { th: targetMarket.groups[5].note, en: 'Existing systems that need extending or connecting', zh: '需要扩展或相互连接的现有系统' }
-  },
-  {
-    label: { th: targetMarket.groups[6].label, en: 'Spreadsheet-heavy businesses', zh: '大量依赖电子表格的企业' },
-    note: { th: targetMarket.groups[6].note, en: 'Files so scattered nobody knows which one is the real version', zh: '文件分散到没人知道哪一份才是正式版本' }
-  },
-  {
-    label: { th: targetMarket.groups[7].label, en: 'Organisations that need automation', zh: '需要自动化的组织' },
-    note: { th: targetMarket.groups[7].note, en: 'Recurring work that takes up a whole department every month', zh: '每月占用整个部门时间的周期性工作' }
   }
 ];

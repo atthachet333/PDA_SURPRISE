@@ -235,7 +235,7 @@ function ContactStrip({ reduced }: { reduced: boolean }) {
               href={channel.href}
               target={channel.external ? '_blank' : undefined}
               rel={channel.external ? 'noopener noreferrer' : undefined}
-              className="group flex items-center gap-2.5"
+              className="group flex min-h-11 items-center gap-2.5"
             >
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-brand-300 transition-colors duration-base group-hover:border-brand-400/60 group-hover:bg-brand-500/15 group-hover:text-brand-200">
                 <ChannelIcon kind={channel.icon} />
