@@ -5,8 +5,10 @@ import { VerifiedMetrics } from '@/components/business/VerifiedMetrics';
 import { ProcessPath } from '@/components/business/ProcessPath';
 import { BigCTA } from '@/components/business/BigCTA';
 import { Container } from '@/components/shared/Layout';
-import { aboutIntro, aftercare, philosophy, standards, statement, whoWeAre } from '@/data/about';
+import { aftercare, philosophy, standards } from '@/data/about';
 import { company, targetMarket } from '@/data/company';
+import { useLocale } from '@/app/LocaleContext';
+import { aboutPage as copy, aftercareText, marketGroupText, philosophyText, standardText } from '@/i18n/about';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -24,13 +26,16 @@ export default function About() {
   usePageMeta(pageMeta.about);
 
   const reduced = useReducedMotion();
+  const { t } = useLocale();
+  const [quoteLead, quoteAccent] = t(copy.quote);
+  const [marketLead, marketAccent] = t(copy.marketHeadline);
 
   return (
     <>
       <PageHeader
         eyebrow="01 / ABOUT"
-        title={<>เกี่ยวกับเรา</>}
-        lead={aboutIntro.body[0]}
+        title={<>{t(copy.title)}</>}
+        lead={t(copy.lead)}
       />
 
       {/* ------------------------------------------------- the big statement -- */}
@@ -41,17 +46,17 @@ export default function About() {
           <RevealLines
             as="h2"
             className="thai-display mt-6 max-w-4xl text-mega font-bold text-ink"
-            lines={[...aboutIntro.title]}
+            lines={[...t(copy.statementTitle)]}
             lineClassName={(index) => (index === 1 ? 'text-brand-600' : undefined)}
           />
 
           <div className="mt-16 grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20">
             <div>
               <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-steel-400">
-                {whoWeAre.heading}
+                {t(copy.whoHeading)}
               </p>
-              <p className="mt-6 text-lead text-steel-700">{whoWeAre.body}</p>
-              {aboutIntro.body.slice(1).map((paragraph) => (
+              <p className="mt-6 text-lead text-steel-700">{t(copy.whoBody)}</p>
+              {[t(copy.secondParagraph)].map((paragraph) => (
                 <motion.p
                   key={paragraph}
                   initial={reduced ? false : { opacity: 0, y: 16 }}
@@ -65,8 +70,7 @@ export default function About() {
               ))}
 
               <p className="mt-10 max-w-prose leading-8 text-steel-600">
-                เราไม่ได้เริ่มจากฟีเจอร์ เราเริ่มจาก Workflow ปัญหา ข้อมูล
-                และคนที่ต้องใช้งานระบบจริง
+                {t(copy.closing)}
               </p>
             </div>
 
@@ -91,12 +95,12 @@ export default function About() {
                     our position
                   </p>
                   <p className="thai-display mt-6 text-statement font-bold leading-tight">
-                    “{statement.quote[0]}
+                    “{quoteLead}
                     <br />
-                    <span className="text-brand-400">{statement.quote[1]}</span>”
+                    <span className="text-brand-400">{quoteAccent}</span>”
                   </p>
-                  <p className="mt-7 text-sm leading-7 text-brand-100/70">{statement.support}</p>
-                  <p className="mt-9 border-t border-white/10 pt-6 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-300/60">
+                  <p className="mt-7 text-sm leading-7 text-brand-100/70">{t(copy.quoteSupport)}</p>
+                  <p lang="th" className="mt-9 border-t border-white/10 pt-6 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-300/60">
                     {company.legalNameTh}
                   </p>
                 </div>
@@ -112,7 +116,7 @@ export default function About() {
         <Container className="relative">
           <p className="section-code">03 / PHILOSOPHY</p>
           <h2 className="thai-display mt-4 max-w-2xl text-statement font-bold text-ink">
-            หลักที่ใช้ตัดสินใจในทุกโปรเจกต์
+            {t(copy.philosophyTitle)}
           </h2>
 
           <ul className="mt-14 border-t border-steel-300/60">
@@ -129,9 +133,9 @@ export default function About() {
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <h3 className="thai-display text-lg font-bold text-ink sm:text-xl">
-                  {item.heading}
+                  {philosophyText[index] ? t(philosophyText[index]!.heading) : item.heading}
                 </h3>
-                <p className="max-w-prose leading-7 text-steel-600">{item.body}</p>
+                <p className="max-w-prose leading-7 text-steel-600">{philosophyText[index] ? t(philosophyText[index]!.body) : item.body}</p>
               </motion.li>
             ))}
           </ul>
@@ -145,18 +149,18 @@ export default function About() {
             <div>
               <p className="section-code">04 / WHO WE WORK WITH</p>
               <h2 className="thai-display mt-4 text-statement font-bold text-ink">
-                {targetMarket.headline[0]}
+                {marketLead}
                 <br />
-                <span className="text-brand-600">{targetMarket.headline[1]}</span>
+                <span className="text-brand-600">{marketAccent}</span>
               </h2>
             </div>
             <div>
-              <p className="text-lead text-steel-600">{targetMarket.lead}</p>
+              <p className="text-lead text-steel-600">{t(copy.marketLead)}</p>
               <ul className="mt-10 grid gap-px overflow-hidden border border-steel-200 bg-steel-200 sm:grid-cols-2">
-                {targetMarket.groups.map((group) => (
+                {targetMarket.groups.map((group, index) => (
                   <li key={group.label} className="bg-white p-5">
-                    <p className="thai-display text-sm font-bold text-ink">{group.label}</p>
-                    <p className="mt-1.5 text-xs leading-relaxed text-steel-500">{group.note}</p>
+                    <p className="thai-display text-sm font-bold text-ink">{marketGroupText[index] ? t(marketGroupText[index]!.label) : group.label}</p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-steel-500">{marketGroupText[index] ? t(marketGroupText[index]!.note) : group.note}</p>
                   </li>
                 ))}
               </ul>
@@ -183,7 +187,7 @@ export default function About() {
         <Container className="relative">
           <p className="section-code text-brand-400">08 / STANDARDS</p>
           <h2 className="thai-display mt-4 max-w-2xl text-statement font-bold">
-            สร้างให้ดูแลต่อได้ตั้งแต่วันแรก
+            {t(copy.standardsTitle)}
           </h2>
 
           <ul className="mt-14 border-t border-white/10">
@@ -200,23 +204,23 @@ export default function About() {
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <h3 className="thai-display text-base font-bold text-white sm:text-lg">
-                  {item.heading}
+                  {standardText[index] ? t(standardText[index]!.heading) : item.heading}
                 </h3>
-                <p className="max-w-prose text-sm leading-7 text-brand-100/65">{item.body}</p>
+                <p className="max-w-prose text-sm leading-7 text-brand-100/65">{standardText[index] ? t(standardText[index]!.body) : item.body}</p>
               </motion.li>
             ))}
           </ul>
 
           <div className="mt-16">
-            <h3 className="thai-display text-statement font-bold text-white">{aftercare.heading}</h3>
-            <p className="mt-5 max-w-3xl text-sm leading-7 text-brand-100/65">{aftercare.body}</p>
+            <h3 className="thai-display text-statement font-bold text-white">{t(copy.aftercareHeading)}</h3>
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-brand-100/65">{t(copy.aftercareBody)}</p>
             <dl className="mt-10 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
-              {aftercare.items.map((item) => (
+              {aftercare.items.map((item, index) => (
                 <div key={item.label} className="on-dark bg-[#04261B] p-5">
                   <dt className="font-mono text-[0.5rem] uppercase tracking-[0.16em] text-brand-400">
-                    {item.label}
+                    {aftercareText[index] ? t(aftercareText[index]!.label) : item.label}
                   </dt>
-                  <dd className="mt-3 text-xs leading-6 text-brand-100/70">{item.value}</dd>
+                  <dd className="mt-3 text-xs leading-6 text-brand-100/70">{aftercareText[index] ? t(aftercareText[index]!.value) : item.value}</dd>
                 </div>
               ))}
             </dl>

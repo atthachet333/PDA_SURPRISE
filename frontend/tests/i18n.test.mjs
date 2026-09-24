@@ -9,8 +9,13 @@ import * as visuals from '../src/i18n/visuals.ts';
 import * as insightsText from '../src/i18n/insights.ts';
 import * as solutionsText from '../src/i18n/solutions.ts';
 import * as universeText from '../src/i18n/systemUniverse.ts';
+import * as solutionsPageText from '../src/i18n/solutionsPage.ts';
 import * as servicesText from '../src/i18n/services.ts';
 import * as casesText from '../src/i18n/caseStudies.ts';
+import * as about from '../src/i18n/about.ts';
+import * as legal from '../src/i18n/legal.ts';
+import { aftercare, philosophy, standards } from '../src/data/about.ts';
+import { targetMarket } from '../src/data/company.ts';
 import { pageMeta } from '../src/lib/seo.ts';
 import en from '../src/i18n/content/en.ts';
 import zh from '../src/i18n/content/zh.ts';
@@ -87,7 +92,7 @@ function* strings(value, path = '') {
   else if (value && typeof value === 'object') for (const [k, item] of Object.entries(value)) yield* strings(item, path ? `${path}.${k}` : k);
 }
 
-const MODULES = { ui, companyText, home, work, contact, visuals, insightsText, solutionsText, universeText, servicesText, casesText, pageMeta };
+const MODULES = { ui, companyText, home, work, contact, visuals, insightsText, solutionsText, universeText, solutionsPageText, servicesText, casesText, about, legal, pageMeta };
 
 test('every localised triple is complete, and EN/ZH carry no Thai', () => {
   let count = 0;
@@ -354,4 +359,31 @@ test('business identifiers are identical in every locale', () => {
     assert.match(address, /14\/14/);
     assert.match(address, /10800/);
   });
+});
+
+test('about and legal pages mirror their Thai sources', () => {
+  assert.equal(about.philosophyText.length, philosophy.length);
+  assert.equal(about.standardText.length, standards.items.length);
+  assert.equal(about.aftercareText.length, aftercare.items.length);
+  assert.equal(about.marketGroupText.length, targetMarket.groups.length);
+  /* Thai values are the Thai source itself, not a second copy that could drift. */
+  about.philosophyText.forEach((item, index) => assert.equal(item.body.th, philosophy[index].body));
+  about.standardText.forEach((item, index) => assert.equal(item.body.th, standards.items[index].body));
+  about.marketGroupText.forEach((item, index) => assert.equal(item.label.th, targetMarket.groups[index].label));
+
+  [legal.privacyPage, legal.cookiePage, legal.termsPage].forEach((page) => {
+    assert.ok(page.sections.length >= 3, `${page.eyebrow} lost sections`);
+    page.sections.forEach((section) => {
+      /* Placeholders are the same in every language, so no detail goes missing. */
+      const slots = (text) => (text.match(/\{\w+\}/g) ?? []).sort().join(',');
+      OTHER.forEach((locale) => assert.equal(slots(section.body[locale]), slots(section.body.th), `${page.eyebrow}: ${section.title.en} placeholders differ`));
+    });
+  });
+  /* The contact details a privacy question needs are present in every language. */
+  const contactSection = legal.privacyPage.sections.at(-1);
+  LOCALES.forEach((locale) => {
+    assert.match(contactSection.body[locale], /\{email\}/);
+    assert.match(contactSection.body[locale], /\{phone\}/);
+  });
+  assert.equal(solutionsPageText.businessFlows.length, 2);
 });
