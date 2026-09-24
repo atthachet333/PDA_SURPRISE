@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import { LocaleLink as Link } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
 import { insightsCopy } from '@/i18n/home';
@@ -147,9 +147,10 @@ function CompactArticle({ insight, index, reduced }: { insight: Insight; index: 
   return <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={reduced ? { duration: 0 } : { delay: index * .06 }}>{published ? <Link to={`/insights/${insight.slug}`} className="group flex gap-4 rounded-card border border-steel-300/60 bg-white p-3 transition-shadow hover:shadow-soft">{inner}</Link> : <article className="flex gap-4 rounded-card border border-steel-300/60 bg-white p-3">{inner}</article>}</motion.div>;
 }
 
-function ArticleCard({ insight, index, reduced }: { insight: Insight; index: number; reduced: boolean }) {
+/* forwardRef: AnimatePresence `popLayout` measures its children through a ref. */
+const ArticleCard = forwardRef<HTMLDivElement, { insight: Insight; index: number; reduced: boolean }>(function ArticleCard({ insight, index, reduced }, ref) {
   const published = isInsightPublished(insight);
   const inner = <><div className="h-44"><InsightVisual insight={insight} compact /></div><div className="flex flex-1 flex-col p-5"><h3 className="thai-display text-base font-bold text-ink">{insight.titleTh}</h3><p className="mt-3 text-xs leading-relaxed text-steel-600">{insight.excerpt}</p><div className="mt-auto pt-5"><PublicationState insight={insight} /></div></div></>;
   const shell = 'group flex h-full flex-col overflow-hidden rounded-card border border-steel-300/60 bg-white';
-  return <motion.div layout={!reduced} initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduced ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: .4, delay: (index % 3) * .04 }}>{published ? <Link to={`/insights/${insight.slug}`} className={cn(shell, 'transition duration-slow hover:-translate-y-1 hover:shadow-lift')}>{inner}</Link> : <article className={shell}>{inner}</article>}</motion.div>;
-}
+  return <motion.div ref={ref} layout={!reduced} initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduced ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: .4, delay: (index % 3) * .04 }}>{published ? <Link to={`/insights/${insight.slug}`} className={cn(shell, 'transition duration-slow hover:-translate-y-1 hover:shadow-lift')}>{inner}</Link> : <article className={shell}>{inner}</article>}</motion.div>;
+});
