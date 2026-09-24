@@ -7,42 +7,54 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 import { SectionBackdrop } from './SectionBackdrop';
 import { useLocale } from '@/app/LocaleContext';
-import { techCopy, techText } from '@/i18n/home';
+import { techCopy, techText } from '@/i18n/trust';
+import { useCaseStudies } from '@/i18n/useContent';
+import { LocaleLink } from '@/components/shared/LocaleLink';
+import { ArrowIcon } from '@/components/shared/Button';
 
 /**
  * TECHNOLOGY — a capability diagram, not a logo wall.
  *
- * The four layers are drawn as a stack with data moving down through them,
- * because that is the actual relationship: infrastructure carries data, data
- * serves the backend, the backend serves the frontend. A row of logos would say
- * nothing about how any of it fits together.
+ * The layers are drawn as a stack with data moving through them. A row of
+ * logos would say nothing about how any of it fits together.
+ *
+ * EVIDENCE, NOT A WISH LIST (EP40): every tool comes from `techStack`, which
+ * lists only what delivered case studies use. The read-out names the tool's
+ * job and the projects it appears in, and the section links to /work.
  *
  * No "trusted by" language anywhere — these are our tools, not our clients.
- * Each item's `note` from the locked data is the reason we chose it, shown on
- * hover and focus rather than hidden in a `title` attribute.
+ * The read-out is shown on hover and focus and announced politely, rather
+ * than hidden in a `title` attribute.
  */
 
 /** Layer order, top of the stack first. */
-const LAYER_ORDER = ['Frontend', 'Backend', 'Data', 'Infrastructure'];
+const LAYER_ORDER = ['Frontend', 'Backend', 'Data', 'Integration', 'Deployment'];
 
 const ORDERED = LAYER_ORDER.map((name) =>
   techStack.find((group) => group.group === name)
 ).filter((group): group is (typeof techStack)[number] => Boolean(group));
 
-export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
+export function TechDiagram({ code = '09 / STACK', id }: { code?: string; id?: string } = {}) {
   const [ref, inView] = useInViewOnce<HTMLDivElement>({ threshold: 0.25 });
   /* The whole active tool, so the read-out can name its layer as well as the
      reason we chose it. */
   const [active, setActive] = useState<{ name: string; note: string; layer: string } | null>(null);
   const reduced = useReducedMotion();
   const { t } = useLocale();
+  const studies = useCaseStudies();
   const note = (group: string, name: string, fallback: string) => {
     const text = techText[group]?.notes[name];
     return text ? t(text) : fallback;
   };
+  /* The delivered projects that use the active tool — evidence, not a logo. */
+  const usedIn = (group: string, name: string): string =>
+    (techStack.find((entry) => entry.group === group)?.items.find((item) => item.name === name)?.evidence ?? [])
+      .map((slug) => studies.find((study) => study.slug === slug)?.title)
+      .filter(Boolean)
+      .join(' · ');
 
   return (
-    <section className="sect sect--technical relative overflow-hidden py-section">
+    <section id={id} className="sect sect--technical relative scroll-mt-24 overflow-hidden py-section">
       <span aria-hidden="true" className="sect-edge-top" />
       <SectionBackdrop variant="light-grid" intensity={0.9} />
 
@@ -60,10 +72,10 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
             </p>
 
             {/* Read-out for the focused tool: which layer, and why we use it */}
-            <div className="mt-8 min-h-[7rem] rounded-panel border border-steel-200/80 bg-white/70 p-5 backdrop-blur-sm">
+            <div aria-live="polite" className="mt-8 min-h-[7rem] rounded-panel border border-steel-200/80 bg-white/70 p-5 backdrop-blur-sm">
               <div className="flex items-center justify-between gap-3">
-                <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-steel-400">
-                  why this
+                <p className="font-mono text-[0.5625rem] uppercase tracking-[0.2em] text-steel-500">
+                  {t(techCopy.readout)}
                 </p>
                 {active ? (
                   <span className="rounded-pill border border-brand-200 bg-brand-50 px-2.5 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.12em] text-brand-700">
@@ -83,6 +95,12 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
               >
                 {active ? note(active.layer, active.name, active.note) : t(techCopy.idle)}
               </motion.p>
+              {active && usedIn(active.layer, active.name) ? (
+                <p className="mt-2 text-xs leading-relaxed text-steel-500">
+                  {t(techCopy.usedIn)}
+                  {usedIn(active.layer, active.name)}
+                </p>
+              ) : null}
             </div>
           </div>
 
@@ -152,13 +170,11 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
                               setActive({ name: item.name, note: item.note, layer: group.group })
                             }
                             onBlur={() => setActive(null)}
-                            onClick={() =>
-                              setActive((current) =>
-                                current?.name === item.name
-                                  ? null
-                                  : { name: item.name, note: item.note, layer: group.group }
-                              )
-                            }
+                            /* Select, never toggle: a mouse click follows the
+                               hover that already selected this tool, so a
+                               toggle would immediately clear the read-out. */
+                            onClick={() => setActive({ name: item.name, note: item.note, layer: group.group })}
+                            aria-pressed={active?.name === item.name}
                             className={cn(
                               'rounded-pill border px-3.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-[0.08em] transition-all duration-base',
                               active?.name === item.name
@@ -175,6 +191,13 @@ export function TechDiagram({ code = '09 / STACK' }: { code?: string } = {}) {
                 </motion.div>
               ))}
             </div>
+            <LocaleLink
+              to="/work"
+              className="group mt-6 inline-flex min-h-11 items-center gap-2 pl-16 text-sm font-semibold text-ink transition-colors hover:text-brand-700 sm:pl-20"
+            >
+              {t(techCopy.viewWork)}
+              <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
+            </LocaleLink>
           </div>
         </div>
       </Container>

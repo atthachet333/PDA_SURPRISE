@@ -3,7 +3,6 @@ import { company } from '@/data/company';
 import { absoluteUrl, PUBLIC_ORIGIN } from '@/lib/seo';
 import { useLocale } from '@/app/LocaleContext';
 import { description } from '@/i18n/company';
-import { HTML_LANG } from '@/i18n/locales';
 
 const SCRIPT_ID = 'pdabliss-organization-schema';
 
@@ -22,6 +21,12 @@ const SCRIPT_ID = 'pdabliss-organization-schema';
  *   priceRange        no published pricing
  *   sameAs            only the LINE OA is real; the other social slots are empty
  *   logo / image      no final brand asset has been supplied yet
+ *   knowsLanguage     the SITE is trilingual; the company's working languages
+ *                     have not been confirmed, so none are claimed (EP40)
+ *   award / hasCredential  none exist
+ *
+ * The address is the one canonical Thai address in every locale; only the
+ * description follows the page language.
  *
  * Opening hours use the verified Monday–Saturday 08:30–17:30. Sunday is simply
  * not listed, which is how schema.org expresses closed — it must never be
@@ -42,7 +47,8 @@ export function OrganizationSchema() {
     const schema: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: company.legalName,
+      name: company.companyName,
+      legalName: company.legalName,
       alternateName: company.legalNameTh,
       description: description[locale],
       email: company.email,
@@ -78,7 +84,6 @@ export function OrganizationSchema() {
 
     // Only claim a canonical URL once a real origin is configured.
     if (PUBLIC_ORIGIN) schema.url = absoluteUrl('/');
-    schema.knowsLanguage = Object.values(HTML_LANG);
     if (socials.length > 0) schema.sameAs = socials;
 
     const script = document.createElement('script');

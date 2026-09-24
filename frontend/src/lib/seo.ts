@@ -125,9 +125,9 @@ export const pageMeta = {
       zh: `关于我们${TITLE_SUFFIX}`
     },
     description: {
-      th: 'PDA BLISS COMPANY LIMITED — ทีมพัฒนาซอฟต์แวร์และระบบธุรกิจ ที่ทำงานร่วมกับลูกค้าตั้งแต่เข้าใจปัญหา ออกแบบ พัฒนา จนถึงดูแลหลังส่งมอบ',
-      en: 'PDA BLISS COMPANY LIMITED is a software and business-systems team that works with clients from understanding the problem through design, development and support after handover.',
-      zh: 'PDA BLISS COMPANY LIMITED 是一支软件与企业系统开发团队，从理解问题、设计、开发到交付后的维护，全程与客户协作。'
+      th: 'PDA BLISS COMPANY LIMITED พัฒนาซอฟต์แวร์ ระบบธุรกิจ เว็บแอปพลิเคชัน และเว็บไซต์ ดูวิธีการทำงาน เทคโนโลยีจากงานที่ส่งมอบจริง การดูแลหลังส่งมอบ และข้อมูลบริษัท',
+      en: 'PDA BLISS COMPANY LIMITED develops software, business systems, web applications and websites. See how we work, the technology behind delivered projects, support after handover and our company details.',
+      zh: 'PDA BLISS COMPANY LIMITED 开发软件、业务系统、Web 应用和网站。了解我们的工作方式、已交付项目所用的技术、交付后维护以及公司信息。'
     },
     path: '/about'
   },

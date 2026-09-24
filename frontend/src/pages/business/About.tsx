@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import { PageHeader } from '@/components/business/PageHeader';
-import { StrengthStatements } from '@/components/business/StrengthStatements';
 import { VerifiedMetrics } from '@/components/business/VerifiedMetrics';
 import { ProcessPath } from '@/components/business/ProcessPath';
 import { BigCTA } from '@/components/business/BigCTA';
+import { TechDiagram } from '@/components/business/TechDiagram';
+import { CompanyInfo, QualityPrivacy, ScopeFactors, SupportScope, WhyEvidence } from '@/components/business/TrustSections';
+import { useHashTarget } from '@/hooks/useHashTarget';
 import { Container } from '@/components/shared/Layout';
 import { aftercare, philosophy, standards } from '@/data/about';
 import { company, targetMarket } from '@/data/company';
@@ -17,6 +19,23 @@ import { pageMeta } from '@/lib/seo';
 /**
  * /about — editorial, not a company bio block.
  *
+ * EP40 TRUST LAYER — the page now answers "is this company real, and how does
+ * it work?" with evidence rather than adjectives:
+ *
+ *   01 about        who we are
+ *   02 statement    position
+ *   03 why us       five reasons, each linked to the page that proves it
+ *   04 numbers      the two verified figures
+ *   05 philosophy   what we value
+ *   06 who with     who we fit
+ *   07 process      #process — the canonical seven steps
+ *   08 scope        what shapes scope, time and price (no fixed packages)
+ *   09 technology   #technology — tools from delivered work only
+ *   10 quality      #quality — checks and data-disclosure practice
+ *   11 standards    #support — engineering standards and aftercare
+ *   12 company      #company — registered name and real contact channels
+ *      CTA
+ *
  * One enormous statement carries the page; everything else is set as an essay
  * with a lot of air around it. The numbered philosophy items and the standards
  * are hairline rows rather than cards, so the only things that feel like objects
@@ -24,6 +43,7 @@ import { pageMeta } from '@/lib/seo';
  */
 export default function About() {
   usePageMeta(pageMeta.about);
+  useHashTarget();
 
   const reduced = useReducedMotion();
   const { t } = useLocale();
@@ -110,11 +130,14 @@ export default function About() {
         </Container>
       </section>
 
+      <WhyEvidence code="03 / WHY PDA BLISS" />
+      <VerifiedMetrics code="04 / NUMBERS" />
+
       {/* ------------------------------------------------------- philosophy -- */}
       <section className="sect sect--field relative overflow-hidden py-section">
         <div className="sect-layer field-lines opacity-70" aria-hidden="true" />
         <Container className="relative">
-          <p className="section-code">03 / PHILOSOPHY</p>
+          <p className="section-code">05 / PHILOSOPHY</p>
           <h2 className="thai-display mt-4 max-w-2xl text-statement font-bold text-ink">
             {t(copy.philosophyTitle)}
           </h2>
@@ -147,7 +170,7 @@ export default function About() {
         <Container className="relative">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
             <div>
-              <p className="section-code">04 / WHO WE WORK WITH</p>
+              <p className="section-code">06 / WHO WE WORK WITH</p>
               <h2 className="thai-display mt-4 text-statement font-bold text-ink">
                 {marketLead}
                 <br />
@@ -169,12 +192,13 @@ export default function About() {
         </Container>
       </section>
 
-      <StrengthStatements code="05 / WHY US" />
-      <VerifiedMetrics code="06 / NUMBERS" />
-      <ProcessPath code="07 / PROCESS" />
+      <ProcessPath code="07 / PROCESS" id="process" />
+      <ScopeFactors code="08 / SCOPE" />
+      <TechDiagram code="09 / TECHNOLOGY" id="technology" />
+      <QualityPrivacy code="10 / QUALITY" />
 
       {/* -------------------------------------------- standards + aftercare -- */}
-      <section className="sect sect--deep relative overflow-hidden py-section text-white">
+      <section id="support" className="sect sect--deep relative scroll-mt-24 overflow-hidden py-section text-white">
         <div
           className="sect-layer opacity-40"
           aria-hidden="true"
@@ -185,7 +209,7 @@ export default function About() {
           }}
         />
         <Container className="relative">
-          <p className="section-code text-brand-400">08 / STANDARDS</p>
+          <p className="section-code text-brand-400">11 / STANDARDS &amp; SUPPORT</p>
           <h2 className="thai-display mt-4 max-w-2xl text-statement font-bold">
             {t(copy.standardsTitle)}
           </h2>
@@ -224,11 +248,13 @@ export default function About() {
                 </div>
               ))}
             </dl>
+            <SupportScope />
           </div>
         </Container>
       </section>
 
-      <BigCTA code="09 / START" />
+      <CompanyInfo code="12 / COMPANY" />
+      <BigCTA code="13 / START" />
     </>
   );
 }

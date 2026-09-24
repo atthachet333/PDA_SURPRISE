@@ -11,7 +11,7 @@ import { WorkShowcase } from '@/components/business/WorkShowcase';
 import { ProcessPath } from '@/components/business/ProcessPath';
 import { StrengthStatements } from '@/components/business/StrengthStatements';
 import { VerifiedMetrics } from '@/components/business/VerifiedMetrics';
-import { TechDiagram } from '@/components/business/TechDiagram';
+import { TrustPreview } from '@/components/business/TrustPreview';
 import { InsightStrip } from '@/components/business/InsightStrip';
 import { BigCTA } from '@/components/business/BigCTA';
 import { company, cta } from '@/data/company';
@@ -37,7 +37,8 @@ import { useHomeServices } from '@/i18n/useContent';
  *   07 process     scroll-driven sequence
  *   08 why us      strengths
  *   09 numbers     the two verified figures
- *   10 stack       capability diagram
+ *   10 trust       what a visitor can verify: work, process, company, support
+ *                  (the technology diagram moved to /about as evidence, EP40)
  *   11 insights    editorial cards
  *      CTA         full-bleed green
  *
@@ -60,7 +61,7 @@ export default function Home() {
       <ProcessPath code="07 / PROCESS" />
       <StrengthStatements code="08 / WHY US" />
       <VerifiedMetrics code="09 / NUMBERS" />
-      <TechDiagram code="10 / STACK" />
+      <TrustPreview code="10 / TRUST" />
       <InsightStrip code="11 / INSIGHTS" />
       <BigCTA code="12 / START" />
     </>

@@ -7,6 +7,7 @@ import { workFilterLabel } from '@/i18n/caseStudies';
 import { businessHours } from '@/i18n/company';
 import { ui } from '@/i18n/ui';
 import { fillText } from '@/i18n/fill';
+import { trustLinks } from '@/i18n/trust';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon } from '@/components/shared/Button';
 import { ProjectAccessNote, ProjectActions, ProjectTags, ProjectVisual } from '@/components/business/ProjectParts';
@@ -19,6 +20,7 @@ import {
 } from '@/data/caseStudies';
 import { company, metrics, metricsVerified } from '@/data/company';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { useHashTarget } from '@/hooks/useHashTarget';
 import { pageMeta } from '@/lib/seo';
 import { cn } from '@/lib/cn';
 
@@ -35,6 +37,7 @@ const TECH = ['React', 'TypeScript', 'Vite', 'Next.js', 'Tailwind CSS', 'Fastify
 
 export default function Work() {
   usePageMeta(pageMeta.work);
+  useHashTarget();
   const { t } = useLocale();
   const studies = useCaseStudies();
   const featured = studies.filter((study) => study.featured);
@@ -138,7 +141,7 @@ function AllProjects({ studies }: { studies: readonly CaseStudy[] }) {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="section-code">02 / ALL PROJECTS</p>
-            <h2 id="all-projects" className="thai-display mt-3 text-statement font-bold text-ink">{t(copy.allTitle)}</h2>
+            <h2 id="all-projects" className="thai-display mt-3 scroll-mt-28 text-statement font-bold text-ink">{t(copy.allTitle)}</h2>
           </div>
           <p aria-live="polite" className="text-sm text-steel-500">
             {t(copy.showing).split(/(\{shown\}|\{total\})/).map((part, index) =>
@@ -247,6 +250,14 @@ function WorkCta() {
             <p className="section-code text-brand-300">04 / START</p>
             <h2 id="work-cta" className="thai-display mt-3 text-[clamp(2rem,4.4vw,3.6rem)] font-bold leading-tight">{lead}<br /><span className="text-brand-300">{accent}</span></h2>
             <p className="mt-5 max-w-xl text-sm leading-relaxed text-brand-100/70">{t(businessHours.days)} {t(businessHours.time)} · {t(businessHours.note)}</p>
+            <div className="mt-3 flex flex-wrap gap-x-6">
+              <Link to="/about#process" className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white">
+                {t(trustLinks.howWeWork)} <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
+              </Link>
+              <Link to="/about#company" className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white">
+                {t(trustLinks.companyInfo)} <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
+              </Link>
+            </div>
           </div>
           <div className="flex flex-wrap gap-3 lg:max-w-md lg:justify-end">
             {actions.map((action) =>

@@ -25,7 +25,7 @@ import { cn } from '@/lib/cn';
  *   reach the stage they wanted, and a list that keeps moving under the cursor
  *   is worse than one that never moved.
  */
-export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
+export function ProcessPath({ code = '07 / PROCESS', id }: { code?: string; id?: string } = {}) {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [inView, setInView] = useState(false);
@@ -87,7 +87,7 @@ export function ProcessPath({ code = '07 / PROCESS' }: { code?: string } = {}) {
   if (!active) return null;
 
   return (
-    <section ref={sectionRef} className="sect sect--blueprint relative overflow-hidden py-section">
+    <section ref={sectionRef} id={id} className="sect sect--blueprint relative scroll-mt-24 overflow-hidden py-section">
       <span aria-hidden="true" className="sect-edge-top" />
       <SectionBackdrop variant="system-lines" />
 

@@ -181,41 +181,77 @@ export const capabilityMarkers = [
 
 // --- technology ------------------------------------------------------------
 
-export const techStack = [
+/**
+ * ─── VERIFIED TECHNOLOGY ─────────────────────────────────────────────────────
+ * Only tools that appear in delivered, publishable work. Every item names the
+ * case study (slug in `caseStudies.ts`) that evidences it; tests/trust.test.mjs
+ * checks each name against that case's technical notes, or — for the corporate
+ * website itself — against this repository's deployment files.
+ *
+ * WHAT CHANGED IN EP40
+ *   The earlier list named PostgreSQL, MariaDB and Docker. No delivered case
+ *   study uses them (the systems here run on MySQL and are not containerised),
+ *   so they were replaced rather than presented as capability evidence.
+ *   Tools a service MAY use are still listed per service in `services.ts`.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+export interface TechItem {
+  name: string;
+  /** Thai note: what it does in the delivered work. EN/ZH in i18n/trust.ts. */
+  note: string;
+  /** Case-study slugs that use it. */
+  evidence: readonly string[];
+}
+
+export const techStack: readonly { group: string; groupTh: string; items: readonly TechItem[] }[] = [
   {
     group: 'Frontend',
     groupTh: 'ส่วนหน้า',
     items: [
-      { name: 'React', note: 'UI ที่ยืดหยุ่นและดูแลต่อได้' },
-      { name: 'Next.js', note: 'เรนเดอร์ฝั่งเซิร์ฟเวอร์เพื่อ SEO และความเร็ว' },
-      { name: 'TypeScript', note: 'ตรวจจับข้อผิดพลาดตั้งแต่ตอนเขียนโค้ด' }
+      { name: 'React', note: 'หน้าจอของระบบงานและเว็บไซต์', evidence: ['payroll-monthly-control', 'nas-file-storage', 'corporate-website-system', 's2-accounting-website'] },
+      { name: 'TypeScript', note: 'ตรวจชนิดข้อมูลตั้งแต่ตอนเขียนโค้ด ทั้งหน้าเว็บและ API', evidence: ['corporate-website-system', 's2-accounting-website'] },
+      { name: 'Vite', note: 'Build เว็บแอปของระบบภายในและเว็บไซต์นี้', evidence: ['payroll-monthly-control', 'nas-file-storage', 'corporate-website-system'] },
+      { name: 'Next.js', note: 'เว็บไซต์ที่ต้องการหน้าเนื้อหาจำนวนมาก', evidence: ['s2-accounting-website'] },
+      { name: 'Tailwind CSS', note: 'ระบบสไตล์ของหน้าเว็บ', evidence: ['s2-accounting-website'] }
     ]
   },
   {
     group: 'Backend',
     groupTh: 'ส่วนหลังบ้าน',
     items: [
-      { name: 'Node.js', note: 'รันบริการฝั่งเซิร์ฟเวอร์ด้วยภาษาเดียวกับหน้าเว็บ' },
-      { name: 'Fastify', note: 'API ที่เบาและเร็ว พร้อม Validation ในตัว' }
+      { name: 'Node.js', note: 'รันบริการฝั่งเซิร์ฟเวอร์และ API', evidence: ['corporate-website-system'] },
+      { name: 'Fastify', note: 'API ของระบบ Payroll ระบบไฟล์กลาง และเว็บไซต์นี้', evidence: ['payroll-monthly-control', 'nas-file-storage', 'corporate-website-system'] },
+      { name: 'Express', note: 'API แยกจากหน้าเว็บของเว็บไซต์ S2', evidence: ['s2-accounting-website'] },
+      { name: 'Prisma', note: 'เข้าถึงฐานข้อมูลแบบมีชนิดข้อมูลกำกับ', evidence: ['payroll-monthly-control', 'nas-file-storage'] }
     ]
   },
   {
     group: 'Data',
-    groupTh: 'ฐานข้อมูล',
+    groupTh: 'ข้อมูลและไฟล์',
     items: [
-      { name: 'PostgreSQL', note: 'ธุรกรรมที่เชื่อถือได้สำหรับงานการเงินและสต็อก' },
-      { name: 'MariaDB', note: 'รองรับระบบเดิมที่ใช้ MySQL อยู่แล้ว' }
+      { name: 'MySQL', note: 'ฐานข้อมูลของระบบ Payroll และระบบไฟล์กลาง', evidence: ['payroll-monthly-control', 'nas-file-storage'] },
+      { name: 'S3-compatible object storage', note: 'เก็บไฟล์ของระบบไฟล์กลาง แยกจากข้อมูลกำกับไฟล์', evidence: ['nas-file-storage'] }
     ]
   },
   {
-    group: 'Infrastructure',
-    groupTh: 'โครงสร้างพื้นฐาน',
+    group: 'Integration',
+    groupTh: 'การเชื่อมต่อ',
     items: [
-      { name: 'Cloudflare', note: 'CDN และการป้องกันระดับขอบเครือข่าย' },
-      { name: 'Docker', note: 'สภาพแวดล้อมเดียวกันตั้งแต่เครื่องพัฒนาถึง Production' }
+      { name: 'LINE Official Account', note: 'ช่องทางยื่นคำขอและแจ้งเตือนของระบบ HR', evidence: ['hr-line-leave-approval'] },
+      { name: 'REST API', note: 'ให้หน้าเว็บคุยกับหลังบ้านผ่าน API ที่ตรวจข้อมูลได้', evidence: ['s2-accounting-website'] }
+    ]
+  },
+  {
+    group: 'Deployment',
+    groupTh: 'การนำขึ้นระบบ',
+    items: [
+      { name: 'Windows Server', note: 'เซิร์ฟเวอร์ที่ให้บริการเว็บไซต์นี้', evidence: ['corporate-website-system'] },
+      { name: 'PM2', note: 'ดูแล Process ของเว็บไซต์ให้กลับมาทำงานหลังรีสตาร์ต', evidence: ['corporate-website-system'] },
+      { name: 'Cloudflare Tunnel', note: 'HTTPS และทางเข้าเว็บไซต์โดยไม่เปิดพอร์ตเซิร์ฟเวอร์ตรง', evidence: ['corporate-website-system'] },
+      { name: 'PWA', note: 'ติดตั้งระบบไฟล์กลางเป็นแอปบนมือถือได้', evidence: ['nas-file-storage'] }
     ]
   }
-] as const;
+];
 
 // --- process ---------------------------------------------------------------
 

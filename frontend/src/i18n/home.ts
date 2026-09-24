@@ -242,53 +242,6 @@ export const capabilityMarkerText: readonly { label: LocalizedText; detail: Loca
   }
 ];
 
-export const techCopy = {
-  title: { th: ['เลือกเทคโนโลยี', 'เพื่อปีที่สอง'], en: ['Technology chosen', 'for year two'], zh: ['技术选型，', '着眼于第二年'] } as Lines,
-  lead: {
-    th: 'เครื่องมือที่มีชุมชนแข็งแรง รองรับระยะยาว และหาทีมดูแลต่อได้ เพื่อให้ระบบยังพัฒนาต่อได้หลังส่งมอบ',
-    en: 'Tools with strong communities, long-term support and people available to maintain them — so the system can keep developing after handover.',
-    zh: '选择社区活跃、长期支持、容易找到维护人员的工具，让系统在交付后仍能持续发展。'
-  },
-  idle: {
-    th: 'เลือกดูเครื่องมือแต่ละตัวเพื่อดูเหตุผลที่เราเลือกใช้ และชั้นที่มันทำงานอยู่',
-    en: 'Choose a tool to see why we use it and which layer it works in.',
-    zh: '选择一个工具，查看我们选用它的理由以及它所在的层级。'
-  }
-};
-
-/** Mirrors `techStack` in data/company.ts, keyed by group then tool name. */
-export const techText: Record<string, { group: LocalizedText; notes: Record<string, LocalizedText> }> = {
-  Frontend: {
-    group: { th: 'ส่วนหน้า', en: 'Frontend', zh: '前端' },
-    notes: {
-      React: { th: 'UI ที่ยืดหยุ่นและดูแลต่อได้', en: 'Flexible UI that stays maintainable', zh: '灵活且易于维护的界面' },
-      'Next.js': { th: 'เรนเดอร์ฝั่งเซิร์ฟเวอร์เพื่อ SEO และความเร็ว', en: 'Server rendering for SEO and speed', zh: '服务端渲染，兼顾 SEO 与速度' },
-      TypeScript: { th: 'ตรวจจับข้อผิดพลาดตั้งแต่ตอนเขียนโค้ด', en: 'Catches mistakes while the code is being written', zh: '在编写代码时就发现错误' }
-    }
-  },
-  Backend: {
-    group: { th: 'ส่วนหลังบ้าน', en: 'Backend', zh: '后端' },
-    notes: {
-      'Node.js': { th: 'รันบริการฝั่งเซิร์ฟเวอร์ด้วยภาษาเดียวกับหน้าเว็บ', en: 'Server-side services in the same language as the web pages', zh: '服务端与网页使用同一种语言' },
-      Fastify: { th: 'API ที่เบาและเร็ว พร้อม Validation ในตัว', en: 'Light, fast APIs with built-in validation', zh: '轻量快速的 API，内置数据校验' }
-    }
-  },
-  Data: {
-    group: { th: 'ฐานข้อมูล', en: 'Data', zh: '数据库' },
-    notes: {
-      PostgreSQL: { th: 'ธุรกรรมที่เชื่อถือได้สำหรับงานการเงินและสต็อก', en: 'Reliable transactions for finance and stock', zh: '为财务与库存提供可靠的事务处理' },
-      MariaDB: { th: 'รองรับระบบเดิมที่ใช้ MySQL อยู่แล้ว', en: 'Supports existing systems already on MySQL', zh: '兼容已在使用 MySQL 的现有系统' }
-    }
-  },
-  Infrastructure: {
-    group: { th: 'โครงสร้างพื้นฐาน', en: 'Infrastructure', zh: '基础设施' },
-    notes: {
-      Cloudflare: { th: 'CDN และการป้องกันระดับขอบเครือข่าย', en: 'CDN and protection at the network edge', zh: 'CDN 与网络边缘防护' },
-      Docker: { th: 'สภาพแวดล้อมเดียวกันตั้งแต่เครื่องพัฒนาถึง Production', en: 'The same environment from a developer’s machine to production', zh: '从开发机到生产环境保持一致' }
-    }
-  }
-};
-
 export const insightsCopy = {
   title: {
     th: ['บทความและมุมมอง', 'สำหรับการตัดสินใจ', 'เรื่องระบบ'],

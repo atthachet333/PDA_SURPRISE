@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { LocaleLink as Link } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
 import { usePrimaryServices, useSupportingServices } from '@/i18n/useContent';
@@ -16,6 +14,9 @@ import { caseStudies } from '@/data/caseStudies';
 import { company } from '@/data/company';
 import { contactHref, isContactServiceId } from '@/data/contactRouting';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { useHashTarget } from '@/hooks/useHashTarget';
+import { ScopeFactors } from '@/components/business/TrustSections';
+import { trustLinks } from '@/i18n/trust';
 import { pageMeta } from '@/lib/seo';
 import { cn } from '@/lib/cn';
 
@@ -27,8 +28,9 @@ import { cn } from '@/lib/cn';
  *   03 services      one section each: problem → what we build → good for → work
  *   04 distinctions  website vs web app vs ERP vs mobile vs files
  *   05 process       how a project actually runs
- *   06 capabilities  the supporting work that ships inside the eight
- *   07 CTA           for visitors who have a problem but not a solution name
+ *   06 scope         what shapes scope, time and price — no fixed packages (EP40)
+ *   07 capabilities  the supporting work that ships inside the eight
+ *   08 CTA           for visitors who have a problem but not a solution name
  *
  * /services answers what PDA BLISS can build. /solutions shows how those
  * systems connect as one universe — the cross-link in 06 keeps the two from
@@ -45,40 +47,11 @@ export default function Services() {
       <ServiceSections code="03 / SERVICES" />
       <ServiceDistinctions code="04 / NOT THE SAME THING" />
       <ProcessPath code="05 / PROCESS" />
+      <ScopeFactors code="06 / SCOPE" />
       <SupportingCapabilities />
       <ServicesCta />
     </>
   );
-}
-
-/**
- * Bring `/services#<service-id>` to the right section.
- *
- * Case studies, the footer menu and the System Universe all deep-link into a
- * specific service. A client-side route change does not perform the browser's
- * native fragment scroll, and the sections mount below the fold, so without
- * this every one of those links would land the visitor at the top of the page.
- * The rAF defer lets the section lay out before we measure it.
- */
-function useHashTarget() {
-  const { hash } = useLocation();
-
-  useEffect(() => {
-    const id = hash.slice(1);
-    if (!id) return;
-    /*
-      Two passes. The first lands on the section as soon as it exists; the
-      second corrects for the sections above it settling (the mock panels lay
-      out after first paint), which would otherwise leave the target off by a
-      few hundred pixels on a cold load.
-    */
-    const timers = [60, 420].map((delay) =>
-      window.setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ block: 'start' });
-      }, delay)
-    );
-    return () => timers.forEach(window.clearTimeout);
-  }, [hash]);
 }
 
 /* --------------------------------------------------------------- 01 hero -- */
@@ -162,7 +135,7 @@ function SupportingCapabilities() {
       <Container wide>
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)] lg:gap-16">
           <div>
-            <p className="section-code">06 / CAPABILITIES</p>
+            <p className="section-code">07 / CAPABILITIES</p>
             <h2 id="capabilities" className="thai-display mt-3 text-statement font-bold text-ink">
               {lead}<span className="text-brand-700">{accent}</span>
             </h2>
@@ -247,7 +220,7 @@ function ServicesCta() {
       <Container wide>
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
-            <p className="section-code text-brand-300">07 / START</p>
+            <p className="section-code text-brand-300">08 / START</p>
             <h2
               id="services-cta"
               className="thai-display mt-3 max-w-3xl text-[clamp(1.9rem,4vw,3.2rem)] font-bold leading-tight"
@@ -262,6 +235,13 @@ function ServicesCta() {
             <p className="mt-4 text-xs leading-relaxed text-brand-100/55">
               {t(businessHours.days)} {t(businessHours.time)} · {t(businessHours.note)}
             </p>
+            <Link
+              to="/about#process"
+              className="group mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-200 transition-colors hover:text-white"
+            >
+              {t(trustLinks.howWeWork)}
+              <ArrowIcon className="transition-transform duration-base group-hover:translate-x-1" />
+            </Link>
           </div>
           <div className="flex flex-wrap gap-3 lg:max-w-md lg:justify-end">
             {actions.map((action) =>

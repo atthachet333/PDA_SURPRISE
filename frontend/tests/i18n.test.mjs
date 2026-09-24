@@ -14,6 +14,8 @@ import * as servicesText from '../src/i18n/services.ts';
 import * as casesText from '../src/i18n/caseStudies.ts';
 import * as about from '../src/i18n/about.ts';
 import * as legal from '../src/i18n/legal.ts';
+import * as trust from '../src/i18n/trust.ts';
+import * as trustPreview from '../src/i18n/trustPreview.ts';
 import { aftercare, philosophy, standards } from '../src/data/about.ts';
 import { targetMarket } from '../src/data/company.ts';
 import { pageMeta } from '../src/lib/seo.ts';
@@ -92,7 +94,7 @@ function* strings(value, path = '') {
   else if (value && typeof value === 'object') for (const [k, item] of Object.entries(value)) yield* strings(item, path ? `${path}.${k}` : k);
 }
 
-const MODULES = { ui, companyText, home, work, contact, visuals, insightsText, solutionsText, universeText, solutionsPageText, servicesText, casesText, about, legal, pageMeta };
+const MODULES = { ui, companyText, home, work, contact, visuals, insightsText, solutionsText, universeText, solutionsPageText, servicesText, casesText, about, legal, trust, trustPreview, pageMeta };
 
 test('every localised triple is complete, and EN/ZH carry no Thai', () => {
   let count = 0;
@@ -242,7 +244,7 @@ test('company-level lists mirror their Thai sources item for item', () => {
   assert.equal(home.capabilityMarkerText.length, capabilityMarkers.length);
   assert.equal(work.metricText.length, metrics.length);
   techStack.forEach((group) => {
-    const text = home.techText[group.group];
+    const text = trust.techText[group.group];
     assert.ok(text, `tech group ${group.group} is untranslated`);
     group.items.forEach((item) => assert.ok(text.notes[item.name], `tech note ${item.name} is untranslated`));
   });

@@ -8,6 +8,8 @@ import { pageMeta } from '@/lib/seo';
 import { useLocale } from '@/app/LocaleContext';
 import { contactPage as copy } from '@/i18n/contact';
 import { addressLines, businessHours } from '@/i18n/company';
+import { companyCopy, trustLinks } from '@/i18n/trust';
+import { LocaleLink } from '@/components/shared/LocaleLink';
 
 /**
  * /contact — the form is the page. Everything else is a quiet reference column.
@@ -38,6 +40,11 @@ export default function Contact() {
               <p className="section-code">03 / DIRECT</p>
 
               <dl className="mt-8 border-t border-steel-200">
+                {/* EP40: the registered company behind every channel below. */}
+                <Row label={t(companyCopy.registeredName)}>
+                  <span className="block" lang="th">{company.legalNameTh}</span>
+                  <span className="block">{company.legalName}</span>
+                </Row>
                 <Row label={t(copy.email)}>
                   <a className="hover:text-brand-600" href={`mailto:${company.email}`}>
                     {company.email}
@@ -75,6 +82,12 @@ export default function Contact() {
                   </span>
                 </Row>
               </dl>
+              <LocaleLink
+                to="/about#company"
+                className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-ink underline decoration-steel-300 underline-offset-4 transition-colors hover:text-brand-700"
+              >
+                {t(trustLinks.companyInfo)}
+              </LocaleLink>
 
               {/* What happens next */}
               <div className="on-dark mt-10 overflow-hidden rounded-panel border border-brand-400/20 bg-[linear-gradient(155deg,#063B2A,#04261B)] p-7 text-white">
