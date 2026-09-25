@@ -17,7 +17,7 @@ import { BigCTA } from '@/components/business/BigCTA';
 import { company, cta } from '@/data/company';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { RevealLines } from '@/components/shared/RevealLines';
-import { SectionBackdrop } from '@/components/business/SectionBackdrop';
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { pageMeta } from '@/lib/seo';
 import { useLocale } from '@/app/LocaleContext';
@@ -85,8 +85,9 @@ function Hero() {
     <section
       className="sect sect--hero relative flex items-center overflow-hidden pb-14 pt-24 sm:pb-16 sm:pt-28 lg:min-h-[max(38rem,calc(100vh-5rem))] lg:max-h-[56rem] lg:pb-20 lg:pt-32"
     >
-      {/* Soft green atmosphere that tracks the pointer — light, not a dark slab. */}
-      <SectionBackdrop variant="aurora" pointer />
+      {/* EP43 software-lab atmosphere: grid + topology behind, ghost panels
+          around the rig, content in front. */}
+      <VisualAtmosphere variant="hero" />
 
       <Container wide className="relative w-full">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-10 xl:gap-14">

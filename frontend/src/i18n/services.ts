@@ -85,7 +85,7 @@ export const servicesPage = {
     en: 'Each family solves a different kind of problem. Choose one to jump to its details below.',
     zh: '每类服务解决不同的问题。选择一项即可跳转到下方的详细说明。'
   },
-  sectionsTitle: { th: ['แต่ละบริการ', 'แก้ปัญหาอะไร'], en: ['What each service', 'solves'], zh: ['每项服务', '解决什么问题'] },
+  sectionsTitle: { th: ['แต่ละบริการ', 'แก้ปัญหาอะไร'], en: ['What each service ', 'solves'], zh: ['每项服务', '解决什么问题'] },
   sectionsLead: {
     th: 'ทุกหัวข้อเล่าด้วยโครงเดียวกัน คือปัญหาที่เจอ สิ่งที่เราสร้าง กลุ่มที่เหมาะ และผลงานจริงที่เกี่ยวข้อง',
     en: 'Every service follows the same outline: the problem, what we build, who it suits and related real work.',
@@ -113,7 +113,7 @@ export const servicesPage = {
     zh: '这些词经常被混用。这张表能帮助我们从第一次沟通起就说到点子上。'
   },
   usedBy: { th: 'ใช้โดย', en: 'Used by', zh: '使用者' },
-  capTitle: { th: ['ความสามารถที่มัก', 'ไปพร้อมกับงานหลัก'], en: ['Capabilities that usually', 'ship with the core work'], zh: ['通常随核心项目', '一起交付的能力'] },
+  capTitle: { th: ['ความสามารถที่มัก', 'ไปพร้อมกับงานหลัก'], en: ['Capabilities that usually ', 'ship with the core work'], zh: ['通常随核心项目', '一起交付的能力'] },
   capLead: {
     th: 'งานกลุ่มนี้ส่วนใหญ่เป็นส่วนหนึ่งของโปรเจกต์ใหญ่ ไม่ได้ขายแยกเป็นงานเดี่ยว แต่มักเป็นสิ่งที่ทำให้ระบบหลักใช้งานได้จริงในระยะยาว',
     en: 'This work is usually part of a larger project rather than sold on its own, but it is often what keeps the core system useful in the long run.',

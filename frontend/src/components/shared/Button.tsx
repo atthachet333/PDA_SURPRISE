@@ -10,9 +10,9 @@ type Size = 'sm' | 'md' | 'lg';
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    'bg-brand-600 text-white shadow-soft hover:bg-brand-700 active:bg-brand-800 disabled:bg-steel-300',
+    'bg-brand-600 text-white shadow-soft hover:bg-brand-700 hover:shadow-lift active:bg-brand-800 disabled:bg-steel-300',
   secondary:
-    'bg-white text-ink ring-1 ring-inset ring-steel-200 hover:ring-steel-300 hover:bg-steel-50 shadow-soft',
+    'bg-white text-ink ring-1 ring-inset ring-steel-200 hover:ring-brand-300 hover:bg-steel-50 shadow-soft hover:shadow-lift',
   ghost: 'bg-transparent text-ink hover:bg-steel-100',
   dark: 'bg-ink text-white hover:bg-ink-soft'
 };
@@ -23,8 +23,10 @@ const SIZES: Record<Size, string> = {
   lg: 'h-14 px-7 text-base'
 };
 
+/* EP43: depth on hover (a pixel of lift, a longer shadow) and the arrow leans
+   toward where the button goes. Hierarchy is unchanged: one primary per view. */
 const BASE =
-  'relative inline-flex select-none items-center justify-center gap-2 rounded-pill font-medium transition-colors duration-base ease-smooth disabled:cursor-not-allowed disabled:opacity-60';
+  'group/btn relative inline-flex select-none items-center justify-center gap-2 rounded-pill font-medium transition-[color,background-color,box-shadow,transform] duration-base ease-smooth motion-safe:hover:-translate-y-px motion-safe:active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60';
 
 interface CommonProps {
   variant?: Variant;
@@ -102,7 +104,12 @@ export function ButtonLink({
 
 export function ArrowIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 16 16" aria-hidden="true" className={cn('h-4 w-4', className)} fill="none">
+    <svg
+      viewBox="0 0 16 16"
+      aria-hidden="true"
+      className={cn('h-4 w-4 transition-transform duration-base ease-smooth motion-safe:group-hover/btn:translate-x-0.5', className)}
+      fill="none"
+    >
       <path
         d="M3 8h9.5M8.5 3.5 13 8l-4.5 4.5"
         stroke="currentColor"

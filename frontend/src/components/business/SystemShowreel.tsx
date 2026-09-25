@@ -9,7 +9,7 @@ import {
   showreelDestination,
   type VisualSlot,
 } from "@/data/visuals";
-import { SectionBackdrop } from "./SectionBackdrop";
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 import { useDeviceProfile } from "@/hooks/useDeviceProfile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/cn";
@@ -77,7 +77,7 @@ export function SystemShowreel({ code = '02 / SYSTEMS' }: { code?: string } = {}
       className="sect sect--field relative overflow-hidden py-section"
     >
       <span aria-hidden="true" className="sect-edge-top" />
-      <SectionBackdrop variant="data-field" pointer />
+      <VisualAtmosphere variant="systems" />
 
       <Container wide className="relative">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

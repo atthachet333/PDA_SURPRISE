@@ -57,7 +57,7 @@ export const workPage = {
     en: 'This page describes {n} projects we can share in detail. Client systems are shown without revealing any internal data.',
     zh: '本页介绍 {n} 个可以公开详情的项目。客户系统的展示不会透露任何内部数据。'
   },
-  featuredTitle: { th: ['ผลงานที่แสดง', 'ความสามารถคนละด้าน'], en: ['Work that shows', 'different strengths'], zh: ['展示不同能力的', '代表案例'] } as Lines,
+  featuredTitle: { th: ['ผลงานที่แสดง', 'ความสามารถคนละด้าน'], en: ['Work that shows ', 'different strengths'], zh: ['展示不同能力的', '代表案例'] } as Lines,
   allTitle: { th: 'ผลงานทั้งหมด', en: 'All projects', zh: '全部案例' },
   showing: { th: 'แสดง {shown} จาก {total} โครงการ', en: 'Showing {shown} of {total} projects', zh: '显示 {shown} / {total} 个项目' },
   filterGroup: { th: 'กรองผลงานตามประเภท', en: 'Filter projects by type', zh: '按类型筛选案例' },

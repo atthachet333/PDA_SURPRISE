@@ -9,7 +9,7 @@ import { BigCTA } from '@/components/business/BigCTA';
 import { CaseStudyFlow } from '@/components/business/CaseStudyFlow';
 import { CaseStudyVisual } from '@/components/business/CaseStudyVisual';
 import { ProjectAccessNote, ProjectLiveButton, ProjectTags, ProjectVisual } from '@/components/business/ProjectParts';
-import { SectionBackdrop } from '@/components/business/SectionBackdrop';
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { Container } from '@/components/shared/Layout';
 import { getCaseStudy, type CaseStudy } from '@/data/caseStudies';
@@ -58,7 +58,7 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
   return (
     <>
       <section className="sect sect--deep relative overflow-hidden pb-16 pt-32 text-white sm:pb-20 sm:pt-40">
-        <SectionBackdrop variant="mesh-dark" pointer />
+        <VisualAtmosphere variant="evidence" />
         <Container wide className="relative">
           <Link to="/work" className="group inline-flex min-h-11 items-center gap-2 text-sm text-brand-100/60 transition-colors hover:text-white"><ArrowIcon className="rotate-180 transition-transform group-hover:-translate-x-1" />{t(copy.back)}</Link>
           <div className="mt-8 grid items-end gap-10 lg:grid-cols-[minmax(0,.9fr)_minmax(22rem,.7fr)] lg:gap-16">
@@ -124,7 +124,7 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
       </section>
 
       <section className="sect sect--deep relative overflow-hidden py-section text-white">
-        <SectionBackdrop variant="mesh-dark" />
+        <VisualAtmosphere variant="evidence" />
         <Container wide className="relative">
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)] lg:gap-16">
             <div>

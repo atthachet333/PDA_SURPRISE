@@ -3,6 +3,7 @@ import { Container } from '@/components/shared/Layout';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { cn } from '@/lib/cn';
+import { VisualAtmosphere, type AtmosphereVariant } from './atmosphere/VisualAtmosphere';
 
 interface PageHeaderProps {
   /** Section code, e.g. '01 / SERVICES'. */
@@ -13,6 +14,8 @@ interface PageHeaderProps {
   children?: React.ReactNode;
   /** 'dark' inverts onto the deep green ground, for Work. */
   tone?: 'light' | 'dark';
+  /** EP43 background composition; defaults to a quiet editorial field. */
+  atmosphere?: AtmosphereVariant;
 }
 
 /**
@@ -23,7 +26,7 @@ interface PageHeaderProps {
  * homepage hero's typographic scale so inner pages do not feel like a different
  * website.
  */
-export function PageHeader({ eyebrow, title, lead, children, tone = 'light' }: PageHeaderProps) {
+export function PageHeader({ eyebrow, title, lead, children, tone = 'light', atmosphere }: PageHeaderProps) {
   const reduced = useReducedMotion();
   const dark = tone === 'dark';
 
@@ -34,27 +37,7 @@ export function PageHeader({ eyebrow, title, lead, children, tone = 'light' }: P
         dark ? 'sect--deep text-white' : 'sect--hero'
       )}
     >
-      <div className="sect-layer" aria-hidden="true">
-        <span
-          className="absolute inset-0 opacity-[0.5]"
-          style={{
-            backgroundImage: dark
-              ? 'linear-gradient(rgba(53,201,111,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(53,201,111,0.08) 1px, transparent 1px)'
-              : 'linear-gradient(rgba(6,59,42,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.045) 1px, transparent 1px)',
-            backgroundSize: '84px 84px',
-            maskImage: 'radial-gradient(70% 90% at 25% 0%, black, transparent)',
-            WebkitMaskImage: 'radial-gradient(70% 90% at 25% 0%, black, transparent)'
-          }}
-        />
-        <span
-          className={cn(
-            'absolute -right-28 -top-28 h-[32rem] w-[32rem] rounded-full blur-2xl',
-            dark
-              ? 'bg-[radial-gradient(circle,rgba(53,201,111,0.22),transparent_66%)]'
-              : 'bg-[radial-gradient(circle,rgba(53,201,111,0.16),transparent_66%)]'
-          )}
-        />
-      </div>
+      <VisualAtmosphere variant={atmosphere ?? (dark ? 'evidence' : 'editorial')} />
 
       <Container className="relative">
         <motion.p

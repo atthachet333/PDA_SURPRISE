@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 import { Container } from '@/components/shared/Layout';
 import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { RevealLines } from '@/components/shared/RevealLines';
@@ -40,19 +41,11 @@ export function BigCTA({ code = '12 / START', contactTo = cta.primary.to }: { co
   return (
     <section className="sect sect--immersive relative overflow-hidden py-section text-white">
       <span aria-hidden="true" className="sect-edge-top sect-edge-top--dark" />
+      <VisualAtmosphere variant="closing" />
 
       {/* ---------------------------------------------------- data horizon -- */}
       <div className="sect-layer" aria-hidden="true">
-        <span
-          className="absolute inset-0 opacity-[0.5]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(53,201,111,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(53,201,111,0.1) 1px, transparent 1px)',
-            backgroundSize: '58px 58px',
-            maskImage: 'radial-gradient(90% 80% at 40% 50%, black, transparent)',
-            WebkitMaskImage: 'radial-gradient(90% 80% at 40% 50%, black, transparent)'
-          }}
-        />
+        {/* EP43: the grid is the section ground's shared 48/96 system. */}
 
         <svg
           viewBox="0 0 100 40"

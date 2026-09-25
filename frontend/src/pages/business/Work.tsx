@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 import { LocaleLink as Link } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
 import { useCaseStudies } from '@/i18n/useContent';
@@ -66,7 +67,7 @@ function WorkHero() {
   const [lead, accent] = t(copy.heroTitle);
   return (
     <section className="sect sect--bright relative overflow-hidden pb-14 pt-32 sm:pb-16 sm:pt-40">
-      <span aria-hidden="true" className="work-grid pointer-events-none absolute inset-0" />
+      <VisualAtmosphere variant="portfolio" />
       <Container wide className="relative">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.65fr)] lg:items-end">
           <div>
@@ -237,6 +238,7 @@ function WorkCta() {
   const [lead, accent] = t(copy.ctaTitle);
   return (
     <section aria-labelledby="work-cta" className="sect sect--deep relative overflow-hidden py-section text-white">
+      <VisualAtmosphere variant="closing" />
       <Container wide>
         <div className="max-w-3xl">
           <p className="section-code text-brand-300">04 / START</p>

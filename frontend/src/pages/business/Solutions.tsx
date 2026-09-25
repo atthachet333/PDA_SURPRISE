@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 import { BigCTA } from '@/components/business/BigCTA';
 import { CategoryLegend, SystemUniverse } from '@/components/business/SystemUniverse';
-import { SectionBackdrop } from '@/components/business/SectionBackdrop';
 import { Container } from '@/components/shared/Layout';
 import { RevealLines } from '@/components/shared/RevealLines';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -20,7 +20,7 @@ export default function Solutions() {
   return (
     <>
       <section className="sect sect--hero relative overflow-hidden pb-16 pt-28 sm:pb-20 sm:pt-36">
-        <SectionBackdrop variant="aurora" pointer />
+        <VisualAtmosphere variant="topology" />
         <Container wide className="relative">
           <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,.7fr)] lg:gap-16">
             <div>

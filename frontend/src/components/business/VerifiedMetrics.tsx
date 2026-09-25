@@ -41,16 +41,7 @@ export function VerifiedMetrics({ code = '09 / NUMBERS' }: { code?: string } = {
 
       {/* ---------------------------------------------------------- ground -- */}
       <div className="sect-layer" aria-hidden="true">
-        <span
-          className="absolute inset-0 opacity-70"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(53,201,111,0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(53,201,111,0.09) 1px, transparent 1px)',
-            backgroundSize: '54px 54px',
-            maskImage: 'radial-gradient(80% 70% at 50% 50%, black, transparent)',
-            WebkitMaskImage: 'radial-gradient(80% 70% at 50% 50%, black, transparent)'
-          }}
-        />
+        {/* EP43: the grid is the section ground's shared 48/96 system. */}
 
         {/* System thumbnails drifting behind the figures */}
         <div className="absolute inset-y-0 right-0 hidden w-[46%] items-center lg:flex">

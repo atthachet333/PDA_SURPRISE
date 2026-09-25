@@ -1,0 +1,574 @@
+/**
+ * ============================================================================
+ * EP43 — VISUAL ATMOSPHERE (corporate only)
+ * ============================================================================
+ *
+ * Two layers of depth, both decorative, both behind content:
+ *
+ *   1. GROUND TEXTURE — pseudo-elements on the existing `.sect--*` grounds.
+ *      No markup: every section that already names its ground gets the
+ *      matching technical texture, in both themes, on every page.
+ *
+ *   2. COMPOSED ATMOSPHERE — <VisualAtmosphere variant="…"> for the places
+ *      that carry a page: heroes, the evidence band, the closing CTA. It adds
+ *      system topology, ghost interface panels, light sources and grain.
+ *
+ * ONE GRID SYSTEM
+ *   Every grid on the corporate site is built from --atm-unit (24px): minor
+ *   lines every 2 units (48px), major every 4 (96px), nodes on the majors.
+ *   Nothing here introduces a second rhythm.
+ *
+ * SAFETY
+ *   Everything is aria-hidden in markup and `pointer-events: none` here, sits
+ *   at z-index -1 inside the section's own stacking context (`.sect` isolates),
+ *   and is clipped by its own box so nothing can cause horizontal overflow.
+ *   Motion is CSS only and stops completely under prefers-reduced-motion.
+ *   A&I never loads this: every selector is scoped to corporate classes.
+ * ============================================================================
+ */
+
+:root {
+  --card-highlight: rgba(255, 255, 255, 0.8);
+  --atm-unit: 24px;
+  --atm-minor: calc(var(--atm-unit) * 2);
+  --atm-major: calc(var(--atm-unit) * 4);
+}
+
+/* ------------------------------------------------------------------------ */
+/* 1. Ground textures                                                        */
+/* ------------------------------------------------------------------------ */
+
+:is(.sect--hero, .sect--bright, .sect--grid, .sect--blueprint, .sect--technical, .sect--field, .sect--paper, .sect--cream, .sect--deep, .sect--immersive, .sect--mesh)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(var(--atm-line) / var(--atm-grid-major-a)) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--atm-line) / var(--atm-grid-major-a)) 1px, transparent 1px),
+    linear-gradient(rgb(var(--atm-line) / var(--atm-grid-a)) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--atm-line) / var(--atm-grid-a)) 1px, transparent 1px);
+  background-size: var(--atm-major) var(--atm-major), var(--atm-major) var(--atm-major), var(--atm-minor) var(--atm-minor), var(--atm-minor) var(--atm-minor);
+  background-position: -1px -1px;
+}
+
+/* Each ground frames the grid differently, so the same system reads as a
+   different place: a corner field, a band, a margin, a drafting sheet. */
+.sect--hero::before {
+  mask-image: radial-gradient(75% 90% at 82% 30%, black 0%, rgba(0, 0, 0, 0.55) 45%, transparent 82%);
+  -webkit-mask-image: radial-gradient(75% 90% at 82% 30%, black 0%, rgba(0, 0, 0, 0.55) 45%, transparent 82%);
+}
+
+.sect--bright::before {
+  mask-image: linear-gradient(115deg, transparent 38%, rgba(0, 0, 0, 0.8) 72%, black 100%);
+  -webkit-mask-image: linear-gradient(115deg, transparent 38%, rgba(0, 0, 0, 0.8) 72%, black 100%);
+}
+
+.sect--grid::before {
+  mask-image: linear-gradient(to bottom, transparent, black 16%, black 84%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 16%, black 84%, transparent);
+  opacity: 0.8;
+}
+
+/* Blueprint and technical: the full drafting sheet, with the finer 24px
+   subdivision that only these two grounds get. */
+:is(.sect--blueprint, .sect--technical)::before {
+  background-image:
+    linear-gradient(rgb(var(--atm-blue) / calc(var(--atm-grid-major-a) * 1.1)) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--atm-blue) / calc(var(--atm-grid-major-a) * 1.1)) 1px, transparent 1px),
+    linear-gradient(rgb(var(--atm-line) / calc(var(--atm-grid-a) * 0.6)) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--atm-line) / calc(var(--atm-grid-a) * 0.6)) 1px, transparent 1px);
+  background-size: var(--atm-major) var(--atm-major), var(--atm-major) var(--atm-major), var(--atm-unit) var(--atm-unit), var(--atm-unit) var(--atm-unit);
+  mask-image: radial-gradient(90% 85% at 50% 50%, black 30%, transparent 92%);
+  -webkit-mask-image: radial-gradient(90% 85% at 50% 50%, black 30%, transparent 92%);
+}
+
+/* Field (graphite): nodes on the major intersections instead of lines. */
+.sect--field::before {
+  background-image:
+    radial-gradient(circle, rgb(var(--atm-line) / calc(var(--atm-grid-major-a) * 2.2)) 1.2px, transparent 1.6px),
+    linear-gradient(rgb(var(--atm-line) / var(--atm-grid-a)) 1px, transparent 1px);
+  background-size: var(--atm-major) var(--atm-major), 100% var(--atm-major);
+  background-position: calc(var(--atm-major) / -2) calc(var(--atm-major) / -2), 0 0;
+  mask-image: radial-gradient(85% 80% at 50% 45%, black, transparent 88%);
+  -webkit-mask-image: radial-gradient(85% 80% at 50% 45%, black, transparent 88%);
+}
+
+/* Paper and cream: editorial margins — two ruled columns, not a mesh. */
+:is(.sect--paper, .sect--cream)::before {
+  background-image:
+    linear-gradient(90deg, rgb(var(--atm-line) / calc(var(--atm-grid-major-a) * 0.9)) 1px, transparent 1px),
+    linear-gradient(rgb(var(--atm-line) / calc(var(--atm-grid-a) * 0.7)) 1px, transparent 1px);
+  background-size: 25% 100%, 100% var(--atm-minor);
+  background-position: calc(12.5% - 1px) 0, 0 0;
+  mask-image: linear-gradient(to right, black, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.35) 70%, black);
+  -webkit-mask-image: linear-gradient(to right, black, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.35) 70%, black);
+}
+
+/* Dark islands: framed evidence lines, lit from the top edge. */
+:is(.sect--deep, .sect--immersive)::before {
+  mask-image: radial-gradient(90% 70% at 50% 0%, black, transparent 85%);
+  -webkit-mask-image: radial-gradient(90% 70% at 50% 0%, black, transparent 85%);
+}
+
+/* System universe: the mesh, strongest at the centre where the graph sits. */
+.sect--mesh::before {
+  mask-image: radial-gradient(75% 65% at 55% 45%, black, transparent 84%);
+  -webkit-mask-image: radial-gradient(75% 65% at 55% 45%, black, transparent 84%);
+}
+
+/* ------------------------------------------------------------------------ */
+/* Section seams — an architectural rule between two light grounds          */
+/* ------------------------------------------------------------------------ */
+
+/*
+ * A hairline with survey ticks on the major rhythm and a soft light band,
+ * only where two light sections meet. Dark islands already announce
+ * themselves; a seam there would be decoration for its own sake.
+ */
+:is(.sect--hero, .sect--bright, .sect--grid, .sect--blueprint, .sect--technical, .sect--field, .sect--paper, .sect--cream)
+  + :is(.sect--bright, .sect--grid, .sect--blueprint, .sect--technical, .sect--field, .sect--paper, .sect--cream)::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 7px;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgb(var(--atm-line) / 0.2) 18%, rgb(var(--atm-node) / 0.42) 50%, rgb(var(--atm-line) / 0.2) 82%, transparent) top / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, rgb(var(--atm-line) / 0.22) 0 1px, transparent 1px var(--atm-major)) top / 100% 7px no-repeat;
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
+
+/* ------------------------------------------------------------------------ */
+/* 2. Composed atmosphere                                                    */
+/* ------------------------------------------------------------------------ */
+
+.atm {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.atm > * {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Light sources. Sized in viewport-relative units so they scale with the
+   section instead of becoming a blob on mobile. */
+.atm-glow {
+  /* No filter: a closest-side radial gradient is already soft, and a blurred
+     60rem layer is the single most expensive thing a section can paint. */
+  border-radius: 999px;
+}
+
+.atm-glow--green {
+  background: radial-gradient(closest-side, var(--atm-glow-green), transparent);
+}
+
+.atm-glow--blue {
+  background: radial-gradient(closest-side, var(--atm-glow-blue), transparent);
+}
+
+/* Grain. Extremely low, it only keeps large flat fields from banding. */
+.atm-noise {
+  inset: 0;
+  opacity: var(--atm-noise-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* Edge vignette: pulls the eye to the content column. */
+.atm-vignette {
+  inset: 0;
+  background: radial-gradient(120% 95% at 50% 45%, transparent 58%, var(--atm-vignette) 100%);
+}
+
+/* Topology — the SVG system map. Colours come from the theme tokens so one
+   drawing serves Light, Dark and the dark-green islands. */
+.atm-topology {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: rgb(var(--atm-line));
+}
+
+.atm-topology .atm-edge {
+  fill: none;
+  stroke: rgb(var(--atm-line) / 0.26);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.atm-topology .atm-edge--blue {
+  stroke: rgb(var(--atm-blue) / 0.34);
+}
+
+.atm-topology .atm-edge--dashed {
+  stroke-dasharray: 3 6;
+}
+
+.atm-topology .atm-signal {
+  fill: none;
+  stroke: rgb(var(--atm-node) / 0.85);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 26 1400;
+  stroke-dashoffset: 0;
+  animation: atm-signal 11s linear infinite;
+}
+
+.atm-topology .atm-node {
+  fill: rgb(var(--atm-node) / 0.9);
+}
+
+.atm-topology .atm-node-ring {
+  fill: none;
+  stroke: rgb(var(--atm-node) / 0.4);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.atm-topology .atm-node--quiet {
+  fill: rgb(var(--atm-line) / 0.45);
+}
+
+.atm-topology .atm-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: atm-pulse 5.5s ease-in-out infinite;
+}
+
+.atm-topology .atm-label {
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  fill: rgb(var(--atm-line) / 0.55);
+}
+
+.atm-topology .atm-label--accent {
+  fill: rgb(var(--atm-node) / 0.85);
+}
+
+.atm-topology .atm-box {
+  fill: var(--atm-ghost-bg);
+  stroke: rgb(var(--atm-line) / 0.28);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Where the map may be dense. Copy sits left on desktop and on top below
+   1024px, so the map fades out there in each layout. */
+.atm-mask-right {
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.16) 34%, black 58%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.16) 34%, black 58%);
+}
+
+.atm-mask-edges {
+  mask-image: radial-gradient(70% 70% at 50% 50%, transparent 30%, black 78%);
+  -webkit-mask-image: radial-gradient(70% 70% at 50% 50%, transparent 30%, black 78%);
+}
+
+.atm-mask-top {
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.3) 40%, black 62%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.3) 40%, black 62%);
+}
+
+@media (max-width: 1023px) {
+  .atm-mask-right,
+  .atm-mask-top {
+    mask-image: linear-gradient(180deg, transparent 0%, transparent 48%, black 82%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 48%, black 82%);
+  }
+
+  /* Stacked layout: copy on top, product below — the grid lives with the product. */
+  .sect--hero::before {
+    mask-image: radial-gradient(130% 60% at 70% 100%, black 0%, rgba(0, 0, 0, 0.45) 55%, transparent 92%);
+    -webkit-mask-image: radial-gradient(130% 60% at 70% 100%, black 0%, rgba(0, 0, 0, 0.45) 55%, transparent 92%);
+  }
+}
+
+/* Around the System Universe the heading sits top-left: keep the field off it. */
+.atm-mask-universe {
+  mask-image: linear-gradient(155deg, transparent 0%, transparent 30%, rgba(0, 0, 0, 0.6) 52%, black 72%);
+  -webkit-mask-image: linear-gradient(155deg, transparent 0%, transparent 30%, rgba(0, 0, 0, 0.6) 52%, black 72%);
+}
+
+/* Route rail — a long section's structural spine: a gutter line with nodes on
+   the major rhythm and one slow signal. Desktop only; it lives in the margin. */
+.atm-rail {
+  position: absolute;
+  top: 7rem;
+  bottom: 5rem;
+  /* Centred in the gutter beside the wide container (1400px, 1520px ≥1536). */
+  left: max(0.5rem, calc((100% - 1400px) / 2 + 0.5rem));
+  width: 9px;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(rgb(var(--atm-line) / 0.2), rgb(var(--atm-line) / 0.2)) center / 1px 100% no-repeat,
+    radial-gradient(circle, rgb(var(--atm-node) / 0.55) 2px, rgb(var(--atm-node) / 0.12) 2.5px, transparent 4px) center top / 9px var(--atm-major) repeat-y;
+  mask-image: linear-gradient(to bottom, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 6%, black 94%, transparent);
+}
+
+.atm-rail::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0;
+  width: 1px;
+  height: 72px;
+  background: linear-gradient(to bottom, transparent, rgb(var(--atm-node) / 0.9), transparent);
+  animation: atm-rail 14s linear infinite;
+}
+
+@keyframes atm-rail {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(100vh * 4)); opacity: 0; }
+}
+
+@media (min-width: 1536px) {
+  .atm-rail { left: max(0.5rem, calc((100% - 1520px) / 2 + 0.5rem)); }
+}
+
+@media (max-width: 1279px) {
+  .atm-rail { display: none; }
+}
+
+/* ------------------------------------------------------------------------ */
+/* Surface depth — cards and buttons                                         */
+/* ------------------------------------------------------------------------ */
+
+/*
+ * Bordered panels on a corporate ground get a lit top edge and a soft cast
+ * shadow, so a card reads as an object on the surface instead of a white
+ * rectangle cut into it. Only cards that declare no shadow of their own.
+ */
+.sect :is(.rounded-panel, .rounded-card).border.bg-white:not([class*='shadow']) {
+  box-shadow: inset 0 1px 0 var(--card-highlight), 0 1px 2px rgb(var(--shadow-color) / 0.04), 0 14px 34px -22px rgb(var(--shadow-color) / 0.26);
+}
+
+.sect a:is(.rounded-panel, .rounded-card).border {
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 260ms ease, border-color 200ms ease;
+}
+
+.sect a:is(.rounded-panel, .rounded-card).border:hover {
+  border-color: rgb(var(--c-brand-300) / 0.9);
+  box-shadow: inset 0 1px 0 var(--card-highlight), 0 2px 6px rgb(var(--shadow-color) / 0.05), 0 22px 44px -24px rgb(var(--shadow-color) / 0.34);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sect a:is(.rounded-panel, .rounded-card).border:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Ghost interface panels. Stylised on purpose: shapes and short code-like
+   strings, never a copy of a real screen. */
+.atm-ghost {
+  border-radius: 14px;
+  border: 1px solid var(--atm-ghost-edge);
+  background: var(--atm-ghost-bg);
+  box-shadow: var(--atm-ghost-shadow);
+  overflow: hidden;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.9;
+  color: rgb(var(--atm-ghost-ink) / 0.62);
+  white-space: nowrap;
+}
+
+.atm-ghost--soft {
+  filter: blur(1.2px);
+}
+
+.atm-ghost__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--atm-ghost-edge);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgb(var(--atm-ghost-ink) / 0.55);
+}
+
+.atm-ghost__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgb(var(--atm-ghost-ink) / 0.22);
+}
+
+.atm-ghost__body {
+  padding: 10px 14px;
+}
+
+.atm-ghost__k { color: rgb(var(--atm-node) / 0.9); }
+.atm-ghost__t { color: rgb(var(--atm-blue) / 0.95); }
+.atm-ghost__m { color: rgb(var(--atm-ghost-ink) / 0.42); }
+
+.atm-ghost__line {
+  display: block;
+  height: 6px;
+  margin: 9px 0;
+  border-radius: 3px;
+  background: rgb(var(--atm-ghost-ink) / 0.16);
+}
+
+.atm-ghost__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 64px;
+  margin-top: 8px;
+}
+
+.atm-ghost__bars > span {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: rgb(var(--atm-ghost-ink) / 0.16);
+}
+
+.atm-ghost__bars > span:last-child {
+  background: rgb(var(--atm-node) / 0.55);
+}
+
+.atm-ghost__chip {
+  display: inline-block;
+  margin: 3px 4px 0 0;
+  padding: 0 7px;
+  border-radius: 999px;
+  border: 1px solid var(--atm-ghost-edge);
+  font-size: 9px;
+  line-height: 18px;
+  letter-spacing: 0.1em;
+}
+
+/* Browser / device frames for the evidence layers on Work. */
+.atm-frame {
+  border-radius: 14px;
+  border: 1px solid rgb(var(--atm-line) / 0.22);
+  background:
+    linear-gradient(rgb(var(--atm-line) / 0.14), rgb(var(--atm-line) / 0.14)) 0 30px / 100% 1px no-repeat,
+    linear-gradient(180deg, rgb(var(--atm-line) / 0.05), transparent 70%);
+}
+
+.atm-frame::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 11px;
+  width: 42px;
+  height: 8px;
+  background: radial-gradient(circle, rgb(var(--atm-line) / 0.35) 3px, transparent 3.5px) 0 0 / 14px 8px repeat-x;
+}
+
+.atm-frame--device {
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgb(var(--atm-line) / 0.06), transparent 80%);
+}
+
+.atm-frame--device::before {
+  left: 50%;
+  top: 10px;
+  width: 36px;
+  height: 5px;
+  margin-left: -18px;
+  border-radius: 99px;
+  background: rgb(var(--atm-line) / 0.25);
+}
+
+/* ------------------------------------------------------------------------ */
+/* Motion — slow, small, and entirely optional                               */
+/* ------------------------------------------------------------------------ */
+
+/* Moving layers are promoted, so a drift is a compositor transform and never
+   a repaint of the section. */
+.atm-drift-a { animation: atm-drift-a 26s ease-in-out infinite alternate; will-change: transform; }
+.atm-drift-b { animation: atm-drift-b 32s ease-in-out infinite alternate; will-change: transform; }
+.atm-breathe { animation: atm-breathe 14s ease-in-out infinite alternate; will-change: transform, opacity; }
+
+/* The travelling signals live in their own small-cost layer: only it repaints. */
+.atm-topology--signals { will-change: transform; }
+
+@keyframes atm-drift-a {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-14px, 10px, 0); }
+}
+
+@keyframes atm-drift-b {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(12px, -12px, 0); }
+}
+
+@keyframes atm-breathe {
+  from { opacity: 0.75; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.06); }
+}
+
+@keyframes atm-signal {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -1426; }
+}
+
+@keyframes atm-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atm-drift-a,
+  .atm-drift-b,
+  .atm-breathe,
+  .atm-topology .atm-signal,
+  .atm-topology .atm-pulse {
+    animation: none !important;
+  }
+
+  /* The travelling signal is meaningless without motion; the static map stays. */
+  .atm-topology .atm-signal,
+  .atm-rail::after {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------------ */
+/* Small screens — simplified, never removed                                 */
+/* ------------------------------------------------------------------------ */
+
+@media (max-width: 767px) {
+  :root {
+    --atm-unit: 20px;
+  }
+
+  /* One ghost panel at most, pushed to the edge; the map and one glow stay. */
+  .atm-hide-sm {
+    display: none;
+  }
+
+  .atm-ghost {
+    font-size: 9px;
+  }
+
+  .atm-topology .atm-label {
+    font-size: 8px;
+  }
+
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .atm-hide-md {
+    display: none;
+  }
+}

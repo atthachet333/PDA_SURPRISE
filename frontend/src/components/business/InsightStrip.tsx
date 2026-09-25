@@ -102,7 +102,6 @@ function SectionHeading({ code, allLink = false }: { code: string; allLink?: boo
 function PaperBackground() {
   return (
     <div className="sect-layer" aria-hidden="true">
-      <span className="absolute inset-0 opacity-[.035]" style={{ backgroundImage: 'linear-gradient(rgba(6,59,42,.45) 1px,transparent 1px),linear-gradient(90deg,rgba(6,59,42,.45) 1px,transparent 1px)', backgroundSize: '80px 80px' }} />
       <span className="absolute -right-24 top-20 h-96 w-96 rounded-full bg-brand-200/25 blur-3xl" />
     </div>
   );

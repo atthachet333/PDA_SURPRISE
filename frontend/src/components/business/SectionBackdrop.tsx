@@ -133,25 +133,17 @@ function LightGrid({
 }) {
   return (
     <>
-      <motion.span
-        className="absolute inset-[-4%]"
-        style={{
-          opacity: 0.6 * intensity,
-          backgroundImage:
-            'linear-gradient(rgba(6,59,42,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.055) 1px, transparent 1px)',
-          backgroundSize: '68px 68px',
-          maskImage: 'radial-gradient(85% 75% at 50% 40%, black, transparent)',
-          WebkitMaskImage: 'radial-gradient(85% 75% at 50% 40%, black, transparent)',
-          ...(interactive ? { x: shiftX, y: shiftY } : {})
-        }}
-      />
+      {/* EP43: the grid itself is the section ground's (atmosphere.css); this
+          variant only adds nodes on its 96px majors and the travelling scan. */}
       {/* Grid intersections */}
-      <span
-        className="absolute inset-[-4%]"
+      <motion.span
+        className="absolute inset-0"
         style={{
-          opacity: 0.5 * intensity,
-          backgroundImage: 'radial-gradient(circle, rgba(29,170,97,0.34) 1.2px, transparent 1.4px)',
-          backgroundSize: '136px 136px',
+          opacity: 0.55 * intensity,
+          backgroundImage: 'radial-gradient(circle, rgb(var(--atm-node) / 0.4) 1.4px, transparent 1.7px)',
+          backgroundSize: '96px 96px',
+          backgroundPosition: '-48px -48px',
+          ...(interactive ? { x: shiftX, y: shiftY } : {}),
           maskImage: 'radial-gradient(70% 65% at 50% 40%, black, transparent)',
           WebkitMaskImage: 'radial-gradient(70% 65% at 50% 40%, black, transparent)'
         }}
@@ -208,17 +200,7 @@ function Aurora({
           animationDelay: '-12s'
         }}
       />
-      <span
-        className="absolute inset-0"
-        style={{
-          opacity: 0.4 * intensity,
-          backgroundImage:
-            'linear-gradient(rgba(6,59,42,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.04) 1px, transparent 1px)',
-          backgroundSize: '80px 80px',
-          maskImage: 'radial-gradient(75% 70% at 50% 50%, black, transparent)',
-          WebkitMaskImage: 'radial-gradient(75% 70% at 50% 50%, black, transparent)'
-        }}
-      />
+      {/* EP43: no grid of its own — the section ground carries the shared one. */}
     </>
   );
 }
@@ -247,7 +229,7 @@ function DataField({
         style={{
           opacity: 0.85 * intensity,
           backgroundImage: 'radial-gradient(circle, rgba(6,59,42,0.14) 1.1px, transparent 1.3px)',
-          backgroundSize: '34px 34px',
+          backgroundSize: '24px 24px',
           maskImage: 'radial-gradient(80% 75% at 50% 45%, black, transparent)',
           WebkitMaskImage: 'radial-gradient(80% 75% at 50% 45%, black, transparent)',
           ...(interactive ? { x: shiftX, y: shiftY } : {})
@@ -374,17 +356,7 @@ function MeshDark({
 }) {
   return (
     <>
-      <span
-        className="absolute inset-0"
-        style={{
-          opacity: 0.9 * intensity,
-          backgroundImage:
-            'linear-gradient(rgba(53,201,111,0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(53,201,111,0.09) 1px, transparent 1px)',
-          backgroundSize: '62px 62px',
-          maskImage: 'radial-gradient(75% 65% at 55% 45%, black, transparent 82%)',
-          WebkitMaskImage: 'radial-gradient(75% 65% at 55% 45%, black, transparent 82%)'
-        }}
-      />
+      {/* EP43: the grid is the shared ground texture on `.sect--mesh`. */}
       <motion.span
         className={cn('absolute left-[45%] top-[30%] h-[34rem] w-[34rem] rounded-full blur-3xl', animate && 'animate-pulse-glow')}
         style={{

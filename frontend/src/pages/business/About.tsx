@@ -50,6 +50,7 @@ export default function About() {
     <>
       <PageHeader
         eyebrow="01 / ABOUT"
+        atmosphere="blueprint"
         title={
           <>
             {heroLead}
