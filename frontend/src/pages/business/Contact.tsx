@@ -30,6 +30,7 @@ export default function Contact() {
     <>
       <PageHeader
         eyebrow="01 / CONTACT"
+        atmosphere="contact"
         title={<>{t(copy.title)}</>}
         lead={t(copy.lead)}
       />

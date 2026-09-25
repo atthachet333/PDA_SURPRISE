@@ -2,6 +2,8 @@
    postcss-import; it stays unlayered so its variables outrank the layered
    defaults below, and its dark block excludes A&I by selector. */
 @import './theme-tokens.css';
+/* EP43 corporate visual atmosphere — also unlayered, also corporate-scoped. */
+@import './atmosphere.css';
 
 @tailwind base;
 @tailwind components;
@@ -1092,7 +1094,7 @@
     background-image:
       linear-gradient(rgba(53, 201, 111, 0.09) 1px, transparent 1px),
       linear-gradient(90deg, rgba(53, 201, 111, 0.09) 1px, transparent 1px);
-    background-size: 64px 64px;
+    background-size: 96px 96px;
     mask-image: radial-gradient(70% 60% at 50% 45%, black, transparent 78%);
     -webkit-mask-image: radial-gradient(70% 60% at 50% 45%, black, transparent 78%);
   }
@@ -1185,7 +1187,7 @@
     background-image:
       linear-gradient(rgba(53, 201, 111, 0.08) 1px, transparent 1px),
       linear-gradient(90deg, rgba(53, 201, 111, 0.08) 1px, transparent 1px);
-    background-size: 56px 56px;
+    background-size: 48px 48px;
     mask-image: linear-gradient(to top, black, transparent 72%);
     -webkit-mask-image: linear-gradient(to top, black, transparent 72%);
   }
@@ -1211,7 +1213,7 @@
 
   @keyframes footer-grid-drift {
     from { transform: translate3d(0, 0, 0); }
-    to { transform: translate3d(56px, 56px, 0); }
+    to { transform: translate3d(48px, 48px, 0); }
   }
 
   @keyframes footer-particle {

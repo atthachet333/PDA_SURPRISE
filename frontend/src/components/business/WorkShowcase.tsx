@@ -7,7 +7,7 @@ import { ArrowIcon } from '@/components/shared/Button';
 import { Container } from '@/components/shared/Layout';
 import { homeWorkPreview, type CaseStudy } from '@/data/caseStudies';
 import { ProjectAccessNote, ProjectActions, ProjectVisual } from './ProjectParts';
-import { SectionBackdrop } from './SectionBackdrop';
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 
 interface WorkShowcaseProps {
   items?: readonly CaseStudy[];
@@ -35,7 +35,7 @@ export function WorkShowcase({
   return (
     <section id="work" className="sect sect--deep relative overflow-hidden py-section text-white">
       <span aria-hidden="true" className="sect-edge-top sect-edge-top--dark" />
-      <SectionBackdrop variant="mesh-dark" pointer intensity={0.85} />
+      <VisualAtmosphere variant="evidence" />
       <Container wide className="relative">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl"><p className="section-code text-brand-400">{code}</p><h2 className="thai-display mt-3 text-statement font-bold text-white">{heading}</h2></div>

@@ -242,7 +242,7 @@ export function Header() {
                 style={{
                   backgroundImage:
                     'linear-gradient(rgb(var(--line-ink) / var(--line-strength)) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--line-ink) / var(--line-strength)) 1px, transparent 1px)',
-                  backgroundSize: '72px 72px'
+                  backgroundSize: '48px 48px'
                 }}
               />
               <span className="absolute -right-24 top-16 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(53,201,111,0.18),transparent_68%)] blur-2xl" />

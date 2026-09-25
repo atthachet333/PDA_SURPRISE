@@ -1,4 +1,5 @@
 import { Container } from '@/components/shared/Layout';
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 import { ArrowIcon } from '@/components/shared/Button';
 import { LocaleLink as Link } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
@@ -30,8 +31,9 @@ export function TrustPreview({ code = '10 / TRUST' }: { code?: string } = {}) {
   };
 
   return (
-    <section aria-labelledby="trust-preview" className="sect sect--paper relative overflow-hidden py-section">
+    <section aria-labelledby="trust-preview" className="sect sect--technical relative overflow-hidden py-section">
       <span aria-hidden="true" className="sect-edge-top" />
+      <VisualAtmosphere variant="blueprint" />
       <Container wide className="relative">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">

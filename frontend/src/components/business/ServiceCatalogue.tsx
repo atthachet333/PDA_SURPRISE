@@ -115,6 +115,8 @@ export function ServiceSections({ code = '03 / SERVICES' }: { code?: string } = 
   const [lead, accent] = t(copy.sectionsTitle);
   return (
     <section aria-labelledby="service-detail" className="sect sect--bright relative py-section">
+      {/* EP43: the route these eight sections hang on. */}
+      <span aria-hidden="true" className="atm-rail" />
       <Container wide>
         <p className="section-code">{code}</p>
         <h2 id="service-detail" className="thai-display mt-3 text-statement font-bold text-ink">

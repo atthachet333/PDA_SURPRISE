@@ -1,4 +1,5 @@
 import { LocaleLink as Link } from '@/components/shared/LocaleLink';
+import { VisualAtmosphere } from '@/components/business/atmosphere/VisualAtmosphere';
 import { useLocale } from '@/app/LocaleContext';
 import { usePrimaryServices, useSupportingServices } from '@/i18n/useContent';
 import { servicesPage as copy } from '@/i18n/services';
@@ -64,7 +65,7 @@ function ServicesHero() {
 
   return (
     <section className="sect sect--bright relative overflow-hidden pb-14 pt-32 sm:pb-16 sm:pt-40">
-      <span aria-hidden="true" className="work-grid pointer-events-none absolute inset-0" />
+      <VisualAtmosphere variant="workflow" />
       <Container wide className="relative">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.65fr)] lg:items-end">
           <div>

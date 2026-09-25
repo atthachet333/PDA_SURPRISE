@@ -75,7 +75,7 @@ export default function Login() {
           style={{
             backgroundImage:
               'linear-gradient(rgba(6,59,42,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(6,59,42,0.045) 1px, transparent 1px)',
-            backgroundSize: '84px 84px',
+            backgroundSize: '96px 96px',
             maskImage: 'radial-gradient(70% 60% at 50% 12%, black, transparent)',
             WebkitMaskImage: 'radial-gradient(70% 60% at 50% 12%, black, transparent)'
           }}

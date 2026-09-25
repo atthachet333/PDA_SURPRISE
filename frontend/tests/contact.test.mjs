@@ -36,6 +36,12 @@ import { businessHours } from '../src/i18n/company.ts';
 
 const LOCALES = ['th', 'en', 'zh'];
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
+/* Source files under a directory, recursively (components may live in sub-folders). */
+const sourceFiles = (dir) =>
+  readdirSync(new URL(dir, import.meta.url), { recursive: true })
+    .map(String)
+    .filter((file) => /\.(tsx?|jsx?)$/.test(file))
+    .map((file) => file.split('\\').join('/'));
 const stripComments = (source) => source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 
 function* strings(value) {
@@ -206,7 +212,7 @@ test('direct channels come from the canonical company record', () => {
   /* No component types a contact value by hand. */
   const dirs = ['../src/components/business/', '../src/pages/business/'];
   dirs.forEach((dir) =>
-    readdirSync(new URL(dir, import.meta.url)).forEach((file) => {
+    sourceFiles(dir).forEach((file) => {
       const source = read(dir + file);
       ['0638693614', '063-869-3614', 'pdablissoffice@gmail.com', '593oiwec'].forEach((value) =>
         assert.ok(!source.includes(value), `${file} hardcodes ${value}`)
@@ -265,7 +271,7 @@ test('every internal CTA link resolves and keeps its locale', () => {
   const serviceIds = new Set(primaryServices.map((service) => service.id));
   const aboutIds = new Set(['process', 'technology', 'quality', 'support', 'company']);
   const files = ['../src/components/business/', '../src/pages/business/'].flatMap((dir) =>
-    readdirSync(new URL(dir, import.meta.url)).map((file) => dir + file)
+    sourceFiles(dir).map((file) => dir + file)
   );
   files.forEach((path) => {
     const source = stripComments(read(path));

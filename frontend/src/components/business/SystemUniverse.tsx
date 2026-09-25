@@ -18,7 +18,7 @@ import {
 import { cn } from '@/lib/cn';
 import { getCaseStudyForSystem } from '@/data/caseStudies';
 import { contactHref, systemToContactService } from '@/data/contactRouting';
-import { SectionBackdrop } from './SectionBackdrop';
+import { VisualAtmosphere } from './atmosphere/VisualAtmosphere';
 
 const ICON_PATHS: Record<SystemIcon, React.ReactNode> = {
   erp: <><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18M8 9v11M13 9v11M17 13h2M17 17h2" /></>,
@@ -52,7 +52,7 @@ export function SystemUniverse() {
 
   return (
     <section aria-labelledby={labelId} className="sect sect--mesh relative overflow-hidden py-section text-white">
-      <SectionBackdrop variant="mesh-dark" pointer />
+      <VisualAtmosphere variant="universe" />
       <Container wide className="relative">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div><p className="section-code text-brand-300">02 / SYSTEM MAP</p><h2 id={labelId} className="thai-display mt-3 text-statement font-bold">{mapLead}<br /><span className="text-brand-400">{mapAccent}</span></h2></div>

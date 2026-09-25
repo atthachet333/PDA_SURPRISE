@@ -82,24 +82,40 @@
   --c-brand-800: 6 59 42;
   --c-brand-900: 4 38 27;
 
-  /* Section grounds, so each `.sect--*` rule is one declaration per theme. */
+  /* Section grounds, so each `.sect--*` rule is one declaration per theme.
+   *
+   * EP43: no ground is flat white any more. Light is warm off-white with a pale
+   * graphite tint, and the grounds alternate temperature — warm (paper, cream,
+   * bright), cool technical (grid, blueprint), graphite (field) — so two light
+   * sections in a row still read as two places. Each one carries at most one
+   * green and one pale-blue light source. */
   --sect-hero:
-    radial-gradient(120% 90% at 78% 8%, rgba(29, 170, 97, 0.16) 0%, transparent 58%),
-    radial-gradient(90% 70% at 12% 96%, rgba(11, 81, 55, 0.1) 0%, transparent 62%),
-    linear-gradient(180deg, #f7f9f7 0%, #ffffff 46%, #f4f8f5 100%);
-  --sect-grid: #ffffff;
-  --sect-field: linear-gradient(180deg, #f7f9f7 0%, #eff3f0 50%, #f7f9f7 100%);
-  --sect-blueprint: linear-gradient(180deg, #ffffff 0%, #f7f9f7 100%);
-  --sect-bright: #ffffff;
+    radial-gradient(58% 72% at 84% 14%, rgba(53, 201, 111, 0.2) 0%, transparent 62%),
+    radial-gradient(52% 64% at 6% 92%, rgba(112, 166, 204, 0.18) 0%, transparent 64%),
+    radial-gradient(40% 40% at 48% 40%, rgba(255, 255, 255, 0.7) 0%, transparent 70%),
+    linear-gradient(180deg, #eef3ef 0%, #f5f7f2 52%, #edf2ef 100%);
+  --sect-grid:
+    radial-gradient(60% 70% at 0% 30%, rgba(112, 166, 204, 0.1) 0%, transparent 62%),
+    linear-gradient(180deg, #f3f6f5 0%, #f7f8f5 100%);
+  --sect-field:
+    radial-gradient(55% 60% at 100% 10%, rgba(29, 170, 97, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #edf1ee 0%, #e8edea 50%, #eef2ef 100%);
+  --sect-blueprint:
+    radial-gradient(70% 60% at 90% 80%, rgba(112, 166, 204, 0.12) 0%, transparent 64%),
+    linear-gradient(180deg, #f0f5f4 0%, #edf2f2 100%);
+  --sect-bright:
+    radial-gradient(60% 55% at 92% 0%, rgba(112, 166, 204, 0.12) 0%, transparent 62%),
+    radial-gradient(45% 50% at 0% 100%, rgba(53, 201, 111, 0.07) 0%, transparent 62%),
+    linear-gradient(180deg, #f8f8f4 0%, #f4f6f2 100%);
   --sect-cream:
-    radial-gradient(70% 60% at 18% 20%, rgba(53, 201, 111, 0.09) 0%, transparent 62%),
-    linear-gradient(170deg, #f6f4ec 0%, #f3f6f1 52%, #eef3ec 100%);
+    radial-gradient(70% 60% at 18% 20%, rgba(53, 201, 111, 0.1) 0%, transparent 62%),
+    linear-gradient(170deg, #f5f2e9 0%, #f2f4ee 52%, #ecf1ea 100%);
   --sect-paper:
-    radial-gradient(60% 50% at 82% 18%, rgba(29, 170, 97, 0.07) 0%, transparent 62%),
-    linear-gradient(180deg, #f7f5ef 0%, #f4f4f0 100%);
+    radial-gradient(60% 50% at 82% 18%, rgba(29, 170, 97, 0.08) 0%, transparent 62%),
+    linear-gradient(180deg, #f6f3ec 0%, #f2f1ec 100%);
   --sect-technical:
-    radial-gradient(75% 60% at 70% 40%, rgba(29, 170, 97, 0.08) 0%, transparent 64%),
-    linear-gradient(160deg, #f4f8f6 0%, #eef4f3 55%, #f5f8f6 100%);
+    radial-gradient(75% 60% at 70% 40%, rgba(29, 170, 97, 0.09) 0%, transparent 64%),
+    linear-gradient(160deg, #eff5f4 0%, #eaf1f1 55%, #f2f6f4 100%);
 
   /* Decorative rule/grid ink, tinted to whatever the surface is. */
   --line-ink: 6 59 42;
@@ -108,6 +124,23 @@
   --shadow-color: 10 20 15;
   --shadow-soft: 0 1px 2px rgb(var(--shadow-color) / 0.04), 0 8px 24px rgb(var(--shadow-color) / 0.06);
   --shadow-lift: 0 2px 6px rgb(var(--shadow-color) / 0.05), 0 18px 48px rgb(var(--shadow-color) / 0.1);
+
+  /* EP43 visual atmosphere (styles/atmosphere.css). Light is composed, not
+     the absence of dark: graphite-green line ink on warm off-white, a pale
+     blue technical accent, ghost panels as frosted paper. */
+  --atm-line: 24 64 50;
+  --atm-grid-a: 0.075;
+  --atm-grid-major-a: 0.12;
+  --atm-node: 29 170 97;
+  --atm-blue: 74 138 184;
+  --atm-glow-green: rgba(53, 201, 111, 0.22);
+  --atm-glow-blue: rgba(112, 166, 204, 0.2);
+  --atm-ghost-bg: rgba(255, 255, 255, 0.62);
+  --atm-ghost-edge: rgba(24, 64, 50, 0.14);
+  --atm-ghost-ink: 24 64 50;
+  --atm-ghost-shadow: 0 24px 60px -24px rgba(20, 50, 40, 0.28);
+  --atm-vignette: rgba(24, 48, 38, 0.07);
+  --atm-noise-opacity: 0.05;
 }
 
 /* `color-scheme` makes the browser paint scrollbars, form controls and the
@@ -164,23 +197,36 @@
   --page-bg: #0e1311;
   --page-fg: #e9efeb;
 
+  /* EP43: dark is composed on its own terms — graphite and very dark navy,
+     lit by a muted green and a faint blue-green, never an inverted light page.
+     Grounds alternate navy (grid, blueprint, bright) and graphite-green
+     (field, paper, cream) so the scroll still reads as chapters. */
   --sect-hero:
-    radial-gradient(120% 90% at 78% 8%, rgba(53, 201, 111, 0.14) 0%, transparent 58%),
-    radial-gradient(90% 70% at 12% 96%, rgba(11, 81, 55, 0.22) 0%, transparent 62%),
-    linear-gradient(180deg, #101614 0%, #0e1311 46%, #121917 100%);
-  --sect-grid: #0e1311;
-  --sect-field: linear-gradient(180deg, #101614 0%, #141b18 50%, #101614 100%);
-  --sect-blueprint: linear-gradient(180deg, #0e1311 0%, #121917 100%);
-  --sect-bright: #0e1311;
+    radial-gradient(55% 68% at 82% 12%, rgba(53, 201, 111, 0.17) 0%, transparent 62%),
+    radial-gradient(55% 62% at 6% 94%, rgba(52, 118, 168, 0.2) 0%, transparent 64%),
+    linear-gradient(180deg, #0b1114 0%, #0d1413 55%, #0a1012 100%);
+  --sect-grid:
+    radial-gradient(60% 70% at 0% 30%, rgba(52, 118, 168, 0.12) 0%, transparent 62%),
+    linear-gradient(180deg, #0c1216 0%, #0e1413 100%);
+  --sect-field:
+    radial-gradient(55% 60% at 100% 10%, rgba(53, 201, 111, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #111916 0%, #131c19 50%, #101815 100%);
+  --sect-blueprint:
+    radial-gradient(70% 60% at 90% 80%, rgba(52, 118, 168, 0.14) 0%, transparent 64%),
+    linear-gradient(180deg, #0c1317 0%, #0e1518 100%);
+  --sect-bright:
+    radial-gradient(60% 55% at 92% 0%, rgba(52, 118, 168, 0.14) 0%, transparent 62%),
+    radial-gradient(45% 50% at 0% 100%, rgba(53, 201, 111, 0.07) 0%, transparent 62%),
+    linear-gradient(180deg, #0d1315 0%, #0e1312 100%);
   --sect-cream:
-    radial-gradient(70% 60% at 18% 20%, rgba(53, 201, 111, 0.1) 0%, transparent 62%),
-    linear-gradient(170deg, #131917 0%, #121917 52%, #101614 100%);
+    radial-gradient(70% 60% at 18% 20%, rgba(53, 201, 111, 0.11) 0%, transparent 62%),
+    linear-gradient(170deg, #131a17 0%, #121916 52%, #101614 100%);
   --sect-paper:
     radial-gradient(60% 50% at 82% 18%, rgba(29, 170, 97, 0.09) 0%, transparent 62%),
-    linear-gradient(180deg, #121917 0%, #101614 100%);
+    linear-gradient(180deg, #131816 0%, #111614 100%);
   --sect-technical:
-    radial-gradient(75% 60% at 70% 40%, rgba(29, 170, 97, 0.1) 0%, transparent 64%),
-    linear-gradient(160deg, #101715 0%, #131b19 55%, #101614 100%);
+    radial-gradient(75% 60% at 70% 40%, rgba(52, 118, 168, 0.12) 0%, transparent 64%),
+    linear-gradient(160deg, #0d1517 0%, #10191a 55%, #0e1514 100%);
 
   /* Rules read as faint light on dark, not ink on paper. */
   --line-ink: 168 208 188;
@@ -188,6 +234,21 @@
   --shadow-color: 0 0 0;
   --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.36);
   --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.45), 0 18px 48px rgb(0 0 0 / 0.5);
+
+  --card-highlight: rgba(255, 255, 255, 0.045);
+  --atm-line: 150 205 190;
+  --atm-grid-a: 0.05;
+  --atm-grid-major-a: 0.085;
+  --atm-node: 82 216 134;
+  --atm-blue: 110 176 222;
+  --atm-glow-green: rgba(53, 201, 111, 0.17);
+  --atm-glow-blue: rgba(52, 118, 168, 0.24);
+  --atm-ghost-bg: rgba(18, 27, 30, 0.72);
+  --atm-ghost-edge: rgba(150, 205, 190, 0.12);
+  --atm-ghost-ink: 160 210 195;
+  --atm-ghost-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.8);
+  --atm-vignette: rgba(0, 0, 0, 0.38);
+  --atm-noise-opacity: 0.06;
 }
 
 /**
@@ -238,4 +299,18 @@
   --c-brand-800: 6 59 42;
   --c-brand-900: 4 38 27;
   --line-ink: 168 208 188;
+  /* Atmosphere on the fixed dark-green islands is the same in both themes. */
+  --atm-line: 127 217 166;
+  --atm-grid-a: 0.06;
+  --atm-grid-major-a: 0.1;
+  --atm-node: 53 201 111;
+  --atm-blue: 120 190 230;
+  --atm-glow-green: rgba(53, 201, 111, 0.24);
+  --atm-glow-blue: rgba(70, 150, 200, 0.18);
+  --atm-ghost-bg: rgba(4, 34, 24, 0.66);
+  --atm-ghost-edge: rgba(127, 217, 166, 0.16);
+  --atm-ghost-ink: 150 225 185;
+  --atm-ghost-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7);
+  --atm-vignette: rgba(0, 8, 5, 0.4);
+  --atm-noise-opacity: 0.06;
 }
