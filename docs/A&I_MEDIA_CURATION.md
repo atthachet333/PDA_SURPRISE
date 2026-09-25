@@ -7,8 +7,6 @@ Source: the owner's Google Drive folder *A&I Anniversary 2026*, treated as read-
 Nothing in Drive was renamed, moved, deleted or modified.
 
 Machine-readable manifest: [`tools/anniversary-media-curation.json`](../tools/anniversary-media-curation.json)
-New media after the curation passes (EP43): [MEDIA_PIPELINE.md](MEDIA_PIPELINE.md). Its records in the
-manifest carry an `ingest` stamp and a `privacyReview` object.
 Review images: `review-local/` (gitignored — never commit)
 
 ## Owner truth lock — Peak vs TURR (2026-09-23, supersedes every table below)

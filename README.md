@@ -49,9 +49,6 @@ Run from the repository root:
 | `npm run typecheck` | `tsc --noEmit` across both workspaces                   |
 | `npm run lint`      | ESLint over the frontend                                |
 | `npm run clean`     | Remove both `dist` folders                              |
-| `npm run media:init -- <folder>`   | Write a `media.json` skeleton for a batch of new A&I media (EP43) |
-| `npm run media:ingest -- <folder>` | Validate, process and publish that batch (`--dry-run` to check only) |
-| `npm run media:check` | Verify the canonical A&I media data and files          |
 
 ---
 
@@ -162,14 +159,6 @@ All copy and configuration is data, not markup.
 | `frontend/src/data/work.ts`    | Case studies                                     |
 | `frontend/src/data/about.ts`   | Mission, values, philosophy                      |
 | `frontend/src/data/anniversary.ts` | **Everything in the A&I experience**         |
-
-### Adding new A&I photos and videos — the media pipeline (EP43)
-
-New memories go through `npm run media:ingest`. It generates the IDs, the WebP
-derivatives and thumbnails, the video posters, the relationship-year assignment
-(from owner input only), the privacy-review record and the canonical entries in
-`memoryArchive.ts` / `memoryVideos.ts`. Nothing is edited by hand. See
-**[docs/MEDIA_PIPELINE.md](docs/MEDIA_PIPELINE.md)**.
 
 ### Replacing the A&I photos and content
 

@@ -92,8 +92,7 @@ test('dimensions and duration are real numbers', () => {
 test('the manifest accounts for all 22 source videos and every exclusion has a reason', () => {
   const videos = manifest.videoCuration;
   assert.ok(videos, 'manifest is missing videoCuration');
-  // The 22 curated sources; EP43 pipeline records carry an `ingest` stamp and are checked by media:check.
-  assert.equal(videos.filter((entry) => !entry.ingest).length, 22, 'the manifest should describe all 22 source videos');
+  assert.equal(videos.length, 22, 'the manifest should describe all 22 source videos');
 
   const ids = new Set();
   for (const entry of videos) {

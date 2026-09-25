@@ -1497,24 +1497,10 @@ const curatedMemoryArchive: CuratedArchiveItem[] = [
 ];
 
 /**
- * EP43 — media pipeline output (`npm run media:ingest`, docs/MEDIA_PIPELINE.md).
- *
- * The block between the markers is written by tools/media-pipeline and must
- * stay plain JSON objects. Every entry carries an explicit, owner-supplied
- * yearId/yearSource; the pipeline never falls back to a release default.
- * Provenance (source hash, privacy review, batch) lives in
- * tools/anniversary-media-curation.json, never here.
+ * The established archive is the released Year 01 collection. Future pipeline
+ * output can set yearId/yearSource per item without changing any scene JSX.
  */
-const ingestedMemoryArchive: CuratedArchiveItem[] = [
-  // @media-pipeline:begin photos
-  // @media-pipeline:end photos
-];
-
-/**
- * The established archive is the released Year 01 collection. Pipeline output
- * sets yearId/yearSource per item without changing any scene JSX.
- */
-export const memoryArchive: MemoryArchiveItem[] = [...curatedMemoryArchive, ...ingestedMemoryArchive].map((item) => ({
+export const memoryArchive: MemoryArchiveItem[] = curatedMemoryArchive.map((item) => ({
   ...item,
   yearId: item.yearId ?? STORY_RELEASE_YEAR_ID,
   yearSource: item.yearSource ?? 'release-default'

@@ -1,10 +1,5 @@
 # A&I image ingestion workflow
 
-> **Superseded for new media by EP43.** New photos and videos are ingested with
-> `npm run media:ingest`. See [MEDIA_PIPELINE.md](MEDIA_PIPELINE.md). This
-> document records the original one-off Drive curation pass and its rules, which
-> the pipeline enforces.
-
 The owner will supply a large Google Drive photo library. This document is the
 workflow for turning that library into committed, optimised assets.
 
