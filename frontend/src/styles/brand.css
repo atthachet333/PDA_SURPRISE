@@ -1,0 +1,66 @@
+/*
+ * EP46.6 — PDA BLISS SOLUTION: hero "showroom drift".
+ *
+ * The Home hero rig eases through four resting poses, one every 5 seconds, on
+ * a 20-second loop. Every segment carries its own ease-in-out, so velocity is
+ * zero at each pose: the rig settles, then leaves again — it never snaps or
+ * jumps at a 5-second boundary.
+ *
+ * Budget: transform only (compositor; no layout, no repaint of the panels, no
+ * image reload), <= 11px of travel and <= 2.2% of scale on desktop, half that
+ * on phones. No rotation. The logo is never inside this layer.
+ *
+ * Applied only when the app's reduced-motion hook is off (Home.tsx); the media
+ * query below is a second, CSS-level guarantee.
+ */
+@keyframes hero-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(-9px, -5px, 0) scale(1.012);
+  }
+  50% {
+    transform: translate3d(4px, -11px, 0) scale(1.022);
+  }
+  75% {
+    transform: translate3d(10px, -3px, 0) scale(1.01);
+  }
+}
+
+@keyframes hero-drift-compact {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(-4px, -2px, 0) scale(1.005);
+  }
+  50% {
+    transform: translate3d(2px, -5px, 0) scale(1.01);
+  }
+  75% {
+    transform: translate3d(4px, -1px, 0) scale(1.004);
+  }
+}
+
+.hero-drift {
+  transform-origin: 50% 55%;
+  animation: hero-drift 20s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
+}
+
+/* Phones: half the travel; the rig fills the width, so less crop risk too. */
+@media (max-width: 639px) {
+  .hero-drift {
+    animation-name: hero-drift-compact;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-drift {
+    animation: none;
+    will-change: auto;
+  }
+}

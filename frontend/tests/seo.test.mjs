@@ -249,7 +249,7 @@ test('metadata makes no unsupported claim and none of the owner-decision items',
       texts.push(head.title, meta(head, 'description'));
     }
   }
-  texts.push(...Object.values(SOCIAL_IMAGE.alt), read('../scripts/brand/og-default.svg'), read('../index.html'));
+  texts.push(...Object.values(SOCIAL_IMAGE.alt), read('../../tools/brand/build_solution_brand.py'), read('../index.html'));
   const unsupported = [
     /24\s*\/\s*7|24 ชั่วโมง|全天候/i, /guarantee|รับประกัน|保证/i, /uptime|99\.\d/i, /certif|ISO\s?\d|认证/i,
     /#\s?1|number one|อันดับ\s?1|第一/i, /\d+\+?\s*(clients|customers|years|ลูกค้า|ปี)|\d+\s*(家客户|年经验)/i,
@@ -329,9 +329,9 @@ test('the share image is a real, small, 1200×630 PNG', () => {
   assert.ok(image.size < 300_000, `share image is ${image.size} bytes`);
   const vite = read('../vite.config.ts');
   assert.ok(vite.includes(SOCIAL_IMAGE.path) && vite.includes('content="1200"') && vite.includes('content="630"'), 'static tags drifted from SOCIAL_IMAGE');
-  // Public-safe: the source contains only the brand, never a screenshot or private asset.
-  const svg = read('../scripts/brand/og-default.svg');
-  assert.doesNotMatch(svg, /<image\b|href="(?!#)|memories|anniversary|surprise/i);
+  // Public-safe: the card is built from the brand source only, never a screenshot or private asset.
+  const generator = read('../../tools/brand/build_solution_brand.py');
+  assert.doesNotMatch(generator, /memories|anniversary|surprise|videos|screenshot/i);
 });
 
 test('icons and manifest resolve to PDA BLISS files, never A&I assets', () => {
@@ -345,13 +345,13 @@ test('icons and manifest resolve to PDA BLISS files, never A&I assets', () => {
     assert.ok(existsSync(new URL(`../public${ref}`, import.meta.url)), `${ref} does not exist`);
     assert.doesNotMatch(ref, /memories|surprise|anniversary|\/ai/i);
   }
-  assert.deepEqual(Object.values(png('/brand/apple-touch-icon.png')).slice(0, 2), [180, 180]);
+  assert.deepEqual(Object.values(png('/apple-touch-icon.png')).slice(0, 2), [180, 180]);
   for (const icon of manifest.icons.filter((entry) => entry.type === 'image/png')) {
     const [width, height] = icon.sizes.split('x').map(Number);
     const real = png(icon.src);
     assert.deepEqual([real.width, real.height], [width, height], icon.src);
   }
-  assert.equal(manifest.name, 'PDA BLISS');
+  assert.equal(manifest.name, 'PDA BLISS SOLUTION');
   // One theme-color tag, resolved per theme — and A&I still overrides that same element.
   assert.equal((html.match(/<meta name="theme-color"/g) ?? []).length, 1);
   assert.match(read('../src/lib/theme.ts'), /THEME_COLOR[\s\S]*light: '#F4F7F3', dark: '#0E1311'/);

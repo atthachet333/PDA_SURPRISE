@@ -4,7 +4,7 @@ import { company, footer, navigation } from '@/data/company';
 import { Container } from '@/components/shared/Layout';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
-import { Logo } from './Logo';
+import { SolutionLogo } from './SolutionLogo';
 import { LocaleLink } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
 import { footer as footerText, ui } from '@/i18n/ui';
@@ -36,7 +36,7 @@ export function Footer() {
         <Container wide>
           <div className="grid gap-12 lg:grid-cols-[1.15fr_.72fr_1fr_1.12fr]">
             <div>
-              <Logo inverted className="h-9" />
+              <SolutionLogo tone="dark" className="h-12" />
               <p className="thai-display mt-7 text-sm font-semibold text-white" lang="th">{company.legalNameTh}</p>
               <p className="mt-1 font-mono text-[.5625rem] uppercase tracking-[.16em] text-brand-300/55">{company.legalName}</p>
               <p className="mt-6 max-w-xs text-sm leading-7 text-brand-100/60">{t(footerText.blurb)}</p>
@@ -59,9 +59,9 @@ export function Footer() {
       <section className="sect sect--horizon relative overflow-hidden border-t border-white/8">
         <FooterAtmosphere reduced={reduced} finale />
         <Container wide className="relative pt-8">
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[.5625rem] uppercase tracking-[.18em] text-brand-300/50"><span>PDA BLISS · DIGITAL SYSTEMS</span><span>tz · asia/bangkok</span><span>{t(businessHours.note)}</span></div>
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[.5625rem] uppercase tracking-[.18em] text-brand-300/50"><span>PDA BLISS SOLUTION · DIGITAL SYSTEMS</span><span>tz · asia/bangkok</span><span>{t(businessHours.note)}</span></div>
           <motion.div style={reduced ? undefined : { y: wordmarkY }} className="relative mt-8 select-none overflow-hidden" aria-hidden="true">
-            <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 opacity-35"><Logo compact inverted className="h-10 w-10" /></div>
+            <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 opacity-35"><SolutionLogo variant="mark" tone="dark" decorative className="h-12" /></div>
             <span className="block translate-y-[14%] whitespace-nowrap text-center text-[clamp(3.5rem,17vw,15rem)] font-bold leading-[.8] tracking-[-.045em] text-white/[.07]">PDA BLISS</span>
           </motion.div>
           <div className="flex flex-col gap-4 border-t border-white/10 py-7 text-xs text-brand-100/45 lg:flex-row lg:items-center lg:justify-between">

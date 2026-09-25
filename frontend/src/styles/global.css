@@ -4,6 +4,8 @@
 @import './theme-tokens.css';
 /* EP43 corporate visual atmosphere — also unlayered, also corporate-scoped. */
 @import './atmosphere.css';
+/* EP46.6 PDA BLISS SOLUTION hero drift — corporate Home only. */
+@import './brand.css';
 
 @tailwind base;
 @tailwind components;

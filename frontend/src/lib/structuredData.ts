@@ -1,3 +1,4 @@
+import { SITE_BRAND } from '@/data/brand';
 import { company } from '@/data/company';
 import { description } from '@/i18n/company';
 import { HTML_LANG, LOCALES, type Locale } from '@/i18n/locales';
@@ -75,7 +76,8 @@ export function websiteSchema(locale: Locale, rawOrigin: string): Record<string,
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': joinUrl(origin, SITE_ID),
-    name: company.companyName,
+    name: SITE_BRAND,
+    alternateName: company.companyName,
     url: joinUrl(origin, '/'),
     inLanguage: LOCALES.map((code) => HTML_LANG[code]),
     description: description[locale],

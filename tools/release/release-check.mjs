@@ -117,11 +117,17 @@ section('Owner-provisioned assets', audio);
 if (checkDist) {
   const results = [];
   const distFiles = listFiles(distDir);
-  const need = ['index.html', 'robots.txt', 'site.webmanifest', 'brand/favicon.svg', 'brand/apple-touch-icon.png', 'brand/icon-192.png', 'brand/icon-512.png', 'brand/og-default.png'];
+  const need = [
+    'index.html', 'robots.txt', 'site.webmanifest', 'brand/og-default.png',
+    // PDA BLISS SOLUTION icons and logo variants (EP46.6)
+    'favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'apple-touch-icon.png',
+    'android-chrome-192x192.png', 'android-chrome-512x512.png', 'maskable-512x512.png',
+    ...['logo', 'mark', 'mark-sm', 'wordmark'].flatMap((name) => [`brand/solution/pda-bliss-solution-${name}.webp`, `brand/solution/pda-bliss-solution-${name}-dark.webp`])
+  ];
   if (!distFiles.length) results.push({ level: 'fail', message: 'frontend/dist is empty: run npm run build' });
   else {
     const missing = need.filter((file) => !distFiles.includes(file));
-    results.push(missing.length ? { level: 'fail', message: `frontend/dist missing ${missing.join(', ')}` } : { level: 'pass', message: 'index, robots, manifest and brand icons present' });
+    results.push(missing.length ? { level: 'fail', message: `frontend/dist missing ${missing.join(', ')}` } : { level: 'pass', message: 'index, robots, manifest, favicons, home-screen icons and PDA BLISS SOLUTION logos present' });
     results.push(distFiles.some((file) => /^assets\/index-[A-Za-z0-9_-]{8,}\.js$/.test(file)) ? { level: 'pass', message: 'hashed entry bundle present (old-tab recovery relies on hashed names)' } : { level: 'fail', message: 'no hashed assets/index-*.js' });
   }
   results.push(existsSync(join(root, 'backend', 'dist', 'server.js')) ? { level: 'pass', message: 'backend/dist/server.js present' } : { level: 'fail', message: 'backend/dist/server.js missing: run npm run build' });

@@ -65,7 +65,7 @@ export const theme = {
 
 export const header = {
   skipToContent: { th: 'ข้ามไปที่เนื้อหา', en: 'Skip to content', zh: '跳至正文' },
-  homeLink: { th: 'PDA BLISS — หน้าแรก', en: 'PDA BLISS — Home', zh: 'PDA BLISS — 首页' },
+  homeLink: { th: 'PDA BLISS SOLUTION — หน้าแรก', en: 'PDA BLISS SOLUTION — Home', zh: 'PDA BLISS SOLUTION — 首页' },
   mainNav: { th: 'เมนูหลัก', en: 'Main navigation', zh: '主导航' },
   mobileNav: { th: 'เมนูมือถือ', en: 'Mobile navigation', zh: '移动端导航' },
   openMenu: { th: 'เปิดเมนู', en: 'Open menu', zh: '打开菜单' },

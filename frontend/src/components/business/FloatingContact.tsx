@@ -5,7 +5,7 @@ import { company, cta } from '@/data/company';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/cn';
 import { ContactIcon } from './Footer';
-import { Logo } from './Logo';
+import { SolutionLogo } from './SolutionLogo';
 import { LocaleLink } from '@/components/shared/LocaleLink';
 import { useLocale } from '@/app/LocaleContext';
 import { dock, ui } from '@/i18n/ui';
@@ -77,7 +77,7 @@ export function FloatingContact() {
               <div className="relative overflow-hidden rounded-card border border-brand-400/15 bg-white/[.04] p-4">
                 <span aria-hidden="true" className="absolute inset-0 mesh-lines opacity-25" />
                 <div className="relative flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3"><Logo compact inverted /><div><p className="thai-display text-sm font-bold text-white">{t(dock.title)}</p><p className="mt-1 text-xs text-brand-100/55">{t(businessHours.note)}</p></div></div>
+                  <div className="flex items-center gap-3"><SolutionLogo variant="mark" tone="dark" decorative className="h-9" /><div><p className="thai-display text-sm font-bold text-white">{t(dock.title)}</p><p className="mt-1 text-xs text-brand-100/55">{t(businessHours.note)}</p></div></div>
                   <button type="button" onClick={() => setOpen(false)} aria-label={t(dock.closeShort)} className="-mr-1 -mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/65 transition hover:bg-white/10 hover:text-white">×</button>
                 </div>
               </div>

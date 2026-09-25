@@ -6,7 +6,7 @@ import { cn } from '@/lib/cn';
 import { ButtonLink } from '@/components/shared/Button';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useEntranceReveal } from '@/hooks/useEntranceReveal';
-import { Logo } from './Logo';
+import { SolutionLogo } from './SolutionLogo';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { LocaleLink, LocaleNavLink } from '@/components/shared/LocaleLink';
@@ -99,12 +99,15 @@ export function Header() {
           )}
         >
           <LocaleLink to="/" className="relative z-10 shrink-0" aria-label={t(header.homeLink)}>
-            <Logo compact className="sm:hidden" />
-            {scrolled ? (
-              <span className="hidden items-center gap-2.5 sm:inline-flex"><Logo compact /><span className="text-sm font-semibold tracking-[.02em] text-ink">PDA BLISS</span></span>
-            ) : (
-              <Logo className="hidden origin-left transition-transform duration-slow ease-smooth sm:inline-flex" />
-            )}
+            {/* EP46.6: the PDA BLISS SOLUTION lockup, one element at every width.
+                It steps down with the bar on scroll; it never moves on its own. */}
+            <SolutionLogo
+              decorative
+              className={cn(
+                'transition-[height] duration-slow ease-smooth',
+                scrolled ? 'h-9' : 'h-11'
+              )}
+            />
           </LocaleLink>
 
           {/* ------------------------------------------------- desktop nav -- */}
@@ -248,8 +251,11 @@ export function Header() {
               <span className="absolute -right-24 top-16 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(53,201,111,0.18),transparent_68%)] blur-2xl" />
             </div>
 
+            {/* `safe center` (EP46.6): centred when it fits; when the list is
+                taller than a short phone it starts below the bar instead of
+                being pushed up under the logo, out of scroll reach. */}
             <nav
-              className="container-page relative flex flex-1 flex-col justify-center overflow-y-auto pb-10 pt-24"
+              className="container-page relative flex flex-1 flex-col [justify-content:safe_center] overflow-y-auto pb-10 pt-24"
               aria-label={t(header.mobileNav)}
             >
               <ul>

@@ -4,6 +4,11 @@
 > used to live in `DEPLOYMENT.md`. If another document disagrees with this one,
 > this one wins. EP47 executes it top to bottom. Nothing here has been run
 > against the live server yet.
+>
+> **Production hostname (owner-confirmed in EP46.6): `solution.pdabliss.com`**
+> — the PDA BLISS SOLUTION site of PDA BLISS COMPANY LIMITED. Public origin:
+> `https://solution.pdabliss.com`. DNS and the tunnel route are wired in EP47,
+> not before.
 
 - [1. Architecture](#1-architecture)
 - [2. Requirements](#2-requirements)
@@ -78,7 +83,7 @@ boot: the process **refuses to start** in production on an unsafe value.
 | `HOST` | required | no | `127.0.0.1` | bind loopback only | default `0.0.0.0` — reachable from the LAN around the tunnel; `release:check` warns |
 | `SERVE_FRONTEND` | **required** | no | `true` | serve `frontend/dist` from this process | default false → API only, the site 404s |
 | `FRONTEND_DIST` | optional | no | `../frontend/dist` (default) | built SPA location | boot error if the folder does not exist |
-| `PUBLIC_ORIGIN` | **required** | no | `https://<production-hostname>` | added to the CORS allowlist; must equal `VITE_PUBLIC_ORIGIN` | empty = allowed at boot but `release:check` fails; non-https/private/with path = **refuses to start** |
+| `PUBLIC_ORIGIN` | **required** | no | `https://solution.pdabliss.com` | added to the CORS allowlist; must equal `VITE_PUBLIC_ORIGIN` | empty = allowed at boot but `release:check` fails; non-https/private/with path = **refuses to start** |
 | `TRUST_PROXY_HOPS` | required | no | `1` | trust exactly the local cloudflared hop for the client IP (rate limit) | default 1 |
 | `LEAD_STORE` | required | no | `file` | persist enquiries | `memory` = lost on restart; `release:check` fails |
 | `LEAD_STORE_PATH` | **required** | no (file holds personal data) | `<root>\shared\data\leads.jsonl` (**absolute**) | enquiry file outside the release | relative = inside one release, next deploy starts empty; `release:check` fails |
@@ -99,7 +104,7 @@ Read by Vite **at build time only** and by the sitemap step (same loader).
 
 | Variable | Req. | Value / shape | Purpose | If missing / wrong |
 |---|---|---|---|---|---|
-| `VITE_PUBLIC_ORIGIN` | **required** | `https://<production-hostname>` — https, public hostname, no path/query/credentials, not localhost/LAN/private IP | canonical, hreflang, `og:url`/`og:image`, JSON-LD, `sitemap.xml`, robots `Sitemap:` line | empty: build succeeds with relative URLs and **no sitemap**; `release:check` fails. Unsafe value: **the build fails** (sitemap step exits 1) |
+| `VITE_PUBLIC_ORIGIN` | **required** | `https://solution.pdabliss.com` — https, public hostname, no path/query/credentials, not localhost/LAN/private IP | canonical, hreflang, `og:url`/`og:image`, JSON-LD, `sitemap.xml`, robots `Sitemap:` line | empty: build succeeds with relative URLs and **no sitemap**; `release:check` fails. Unsafe value: **the build fails** (sitemap step exits 1) |
 | `VITE_API_BASE_URL` | optional | leave unset (`/api`) | API base | anything else needs CORS; `release:check` warns |
 | `VITE_API_PROXY_TARGET` | dev only | — | Vite dev/preview proxy | ignored in production |
 
@@ -196,8 +201,8 @@ Flags: `--backend-env <file>`, `--skip-build-output`, `--allow-missing-audio`,
 | `frontend/public/audio/sfx/*.mp3` | no (optional) | none — missing effects are synthesised |
 | `frontend/public/images/memories/**/*.webp`, video posters `*.jpg` | yes | arrive with the clone |
 | `frontend/public/videos/memories/*.mp4` | yes | arrive with the clone |
-| brand icons, `og-default.png`, manifest | yes | arrive with the clone |
-| `/brand/pda-bliss-logo.svg`, `pda-bliss-mark.svg` | no (owner has not supplied) | optional; the inline mark is used. Commit them to `frontend/public/brand/` and rebuild to switch on |
+| PDA BLISS SOLUTION logo variants (`brand/solution/`), favicons and home-screen icons (`public/` root), `og-default.png`, manifest | yes | arrive with the clone |
+| `/brand/pda-bliss-logo.svg`, `pda-bliss-mark.svg` | no | only the private `/login` page's older `Logo` component looks for them; it uses its inline mark. The corporate site uses PDA BLISS SOLUTION (EP46.6) |
 
 Every other runtime path referenced by the source is tracked (audited in EP46).
 **EP46.5 media** must be committed like the existing media; `release:check`
@@ -252,7 +257,7 @@ installing it is a post-v1 ops task (it is global to the server).
 
 | | |
 |---|---|
-| Public hostname | `<production-hostname>` — **OWNER DECISION REQUIRED** |
+| Public hostname | `solution.pdabliss.com` (owner-confirmed, EP46.6) — a subdomain of `pdabliss.com` |
 | Service | `http://127.0.0.1:1369` (plain HTTP over loopback; TLS ends at Cloudflare) |
 | Path rules | none — `/api` is on the same origin |
 | WebSockets | not used in production |
@@ -263,8 +268,9 @@ EP47 pre-checks (read-only first):
 1. Which tunnel the server runs (`cloudflared tunnel list`) and whether its
    routes are dashboard-managed (Zero Trust → Networks → Tunnels → Public
    Hostnames) or a local `config.yml` ingress list.
-2. Whether the chosen hostname already routes somewhere (e.g. an existing
-   `pdabliss-*` process). Add or change **only** this hostname's route.
+2. Whether `solution.pdabliss.com` already routes somewhere (e.g. an existing
+   `pdabliss-*` process). Add or change **only** this hostname's route; the
+   apex `pdabliss.com` and every other subdomain are left exactly as they are.
 3. HTTPS: SSL/TLS "Always Use HTTPS" on. The app never redirects by itself,
    so no redirect loop is possible from the origin side.
 4. No origin exposure: port 1369 is not in the Windows firewall allow list or
@@ -276,8 +282,9 @@ EP47 pre-checks (read-only first):
    `127.0.0.1`, every visitor shares one bucket (5 enquiries per 10 minutes for
    the whole internet): stop and fix before announcing the site.
 6. HSTS: the app sends `Strict-Transport-Security: max-age=31536000;
-   includeSubDomains`. If the hostname is a bare apex domain with other
-   subdomains that are not HTTPS, those are affected — owner to confirm.
+   includeSubDomains`. Sent from `solution.pdabliss.com` it covers that host
+   and names under it only — never the apex `pdabliss.com` or its sibling
+   subdomains — so it cannot affect the server's other sites.
 
 ## 9. Deploy (EP47 phases A–J)
 
@@ -312,7 +319,7 @@ First deploy only — create the layout (creates folders, touches nothing else):
 ```powershell
 'releases','shared','shared\audio','shared\data','logs','backups' |
   ForEach-Object { New-Item -ItemType Directory -Force -Path "$Root\$_" | Out-Null }
-Set-Content "$Root\shared\frontend.env.production" 'VITE_PUBLIC_ORIGIN=https://<production-hostname>'
+Set-Content "$Root\shared\frontend.env.production" 'VITE_PUBLIC_ORIGIN=https://solution.pdabliss.com'
 # owner copies the track (RDP / file share) to: $Root\shared\audio\main-track.mp3
 ```
 
@@ -420,7 +427,7 @@ Select-String -Path "$Pm2Home\dump.pm2" -Pattern 'pda-surprise' -Quiet   # True 
 ### I. Cloudflare / public smoke
 
 Only now create or repoint the tunnel route for the hostname (§8), then run
-§10 against `https://<production-hostname>`.
+§10 against `https://solution.pdabliss.com`.
 
 ### J. Decision
 
@@ -430,11 +437,11 @@ then investigate on the stopped release, not on the live one.
 
 ## 10. Smoke checklist
 
-Run against `https://<production-hostname>` (and `127.0.0.1:1369` for the API).
+Run against `https://solution.pdabliss.com` (and `127.0.0.1:1369` for the API).
 
 **Transport and health**
-- [ ] `curl.exe -s https://<host>/api/health` → `200` `{"status":"ok","service":"pdabliss-api","environment":"production",…}`
-- [ ] `curl.exe -sI http://<host>/` → redirects to https (Cloudflare), no loop
+- [ ] `curl.exe -s https://solution.pdabliss.com/api/health` → `200` `{"status":"ok","service":"pdabliss-api","environment":"production",…}`
+- [ ] `curl.exe -sI http://solution.pdabliss.com/` → redirects to https (Cloudflare), no loop
 - [ ] Response headers include CSP, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, HSTS (§13.2)
 
 **Routes — load AND refresh each (direct hit must not 404)**
@@ -444,11 +451,12 @@ Run against `https://<production-hostname>` (and `127.0.0.1:1369` for the API).
 - [ ] `/assets/missing-00000000.js` → `404` JSON, not HTML
 
 **SEO**
-- [ ] `/robots.txt` → text, `Sitemap: https://<host>/sitemap.xml`, disallows `/login` `/memory-gate` `/workspace` `/us` `/dev/`
-- [ ] `/sitemap.xml` → XML, 51 URLs, all on `https://<host>`, none private
-- [ ] view-source `/`: `og:image` = `https://<host>/brand/og-default.png`
-- [ ] DevTools on `/en/services`: canonical `https://<host>/en/services`, hreflang th/en/zh-Hans/x-default
-- [ ] `/brand/favicon.svg`, `/brand/apple-touch-icon.png`, `/site.webmanifest` → 200
+- [ ] `/robots.txt` → text, `Sitemap: https://solution.pdabliss.com/sitemap.xml`, disallows `/login` `/memory-gate` `/workspace` `/us` `/dev/`
+- [ ] `/sitemap.xml` → XML, 51 URLs, all on `https://solution.pdabliss.com`, none private
+- [ ] view-source `/`: `og:image` = `https://solution.pdabliss.com/brand/og-default.png`
+- [ ] DevTools on `/en/services`: canonical `https://solution.pdabliss.com/en/services`, hreflang th/en/zh-Hans/x-default
+- [ ] `/favicon.ico`, `/favicon-32x32.png`, `/apple-touch-icon.png`, `/android-chrome-512x512.png`, `/maskable-512x512.png`, `/site.webmanifest` → 200; the tab shows the PDA BLISS SOLUTION monogram (hard-refresh: browsers cache favicons)
+- [ ] a share preview of `https://solution.pdabliss.com/` (e.g. a LINE/Slack paste) shows the PDA BLISS SOLUTION card
 
 **Contact**
 - [ ] `POST /api/contact` with `{}` → `400 VALIDATION_ERROR`
@@ -485,7 +493,7 @@ Set-Content "$Root\CURRENT_RELEASE.txt" $Prev
 Add-Content "$Root\deploys.log" "$(Get-Date -Format o)  ROLLBACK  $Prev"
 
 curl.exe -s http://127.0.0.1:1369/api/health                # 5. health
-curl.exe -s https://<production-hostname>/api/health         # 6. Cloudflare endpoint
+curl.exe -s https://solution.pdabliss.com/api/health         # 6. Cloudflare endpoint
 ```
 
 3. **Env:** the previous release carries its own `backend\.env` and was built
@@ -614,10 +622,10 @@ No other runtime network calls. No analytics.
 
 ### Launch blockers — all must be `[x]` before EP47 switches traffic
 
-- [ ] **OWNER DECISION — production hostname** chosen; written to `shared\backend.env` (`PUBLIC_ORIGIN`) and `shared\frontend.env.production` (`VITE_PUBLIC_ORIGIN`)
+- [ ] `https://solution.pdabliss.com` written to `shared\backend.env` (`PUBLIC_ORIGIN`) and `shared\frontend.env.production` (`VITE_PUBLIC_ORIGIN`) — hostname decided in EP46.6
 - [ ] **Server Node ≥ 22** (`node -v`); if lower, owner decides how to upgrade the shared runtime
 - [ ] **Port 1369 and the existing `pdabliss-*` processes:** owner decides whether `pda-surprise` replaces them and when the old ones are retired; 1369 free or a different `PORT` agreed
-- [ ] Cloudflare tunnel identified; hostname → `http://127.0.0.1:1369` agreed
+- [ ] Cloudflare tunnel identified; `solution.pdabliss.com` → `http://127.0.0.1:1369` agreed
 - [ ] Owner track copied to `shared\audio\main-track.mp3`
 - [ ] Owner has named who reads `shared\data\leads.jsonl` and how often (no email notification in v1)
 - [ ] Payroll "supports Thai social security and tax" highlight (Thai source, `i18n/solutions.ts`) confirmed or removed — it contradicts the EP38 correction
@@ -628,8 +636,9 @@ No other runtime network calls. No analytics.
 
 ### Must be verified during EP47 (not decisions)
 
-- client IP behind the tunnel (§8.5) · `pm2 save` persisted (§9 H) · HSTS
-  scope (§8.6) · `pm2-logrotate` present or not (§7) · old-tab recovery (§10)
+- client IP behind the tunnel (§8.5) · `pm2 save` persisted (§9 H) ·
+  `pm2-logrotate` present or not (§7) · old-tab recovery (§10) · new favicon
+  and share card (§10)
 
 ### Non-blocking content review (before the v1.0 freeze, EP48)
 
@@ -647,4 +656,6 @@ enquiries, admin view for leads, real access control for A&I media,
 `Permissions-Policy` header, `pm2-logrotate`, react-router 7 upgrade (two
 moderate advisories; the open-redirect one is not reachable here — the static
 server rejects `\`/`//` paths with 403 — and the other needs SSR),
-owner logo SVGs.
+a vector (SVG) master of the PDA BLISS SOLUTION logo — today's assets are
+derived from the approved 1254px raster, which is sharp at every size the site
+uses but cannot grow beyond it.

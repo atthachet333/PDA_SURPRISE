@@ -66,11 +66,18 @@ navigation never leaves a second canonical or stale alternates behind.
 
 ## Share image and icons
 
-- `public/brand/og-default.png` — 1200×630, ~110 KB, dark brand card with
-  Latin text so it serves all three locales and both light/dark chat surfaces.
-  Source: `frontend/scripts/brand/og-default.svg`.
-- `apple-touch-icon.png` (180), `icon-192.png`, `icon-512.png` (maskable) from
-  `scripts/brand/icon.svg`; `favicon.svg` unchanged.
+- `public/brand/og-default.png` — 1200×630, ~110 KB, the PDA BLISS SOLUTION
+  card (EP46.6): the approved lockup, three Latin service lines and "by PDA
+  BLISS COMPANY LIMITED", so it serves all three locales.
+- Root icons (EP46.6): `favicon.ico` (16/32/48), `favicon-16x16.png`,
+  `favicon-32x32.png`, `apple-touch-icon.png` (180, opaque),
+  `android-chrome-192x192.png` / `-512x512.png` (`any`), `maskable-512x512.png`.
+- All generated from `frontend/scripts/brand/source/` by
+  `tools/brand/build_solution_brand.py` (see `frontend/scripts/brand/README.md`).
+- Names: `og:site_name`, page-title suffix and the WebSite schema use the site
+  brand **PDA BLISS SOLUTION**; the Organization schema stays the registered
+  company (`PDA BLISS` / PDA BLISS COMPANY LIMITED). Private routes keep the
+  generic title `PDA BLISS`.
 - One `theme-color` tag, set to the page ground per resolved theme
   (`#F4F7F3` light, `#0E1311` dark) by the pre-paint bootstrap and
   `applyTheme`. A&I still overrides that same element on `/us`.

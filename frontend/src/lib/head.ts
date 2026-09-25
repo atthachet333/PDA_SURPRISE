@@ -58,7 +58,7 @@ export function buildHead(meta: PageMeta | LocalizedPageMeta, locale: Locale, ra
      * is emotional gating and this is a politeness header.
      */
     { attr: 'name', key: 'robots', content: indexable ? 'index, follow' : 'noindex, nofollow' },
-    { attr: 'property', key: 'og:site_name', content: SITE_NAME },
+    { attr: 'property', key: 'og:site_name', content: ('siteName' in meta && meta.siteName) || SITE_NAME },
     { attr: 'property', key: 'og:type', content: 'website' },
     { attr: 'property', key: 'og:title', content: title },
     { attr: 'property', key: 'og:description', content: description },

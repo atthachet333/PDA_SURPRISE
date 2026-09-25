@@ -23,6 +23,9 @@ import { pageMeta } from '@/lib/seo';
 import { useLocale } from '@/app/LocaleContext';
 import { hero } from '@/i18n/home';
 import { useHomeServices } from '@/i18n/useContent';
+import { useTheme } from '@/app/ThemeContext';
+import { SITE_BRAND_PARTS, brandAssets } from '@/data/brand';
+import { cn } from '@/lib/cn';
 
 /**
  * HOME
@@ -102,7 +105,11 @@ function Hero() {
               <span className="rounded-pill border border-brand-200 bg-brand-50 px-2.5 py-1 font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-700">
                 {company.foundedVerified ? `SINCE ${company.founded}` : company.heroBadge}
               </span>
+              {/* EP46.6 identity line: the site brand, then the company behind it. */}
               <span className="font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-steel-400">
+                <span className="font-semibold text-ink">{SITE_BRAND_PARTS.parent}</span>{' '}
+                <span className="font-semibold text-brand-600">{SITE_BRAND_PARTS.line}</span>
+                <span aria-hidden="true"> · </span>
                 {company.legalName}
               </span>
             </motion.div>
@@ -183,10 +190,35 @@ function Hero() {
             transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative -mx-2 sm:mx-0"
           >
-            <HeroSystem className="aspect-[13/10] w-full sm:aspect-[14/10]" />
+            {/* EP46.6: the monogram behind the rig — static and faint; the logo
+                is the fixed point the software drifts in front of. */}
+            <HeroWatermark />
+            {/* Showroom drift: the whole rig eases between four resting poses,
+                one every 5s (styles/brand.css). Off under reduced motion. */}
+            <div className={cn('relative', !reduced && 'hero-drift')}>
+              <HeroSystem className="aspect-[13/10] w-full sm:aspect-[14/10]" />
+            </div>
           </motion.div>
         </div>
       </Container>
     </section>
+  );
+}
+
+/** The PDA BLISS SOLUTION monogram, large and faint behind the hero rig. */
+function HeroWatermark() {
+  const { resolved } = useTheme();
+  const mark = brandAssets.mark;
+  return (
+    <img
+      src={mark[resolved]}
+      width={mark.width}
+      height={mark.height}
+      alt=""
+      aria-hidden="true"
+      decoding="async"
+      draggable={false}
+      className={cn('pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[108%] w-auto -translate-x-1/2 -translate-y-1/2 select-none', resolved === 'dark' ? 'opacity-[.09]' : 'opacity-[.07]')}
+    />
   );
 }

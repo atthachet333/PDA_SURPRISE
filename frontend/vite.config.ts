@@ -25,7 +25,7 @@ function shareImage(rawOrigin: string): Plugin {
         '<meta property="og:image:width" content="1200" />',
         '<meta property="og:image:height" content="630" />',
         '<meta property="og:image:type" content="image/png" />',
-        '<meta property="og:image:alt" content="PDA BLISS — พัฒนาซอฟต์แวร์ ระบบธุรกิจ และเว็บไซต์" />',
+        '<meta property="og:image:alt" content="PDA BLISS SOLUTION — พัฒนาซอฟต์แวร์ ระบบธุรกิจ และเว็บไซต์" />',
         `<meta name="twitter:image" content="${image}" />`
       ].join('\n    ');
       return html

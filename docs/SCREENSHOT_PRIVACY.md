@@ -6,7 +6,9 @@ to `frontend/public/images/work/` and listed in `portfolio.ts`.
 ## Current status
 
 **No portfolio screenshots exist in this repository yet.** The working tree
-contains no image files other than `frontend/public/brand/favicon.svg`. Nothing
+contains no client-system screenshots: the only images outside the A&I media are
+the brand assets (`frontend/public/brand/`, the root favicons) and the screenshot
+of this site itself (`images/work/pdabliss-website*.webp`). Nothing
 has therefore been audited, because there is nothing to audit — this document is
 the gate for when the owner supplies them.
 
