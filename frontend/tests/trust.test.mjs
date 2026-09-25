@@ -144,7 +144,8 @@ test('every trust link resolves to real work or a real section', () => {
 });
 
 test('Organization structured data holds truthful fields only', () => {
-  const source = read('../src/components/business/OrganizationSchema.tsx').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  /* EP44: the schema is built in lib/structuredData.ts; the component only mounts it. */
+  const source = read('../src/lib/structuredData.ts').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
   assert.match(source, /legalName:\s*company\.legalName/);
   assert.match(source, /alternateName:\s*company\.legalNameTh/);
   assert.match(source, /email:\s*company\.email/);

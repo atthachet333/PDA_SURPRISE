@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { Container } from '@/components/shared/Layout';
 import { BigCTA } from '@/components/business/BigCTA';
@@ -5,6 +6,9 @@ import { getInsight, isInsightPublished } from '@/data/insights';
 import { useLocale } from '@/app/LocaleContext';
 import { insightsPage, localizeInsight } from '@/i18n/insights';
 import { fillText } from '@/i18n/fill';
+import { nav } from '@/i18n/ui';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { pageMeta, type PageMeta } from '@/lib/seo';
 
 export default function InsightDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -15,6 +19,28 @@ export default function InsightDetail() {
    * was written in — article bodies are not translated (see i18n/insights.ts).
    */
   const insight = source ? localizeInsight(source, content) : undefined;
+  const published = Boolean(insight && isInsightPublished(insight) && insight.body);
+  /*
+   * EP44: a published article gets its own metadata. A draft never renders —
+   * it redirects to /insights — so it never gets a canonical or a sitemap entry.
+   */
+  const meta = useMemo<PageMeta | typeof pageMeta.insights>(
+    () =>
+      insight && published
+        ? {
+            title: `${insight.titleTh} — PDA BLISS`,
+            description: insight.excerpt,
+            path: `/insights/${insight.slug}`,
+            localizedRoute: true,
+            breadcrumbs: [
+              { name: nav.insights, path: '/insights' },
+              { name: insight.titleTh, path: `/insights/${insight.slug}` }
+            ]
+          }
+        : pageMeta.insights,
+    [insight, published]
+  );
+  usePageMeta(meta);
   if (!insight || !isInsightPublished(insight) || !insight.body) return <Navigate to={path('/insights')} replace />;
 
   return (

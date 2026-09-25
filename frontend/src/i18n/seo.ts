@@ -1,3 +1,4 @@
+import { joinUrl } from '../lib/url';
 import { DEFAULT_LOCALE, HREFLANG, LOCALES, localizePath, type Locale } from './locales';
 
 /**
@@ -11,8 +12,8 @@ import { DEFAULT_LOCALE, HREFLANG, LOCALES, localizePath, type Locale } from './
  *               hreflang, and nothing here invents a hostname.
  */
 
-export const absoluteFrom = (origin: string, path: string): string =>
-  origin ? `${origin.replace(/\/$/, '')}${path}` : path;
+/** Kept as an alias of the one URL builder (lib/url.ts) for existing callers. */
+export const absoluteFrom = (origin: string, path: string): string => joinUrl(origin, path);
 
 export function canonicalFor(path: string, locale: Locale, origin: string): string {
   return absoluteFrom(origin, localizePath(path, locale));
@@ -24,7 +25,7 @@ export interface Alternate {
 }
 
 export function alternatesFor(path: string, origin: string): Alternate[] {
-  if (!origin) return [];
+  if (!joinUrl(origin, '/').startsWith('https://')) return [];
   const links = LOCALES.map((locale) => ({
     hreflang: HREFLANG[locale],
     href: absoluteFrom(origin, localizePath(path, locale))

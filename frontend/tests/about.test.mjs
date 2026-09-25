@@ -86,7 +86,7 @@ test('company information is canonical and matches the schema', () => {
   assert.equal(company.lineOA, '@593oiwec');
   /* The hero and the company block name the company from the same source the schema uses. */
   assert.ok(ABOUT.includes('company.legalName') && ABOUT.includes('company.legalNameTh'));
-  const schema = read('../src/components/business/OrganizationSchema.tsx');
+  const schema = read('../src/lib/structuredData.ts') /* EP44: schema builder */;
   assert.match(schema, /legalName:\s*company\.legalName/);
   assert.match(schema, /alternateName:\s*company\.legalNameTh/);
 });

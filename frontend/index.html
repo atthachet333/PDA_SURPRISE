@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#063B2A" />
+    <!--
+      ONE theme-color tag, resolved per theme by the bootstrap below and by
+      applyTheme (src/lib/theme.ts). One tag, not a media pair: A&I's
+      Experience overrides this exact element and restores it on exit.
+    -->
+    <meta name="theme-color" content="#F4F7F3" />
 
     <!--
       DEFAULT METADATA — the corporate site.
@@ -15,7 +20,7 @@
 
       Nothing here references the private routes or anything personal.
     -->
-    <title>PDA BLISS — พัฒนาซอฟต์แวร์และระบบธุรกิจ</title>
+    <title>PDA BLISS — พัฒนาซอฟต์แวร์ ระบบธุรกิจ และเว็บไซต์</title>
     <meta
       name="description"
       content="PDA BLISS COMPANY LIMITED รับพัฒนาซอฟต์แวร์ ระบบธุรกิจ เว็บแอปพลิเคชัน ระบบภายในองค์กร และ Automation ที่ออกแบบจากกระบวนการทำงานจริง"
@@ -24,31 +29,31 @@
     <meta name="author" content="PDA BLISS COMPANY LIMITED" />
 
     <meta property="og:site_name" content="PDA BLISS" />
-    <meta property="og:title" content="PDA BLISS — พัฒนาซอฟต์แวร์และระบบธุรกิจ" />
+    <meta property="og:title" content="PDA BLISS — พัฒนาซอฟต์แวร์ ระบบธุรกิจ และเว็บไซต์" />
     <meta
       property="og:description"
-      content="เปลี่ยนไอเดียของคุณให้กลายเป็นซอฟต์แวร์ที่ใช้งานได้จริง"
+      content="PDA BLISS COMPANY LIMITED รับพัฒนาซอฟต์แวร์ ระบบธุรกิจ เว็บแอปพลิเคชัน ระบบภายในองค์กร และ Automation ที่ออกแบบจากกระบวนการทำงานจริง"
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="th_TH" />
     <!--
-      OWNER INPUT: og:image and og:url.
-
-      No og:image is declared because no real branded share asset exists yet —
-      a tag pointing at a missing file produces a broken preview, which is worse
-      than no image at all. og:url is set per route at runtime once
-      VITE_PUBLIC_ORIGIN is configured. See DEPLOYMENT.md.
+      og:image / twitter:image need an ABSOLUTE url, so the build injects them
+      here only when VITE_PUBLIC_ORIGIN is a safe https origin (vite.config.ts,
+      `shareImage`). No canonical or og:url is written statically: this file is
+      served for every route, so a static canonical would be wrong on all but
+      one of them. Both are set per route at runtime. See docs/SEO.md.
     -->
 
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="PDA BLISS — พัฒนาซอฟต์แวร์และระบบธุรกิจ" />
+    <meta name="twitter:title" content="PDA BLISS — พัฒนาซอฟต์แวร์ ระบบธุรกิจ และเว็บไซต์" />
     <meta
       name="twitter:description"
-      content="เปลี่ยนไอเดียของคุณให้กลายเป็นซอฟต์แวร์ที่ใช้งานได้จริง"
+      content="PDA BLISS COMPANY LIMITED รับพัฒนาซอฟต์แวร์ ระบบธุรกิจ เว็บแอปพลิเคชัน ระบบภายในองค์กร และ Automation ที่ออกแบบจากกระบวนการทำงานจริง"
     />
 
     <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
-    <link rel="apple-touch-icon" href="/brand/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -79,6 +84,8 @@
           var resolved = dark ? 'dark' : 'light';
           document.documentElement.dataset.theme = resolved;
           document.documentElement.style.colorScheme = resolved;
+          var themeColor = document.querySelector('meta[name="theme-color"]');
+          if (themeColor) themeColor.setAttribute('content', dark ? '#0E1311' : '#F4F7F3');
         } catch (error) {
           /* Blocked storage or no matchMedia: light is a safe, complete page. */
           document.documentElement.dataset.theme = 'light';

@@ -94,11 +94,16 @@ export function writeStoredMode(mode: ThemeMode, storage?: Pick<Storage, 'setIte
  * The inline bootstrap in index.html does exactly this before first paint —
  * keep the two in step.
  */
+/** Browser UI colour per theme: the page ground, not a bright brand green in Dark. */
+export const THEME_COLOR: Record<ResolvedTheme, string> = { light: '#F4F7F3', dark: '#0E1311' };
+
 export function applyTheme(resolved: ResolvedTheme, root?: HTMLElement): void {
   const element = root ?? globalThis.document?.documentElement;
   if (!element) return;
   element.dataset.theme = resolved;
   element.style.colorScheme = resolved;
+  /* The single theme-color tag (see index.html); A&I overrides the same element. */
+  element.ownerDocument?.querySelector('meta[name="theme-color"]')?.setAttribute('content', THEME_COLOR[resolved]);
 }
 
 /** What the OS reports right now, or light where matchMedia is unavailable. */

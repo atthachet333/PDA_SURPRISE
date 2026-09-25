@@ -1,121 +1,46 @@
 /**
- * Generates dist/sitemap.xml and completes dist/robots.txt after a build.
+ * Writes dist/sitemap.xml and dist/robots.txt after a build (EP44).
  *
- * A sitemap requires ABSOLUTE urls, and the production hostname has not been
- * chosen yet. Rather than invent one — or ship a sitemap full of `example.com`
- * that would be submitted to Google verbatim — this writes nothing at all until
- * `VITE_PUBLIC_ORIGIN` is set, and says so loudly in the build output.
+ * Both come from src/lib/sitemap.ts, which reads the one public route
+ * inventory in src/lib/seo.ts — no route is listed here, so the sitemap cannot
+ * drift from the app. Run with tsx (it imports TypeScript) by `npm run build`.
  *
- * Only public corporate routes are ever listed. The private routes (/login,
- * /memory-gate, /workspace, /us) and the dev console are never included.
- *
- * LOCALES — every public route is listed in Thai (unprefixed), English (/en)
- * and Simplified Chinese (/zh), each entry carrying xhtml:link alternates for
- * th, en, zh-Hans and x-default (the Thai route). Keep the prefixes in step
- * with `localizePath` in src/i18n/locales.ts.
- *
- * Run automatically by `npm run build`.
+ * Without a safe public https origin in VITE_PUBLIC_ORIGIN no sitemap is
+ * written — its URLs must be absolute, and a hostname is never invented.
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { existsSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const dist = resolve(here, '..', 'dist');
+import { buildRobots, buildSitemap, sitemapUrls } from '../src/lib/sitemap.ts';
+import { sanitizeOrigin } from '../src/lib/url.ts';
 
-const origin = (process.env.VITE_PUBLIC_ORIGIN ?? '').trim().replace(/\/$/, '');
-
-/**
- * Kept in step with `indexablePaths` in src/lib/seo.ts by hand, because this
- * script runs in plain Node and cannot import the TypeScript module. If a
- * public route is added there, add it here.
- */
-const paths = [
-  '/',
-  '/services',
-  '/solutions',
-  '/work',
-  '/work/erp-inventory-costing',
-  '/work/payroll-monthly-control',
-  '/work/hr-line-leave-approval',
-  '/work/document-file-workflow',
-  '/work/nas-file-storage',
-  '/work/corporate-website-system',
-  '/work/s2-accounting-website',
-  '/about',
-  '/contact',
-  '/insights',
-  '/privacy',
-  '/cookie-policy',
-  '/terms'
-];
-
+const dist = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 if (!existsSync(dist)) {
   console.error('[sitemap] no dist/ directory — run the build first');
   process.exit(0);
 }
 
-if (!origin) {
+const raw = (process.env.VITE_PUBLIC_ORIGIN ?? '').trim();
+const origin = sanitizeOrigin(raw);
+
+if (raw && !origin) {
+  console.error(`[sitemap] VITE_PUBLIC_ORIGIN "${raw}" is not a public https origin (no path, credentials, localhost or private host).`);
+  process.exit(1);
+}
+
+writeFileSync(resolve(dist, 'robots.txt'), buildRobots(origin), 'utf8');
+
+const sitemap = buildSitemap(origin);
+if (!sitemap) {
+  rmSync(resolve(dist, 'sitemap.xml'), { force: true });
   console.warn(
     '[sitemap] VITE_PUBLIC_ORIGIN is not set, so no sitemap.xml was generated.\n' +
       '          This is expected until the production hostname is chosen.\n' +
-      '          Set it in frontend/.env.production and rebuild. See DEPLOYMENT.md.'
+      '          Set it in frontend/.env.production and rebuild. See docs/SEO.md.'
   );
   process.exit(0);
 }
 
-if (!origin.startsWith('https://')) {
-  console.error(`[sitemap] VITE_PUBLIC_ORIGIN must be https:// — got "${origin}"`);
-  process.exit(1);
-}
-
-const today = new Date().toISOString().slice(0, 10);
-
-/** Thai is unprefixed; en and zh carry a prefix. `hreflang` for Chinese is zh-Hans. */
-const locales = [
-  { prefix: '', hreflang: 'th' },
-  { prefix: '/en', hreflang: 'en' },
-  { prefix: '/zh', hreflang: 'zh-Hans' }
-];
-const localized = (prefix, path) => `${origin}${prefix}${prefix && path === '/' ? '' : path}`;
-
-const urls = paths
-  .flatMap((path) => {
-    const priority = path === '/' ? '1.0' : path.startsWith('/privacy') || path.startsWith('/terms') || path.startsWith('/cookie') ? '0.3' : '0.8';
-    const alternates = [
-      ...locales.map(({ prefix, hreflang }) => `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${localized(prefix, path)}" />`),
-      `    <xhtml:link rel="alternate" hreflang="x-default" href="${localized('', path)}" />`
-    ];
-    return locales.map(({ prefix }) =>
-      [
-        '  <url>',
-        `    <loc>${localized(prefix, path)}</loc>`,
-        ...alternates,
-        `    <lastmod>${today}</lastmod>`,
-        `    <priority>${priority}</priority>`,
-        '  </url>'
-      ].join('\n')
-    );
-  })
-  .join('\n');
-
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${urls}
-</urlset>
-`;
-
 writeFileSync(resolve(dist, 'sitemap.xml'), sitemap, 'utf8');
-
-// Point robots.txt at the sitemap now that a real origin exists.
-const robotsPath = resolve(dist, 'robots.txt');
-if (existsSync(robotsPath)) {
-  let robots = readFileSync(robotsPath, 'utf8');
-  robots = robots.replace(
-    /# OWNER INPUT: uncomment and set the real hostname once it is chosen\.\r?\n# Sitemap: .*/,
-    `Sitemap: ${origin}/sitemap.xml`
-  );
-  writeFileSync(robotsPath, robots, 'utf8');
-}
-
-console.log(`[sitemap] wrote ${paths.length * locales.length} public URLs (${paths.length} routes × ${locales.length} locales) for ${origin}`);
+console.log(`[sitemap] wrote ${sitemapUrls(origin).length} public URLs for ${origin}`);

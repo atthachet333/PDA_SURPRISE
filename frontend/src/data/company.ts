@@ -70,6 +70,10 @@ export const company = {
   businessHours: {
     days: 'จันทร์ – เสาร์',
     time: '08:30 – 17:30 น.',
+    /* Machine-readable form of the same verified hours, for structured data. */
+    opens: '08:30',
+    closes: '17:30',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     /* EP42: no response-time promise until the owner confirms one. */
     note: 'ตอบกลับในเวลาทำการ'
   },

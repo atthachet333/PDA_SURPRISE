@@ -135,8 +135,9 @@ npm run build
 ```
 
 This typechecks the frontend, compiles the backend to `backend\dist`, builds the
-frontend to `frontend\dist`, and generates `sitemap.xml` when
-`VITE_PUBLIC_ORIGIN` is set.
+frontend to `frontend\dist`, and writes `robots.txt` — plus `sitemap.xml`, the
+absolute share image tags and hreflang/JSON-LD urls — when `VITE_PUBLIC_ORIGIN`
+is a public https origin. See [docs/SEO.md](docs/SEO.md) (EP44).
 
 Verify the music made it into the build:
 

@@ -175,22 +175,23 @@ test('canonical follows the active locale; hreflang only with a real origin', ()
   ]);
 });
 
-test('the sitemap lists every public route in every locale, and nothing private', () => {
-  const seo = readFileSync(new URL('../src/lib/seo.ts', import.meta.url), 'utf8');
+test('the sitemap lists every public route in every locale, and nothing private', async () => {
+  /* EP44: the script no longer carries its own list — it imports the one
+     inventory (lib/seo.ts) through lib/sitemap.ts, so drift is impossible. */
+  const { indexablePaths } = await import('../src/lib/seo.ts');
+  const sitemap = readFileSync(new URL('../src/lib/sitemap.ts', import.meta.url), 'utf8');
   const script = readFileSync(new URL('../scripts/generate-sitemap.mjs', import.meta.url), 'utf8');
-  const list = (src) => {
-    const block = src.match(/(?:indexablePaths: string\[\] =|const paths =) \[([\s\S]*?)\];/)?.[1] ?? '';
-    return [...block.matchAll(/'([^']+)'/g)].map((m) => m[1]);
-  };
-  const paths = list(seo);
-  assert.deepEqual(list(script), paths, 'sitemap script and seo.ts have drifted');
+  assert.ok(script.includes("from '../src/lib/sitemap.ts'"), 'the script must build from lib/sitemap.ts');
+  assert.doesNotMatch(script, /'\/(services|work|about|contact)'/, 'the script must not list routes by hand');
+  assert.ok(sitemap.includes('indexablePaths'), 'the sitemap must read the one inventory');
 
+  const paths = indexablePaths;
   const urls = localizedPaths(paths);
   assert.equal(urls.length, paths.length * 3);
   ['/login', '/memory-gate', '/workspace', '/us'].forEach((route) => {
     assert.ok(!urls.some((url) => url === route || url.startsWith(`${route}/`)), `${route} must never be listed`);
   });
   assert.ok(urls.includes('/en/services') && urls.includes('/zh/work/payroll-monthly-control'));
-  assert.ok(script.includes("hreflang: 'zh-Hans'") && script.includes('x-default'));
-  assert.ok(script.includes("if (!origin)"), 'the no-origin safety must remain');
+  assert.ok(sitemap.includes("'x-default'") && sitemap.includes('HREFLANG'));
+  assert.ok(script.includes('if (!sitemap)'), 'the no-origin safety must remain');
 });

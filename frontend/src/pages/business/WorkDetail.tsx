@@ -15,7 +15,7 @@ import { Container } from '@/components/shared/Layout';
 import { getCaseStudy, type CaseStudy } from '@/data/caseStudies';
 import { contactHref, contactServiceFromRoute } from '@/data/contactRouting';
 import type { LocalizedPageMeta, PageMeta } from '@/lib/seo';
-import { pageMeta } from '@/lib/seo';
+import { caseStudyPageMeta, pageMeta } from '@/lib/seo';
 import { usePageMeta } from '@/hooks/usePageMeta';
 
 export default function WorkDetail() {
@@ -24,18 +24,7 @@ export default function WorkDetail() {
   const source = slug ? getCaseStudy(slug) : undefined;
   const study = useCaseStudy(source);
   /* Built from the record already in the active locale. */
-  const meta = useMemo<PageMeta | LocalizedPageMeta>(
-    () =>
-      study
-        ? {
-            title: `${study.title} — PDA BLISS`,
-            description: `${study.subtitle} — ${study.delivered}`,
-            path: `/work/${study.slug}`,
-            localizedRoute: true
-          }
-        : pageMeta.work,
-    [study]
-  );
+  const meta = useMemo<PageMeta | LocalizedPageMeta>(() => (study ? caseStudyPageMeta(study) : pageMeta.work), [study]);
   usePageMeta(meta);
 
   if (!study) return <Navigate to={path('/work')} replace />;

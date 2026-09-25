@@ -1,6 +1,38 @@
 import react from '@vitejs/plugin-react';
 import { resolve } from 'node:path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
+import { joinUrl, sanitizeOrigin } from './src/lib/url';
+
+/**
+ * EP44 — the static share image.
+ *
+ * index.html is what a crawler or chat preview that runs no JavaScript sees.
+ * og:image must be absolute, so the tags are written into the built HTML only
+ * when VITE_PUBLIC_ORIGIN is a safe public https origin (lib/url.ts). Without
+ * one nothing is written: a relative or invented image URL is a broken
+ * preview. Keep the path and size in step with SOCIAL_IMAGE in src/lib/seo.ts.
+ */
+function shareImage(rawOrigin: string): Plugin {
+  const origin = sanitizeOrigin(rawOrigin);
+  return {
+    name: 'pdabliss-share-image',
+    transformIndexHtml(html) {
+      if (!origin) return html;
+      const image = joinUrl(origin, '/brand/og-default.png');
+      const tags = [
+        `<meta property="og:image" content="${image}" />`,
+        '<meta property="og:image:width" content="1200" />',
+        '<meta property="og:image:height" content="630" />',
+        '<meta property="og:image:type" content="image/png" />',
+        '<meta property="og:image:alt" content="PDA BLISS — พัฒนาซอฟต์แวร์ ระบบธุรกิจ และเว็บไซต์" />',
+        `<meta name="twitter:image" content="${image}" />`
+      ].join('\n    ');
+      return html
+        .replace('<meta name="twitter:card" content="summary" />', '<meta name="twitter:card" content="summary_large_image" />')
+        .replace('</head>', `    ${tags}\n  </head>`);
+    }
+  };
+}
 
 const FRONTEND_PORT = 1368;
 const BACKEND_PORT = 1369;
@@ -10,7 +42,7 @@ export default defineConfig(({ mode }) => {
   const apiTarget = env.VITE_API_PROXY_TARGET || `http://localhost:${BACKEND_PORT}`;
 
   return {
-    plugins: [react()],
+    plugins: [react(), shareImage(env.VITE_PUBLIC_ORIGIN ?? '')],
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src')
