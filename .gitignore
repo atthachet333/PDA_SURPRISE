@@ -47,3 +47,10 @@ review-local/
 
 # Disposable browser profiles created by local responsive QA.
 .browser-qa-regression/
+
+# EP43 media pipeline. Source media dropped here for ingestion is private and
+# never committed — only the pipeline's verified derivatives are. Staging holds
+# in-flight derivatives, backups and the promotion journal.
+media-inbox/*
+!media-inbox/README.md
+.media-staging/

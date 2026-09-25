@@ -12,11 +12,17 @@ import { archiveVideos, memoryVideos } from '../src/data/memoryVideos.ts';
 import { relationshipYears } from '../src/data/relationshipYears.ts';
 
 test('all established photo and video records resolve to released Year 01', () => {
+  /* Established records are the ones with no explicit year. EP43 pipeline
+     entries always carry an owner-supplied year, so ingesting Year 02 media
+     never changes this set. */
+  const established = memoryArchive.filter((item) => item.yearSource === 'release-default');
+  const establishedClips = memoryVideos.filter((item) => item.yearSource === 'release-default');
   // 118 established photos + 4 privacy-cropped Porsche scans (memory-179..182).
-  assert.equal(memoryArchive.length, 122);
-  assert.equal(archiveVideos.length, 17);
-  assert.ok(memoryArchive.every((item) => item.yearId === 'year-01'));
-  assert.ok(memoryVideos.every((item) => item.yearId === 'year-01'));
+  assert.equal(established.length, 122);
+  assert.equal(archiveVideos.filter((clip) => clip.yearSource === 'release-default').length, 17);
+  assert.equal(establishedClips.length, 19);
+  assert.ok(established.every((item) => item.yearId === 'year-01'));
+  assert.ok(establishedClips.every((item) => item.yearId === 'year-01'));
 });
 
 test('every assigned media year id is declared', () => {

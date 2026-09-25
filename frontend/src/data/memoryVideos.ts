@@ -316,8 +316,20 @@ const curatedMemoryVideos: CuratedMemoryVideo[] = [
   }
 ];
 
+/**
+ * EP43 — media pipeline output (`npm run media:ingest`, docs/MEDIA_PIPELINE.md).
+ *
+ * Written by tools/media-pipeline between the markers; plain JSON objects only.
+ * Ingested clips are always role 'archive' with an explicit owner-supplied
+ * year. Story and featured placements stay deliberate edits above.
+ */
+const ingestedMemoryVideos: CuratedMemoryVideo[] = [
+  // @media-pipeline:begin videos
+  // @media-pipeline:end videos
+];
+
 /** Current established clips belong to the released story unless overridden. */
-export const memoryVideos: MemoryVideo[] = curatedMemoryVideos.map((clip) => ({
+export const memoryVideos: MemoryVideo[] = [...curatedMemoryVideos, ...ingestedMemoryVideos].map((clip) => ({
   ...clip,
   yearId: clip.yearId ?? STORY_RELEASE_YEAR_ID,
   yearSource: clip.yearSource ?? 'release-default'
