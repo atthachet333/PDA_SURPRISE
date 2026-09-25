@@ -12,23 +12,39 @@
  * `backend/.env` on the server, which is gitignored and never leaves the
  * machine. Only non-sensitive process settings belong in this file.
  *
- * Usage (from the repository root, on the server):
- *   pm2 start ecosystem.config.cjs
+ * Usage: docs/PRODUCTION_RUNBOOK.md is the only deploy procedure. In short,
+ * from a built release folder:
+ *   $env:PDA_LOG_DIR = "<root>\logs"
+ *   pm2 start <release>\ecosystem.config.cjs
  *   pm2 save
+ *
+ * PATHS ARE ABSOLUTE, FROM THIS FILE'S OWN FOLDER. Each deploy is a separate
+ * release folder, and PM2 resolves a relative `cwd` against the shell it was
+ * started from — so `cwd: './backend'` depended on where the operator happened
+ * to be standing. `__dirname` pins the process to the release this file
+ * belongs to (EP46).
+ *
+ * LOGS go to PDA_LOG_DIR when it is set at `pm2 start` time — one folder that
+ * outlives every release — and otherwise to backend/logs inside the release.
  *
  * `pm2 save` records the process list so the machine's existing PM2 startup
  * mechanism restores it after a reboot. This file deliberately does not touch
  * that global configuration.
  */
+const path = require('node:path');
+
+const backendDir = path.join(__dirname, 'backend');
+const logDir = process.env.PDA_LOG_DIR ? path.resolve(process.env.PDA_LOG_DIR) : path.join(backendDir, 'logs');
+
 module.exports = {
   apps: [
     {
       name: 'pda-surprise',
 
-      // Run from the backend workspace so `FRONTEND_DIST=../frontend/dist` and
-      // `LEAD_STORE_PATH=./data/leads.jsonl` resolve the way .env expects.
-      cwd: './backend',
-      script: './dist/server.js',
+      // Run from the backend workspace so dotenv finds backend/.env and
+      // `FRONTEND_DIST=../frontend/dist` resolves inside this release.
+      cwd: backendDir,
+      script: path.join(backendDir, 'dist', 'server.js'),
 
       // A single Node process. The workload is I/O-bound and the lead store is
       // an append-only file, so cluster mode would add write contention for no
@@ -63,8 +79,8 @@ module.exports = {
       // --- logs --------------------------------------------------------------
       time: true,
       merge_logs: true,
-      out_file: './logs/pda-surprise-out.log',
-      error_file: './logs/pda-surprise-error.log',
+      out_file: path.join(logDir, 'pda-surprise-out.log'),
+      error_file: path.join(logDir, 'pda-surprise-error.log'),
 
       // Never watch files in production.
       watch: false

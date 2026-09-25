@@ -87,6 +87,36 @@ if (!parsed.success) {
   throw new Error(`Invalid environment configuration:\n${issues}`);
 }
 
+const PRIVATE_HOST = [
+  /^localhost$/i,
+  /\.(localhost|local|internal|lan|home|corp|localdomain|invalid)$/i,
+  /^127\./,
+  /^10\./,
+  /^192\.168\./,
+  /^172\.(1[6-9]|2\d|3[01])\./,
+  /^169\.254\./,
+  /^0\.0\.0\.0$/,
+  /^\[/
+];
+
+/**
+ * The same rule the frontend applies to VITE_PUBLIC_ORIGIN (frontend/src/lib/
+ * url.ts): the two must name one public https origin, or canonical URLs and
+ * the CORS allowance disagree about where the site lives.
+ */
+export function isPublicHttpsOrigin(value: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== 'https:') return false;
+  if (url.username || url.password || url.search || url.hash) return false;
+  if (url.pathname !== '/' && url.pathname !== '') return false;
+  return url.hostname.includes('.') && !PRIVATE_HOST.some((pattern) => pattern.test(url.hostname));
+}
+
 export const env = parsed.data;
 export type Env = typeof env;
 export const isProduction = env.NODE_ENV === 'production';
@@ -116,8 +146,10 @@ if (isProduction) {
     problems.push('CORS_ORIGIN must not be "*" in production.');
   }
 
-  if (env.PUBLIC_ORIGIN && !env.PUBLIC_ORIGIN.startsWith('https://')) {
-    problems.push('PUBLIC_ORIGIN must be https:// in production.');
+  if (env.PUBLIC_ORIGIN && !isPublicHttpsOrigin(env.PUBLIC_ORIGIN)) {
+    problems.push(
+      'PUBLIC_ORIGIN must be a public https origin in production: https://host, no path, query, credentials, localhost or private/LAN host.'
+    );
   }
 
   if (problems.length > 0) {

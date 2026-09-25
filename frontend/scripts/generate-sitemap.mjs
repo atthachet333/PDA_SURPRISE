@@ -11,17 +11,25 @@
 import { existsSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadEnv } from 'vite';
 
 import { buildRobots, buildSitemap, sitemapUrls } from '../src/lib/sitemap.ts';
 import { sanitizeOrigin } from '../src/lib/url.ts';
 
-const dist = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const dist = resolve(root, 'dist');
 if (!existsSync(dist)) {
   console.error('[sitemap] no dist/ directory — run the build first');
   process.exit(0);
 }
 
-const raw = (process.env.VITE_PUBLIC_ORIGIN ?? '').trim();
+/*
+ * The SAME origin the bundle was built with: Vite's own env loading
+ * (.env, .env.production, .env.production.local, then the shell — the shell
+ * wins). Reading process.env alone meant an origin set in .env.production, as
+ * the runbook says, gave absolute canonicals but no sitemap.xml (EP46).
+ */
+const raw = (loadEnv('production', root, 'VITE_').VITE_PUBLIC_ORIGIN ?? '').trim();
 const origin = sanitizeOrigin(raw);
 
 if (raw && !origin) {

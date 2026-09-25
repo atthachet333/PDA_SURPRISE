@@ -14,7 +14,9 @@
     "build": "npm --workspace backend run build && npm --workspace frontend run build",
     "start": "concurrently -n backend,frontend -c green,cyan \"npm --workspace backend run start\" \"npm --workspace frontend run preview\"",
     "typecheck": "npm --workspace backend run typecheck && npm --workspace frontend run typecheck",
-    "test": "npm --workspace backend test && npm --workspace frontend test",
+    "test": "npm --workspace backend test && npm --workspace frontend test && npm run test:release",
+    "test:release": "tsx --test tools/release/checks.test.mjs",
+    "release:check": "tsx tools/release/release-check.mjs",
     "lint": "npm --workspace frontend run lint",
     "clean": "rimraf frontend/dist backend/dist",
     "validate:prod": "npm run typecheck && npm run lint && npm run build",
@@ -25,7 +27,7 @@
     "rimraf": "^6.0.1"
   },
   "engines": {
-    "node": ">=20.11.0"
+    "node": ">=22.0.0"
   },
   "allowScripts": {
     "esbuild@0.28.2": true,

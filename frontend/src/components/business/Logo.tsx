@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/cn';
 
-const ASSET_FULL = '/brand/pda-bliss-logo.svg';
-const ASSET_MARK = '/brand/pda-bliss-mark.svg';
+/*
+ * The build sets these only when the owner files exist in public/brand
+ * (vite.config.ts), so a site without them never requests a file that is not
+ * there — each miss was a 404 in the console on every page. Dropping the
+ * files in and rebuilding switches them on.
+ */
+const ASSET_FULL: string = import.meta.env.VITE_BRAND_LOGO_FULL ?? '';
+const ASSET_MARK: string = import.meta.env.VITE_BRAND_LOGO_MARK ?? '';
+const initialSource = (compact: boolean) => (compact && ASSET_MARK) || ASSET_FULL;
 const ALT = 'PDA BLISS COMPANY LIMITED';
 
 interface LogoProps {
@@ -17,22 +24,22 @@ interface LogoProps {
  * until the owner files are placed under public/brand.
  */
 export function Logo({ className, inverted = false, compact = false }: LogoProps) {
-  const [source, setSource] = useState(compact ? ASSET_MARK : ASSET_FULL);
+  const [source, setSource] = useState(() => initialSource(compact));
   const [assetFailed, setAssetFailed] = useState(false);
 
   useEffect(() => {
-    setSource(compact ? ASSET_MARK : ASSET_FULL);
+    setSource(initialSource(compact));
     setAssetFailed(false);
   }, [compact]);
 
-  if (!assetFailed) {
+  if (source && !assetFailed) {
     return (
       <img
         src={source}
         alt={ALT}
         className={cn(source === ASSET_MARK ? 'h-8 w-8 object-contain' : 'h-8 w-auto max-w-[9rem] object-contain', inverted && 'brightness-0 invert', className)}
         onError={() => {
-          if (source === ASSET_MARK) setSource(ASSET_FULL);
+          if (source === ASSET_MARK && ASSET_FULL) setSource(ASSET_FULL);
           else setAssetFailed(true);
         }}
       />

@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import { joinUrl, sanitizeOrigin } from './src/lib/url';
@@ -34,6 +35,14 @@ function shareImage(rawOrigin: string): Plugin {
   };
 }
 
+/**
+ * Owner logo files, when present in public/brand. Logo.tsx only requests a
+ * file the build has seen, so a missing one costs no 404 (EP46).
+ */
+function brandAsset(file: string): string {
+  return existsSync(resolve(__dirname, 'public', 'brand', file)) ? `/brand/${file}` : '';
+}
+
 const FRONTEND_PORT = 1368;
 const BACKEND_PORT = 1369;
 
@@ -43,6 +52,10 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), shareImage(env.VITE_PUBLIC_ORIGIN ?? '')],
+    define: {
+      'import.meta.env.VITE_BRAND_LOGO_FULL': JSON.stringify(brandAsset('pda-bliss-logo.svg')),
+      'import.meta.env.VITE_BRAND_LOGO_MARK': JSON.stringify(brandAsset('pda-bliss-mark.svg'))
+    },
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src')

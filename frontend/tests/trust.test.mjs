@@ -97,7 +97,7 @@ test('scope, price and time are never fixed', () => {
 test('every technology traces to delivered work', () => {
   const slugs = new Map(caseStudies.map((study) => [study.slug, study]));
   /* The corporate website is this repository, so its deployment files are its evidence. */
-  const repoEvidence = [read('../../DEPLOYMENT.md'), read('../../ecosystem.config.cjs'), read('../../backend/package.json')].join('\n');
+  const repoEvidence = [read('../../DEPLOYMENT.md'), read('../../docs/PRODUCTION_RUNBOOK.md'), read('../../ecosystem.config.cjs'), read('../../backend/package.json')].join('\n');
   const names = techStack.flatMap((group) => group.items.map((item) => item.name));
   techStack.forEach((group) =>
     group.items.forEach((item) => {

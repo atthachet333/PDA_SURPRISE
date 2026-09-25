@@ -32,7 +32,7 @@ npm run dev
 The Vite dev server proxies `/api/*` to the backend, so the browser only ever
 talks to port 1368.
 
-> Requires Node 20.11 or newer.
+> Requires Node 22 or newer (`@fastify/static` needs it; see docs/PRODUCTION_RUNBOOK.md).
 
 ---
 
@@ -306,48 +306,27 @@ accounts are provisioned by a project lead, rather than faking a session.
 
 ## Deployment
 
-**Build**
-
-```bash
-npm run build
-```
-
-Outputs `frontend/dist` (static) and `backend/dist` (Node).
-
 **Topology** — one process. With `SERVE_FRONTEND=true` the backend serves both
 `frontend/dist` and `/api` on a single port, so the site and its API share an
 origin: no CORS in production, no second public port, and one target for
 Cloudflare Tunnel. Port 1368 is development only.
 
 ```powershell
-pm2 start ecosystem.config.cjs
-pm2 save
+npm ci
+npm run build          # backend/dist + frontend/dist (+ robots/sitemap)
+npm run release:check  # local preflight: env, origin, assets, forbidden files
 ```
 
-**The private music file is gitignored and will NOT arrive via `git pull`.** It
-has to be copied onto the server by hand before the build. If it is missing the
-experience still runs, silently.
+**The private music file is gitignored and will NOT arrive with a clone.** It
+is copied into each release before the build.
 
-> **Full runbook: [DEPLOYMENT.md](DEPLOYMENT.md)** — prerequisites, environment,
-> private audio placement, PM2, Cloudflare origin, health checks, the smoke-test
-> checklist, caching and rollback.
+> **Full runbook: [docs/PRODUCTION_RUNBOOK.md](docs/PRODUCTION_RUNBOOK.md)** —
+> requirements, environment, server layout, release/backup/rollback, PM2,
+> Cloudflare, smoke checklist, logs, common failures and launch blockers.
 
 **Before going live — owner input required**
 
-These are flagged with `OWNER INPUT REQUIRED` in the source:
-
-- **Headline metrics** — `data/company.ts`. Real figures are **not published**
-  while `metricsVerified` is `false`; the homepage shows a qualitative
-  capability strip instead, so the site never presents invented numbers as
-  audited fact. Fill in `metrics[]` with figures you can substantiate, then set
-  the flag to `true`.
-- **Case studies** — `data/work.ts`. The six engagements are illustrative
-  placeholders. While `caseStudiesVerified` is `false`, the Work and Home pages
-  describe them as *representative examples* rather than claiming measured
-  results. Replace them with real anonymised work, then set the flag.
-- **Contact details** — `data/company.ts` and `backend/.env` (email, phone,
-  address) are placeholders.
-- **A&I content** — `data/anniversary.ts`; see
-  [Replacing the A&I photos and content](#replacing-the-ai-photos-and-content).
-- Move lead storage off the local file (see `LeadRepository`).
-- Confirm you hold a licence for any audio you add.
+The current, checked list of launch blockers and owner decisions is
+[docs/PRODUCTION_RUNBOOK.md §15](docs/PRODUCTION_RUNBOOK.md#15-launch-blockers-and-owner-decisions).
+Source files still mark open items with `OWNER INPUT REQUIRED` /
+`OWNER REVIEW REQUIRED`.
