@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowIcon, ButtonLink } from '@/components/shared/Button';
 import { Container } from '@/components/shared/Layout';
 import { HeroSystem } from '@/components/business/HeroSystem';
-import { KineticMarquee } from '@/components/business/KineticMarquee';
+import { CapabilityShowcase } from '@/components/business/CapabilityShowcase';
 import { SystemShowreel } from '@/components/business/SystemShowreel';
 import { SystemUniversePreview } from '@/components/business/SystemUniversePreview';
 import { ServiceExplorer } from '@/components/business/ServiceExplorer';
@@ -31,7 +31,7 @@ import { cn } from '@/lib/cn';
  * HOME
  *
  *   01 hero        balanced text + a legible software rig, above the fold
- *      marquee     compact kinetic service strip
+ *      showcase    one capability in focus, every 5s (EP46.6.1)
  *   02 showreel    six real interfaces, fanned — product evidence, early
  *   03 universe    the connected-systems graph (the one dark section up here)
  *   04 services    interactive explorer, visual-led
@@ -55,7 +55,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <KineticMarquee />
+      <CapabilityShowcase />
       <SystemShowreel code="02 / SYSTEMS" />
       <SystemUniversePreview code="03 / CONNECTED" />
       <ServiceExplorer code="04 / SERVICES" items={homeServicePreview} showAllLink />

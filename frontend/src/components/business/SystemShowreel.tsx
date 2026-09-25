@@ -23,7 +23,7 @@ import type { CaseStudyVisual as CaseVisualKind } from "@/data/caseStudies";
  *
  * Six interfaces, overlapping in perspective, that spread apart as the section
  * scrolls through the viewport. Hovering or focusing one raises it clear of the
- * stack. It sits directly after the marquee so a visitor sees the actual range
+ * stack. It sits directly after the capability showcase so a visitor sees the actual range
  * of software PDA BLISS builds before reading a single argument.
  *
  * The spread is one `useScroll` progress value fanning `x` and `rotate` per

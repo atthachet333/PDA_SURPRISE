@@ -209,11 +209,6 @@ const config: Config = {
         'dash-flow': {
           to: { strokeDashoffset: '-1000' }
         },
-        /** Corporate: horizontal marquee travel. */
-        'marquee-x': {
-          from: { transform: 'translate3d(0,0,0)' },
-          to: { transform: 'translate3d(-50%,0,0)' }
-        },
         /** Corporate: data travelling along a connection path. */
         'data-run': {
           from: { strokeDashoffset: '120' },
@@ -265,8 +260,6 @@ const config: Config = {
         'beam-sweep': 'beam-sweep 6s ease-in-out infinite',
         'dash-flow': 'dash-flow 18s linear infinite',
         'sweep-ring': 'sweep-ring 11s cubic-bezier(0.45,0,0.55,1) infinite',
-        'marquee-x': 'marquee-x 38s linear infinite',
-        'marquee-x-slow': 'marquee-x 64s linear infinite',
         'data-run': 'data-run 2.4s linear infinite',
         'status-blink': 'status-blink 2.8s ease-in-out infinite',
         'plane-float': 'plane-float 7s ease-in-out infinite',

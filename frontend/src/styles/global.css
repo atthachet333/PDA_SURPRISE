@@ -6,6 +6,8 @@
 @import './atmosphere.css';
 /* EP46.6 PDA BLISS SOLUTION hero drift — corporate Home only. */
 @import './brand.css';
+/* EP46.6.1 capability showcase — corporate Home only. */
+@import './showcase.css';
 
 @tailwind base;
 @tailwind components;
@@ -1304,34 +1306,6 @@
     .reveal-line.is-armed > span {
       animation: none;
     }
-  }
-
-  /* Outlined display type — the counterpart to solid in the marquee. */
-  .text-outline {
-    color: transparent;
-    -webkit-text-stroke: 1.5px currentColor;
-  }
-
-  @media (min-width: 1024px) {
-    .text-outline {
-      -webkit-text-stroke-width: 2px;
-    }
-  }
-
-  /*
-   * Marquee. Two identical halves translate by -50% so the loop is seamless.
-   * `will-change` is deliberate: these are large text layers and promoting them
-   * keeps the loop off the main thread.
-   */
-  .marquee-track {
-    display: flex;
-    width: max-content;
-    will-change: transform;
-  }
-
-  .marquee-mask {
-    mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
   }
 
   /* ===================================================================== */

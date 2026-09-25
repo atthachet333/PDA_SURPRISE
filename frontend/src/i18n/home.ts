@@ -1,5 +1,5 @@
 import type { Locale } from './locales';
-import type { LocalizedText } from './text';
+import type { LocalizedList, LocalizedText } from './text';
 
 /**
  * ============================================================================
@@ -42,9 +42,56 @@ export const hero = {
   } as Lines
 };
 
-export const marquee = {
-  label: { th: 'บริการของ PDA BLISS', en: 'PDA BLISS services', zh: 'PDA BLISS 的服务' }
+/**
+ * EP46.6.1 — the capability showcase that replaced the marquee strip.
+ *
+ * Titles come from the canonical services (data/services.ts via
+ * usePrimaryServices); only what the showcase adds lives here. `terms` are
+ * four words taken from each service's own `deliverables` — never a new
+ * claim. Keyed by the canonical EP38 service id; tests require all eight.
+ */
+export const showcase = {
+  label: { th: 'ความสามารถของ PDA BLISS SOLUTION', en: 'PDA BLISS SOLUTION capabilities', zh: 'PDA BLISS SOLUTION 的能力' },
+  eyebrow: { th: 'ระบบที่เราสร้าง', en: 'Systems we build', zh: '我们构建的系统' },
+  selector: { th: 'เลือกความสามารถ', en: 'Choose a capability', zh: '选择能力' },
+  view: { th: 'ดูบริการนี้', en: 'View this service', zh: '查看此项服务' },
+  hub: { th: 'ระบบเชื่อมกัน', en: 'Connected systems', zh: '互联系统' }
 } satisfies Record<string, LocalizedText>;
+
+export const showcaseItems = {
+  'business-systems': {
+    short: { th: 'ERP', en: 'ERP', zh: 'ERP' },
+    terms: { th: ['สต็อก', 'ต้นทุน', 'จัดซื้อ', 'ประวัติรายการ'], en: ['Stock', 'Cost', 'Purchasing', 'Audit trail'], zh: ['库存', '成本', '采购', '审计记录'] }
+  },
+  payroll: {
+    short: { th: 'Payroll', en: 'Payroll', zh: 'Payroll' },
+    terms: { th: ['เวลาทำงาน', 'ตรวจรายการ', 'คำนวณ', 'อนุมัติรอบ'], en: ['Time data', 'Review', 'Calculate', 'Approve'], zh: ['考勤数据', '核对', '计算', '审批'] }
+  },
+  'hr-line-bot': {
+    short: { th: 'HR LINE', en: 'HR LINE', zh: 'HR LINE' },
+    terms: { th: ['ยื่นลา', 'อนุมัติ', 'แจ้งเตือน', 'หลังบ้าน HR'], en: ['Leave', 'Approve', 'Notify', 'HR back office'], zh: ['请假', '审批', '通知', 'HR 后台'] }
+  },
+  'document-management': {
+    short: { th: 'เอกสาร', en: 'Documents', zh: '文档' },
+    terms: { th: ['อัปโหลด', 'ตรวจ', 'อนุมัติ', 'ติดตาม'], en: ['Upload', 'Review', 'Approve', 'Track'], zh: ['上传', '审核', '审批', '跟踪'] }
+  },
+  'file-management': {
+    short: { th: 'NAS', en: 'NAS', zh: 'NAS' },
+    terms: { th: ['โครงสร้าง', 'สิทธิ์', 'รวมศูนย์', 'ค้นหา'], en: ['Structure', 'Permissions', 'Centralise', 'Search'], zh: ['目录结构', '权限', '集中存储', '检索'] }
+  },
+  'web-applications': {
+    short: { th: 'เว็บแอป', en: 'Web app', zh: 'Web 应用' },
+    terms: { th: ['Workflow', 'สิทธิ์', 'อนุมัติ', 'หน้าสรุป'], en: ['Workflow', 'Roles', 'Approvals', 'Dashboard'], zh: ['流程', '角色权限', '审批', '数据看板'] }
+  },
+  'mobile-applications': {
+    short: { th: 'แอปมือถือ', en: 'Mobile', zh: '移动应用' },
+    terms: { th: ['หน้าจอมือถือ', 'ทีมหน้างาน', 'เชื่อมหลังบ้าน', 'แจ้งเตือน'], en: ['Mobile screens', 'Field teams', 'Back office', 'Notify'], zh: ['移动界面', '一线团队', '后台对接', '通知'] }
+  },
+  websites: {
+    short: { th: 'เว็บไซต์', en: 'Website', zh: '网站' },
+    terms: { th: ['เนื้อหา', 'Responsive', 'บริการและผลงาน', 'ติดต่อ'], en: ['Content', 'Responsive', 'Services & work', 'Contact'], zh: ['内容结构', '响应式', '服务与案例', '联系表单'] }
+  }
+} satisfies Record<string, { short: LocalizedText; terms: LocalizedList }>;
 
 export const showreel = {
   title: { th: 'ระบบที่เราสร้างจริง', en: 'Systems we have actually built', zh: '我们真正构建的系统' },
