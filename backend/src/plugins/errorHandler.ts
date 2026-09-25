@@ -11,11 +11,25 @@ interface Options {
   spaFallback: boolean;
 }
 
+/**
+ * A request for a FILE (last path segment has an extension, or anything under
+ * /assets/) that static did not find is a real 404, never the SPA shell.
+ *
+ * Answering `/assets/About-<oldhash>.js` with index.html and a 200 is what a
+ * tab left open across a deploy receives for its next lazy route: the browser
+ * gets HTML where it expected a module and the page dies with a MIME error
+ * instead of the client's clean reload. Likewise `/sitemap.xml` before a public
+ * origin exists must not be an HTML page with a 200 to a crawler. No page
+ * route has a dot in its last segment, so client routing is unaffected.
+ */
+const FILE_LIKE = /(^\/assets\/)|(\.[a-z0-9]{1,8}$)/i;
+
 export function registerErrorHandling(app: FastifyInstance, { spaFallback }: Options): void {
   app.setNotFoundHandler(async (request, reply) => {
     const isApi = request.url.startsWith('/api/');
+    const pathname = request.url.split(/[?#]/)[0] ?? '';
 
-    if (spaFallback && !isApi) {
+    if (spaFallback && !isApi && !FILE_LIKE.test(pathname)) {
       if (request.method !== 'GET' && request.method !== 'HEAD') {
         return reply.status(405).send({
           ok: false,

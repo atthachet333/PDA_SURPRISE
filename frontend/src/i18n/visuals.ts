@@ -57,6 +57,8 @@ export function slotCaption(slot: VisualSlot, locale: Locale): string {
 
 export const visualText = {
   mockNotice: { th: 'ภาพตัวอย่างระบบ', en: 'Sample system illustration', zh: '系统示意图' },
+  /** Accessible name of a sample sidebar row; `{n}` is its 1-based position. */
+  mockSection: { th: 'ส่วนตัวอย่างที่ {n}', en: 'Sample section {n}', zh: '示例栏目 {n}' },
   schematic: { th: 'ภาพจำลองโครงสร้างระบบ', en: 'System structure illustration', zh: '系统结构示意图' },
   schematicAria: {
     th: 'ภาพจำลองโครงสร้างหน้าจอ ไม่มีข้อมูลจริง',

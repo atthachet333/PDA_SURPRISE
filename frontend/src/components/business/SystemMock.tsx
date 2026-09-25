@@ -1,4 +1,6 @@
 import { createContext, useContext, useState } from 'react';
+import { useLocale } from '@/app/LocaleContext';
+import { visualText } from '@/i18n/visuals';
 import { cn } from '@/lib/cn';
 
 /**
@@ -117,6 +119,7 @@ function Sidebar({
   // The hook must run unconditionally — `&&` would short-circuit it.
   const contextInteractive = useMockInteractive();
   const interactive = Boolean(onSelect) && contextInteractive;
+  const { t } = useLocale();
   return (
     <div className="hidden w-[4.5rem] shrink-0 flex-col gap-1 border-r border-steel-100 bg-steel-50/60 p-2 sm:flex lg:w-24">
       <span className="mb-1 flex items-center gap-1.5 px-1">
@@ -128,6 +131,8 @@ function Sidebar({
           key={row}
           interactive={interactive}
           onSelect={onSelect ? () => onSelect(row) : undefined}
+          label={t(visualText.mockSection).replace('{n}', String(row + 1))}
+          pressed={row === active}
           className={cn(
             'flex items-center gap-1.5 rounded-[5px] px-1 py-1.5 transition-colors duration-fast',
             row === active ? 'bg-brand-50' : interactive ? 'hover:bg-steel-100' : ''
@@ -192,11 +197,16 @@ function Control({
 function Row({
   interactive,
   onSelect,
+  label,
+  pressed,
   className,
   children
 }: {
   interactive: boolean;
   onSelect?: () => void;
+  /** The row has no visible text, so a button needs a name of its own. */
+  label: string;
+  pressed: boolean;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -208,7 +218,14 @@ function Row({
     return <span className={inert}>{children}</span>;
   }
   return (
-    <button type="button" onClick={onSelect} onPointerEnter={onSelect} className={cn('w-full text-left', className)}>
+    <button
+      type="button"
+      aria-label={label}
+      aria-pressed={pressed}
+      onClick={onSelect}
+      onPointerEnter={onSelect}
+      className={cn('w-full text-left', className)}
+    >
       {children}
     </button>
   );
