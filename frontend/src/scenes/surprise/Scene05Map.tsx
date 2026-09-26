@@ -40,7 +40,9 @@ export function Scene05Map() {
             <div className="lg:col-span-7">
               <ChapterMark index="05" label="PLACES · สถานที่ของเรา" />
               <h2 className="thai-display mt-6 font-thai text-[clamp(1.85rem,4.8vw,4.3rem)] font-light leading-[1.2] text-ivory">
-                บางที่มีรูป<br />บางที่เหลือแค่ความทรงจำ
+                {/* ความทรงจำ is one word: a narrow line may break before it, never
+                    inside it (Chrome's Thai dictionary split it as ความทรง|จำ). */}
+                บางที่มีรูป<br />บางที่เหลือแค่<span className="whitespace-nowrap">ความทรงจำ</span>
               </h2>
               <p className="mt-5 font-thai text-[clamp(1rem,1.2vw,1.12rem)] leading-8 text-champagne">แต่ทุกชื่อยังเป็นส่วนหนึ่งของเส้นทางเดียวกัน</p>
             </div>

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SceneLabel, SceneSection, SceneTitle } from '@/components/surprise/SceneSection';
 import { MemoryImage } from '@/components/surprise/MemoryImage';
 import {
@@ -78,12 +78,32 @@ export function Scene04Universe() {
     return () => window.removeEventListener(ARCHIVE_YEAR_EVENT, selectFromFinale);
   }, [selectYear]);
 
+  /*
+   * The photo viewer is a modal (EP46.5): focus moves to its close button on
+   * open, Tab cannot leave it (the close button is its only control), Escape
+   * closes it, and focus returns to the memory that opened it — the same
+   * contract as CinematicViewer. Before, focus stayed on the card behind the
+   * dialog and Tab walked on through the page underneath.
+   */
+  const lightboxCloseRef = useRef<HTMLButtonElement>(null);
+  const isOpen = selected !== null;
   useEffect(() => {
-    if (!selected) return;
-    const close = (event: KeyboardEvent) => event.key === 'Escape' && setSelected(null);
-    window.addEventListener('keydown', close);
-    return () => window.removeEventListener('keydown', close);
-  }, [selected]);
+    if (!isOpen) return;
+    const opener = document.activeElement as HTMLElement | null;
+    lightboxCloseRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelected(null);
+      else if (event.key === 'Tab') {
+        event.preventDefault();
+        lightboxCloseRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => {
+      window.removeEventListener('keydown', onKey, true);
+      if (opener && document.contains(opener)) opener.focus();
+    };
+  }, [isOpen]);
 
   const selectedYear = relationshipYears.find((year) => year.id === yearId) ?? relationshipYears[0]!;
   const yearPhotos = useMemo(() => memoryArchive.filter((item) => item.yearId === yearId), [yearId]);
@@ -360,6 +380,7 @@ export function Scene04Universe() {
                   </p>
                 </div>
                 <button
+                  ref={lightboxCloseRef}
                   type="button"
                   onClick={() => setSelected(null)}
                   className="ai-pressable inline-flex min-h-11 items-center rounded-full border border-sky-200/20 px-4 font-thai text-xs text-ivory/75"

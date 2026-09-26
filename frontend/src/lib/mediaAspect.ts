@@ -70,7 +70,6 @@ const INTRINSIC: Record<string, number> = {
   '/images/memories/wedding-actual-03.webp': 1066 / 1600,
   '/images/memories/special-roadtrip-wide.webp': 2000 / 1250,
   '/images/memories/wedding-ceremony-01.webp': 1333 / 2000,
-  '/images/memories/wedding-ceremony-02.webp': 1333 / 2000,
   '/images/memories/wedding-ceremony-03.webp': 1333 / 2000,
   '/images/memories/marriage-registration-safe.webp': 1108 / 1477
 };

@@ -9,6 +9,32 @@ Nothing in Drive was renamed, moved, deleted or modified.
 Machine-readable manifest: [`tools/anniversary-media-curation.json`](../tools/anniversary-media-curation.json)
 Review images: `review-local/` (gitignored — never commit)
 
+## EP46.5 release pass (2026-09-26)
+
+Audited against the committed runtime only — the Drive sources and
+`review-local/` were not available to this pass, so nothing new was exported.
+
+- **Runtime inventory:** 316 committed media files (122 archive photos + 122
+  thumbnails, 36 story images, 18 video posters, 20 MP4s), every one referenced
+  by the A&I data; no referenced path is missing. `tests/aiRelease.test.mjs`
+  now fails on any orphan or missing file.
+- **Removed:** `wedding-ceremony-02.webp` — an unused standalone copy of
+  `720_Original.JPG`, which already ships as archive `memory-015`. It had been
+  out of the story since the 2026-09-23 milestone redesign.
+- **Not added:** 54 curated A/B/C photographs are archive-only. Almost all are
+  recorded with `event: "unknown"`; without an owner-confirmed moment, place or
+  date they stay in the archive (tier C) rather than in the story, milestones or
+  places. The constellation's density is locked, so it was not expanded.
+- **Unchanged and verified:** Peak (`peak-01`), TURR (still / clip / recap),
+  Suan Phueng (renders on scroll), graduation, Porsche (sanitized archive
+  derivatives only), 19 places / 10 provinces, Year 02 has no media.
+
+**OWNER REVIEW REQUIRED** before any of these can leave the archive: the
+archive-only "A. STORY HERO" photographs with no confirmed event —
+`memory-023, 024, 026, 029, 033, 034, 037, 054, 056, 078, 085, 099, 102, 105,
+117` — and the wedding-ceremony frames `memory-003, 008, 011, 014, 016` (the
+wedding stack was deliberately trimmed; re-adding any is the owner's call).
+
 ## Owner truth lock — Peak vs TURR (2026-09-23, supersedes every table below)
 
 | event | still | clip | recap |

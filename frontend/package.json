@@ -8,7 +8,7 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build && tsx scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "npm run test:memory-gate && npm run test:canonical-truth && npm run test:gateway-timing && npm run test:system-universe && npm run test:case-studies && npm run test:services && npm run test:theme && npm run test:contact-flow && npm run test:memory-videos && npm run test:relationship-years && npm run test:archive-years && npm run test:story-media && npm run test:locale && npm run test:i18n && npm run test:trust && npm run test:about && npm run test:contact && npm run test:atmosphere && npm run test:seo && npm run test:brand && npm run test:transformation",
+    "test": "npm run test:memory-gate && npm run test:canonical-truth && npm run test:gateway-timing && npm run test:system-universe && npm run test:case-studies && npm run test:services && npm run test:theme && npm run test:contact-flow && npm run test:memory-videos && npm run test:relationship-years && npm run test:archive-years && npm run test:story-media && npm run test:locale && npm run test:i18n && npm run test:trust && npm run test:about && npm run test:contact && npm run test:atmosphere && npm run test:seo && npm run test:brand && npm run test:transformation && npm run test:ai-release",
     "test:about": "tsx --test tests/about.test.mjs",
     "test:contact": "tsx --test tests/contact.test.mjs",
     "test:atmosphere": "tsx --test tests/atmosphere.test.mjs",
@@ -30,7 +30,8 @@
     "test:memory-videos": "tsx --test tests/memoryVideos.test.mjs",
     "test:relationship-years": "tsx --test tests/relationshipYears.test.mjs",
     "test:archive-years": "tsx --test tests/archiveYears.test.mjs",
-    "test:story-media": "tsx --test tests/storyMedia.test.mjs"
+    "test:story-media": "tsx --test tests/storyMedia.test.mjs",
+    "test:ai-release": "tsx --test tests/aiRelease.test.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^8.17.14",

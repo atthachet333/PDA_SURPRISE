@@ -85,7 +85,8 @@ STORY_ASSETS = {
 SPECIAL_ASSETS = {
     "SP121756_26-12-68 (03).jpeg": "/images/memories/special-roadtrip-wide.webp",
     "726_Original.JPG": "/images/memories/wedding-ceremony-01.webp",
-    "720_Original.JPG": "/images/memories/wedding-ceremony-02.webp",
+    # 720_Original.JPG ships only as archive memory-015 (EP46.5): its standalone
+    # wedding-ceremony-02 copy was unused after the 2026-09-23 milestone redesign.
     "736_Original.JPG": "/images/memories/wedding-ceremony-03.webp",
     "IMG_5643.JPG": "/images/memories/marriage-registration-safe.webp",
 }

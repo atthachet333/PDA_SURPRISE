@@ -182,15 +182,19 @@ export function Scene01Entry({ onEnter }: { onEnter: () => void }) {
         </div>
 
         <div className="mt-7 flex flex-col items-center px-2">
-          {intro.title.map((line, index) => (
-            <p
-              key={line}
-              style={cue(STEP.TITLE, index * 280)}
-              className="thai-display ai-legible font-thai text-[clamp(1.75rem,4.2vw,2.75rem)] font-light text-ivory"
-            >
-              {line}
-            </p>
-          ))}
+          {/* The page's one h1 (EP46.5): the opening lines were plain <p>s, so
+              /us had no top-level heading. Same classes, same look. */}
+          <h1 className="flex flex-col items-center [text-wrap:wrap]">
+            {intro.title.map((line, index) => (
+              <span
+                key={line}
+                style={cue(STEP.TITLE, index * 280)}
+                className="thai-display ai-legible block font-thai text-[clamp(1.75rem,4.2vw,2.75rem)] font-light text-ivory"
+              >
+                {line}
+              </span>
+            ))}
+          </h1>
 
           <p
             style={cue(STEP.READY)}
