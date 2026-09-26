@@ -1,72 +1,79 @@
 /*
- * EP46.6.1 — capability showcase (components/business/CapabilityShowcase.tsx).
- * All transform / opacity / stroke-dashoffset; nothing here changes layout.
+ * EP46.6.2 — business transformation showcase
+ * (components/business/TransformationShowcase.tsx).
+ *
+ * Transform and opacity only; nothing here changes layout. Every rule has a
+ * reduced-motion fallback at the bottom.
  */
 
-/* Time left on the focused capability: a hairline that fills once. */
-@keyframes showcase-progress {
+/* A new scenario arrives: the one visible copy fades up from a soft start.
+   There is never an outgoing copy to overlap — the stack swaps visibility. */
+@keyframes tx-enter {
   from {
-    transform: scaleX(0);
+    opacity: 0.4;
+    transform: translate3d(0, 8px, 0);
   }
   to {
-    transform: scaleX(1);
-  }
-}
-
-.showcase-progress {
-  transform-origin: left center;
-  animation-name: showcase-progress;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-}
-
-/* The system boundary's dashes drift — one slow lap a minute. */
-@keyframes showcase-orbit {
-  to {
-    stroke-dashoffset: -90;
-  }
-}
-
-.showcase-orbit {
-  animation: showcase-orbit 60s linear infinite;
-}
-
-/* The focused node breathes. */
-@keyframes showcase-halo {
-  0%,
-  100% {
-    transform: scale(0.85);
-    opacity: 0.55;
-  }
-  50% {
-    transform: scale(1.15);
     opacity: 1;
+    transform: none;
   }
 }
 
-.showcase-halo {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: showcase-halo 3.2s ease-in-out infinite;
+.tx-enter {
+  animation: tx-enter 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Emphasis moves between nodes and links as a fade, never a cut. */
-.showcase-fade {
-  transition:
-    color 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    fill 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    stroke-opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    stroke-width 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    r 700ms cubic-bezier(0.22, 1, 0.36, 1);
+@media (max-width: 639px) {
+  @keyframes tx-enter-compact {
+    from {
+      opacity: 0.4;
+      transform: translate3d(0, 4px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .tx-enter {
+    animation-name: tx-enter-compact;
+  }
+}
+
+/* The signal between stages: fills forward over ~1s, retracts quickly when a
+   new scenario starts from the problem again. */
+.tx-fill-x,
+.tx-fill-y {
+  transition: transform 350ms cubic-bezier(0.4, 0, 1, 1);
+}
+
+.tx-fill-x.translate-x-0,
+.tx-fill-y.translate-y-0 {
+  transition: transform 1050ms cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+/* Result: a quiet green line draws along the card's foot. */
+.tx-confirm {
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Solution: a structured micro-grid — the problem side has none. */
+.tx-solution-grid {
+  background-image:
+    linear-gradient(rgb(var(--line-ink) / calc(var(--line-strength) * 0.8)) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--line-ink) / calc(var(--line-strength) * 0.8)) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .showcase-orbit,
-  .showcase-halo,
-  .showcase-progress {
+  .tx-enter {
     animation: none;
   }
-  .showcase-fade {
+  .tx-fill-x,
+  .tx-fill-y,
+  .tx-fill-x.translate-x-0,
+  .tx-fill-y.translate-y-0,
+  .tx-confirm {
     transition: none;
   }
 }

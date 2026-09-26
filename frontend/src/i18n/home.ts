@@ -43,55 +43,109 @@ export const hero = {
 };
 
 /**
- * EP46.6.1 — the capability showcase that replaced the marquee strip.
+ * EP46.6.2 — Home's business transformation showcase:
+ * problem → PDA BLISS SOLUTION → result.
  *
- * Titles come from the canonical services (data/services.ts via
- * usePrimaryServices); only what the showcase adds lives here. `terms` are
- * four words taken from each service's own `deliverables` — never a new
- * claim. Keyed by the canonical EP38 service id; tests require all eight.
+ * The problem and solution stages are the services' own canonical copy
+ * (`problem`, `problems`, title, `deliverables` in data/services.ts and the
+ * content packs). Only what the showcase adds lives here: the chrome, and per
+ * scenario a short tab label and a qualitative result, each point traceable
+ * to that service's deliverables. No numbers, no guarantees, none of the
+ * owner-decision capabilities. Keyed by data/transformations.ts scenario id;
+ * tests require all six in all three languages.
  */
-export const showcase = {
-  label: { th: 'ความสามารถของ PDA BLISS SOLUTION', en: 'PDA BLISS SOLUTION capabilities', zh: 'PDA BLISS SOLUTION 的能力' },
-  eyebrow: { th: 'ระบบที่เราสร้าง', en: 'Systems we build', zh: '我们构建的系统' },
-  selector: { th: 'เลือกความสามารถ', en: 'Choose a capability', zh: '选择能力' },
-  view: { th: 'ดูบริการนี้', en: 'View this service', zh: '查看此项服务' },
-  hub: { th: 'ระบบเชื่อมกัน', en: 'Connected systems', zh: '互联系统' }
+export const transformation = {
+  label: { th: 'โจทย์ธุรกิจที่ PDA BLISS SOLUTION ช่วยแก้', en: 'Business problems PDA BLISS SOLUTION helps solve', zh: 'PDA BLISS SOLUTION 帮助解决的业务问题' },
+  eyebrow: { th: 'จากโจทย์ สู่ระบบที่ใช้งานจริง', en: 'From problem to working system', zh: '从问题到可用的系统' },
+  problem: { th: 'ปัญหา', en: 'Problem', zh: '问题' },
+  solution: { th: 'PDA BLISS SOLUTION', en: 'PDA BLISS SOLUTION', zh: 'PDA BLISS SOLUTION' },
+  result: { th: 'ผลลัพธ์', en: 'Result', zh: '成效' },
+  scenarios: { th: 'เลือกโจทย์ธุรกิจ', en: 'Choose a business scenario', zh: '选择业务场景' },
+  prev: { th: 'โจทย์ก่อนหน้า', en: 'Previous scenario', zh: '上一个场景' },
+  next: { th: 'โจทย์ถัดไป', en: 'Next scenario', zh: '下一个场景' },
+  view: { th: 'ดูบริการนี้', en: 'View this service', zh: '查看此项服务' }
 } satisfies Record<string, LocalizedText>;
 
-export const showcaseItems = {
-  'business-systems': {
+export const transformationItems = {
+  erp: {
     short: { th: 'ERP', en: 'ERP', zh: 'ERP' },
-    terms: { th: ['สต็อก', 'ต้นทุน', 'จัดซื้อ', 'ประวัติรายการ'], en: ['Stock', 'Cost', 'Purchasing', 'Audit trail'], zh: ['库存', '成本', '采购', '审计记录'] }
+    result: {
+      th: 'ข้อมูลสต็อก ต้นทุน และการสั่งซื้อ อยู่ใน workflow เดียวที่ตรวจย้อนกลับได้',
+      en: 'Stock, cost and purchasing live in one workflow that can be traced back.',
+      zh: '库存、成本和采购集中在一个可追溯的流程里。'
+    },
+    resultPoints: {
+      th: ['ยอดคงเหลือและต้นทุนมาจากรายการจริง', 'ทุกรายการตรวจได้ว่ามาจากเอกสารไหน ใครบันทึก'],
+      en: ['Balances and costs come from the real entries', 'Every entry shows its source document and who recorded it'],
+      zh: ['结余和成本来自真实记录', '每条记录都能查到来源单据和录入人']
+    }
   },
   payroll: {
     short: { th: 'Payroll', en: 'Payroll', zh: 'Payroll' },
-    terms: { th: ['เวลาทำงาน', 'ตรวจรายการ', 'คำนวณ', 'อนุมัติรอบ'], en: ['Time data', 'Review', 'Calculate', 'Approve'], zh: ['考勤数据', '核对', '计算', '审批'] }
+    result: {
+      th: 'นำเข้า ตรวจ คำนวณ อนุมัติ และปิดรอบ อยู่ใน flow เดียว',
+      en: 'Import, review, calculation, approval and closing run as one flow.',
+      zh: '导入、核对、计算、审批和结账在同一个流程中完成。'
+    },
+    resultPoints: {
+      th: ['รายการผิดปกติถูกแยกออกมาตรวจก่อนคำนวณ', 'รอบที่อนุมัติแล้วถูกล็อก ตัวเลขนิ่ง'],
+      en: ['Irregular entries are set aside for review before calculation', 'Approved cycles are locked, so the figures stay settled'],
+      zh: ['异常记录在计算前单独核对', '审批后的周期被锁定，数字不再变动']
+    }
   },
-  'hr-line-bot': {
+  'hr-line': {
     short: { th: 'HR LINE', en: 'HR LINE', zh: 'HR LINE' },
-    terms: { th: ['ยื่นลา', 'อนุมัติ', 'แจ้งเตือน', 'หลังบ้าน HR'], en: ['Leave', 'Approve', 'Notify', 'HR back office'], zh: ['请假', '审批', '通知', 'HR 后台'] }
+    result: {
+      th: 'คำขอ สถานะ และการอนุมัติ เดินตาม workflow ที่ติดตามได้',
+      en: 'Requests, status and approvals follow one workflow everyone can track.',
+      zh: '申请、状态和审批沿着一条可跟踪的流程进行。'
+    },
+    resultPoints: {
+      th: ['พนักงานยื่นลาและดูสถานะผ่าน LINE', 'หัวหน้าอนุมัติจากมือถือ ฝ่ายบุคคลเห็นภาพรวม'],
+      en: ['Staff request leave and check its status in LINE', 'Supervisors approve on their phones; HR sees the overview'],
+      zh: ['员工在 LINE 上请假并查看状态', '主管用手机审批，HR 掌握全局']
+    }
   },
-  'document-management': {
+  documents: {
     short: { th: 'เอกสาร', en: 'Documents', zh: '文档' },
-    terms: { th: ['อัปโหลด', 'ตรวจ', 'อนุมัติ', 'ติดตาม'], en: ['Upload', 'Review', 'Approve', 'Track'], zh: ['上传', '审核', '审批', '跟踪'] }
+    result: {
+      th: 'ส่ง ตรวจ อนุมัติ และติดตามเอกสาร ใน flow ที่ชัดเจน',
+      en: 'Documents are submitted, reviewed, approved and tracked in one clear flow.',
+      zh: '文档的提交、审核、审批和跟踪都在清晰的流程中进行。'
+    },
+    resultPoints: {
+      th: ['เห็นว่าเอกสารอยู่ขั้นไหน และใครเป็นคนถัดไป', 'ตีกลับแก้ไขได้โดยไม่เสียประวัติเดิม'],
+      en: ['Everyone sees which step a document is at, and who is next', 'Returned documents keep their full history'],
+      zh: ['清楚看到文档在哪一步、下一位是谁', '退回修改也保留完整历史']
+    }
   },
-  'file-management': {
-    short: { th: 'NAS', en: 'NAS', zh: 'NAS' },
-    terms: { th: ['โครงสร้าง', 'สิทธิ์', 'รวมศูนย์', 'ค้นหา'], en: ['Structure', 'Permissions', 'Centralise', 'Search'], zh: ['目录结构', '权限', '集中存储', '检索'] }
-  },
-  'web-applications': {
+  'web-app': {
     short: { th: 'เว็บแอป', en: 'Web app', zh: 'Web 应用' },
-    terms: { th: ['Workflow', 'สิทธิ์', 'อนุมัติ', 'หน้าสรุป'], en: ['Workflow', 'Roles', 'Approvals', 'Dashboard'], zh: ['流程', '角色权限', '审批', '数据看板'] }
+    result: {
+      th: 'หน้าจอและ flow ถูกออกแบบตามวิธีทำงานจริงของทีม',
+      en: 'Screens and flows are built around how the team actually works.',
+      zh: '界面和流程按团队的实际工作方式来设计。'
+    },
+    resultPoints: {
+      th: ['ทุกคนทำงานบนข้อมูลชุดเดียวกัน', 'หน้าสรุปบอกสถานะของงานทั้งหมด'],
+      en: ['Everyone works on the same data', 'A summary screen shows the status of all the work'],
+      zh: ['所有人使用同一份数据', '汇总页面显示全部工作的状态']
+    }
   },
-  'mobile-applications': {
-    short: { th: 'แอปมือถือ', en: 'Mobile', zh: '移动应用' },
-    terms: { th: ['หน้าจอมือถือ', 'ทีมหน้างาน', 'เชื่อมหลังบ้าน', 'แจ้งเตือน'], en: ['Mobile screens', 'Field teams', 'Back office', 'Notify'], zh: ['移动界面', '一线团队', '后台对接', '通知'] }
-  },
-  websites: {
+  website: {
     short: { th: 'เว็บไซต์', en: 'Website', zh: '网站' },
-    terms: { th: ['เนื้อหา', 'Responsive', 'บริการและผลงาน', 'ติดต่อ'], en: ['Content', 'Responsive', 'Services & work', 'Contact'], zh: ['内容结构', '响应式', '服务与案例', '联系表单'] }
+    result: {
+      th: 'ข้อมูลบริษัท บริการ ผลงาน และช่องทางติดต่อ ถูกจัดให้อ่านง่าย',
+      en: 'Company, services, work and contact details are organised to read easily.',
+      zh: '公司介绍、服务、案例和联系方式被整理得清晰易读。'
+    },
+    resultPoints: {
+      th: ['อ่านง่ายทั้งบนมือถือและคอมพิวเตอร์', 'มีหน้าผลงานให้ลูกค้าใหม่ดู และแบบฟอร์มติดต่อที่ใช้งานได้จริง'],
+      en: ['Reads well on phones and computers', 'Work pages for new customers, and a contact form that really works'],
+      zh: ['在手机和电脑上都易于阅读', '有供新客户查看的案例页面，以及真正可用的联系表单']
+    }
   }
-} satisfies Record<string, { short: LocalizedText; terms: LocalizedList }>;
+} satisfies Record<string, { short: LocalizedText; result: LocalizedText; resultPoints: LocalizedList }>;
 
 export const showreel = {
   title: { th: 'ระบบที่เราสร้างจริง', en: 'Systems we have actually built', zh: '我们真正构建的系统' },
